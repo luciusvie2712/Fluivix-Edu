@@ -1,0 +1,50 @@
+name: Verify implemented modules
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  identity:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:7.4.6-alpine
+        ports: ["6379:6379"]
+      mailpit:
+        image: axllent/mailpit:v1.27.10
+        ports: ["1025:1025", "8025:8025"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: Leonxlnx/taste-skill
+          ref: 6010f91a9935f1c167dfc500fb1a475681892e6b
+          path: .ci-taste
+      - run: mkdir -p .agents/skills && cp -R .ci-taste/skills/taste-skill .agents/skills/design-taste-frontend
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.7
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm db:generate
+      - run: pnpm --filter @fluivix/server-crypto build
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      - run: pnpm openapi:generate && pnpm client:generate
+      - run: git diff --exit-code -- apps/api/openapi.json packages/api-client/src/schema.d.ts
+      - run: pnpm test:integration
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+      - run: pnpm audit --audit-level=high
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: identity-test-reports
+          path: |
+            playwright-report/
+            test-results/
+            docs/ai/evidence/

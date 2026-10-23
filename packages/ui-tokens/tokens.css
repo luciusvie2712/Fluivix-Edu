@@ -1,0 +1,18 @@
+:root {
+  --color-primary: #2563eb;
+  --color-accent: #0d9488;
+  --color-canvas: #f8fafc;
+  --color-surface: #ffffff;
+  --color-text: #0f172a;
+  --color-muted: #475569;
+  --color-border: #e2e8f0;
+  --color-control: #64748b;
+  --color-danger: #b91c1c;
+  --color-warning: #92400e;
+  --radius-input: 8px;
+  --radius-panel: 12px;
+  --radius-sheet: 16px;
+  --space-unit: 4px;
+  --motion-press: 120ms;
+  --motion-feedback: 180ms;
+}

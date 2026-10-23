@@ -1,0 +1,7 @@
+{
+  "name": "@fluivix/ui-tokens",
+  "private": true,
+  "exports": {
+    "./tokens.css": "./tokens.css"
+  }
+}

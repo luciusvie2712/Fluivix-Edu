@@ -1,0 +1,81 @@
+# Local project instructions and documentation pack (root only)
+/PACK_MANIFEST.json
+/AGENTS.md
+/scripts/
+/prompts/
+/docs/
+/skills-lock.json
+/.ci-taste/
+
+# Locally installed agent skills and their generated working files
+/.agents/
+/.codex/
+/.taste-skill/
+.agents/
+.venv/
+
+# Dependencies and package manager caches
+node_modules/
+.pnpm-store/
+.npm/
+.yarn/cache/
+.yarn/unplugged/
+.yarn/install-state.gz
+
+# Build output and caches (Next.js, NestJS, Turborepo, Expo)
+.next/
+out/
+dist/
+build/
+.turbo/
+.expo/
+.expo-shared/
+web-build/
+.cache/
+*.tsbuildinfo
+
+# Local environment and secrets; keep safe example templates versioned
+.env
+.env.*
+!.env.example
+!.env.*.example
+!.env.sample
+!.env.template
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+
+# Logs, coverage and test artifacts
+*.log
+logs/
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+blob-report/
+
+# Editor and OS files
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+# Temporary files and Python caches used by local scripts
+tmp/
+temp/
+__pycache__/
+*.py[cod]
+venv/
+.pytest_cache/
+

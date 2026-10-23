@@ -1,0 +1,59 @@
+{
+  "name": "fluivixedu",
+  "private": true,
+  "packageManager": "pnpm@10.34.7",
+  "engines": {
+    "node": ">=22.14"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "lint": "eslint apps packages tooling tests --max-warnings=0",
+    "typecheck": "turbo run typecheck && tsc -p tsconfig.tools.json",
+    "build": "turbo run build",
+    "test": "vitest run --project unit",
+    "test:integration": "vitest run --project integration",
+    "test:e2e": "playwright test",
+    "db:generate": "prisma generate --schema infra/prisma/schema.prisma",
+    "db:migrate": "prisma migrate deploy --schema infra/prisma/schema.prisma",
+    "db:seed": "tsx tooling/seed.ts",
+    "openapi:generate": "tsx tooling/openapi.ts",
+    "client:generate": "openapi-typescript apps/api/openapi.json -o packages/api-client/src/schema.d.ts && prettier --write packages/api-client/src/schema.d.ts",
+    "format:check": "prettier --check apps packages tooling tests *.json *.yaml *.yml"
+  },
+  "dependencies": {
+    "@prisma/client": "6.19.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.64.1",
+    "@types/node": "24.10.1",
+    "@types/pg": "8.15.6",
+    "embedded-postgres": "17.6.0-beta.15",
+    "eslint": "10.13.0",
+    "globals": "16.5.0",
+    "jose": "6.2.13",
+    "openapi-typescript": "7.10.1",
+    "pg": "8.16.3",
+    "prettier": "3.6.2",
+    "prisma": "6.19.3",
+    "tsx": "4.20.6",
+    "turbo": "2.11.10",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.72.0",
+    "vitest": "5.0.5"
+  },
+  "pnpm": {
+    "overrides": {
+      "deepmerge-ts": "8.0.2"
+    },
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma",
+      "esbuild",
+      "argon2",
+      "sharp"
+    ]
+  }
+}

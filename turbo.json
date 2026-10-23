@@ -1,0 +1,20 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "@fluivix/api-client#build": { "outputs": [] },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**"],
+      "env": [
+        "DATABASE_URL",
+        "REDIS_URL",
+        "WEB_ORIGIN",
+        "PLATFORM_ORIGIN",
+        "JWT_SECRET",
+        "NEXT_PUBLIC_API_URL"
+      ]
+    },
+    "typecheck": { "dependsOn": ["^typecheck"] },
+    "dev": { "cache": false, "persistent": true }
+  }
+}
