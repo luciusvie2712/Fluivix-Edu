@@ -139,6 +139,25 @@ beforeAll(async () => {
   const services = await import("../../apps/api/dist/auth.service.js");
   hashPassword = services.hashPassword;
   const passwordHash = await hashPassword(password);
+  const plan = await db.plan.create({
+    data: {
+      code: "TEST_PLAN",
+      name: "Test plan",
+      monthlyPriceVnd: 0n,
+      limitsJson: {
+        maxStudents: 1000,
+        maxUsers: 1000,
+        maxClasses: 100,
+        maxStorageBytes: "1073741824",
+      },
+      featureFlagsJson: {
+        attendance: true,
+        grades: true,
+        finance: true,
+        reports: true,
+      },
+    },
+  });
   await db.user.createMany({
     data: [
       {
@@ -193,6 +212,16 @@ beforeAll(async () => {
   ] as const)
     await db.membership.create({
       data: { userId, tenantId, status: "ACTIVE", roles: { create: { role } } },
+    });
+  for (const tenantId of [tenantA, tenantB])
+    await db.subscription.create({
+      data: {
+        tenantId,
+        planId: plan.id,
+        startsAt: new Date(Date.now() - 86400000),
+        endsAt: new Date(Date.now() + 86400000),
+        graceUntil: new Date(Date.now() + 2 * 86400000),
+      },
     });
   await db.student.createMany({
     data: [

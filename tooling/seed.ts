@@ -10,11 +10,42 @@ export async function seed(db: PrismaClient, password: string) {
       "Synthetic seed requires non-production mode and an explicit strong seed password",
     );
   const passwordHash = await hashPassword(password);
+  const plan = await db.plan.upsert({
+    where: { code: "SYNTHETIC_TEST" },
+    create: {
+      code: "SYNTHETIC_TEST",
+      name: "Gói kiểm thử",
+      monthlyPriceVnd: 0n,
+      limitsJson: {
+        maxStudents: 1000,
+        maxUsers: 1000,
+        maxClasses: 100,
+        maxStorageBytes: "1073741824",
+      },
+      featureFlagsJson: {
+        attendance: true,
+        grades: true,
+        finance: true,
+        reports: true,
+      },
+    },
+    update: {},
+  });
   await db.platformUser.upsert({
     where: { email: "platform@example.test" },
     create: {
       email: "platform@example.test",
       displayName: "Vận hành kiểm thử",
+      passwordHash,
+      recoveryHashes: [],
+    },
+    update: {},
+  });
+  await db.platformUser.upsert({
+    where: { email: "platform-onboarding@example.test" },
+    create: {
+      email: "platform-onboarding@example.test",
+      displayName: "Vận hành onboarding kiểm thử",
       passwordHash,
       recoveryHashes: [],
     },
@@ -57,6 +88,16 @@ export async function seed(db: PrismaClient, password: string) {
       },
       update: {},
     });
+    if (!(await db.subscription.findFirst({ where: { tenantId: id } })))
+      await db.subscription.create({
+        data: {
+          tenantId: id,
+          planId: plan.id,
+          startsAt: new Date(Date.now() - 86400000),
+          endsAt: new Date(Date.now() + 86400000 * 30),
+          graceUntil: new Date(Date.now() + 86400000 * 37),
+        },
+      });
     await db.membership.upsert({
       where: { tenantId_userId: { tenantId: id, userId: owner.id } },
       create: {

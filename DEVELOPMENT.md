@@ -71,5 +71,16 @@ through the environment, then `pnpm exec tsx tooling/provision-platform.ts`.
 The tool never overwrites existing credentials. The local synthetic seed additionally
 creates platform@example.test using the explicitly supplied seed password.
 No support impersonation or access to student content is provided by platform auth.
-The overview currently displays actual tenant lifecycle counts only; plans, tenant
-provisioning and subscriptions are still pending.
+The overview displays actual tenant lifecycle counts. Platform operators can create
+plans, provision a pending center with an owner invitation, resend unused invitations,
+update contact metadata, suspend/reactivate with an audited reason, and assign
+non-overlapping subscription periods. Owner activation uses the real mail worker.
+Plan terms become immutable once subscribed; create a new plan for changed terms.
+VND values cross the API as canonical decimal strings and persist as PostgreSQL
+BIGINT, including values above JavaScript's safe integer range.
+
+Owners/managers can view their actual plan and usage at `/app/settings`. Student
+and account quotas are enforced under the tenant row lock; class/storage quota
+enforcement awaits those resource modules. This settings page does not yet cover
+rooms or the full tenant profile. Platform audit/health and most education/finance
+modules are still pending. Live Resend verification awaits private configuration.

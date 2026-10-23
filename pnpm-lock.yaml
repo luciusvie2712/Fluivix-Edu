@@ -72,6 +72,9 @@ importers:
 
   apps/api:
     dependencies:
+      '@fluivix/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
       '@fluivix/server-crypto':
         specifier: workspace:*
         version: link:../../packages/server-crypto
@@ -271,6 +274,12 @@ importers:
       openapi-fetch:
         specifier: 0.15.0
         version: 0.15.0
+
+  packages/contracts:
+    dependencies:
+      zod:
+        specifier: 4.1.12
+        version: 4.1.12
 
   packages/server-crypto: {}
 

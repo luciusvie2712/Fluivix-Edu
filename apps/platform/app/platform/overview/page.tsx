@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { api, usePlatform } from "../../../components/session";
 import { Button } from "../../../components/button";
+import { PlatformNav } from "../../../components/frame";
 const labels: Record<string, string> = {
   ACTIVE: "Đang hoạt động",
   PENDING_ACTIVATION: "Chờ kích hoạt",
@@ -75,6 +76,7 @@ export default function Overview() {
           {loggingOut ? "Đang đăng xuất…" : "Đăng xuất"}
         </Button>
       </header>
+      <PlatformNav />
       <main id="main" className="platform-sheet">
         {logoutError && <p role="alert">{logoutError}</p>}
         <h1>Tổng quan nền tảng</h1>

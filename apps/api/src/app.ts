@@ -15,9 +15,25 @@ import type { Response, NextFunction } from "express";
 import { StudentsController, StudentsService } from "./students";
 import { PlatformController } from "./platform.controller";
 import { PlatformService } from "./platform.service";
+import { PlatformTenantsController } from "./platform-tenants.controller";
+import { PlatformTenantsService } from "./platform-tenants.service";
+import { TenantSubscriptionController } from "./tenant-subscription";
 @Module({
-  controllers: [AuthController, StudentsController, PlatformController],
-  providers: [Db, AuthService, AccessGuard, StudentsService, PlatformService],
+  controllers: [
+    AuthController,
+    StudentsController,
+    PlatformController,
+    PlatformTenantsController,
+    TenantSubscriptionController,
+  ],
+  providers: [
+    Db,
+    AuthService,
+    AccessGuard,
+    StudentsService,
+    PlatformService,
+    PlatformTenantsService,
+  ],
 })
 export class AppModule {}
 export async function createApp() {

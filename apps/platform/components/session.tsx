@@ -13,6 +13,17 @@ export const api = createApiClient(
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/v1\/?$/, "") ??
     "http://localhost:4000",
 );
+api.use({
+  onResponse({ request, response }) {
+    if (
+      response.status === 401 &&
+      request.headers.has("Authorization") &&
+      typeof window !== "undefined"
+    )
+      window.dispatchEvent(new Event("platform-session-expired"));
+    return response;
+  },
+});
 let pendingRefresh: Promise<string> | null = null;
 function refreshToken() {
   pendingRefresh ??= api
@@ -51,6 +62,10 @@ export function PlatformProvider({ children }: { children: ReactNode }) {
     queryClient.clear();
     setToken("");
   }
+  useEffect(() => {
+    window.addEventListener("platform-session-expired", clear);
+    return () => window.removeEventListener("platform-session-expired", clear);
+  });
   useEffect(() => {
     let active = true;
     const version = epoch.current;

@@ -59,6 +59,8 @@ async function unwrap<T>(
 }
 export const login = (body: components["schemas"]["LoginDto"]) =>
   unwrap(api.POST("/api/v1/auth/login", { body }));
+export const subscriptionInfo = () =>
+  unwrap(api.GET("/api/v1/tenant/subscription"));
 let refreshing: ReturnType<typeof refreshRequest> | null = null;
 const refreshRequest = () =>
   unwrap(

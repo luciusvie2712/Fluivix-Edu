@@ -33,6 +33,11 @@ test("platform enrollment, persisted MFA session, recovery re-enrollment and log
   ).toBeVisible();
   const codes = await page.locator(".recovery-codes code").allTextContents();
   expect(codes).toHaveLength(10);
+  const overviewResponse = page.waitForResponse(
+    (response) =>
+      response.url().endsWith("/api/v1/platform/overview") &&
+      response.status() === 200,
+  );
   await page.getByRole("button", { name: "Đã lưu mã, tiếp tục" }).click();
   await expect(
     page.getByRole("heading", { name: "Tổng quan nền tảng" }),
@@ -40,9 +45,21 @@ test("platform enrollment, persisted MFA session, recovery re-enrollment and log
   await expect(
     page.getByRole("cell", { name: "Đang hoạt động", exact: true }),
   ).toBeVisible();
+  const actualOverview: import("../../packages/api-client/src").components["schemas"]["PlatformOverviewResponse"] =
+    await (await overviewResponse).json();
+  const expectedActive = actualOverview.data.tenantsByStatus.find(
+    (row) => row.status === "ACTIVE",
+  )?.count;
+  expect(expectedActive).toBeGreaterThanOrEqual(2);
   await expect(
-    page.getByRole("cell", { name: "2", exact: true }),
-  ).toBeVisible();
+    page
+      .getByRole("row")
+      .filter({
+        has: page.getByRole("cell", { name: "Đang hoạt động", exact: true }),
+      })
+      .getByRole("cell")
+      .last(),
+  ).toHaveText(String(expectedActive));
   await page.reload();
   await expect(
     page.getByRole("cell", { name: "Đang hoạt động", exact: true }),

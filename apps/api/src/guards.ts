@@ -11,6 +11,10 @@ import { Db } from "./db";
 import { config } from "./config";
 import { hasPermission, verifyAccess } from "./security";
 import type { ApiRequest } from "./http";
+import {
+  requirePlanFeature,
+  requireSubscriptionWrite,
+} from "./subscription-policy";
 export const Public = () => SetMetadata("public", true);
 export const TenantPermission = (...permissions: string[]) =>
   SetMetadata("permissions", permissions);
@@ -69,11 +73,28 @@ export class AccessGuard implements CanActivate {
     )
       throw new ForbiddenException("Trung tâm hiện không khả dụng.");
     const write = !["GET", "HEAD", "OPTIONS"].includes(req.method);
-    if (
-      write &&
-      (tenant.status === "READ_ONLY" || tenant.graceUntil <= new Date())
-    )
+    if (write && tenant.status === "READ_ONLY")
       throw new ForbiddenException("Trung tâm đang ở chế độ chỉ đọc.");
+    if (write) await requireSubscriptionWrite(this.db, tenantId);
+    for (const feature of [
+      "attendance",
+      "grades",
+      "finance",
+      "reports",
+    ] as const) {
+      const prefixes =
+        feature === "grades"
+          ? ["grade.", "assessment."]
+          : feature === "reports"
+            ? ["report."]
+            : [feature + "."];
+      if (
+        needed.some((permission) =>
+          prefixes.some((prefix) => permission.startsWith(prefix)),
+        )
+      )
+        await requirePlanFeature(this.db, tenantId, feature);
+    }
     return true;
   }
 }

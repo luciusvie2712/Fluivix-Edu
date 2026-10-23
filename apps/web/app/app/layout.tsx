@@ -30,6 +30,9 @@ export default function Layout({ children }: { children: ReactNode }) {
         <nav aria-label="Điều hướng trung tâm">
           <Link href="/app/students">Học viên</Link>
           <Link href="/app/account">Tài khoản và phiên</Link>
+          {["owner", "manager"].includes(session.me.activeRole ?? "") && (
+            <Link href="/app/settings">Gói dịch vụ</Link>
+          )}
           <Link href="/tenant/select">Đổi trung tâm / vai trò</Link>
         </nav>
       </aside>

@@ -55,19 +55,66 @@ model User {
 }
 
 model Tenant {
-  id                 String       @id @default(uuid()) @db.Uuid
-  slug               String       @unique @db.VarChar(80)
-  name               String       @db.VarChar(150)
-  timezone           String       @default("Asia/Ho_Chi_Minh") @db.VarChar(80)
-  status             TenantStatus @default(PENDING_ACTIVATION)
-  subscriptionEndsAt DateTime     @map("subscription_ends_at") @db.Timestamptz
-  graceUntil         DateTime     @map("grace_until") @db.Timestamptz
-  createdAt          DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  id                 String         @id @default(uuid()) @db.Uuid
+  slug               String         @unique @db.VarChar(80)
+  name               String         @db.VarChar(150)
+  contactEmail       String?        @map("contact_email") @db.VarChar(254)
+  timezone           String         @default("Asia/Ho_Chi_Minh") @db.VarChar(80)
+  status             TenantStatus   @default(PENDING_ACTIVATION)
+  subscriptionEndsAt DateTime       @map("subscription_ends_at") @db.Timestamptz
+  graceUntil         DateTime       @map("grace_until") @db.Timestamptz
+  createdAt          DateTime       @default(now()) @map("created_at") @db.Timestamptz
   memberships        Membership[]
   students           Student[]
   invitations        Invitation[]
+  subscriptions      Subscription[]
 
   @@map("tenants")
+}
+
+model Plan {
+  id               String         @id @default(uuid()) @db.Uuid
+  code             String         @unique @db.VarChar(40)
+  name             String         @db.VarChar(150)
+  monthlyPriceVnd  BigInt         @map("monthly_price_vnd")
+  limitsJson       Json           @map("limits_json")
+  featureFlagsJson Json           @map("feature_flags_json")
+  status           String         @default("ACTIVE") @db.VarChar(20)
+  subscriptions    Subscription[]
+
+  @@map("plans")
+}
+
+model Subscription {
+  id         String              @id @default(uuid()) @db.Uuid
+  tenantId   String              @map("tenant_id") @db.Uuid
+  planId     String              @map("plan_id") @db.Uuid
+  status     String              @default("ACTIVE") @db.VarChar(20)
+  startsAt   DateTime            @map("starts_at") @db.Timestamptz
+  endsAt     DateTime            @map("ends_at") @db.Timestamptz
+  graceUntil DateTime            @map("grace_until") @db.Timestamptz
+  source     String              @default("PLATFORM_MANUAL") @db.VarChar(40)
+  createdAt  DateTime            @default(now()) @map("created_at") @db.Timestamptz
+  tenant     Tenant              @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  plan       Plan                @relation(fields: [planId], references: [id], onDelete: Restrict)
+  events     SubscriptionEvent[]
+
+  @@unique([tenantId, id])
+  @@index([tenantId, startsAt])
+  @@map("subscriptions")
+}
+
+model SubscriptionEvent {
+  id             String       @id @default(uuid()) @db.Uuid
+  tenantId       String       @map("tenant_id") @db.Uuid
+  subscriptionId String       @map("subscription_id") @db.Uuid
+  type           String       @db.VarChar(40)
+  effectiveAt    DateTime     @default(now()) @map("effective_at") @db.Timestamptz
+  payload        Json
+  actorId        String       @map("actor_id") @db.Uuid
+  subscription   Subscription @relation(fields: [tenantId, subscriptionId], references: [tenantId, id], onDelete: Restrict)
+
+  @@map("subscription_events")
 }
 
 model Membership {
@@ -255,6 +302,7 @@ model PlatformAudit {
   id         String   @id @default(uuid()) @db.Uuid
   actorId    String   @map("actor_id") @db.Uuid
   action     String   @db.VarChar(80)
+  reason     String?  @db.VarChar(500)
   resourceId String   @map("resource_id") @db.VarChar(80)
   traceId    String   @map("trace_id") @db.VarChar(80)
   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz

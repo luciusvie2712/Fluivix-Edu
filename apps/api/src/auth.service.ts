@@ -13,6 +13,7 @@ import { config } from "./config";
 import { Claims, hashToken, newToken, signAccess } from "./security";
 import { AcceptInvitationDto } from "./auth.dto";
 import { sealToken } from "@fluivix/server-crypto";
+import { assertQuota } from "./subscription-policy";
 
 const normalize = (email: string) => email.trim().toLowerCase();
 const passwordOptions = {
@@ -119,14 +120,36 @@ export class AuthService {
       where: { userId: claims.sub, status: "ACTIVE" },
       select: {
         tenant: {
-          select: { id: true, name: true, status: true, timezone: true },
+          select: {
+            id: true,
+            name: true,
+            status: true,
+            timezone: true,
+            subscriptions: {
+              where: { status: "ACTIVE", startsAt: { lte: new Date() } },
+              orderBy: { endsAt: "desc" },
+              take: 1,
+              select: { endsAt: true, graceUntil: true },
+            },
+          },
         },
         roles: { select: { role: true } },
       },
     });
     return {
       ...user,
-      memberships,
+      memberships: memberships.map(({ tenant, roles }) => {
+        const { subscriptions, ...view } = tenant,
+          subscription = subscriptions[0];
+        const status = ["ACTIVE", "PAST_DUE_GRACE"].includes(view.status)
+          ? !subscription || subscription.graceUntil <= new Date()
+            ? "READ_ONLY"
+            : subscription.endsAt <= new Date()
+              ? "PAST_DUE_GRACE"
+              : "ACTIVE"
+          : view.status;
+        return { tenant: { ...view, status }, roles };
+      }),
       activeTenantId: claims.tenantId ?? null,
       activeRole: claims.role ?? null,
     };
@@ -172,18 +195,9 @@ export class AuthService {
     const existing = await this.db.user.findUnique({
       where: { email: invitation.email },
     });
-    // Existing accounts must prove their password; invitation never resets an existing password.
-    if (
-      existing &&
-      (existing.status !== "ACTIVE" ||
-        !existing.passwordHash ||
-        !(await argon2.verify(existing.passwordHash, dto.password)))
-    )
-      throw new UnauthorizedException("Vui lòng xác thực tài khoản hiện có.");
-    const passwordHash = existing
-      ? undefined
-      : await hashPassword(dto.password);
+    const passwordHash = await hashPassword(dto.password);
     return this.db.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM tenants WHERE id = ${invitation.tenantId}::uuid FOR UPDATE`;
       await tx.$queryRaw`SELECT id FROM invitation_tokens WHERE id = ${invitation.id}::uuid FOR UPDATE`;
       const current = await tx.invitation.findUniqueOrThrow({
         where: { id: invitation.id },
@@ -197,16 +211,57 @@ export class AuthService {
         throw new UnauthorizedException(
           "Lời mời không hợp lệ hoặc đã hết hạn.",
         );
+      if (existing)
+        await tx.$queryRaw`SELECT id FROM users WHERE id = ${existing.id}::uuid FOR UPDATE`;
+      const currentUser = existing
+        ? await tx.user.findUniqueOrThrow({ where: { id: existing.id } })
+        : null;
+      // Pending provisioned accounts have no credential. ACTIVE accounts prove
+      // their current password, including a race with another invitation.
+      if (
+        currentUser &&
+        !(currentUser.status === "INVITED" && !currentUser.passwordHash) &&
+        (currentUser.status !== "ACTIVE" ||
+          !currentUser.passwordHash ||
+          !(await argon2.verify(currentUser.passwordHash, dto.password)))
+      )
+        throw new UnauthorizedException("Vui lòng xác thực tài khoản hiện có.");
+      const existingMembership = currentUser
+        ? await tx.membership.findUnique({
+            where: {
+              tenantId_userId: {
+                tenantId: current.tenantId,
+                userId: currentUser.id,
+              },
+            },
+          })
+        : null;
+      await assertQuota(
+        tx,
+        current.tenantId,
+        "users",
+        existingMembership ? 0 : 1,
+        current.role === "owner",
+      );
       const user =
-        existing ??
+        currentUser ??
         (await tx.user.create({
           data: {
             email: current.email,
             displayName: dto.displayName.trim(),
-            passwordHash: passwordHash ?? null,
+            passwordHash,
             status: "ACTIVE",
           },
         }));
+      if (user.status === "INVITED")
+        await tx.user.update({
+          where: { id: user.id },
+          data: {
+            passwordHash,
+            status: "ACTIVE",
+            displayName: dto.displayName.trim(),
+          },
+        });
       const membership = await tx.membership.upsert({
         where: {
           tenantId_userId: { tenantId: current.tenantId, userId: user.id },

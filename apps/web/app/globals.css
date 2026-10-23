@@ -44,14 +44,23 @@ button:disabled {
 }
 .skip {
   position: fixed;
-  top: -100px;
+  top: 12px;
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  white-space: nowrap;
   left: 16px;
   z-index: 100;
   background: var(--color-surface);
   padding: 12px;
 }
 .skip:focus {
-  top: 12px;
+  clip-path: none;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  white-space: normal;
 }
 .muted,
 .hint {
@@ -268,6 +277,28 @@ th {
 .number {
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+dl {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  gap: 8px 16px;
+  margin: 16px 0 24px;
+}
+dt {
+  color: var(--color-muted);
+}
+dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+  dl {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  dd {
+    margin-bottom: 12px;
+  }
 }
 .notice {
   padding: 12px 16px;

@@ -26,6 +26,7 @@ import { requestClaims } from "./auth.controller";
 import type { ApiRequest } from "./http";
 import type { Claims } from "./security";
 import { ListDto } from "./auth.dto";
+import { assertQuota } from "./subscription-policy";
 export class CreateStudentDto {
   @ApiProperty({ maxLength: 40 })
   @IsString()
@@ -101,6 +102,8 @@ export class StudentsService {
   }
   async create(claims: Claims, dto: CreateStudentDto, traceId: string) {
     return this.db.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM tenants WHERE id = ${claims.tenantId}::uuid FOR UPDATE`;
+      await assertQuota(tx, claims.tenantId!, "students");
       const student = await tx.student.create({
         data: {
           tenantId: claims.tenantId!,
