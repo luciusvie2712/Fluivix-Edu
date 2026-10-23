@@ -6,6 +6,26 @@ jobs:
   identity:
     runs-on: ubuntu-latest
     services:
+      postgres:
+        image: postgres:17.6-alpine
+        env:
+          POSTGRES_USER: fluivix_ci
+          POSTGRES_PASSWORD: isolated-ci-only
+          POSTGRES_DB: fluivixedu_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U fluivix_ci -d fluivixedu_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+      postgres_e2e:
+        image: postgres:17.6-alpine
+        env:
+          POSTGRES_USER: fluivix_ci
+          POSTGRES_PASSWORD: isolated-ci-only
+          POSTGRES_DB: fluivixedu_e2e_test
+        ports: ["55433:5432"]
+        options: >-
+          --health-cmd "pg_isready -U fluivix_ci -d fluivixedu_e2e_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
       redis:
         image: redis:7.4.6-alpine
         ports: ["6379:6379"]
@@ -37,8 +57,12 @@ jobs:
       - run: pnpm openapi:generate && pnpm client:generate
       - run: git diff --exit-code -- apps/api/openapi.json packages/api-client/src/schema.d.ts
       - run: pnpm test:integration
+        env:
+          TEST_DATABASE_URL: postgresql://fluivix_ci:isolated-ci-only@127.0.0.1:5432/fluivixedu_test
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e
+        env:
+          E2E_DATABASE_URL: postgresql://fluivix_ci:isolated-ci-only@127.0.0.1:55433/fluivixedu_e2e_test
       - run: pnpm audit --audit-level=high
       - uses: actions/upload-artifact@v4
         if: always()

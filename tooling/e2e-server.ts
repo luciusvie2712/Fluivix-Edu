@@ -13,25 +13,38 @@ async function run() {
   process.env.OUTBOX_TOKEN_KEY = randomBytes(32).toString("hex");
   process.env.WEB_ORIGIN = "http://localhost:3000";
   process.env.PLATFORM_ORIGIN = "http://localhost:3001";
-  const databasePassword = randomBytes(32).toString("hex");
-  const directory = path.resolve(".cache/e2e-" + randomUUID());
-  await mkdir(directory, { recursive: true });
-  const postgres = new EmbeddedPostgres({
-    databaseDir: directory,
-    user: "fluivix_test",
-    password: databasePassword,
-    port: 55433,
-    persistent: true,
-    authMethod: "scram-sha-256",
-    initdbFlags: ["--encoding=UTF8", "--locale=C"],
-    postgresFlags: ["-h", "127.0.0.1"],
-    onLog: () => {},
-    onError: console.error,
-  });
-  await postgres.initialise();
-  await postgres.start();
-  await postgres.createDatabase("fluivixedu_test");
-  process.env.DATABASE_URL = `postgresql://fluivix_test:${databasePassword}@127.0.0.1:55433/fluivixedu_test`;
+  let postgres: EmbeddedPostgres | undefined;
+  if (process.env.E2E_DATABASE_URL) {
+    const supplied = new URL(process.env.E2E_DATABASE_URL);
+    if (
+      !["localhost", "127.0.0.1"].includes(supplied.hostname) ||
+      !supplied.pathname.endsWith("_test")
+    )
+      throw new Error(
+        "E2E requires an explicitly disposable local database ending _test",
+      );
+    process.env.DATABASE_URL = process.env.E2E_DATABASE_URL;
+  } else {
+    const databasePassword = randomBytes(32).toString("hex");
+    const directory = path.resolve(".cache/e2e-" + randomUUID());
+    await mkdir(directory, { recursive: true });
+    postgres = new EmbeddedPostgres({
+      databaseDir: directory,
+      user: "fluivix_test",
+      password: databasePassword,
+      port: 55433,
+      persistent: true,
+      authMethod: "scram-sha-256",
+      initdbFlags: ["--encoding=UTF8", "--locale=C"],
+      postgresFlags: ["-h", "127.0.0.1"],
+      onLog: () => {},
+      onError: console.error,
+    });
+    await postgres.initialise();
+    await postgres.start();
+    await postgres.createDatabase("fluivixedu_test");
+    process.env.DATABASE_URL = `postgresql://fluivix_test:${databasePassword}@127.0.0.1:55433/fluivixedu_test`;
+  }
   execFileSync(
     process.execPath,
     [
@@ -94,7 +107,7 @@ async function run() {
     next.kill();
     platform.kill();
     await app.close();
-    await postgres.stop();
+    await postgres?.stop();
     process.exit(0);
   }
   process.on("SIGINT", () => void stop());
