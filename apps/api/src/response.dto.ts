@@ -1,4 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Role, TenantStatus } from "@prisma/client";
 export class MetaDto {
   @ApiProperty() traceId!: string;
@@ -103,6 +103,25 @@ export class StudentView {
 }
 export class StudentResponse {
   @ApiProperty({ type: StudentView }) data!: StudentView;
+  @ApiProperty({ type: MetaDto }) meta!: MetaDto;
+}
+export class StudentDetailView extends StudentView {
+  @ApiProperty() version!: number;
+  @ApiProperty({ format: "date" }) enrolledAt!: string;
+  @ApiPropertyOptional({ type: String, nullable: true, format: "date" })
+  dateOfBirth?: string | null;
+  @ApiPropertyOptional({ type: String, nullable: true }) contactEmail?:
+    | string
+    | null;
+  @ApiPropertyOptional({ type: String, nullable: true }) contactPhone?:
+    | string
+    | null;
+  @ApiPropertyOptional({ type: String, nullable: true }) notesPrivate?:
+    | string
+    | null;
+}
+export class StudentDetailResponse {
+  @ApiProperty({ type: StudentDetailView }) data!: StudentDetailView;
   @ApiProperty({ type: MetaDto }) meta!: MetaDto;
 }
 export class PageView {

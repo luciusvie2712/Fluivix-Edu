@@ -238,6 +238,7 @@ input[aria-invalid="true"] {
   padding: 8px 24px;
 }
 .sheet {
+  align-self: start;
   margin: 0 8px 8px 0;
   padding: 24px;
   background: var(--color-surface);
@@ -255,6 +256,18 @@ input[aria-invalid="true"] {
 .toolbar .field {
   margin: 0;
   flex: 1;
+  min-width: min(220px, 100%);
+}
+.table-hint {
+  display: none;
+}
+@media (max-width: 600px) {
+  .table-hint {
+    display: block;
+    font-size: 14px;
+    color: var(--color-muted);
+    margin: 16px 0 8px;
+  }
 }
 .table-scroll {
   overflow-x: auto;
@@ -277,6 +290,59 @@ th {
 .number {
   text-align: right;
   font-variant-numeric: tabular-nums;
+}
+.student-form-grid {
+  border: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 0 24px;
+}
+.student-form-wide {
+  grid-column: 1/-1;
+}
+.student-form-grid .field {
+  margin: 16px 0;
+}
+.student-table {
+  min-width: 600px;
+}
+.student-table th:first-child {
+  width: 180px;
+}
+.student-table th:last-child {
+  width: 180px;
+}
+.section-copy {
+  margin: 16px 0;
+}
+.section-title,
+.student-lifecycle {
+  margin-top: 32px;
+}
+.student-lifecycle {
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border);
+  max-width: 640px;
+}
+textarea {
+  width: 100%;
+  border: 1px solid var(--color-control);
+  border-radius: var(--radius-input);
+  padding: 8px 12px;
+  resize: vertical;
+  min-height: 112px;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+.page-heading:focus {
+  outline: none;
+}
+@media (max-width: 600px) {
+  .student-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 dl {
   display: grid;

@@ -38,7 +38,12 @@ api.use({
 async function unwrap<T>(
   result: Promise<{ data?: T; error?: unknown; response: Response }>,
 ): Promise<T> {
-  const response = await result;
+  const response = await result.catch(() => {
+    throw new ApiError(
+      0,
+      "Không thể kết nối dịch vụ. Kiểm tra mạng rồi thử lại.",
+    );
+  });
   if (response.error || !response.response.ok || response.data === undefined) {
     const status = response.response.status;
     const message =
@@ -46,13 +51,15 @@ async function unwrap<T>(
         ? "Phiên đăng nhập hết hạn hoặc thông tin không hợp lệ."
         : status === 403
           ? "Không có quyền hoặc trung tâm đang bị hạn chế."
-          : status === 409
-            ? "Dữ liệu đã thay đổi hoặc bị trùng. Vui lòng kiểm tra lại."
-            : status === 422
-              ? "Thông tin chưa hợp lệ. Vui lòng kiểm tra các trường."
-              : status === 429
-                ? "Quá nhiều yêu cầu. Vui lòng thử lại sau."
-                : "Không thể kết nối dịch vụ. Vui lòng thử lại.";
+          : status === 404
+            ? "Không tìm thấy dữ liệu trong trung tâm đang chọn."
+            : status === 409
+              ? "Dữ liệu đã thay đổi hoặc bị trùng. Vui lòng kiểm tra lại."
+              : status === 422
+                ? "Thông tin chưa hợp lệ. Vui lòng kiểm tra các trường."
+                : status === 429
+                  ? "Quá nhiều yêu cầu. Vui lòng thử lại sau."
+                  : "Không thể kết nối dịch vụ. Vui lòng thử lại.";
     throw new ApiError(status, message);
   }
   return response.data;
@@ -98,13 +105,44 @@ export const revokeSession = (id: string) =>
       headers: { "Content-Type": "application/json" },
     }),
   );
-export const students = (page: number, search: string, signal?: AbortSignal) =>
+export const students = (
+  page: number,
+  search: string,
+  signal?: AbortSignal,
+  status?: components["schemas"]["StudentView"]["status"],
+) =>
   unwrap(
     api.GET("/api/v1/students", {
-      params: { query: { page, limit: 20, search } },
+      params: {
+        query: { page, limit: 20, search, ...(status ? { status } : {}) },
+      },
       ...(signal ? { signal } : {}),
     }),
   );
 export const createStudent = (
   body: components["schemas"]["CreateStudentDto"],
 ) => unwrap(api.POST("/api/v1/students", { body }));
+export const studentDetail = (id: string, signal?: AbortSignal) =>
+  unwrap(
+    api.GET("/api/v1/students/{id}", {
+      params: { path: { id } },
+      ...(signal ? { signal } : {}),
+    }),
+  );
+export const updateStudent = (
+  id: string,
+  body: components["schemas"]["UpdateStudentDto"],
+) =>
+  unwrap(
+    api.PATCH("/api/v1/students/{id}", { params: { path: { id } }, body }),
+  );
+export const deactivateStudent = (
+  id: string,
+  body: components["schemas"]["DeactivateStudentDto"],
+) =>
+  unwrap(
+    api.POST("/api/v1/students/{id}/deactivate", {
+      params: { path: { id } },
+      body,
+    }),
+  );

@@ -1,7 +1,7 @@
 # FluivixEdu implementation checkpoint
 
-This repository currently implements the identity module and a restricted student
-directory used to verify tenant isolation. It does **not** implement all P0 Web,
+This repository currently implements tenant/platform identity, center subscriptions,
+operational audit/diagnostics, and scoped student profile management. It does **not** implement all P0 Web,
 Platform or business modules. Do not deploy it for real learner data.
 
 ## Windows PowerShell
@@ -92,3 +92,18 @@ selects metadata and excludes free-text reasons, authentication and learner cont
 and persisted outbox/delivery counts. Worker heartbeat is explicitly not configured;
 these counters do not certify worker liveness or historical SLA. Support access is
 disabled pending an approved break-glass policy; no impersonation endpoint exists.
+
+## Student profiles
+
+Staff can create profiles without accounts, search by code/name, filter by status,
+edit permitted fields and deactivate with confirmation/reason. The backend checks
+tenant scope and permissions, masks private/contact fields for limited viewers,
+locks quota changes and rejects stale profile versions with 409. Deactivation keeps
+history; reactivation rechecks the active student quota. Creation/enrollment dates
+use the tenant timezone; migration backfill derives historical dates from creation.
+Imports and profile tabs for classes/attendance/grades/finance/guardians remain pending.
+
+Selected tenant/role persists only in the server session and is revalidated on refresh.
+A context switch rejects access tokens carrying the old context. Revoked membership
+cannot be restored by refresh; the user returns to explicit context selection.
+No access token or personal data is stored in localStorage/sessionStorage.

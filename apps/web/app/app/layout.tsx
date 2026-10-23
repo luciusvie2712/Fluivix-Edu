@@ -1,12 +1,37 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useSyncExternalStore, type ReactNode } from "react";
 import { useSession } from "../../components/providers";
 import { Button } from "../../components/ui/button";
+import type { Role } from "../../lib/api";
+const roleLabels: Record<Role, string> = {
+  owner: "Chủ trung tâm",
+  manager: "Quản lý",
+  academic_staff: "Giáo vụ",
+  accountant: "Kế toán",
+  teacher: "Giáo viên",
+  student: "Học viên",
+  guardian: "Phụ huynh",
+};
+function subscribeNetwork(notify: () => void) {
+  window.addEventListener("online", notify);
+  window.addEventListener("offline", notify);
+  return () => {
+    window.removeEventListener("online", notify);
+    window.removeEventListener("offline", notify);
+  };
+}
+const networkSnapshot = () => navigator.onLine;
+const serverNetworkSnapshot = () => true;
 export default function Layout({ children }: { children: ReactNode }) {
   const session = useSession();
   const router = useRouter();
+  const online = useSyncExternalStore(
+    subscribeNetwork,
+    networkSnapshot,
+    serverNetworkSnapshot,
+  );
   useEffect(() => {
     if (session.ready && !session.me) router.replace("/login");
     else if (session.ready && session.me && !session.me.activeTenantId)
@@ -38,7 +63,10 @@ export default function Layout({ children }: { children: ReactNode }) {
       </aside>
       <header className="topbar">
         <span>
-          {tenant?.name} · {session.me.activeRole}
+          {tenant?.name} ·{" "}
+          {session.me.activeRole
+            ? roleLabels[session.me.activeRole]
+            : "Chưa chọn vai trò"}
         </span>
         <Button
           variant="outline"
@@ -50,6 +78,12 @@ export default function Layout({ children }: { children: ReactNode }) {
         </Button>
       </header>
       <main className="sheet" id="main">
+        {!online && (
+          <p role="alert" className="notice">
+            Bạn đang ngoại tuyến. Dữ liệu đang hiển thị có thể đã cũ; chờ kết
+            nối lại trước khi lưu.
+          </p>
+        )}
         {tenant?.status === "READ_ONLY" && (
           <p className="notice">
             Trung tâm ở chế độ chỉ đọc. Các thay đổi đang bị khóa.

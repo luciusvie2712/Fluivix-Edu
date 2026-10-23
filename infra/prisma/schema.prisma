@@ -145,6 +145,8 @@ model AuthSession {
   id         String    @id @default(uuid()) @db.Uuid
   userId     String    @map("user_id") @db.Uuid
   familyId   String    @map("family_id") @db.Uuid
+  selectedTenantId String? @map("selected_tenant_id") @db.Uuid
+  selectedRole Role? @map("selected_role")
   tokenHash  String    @unique @map("token_hash") @db.Char(64)
   expiresAt  DateTime  @map("expires_at") @db.Timestamptz
   consumedAt DateTime? @map("consumed_at") @db.Timestamptz
@@ -191,6 +193,12 @@ model Student {
   fullName      String         @map("full_name") @db.VarChar(150)
   status        String         @default("ACTIVE") @db.VarChar(20)
   notesPrivate  String?        @map("notes_private") @db.VarChar(2000)
+  dateOfBirth   DateTime?      @map("date_of_birth") @db.Date
+  contactEmail  String?        @map("contact_email") @db.VarChar(254)
+  contactPhone  String?        @map("contact_phone") @db.VarChar(30)
+  enrolledAt    DateTime       @default(now()) @map("enrolled_at") @db.Date
+  updatedAt     DateTime       @default(now()) @updatedAt @map("updated_at") @db.Timestamptz
+  version       Int            @default(1)
   createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz
   tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Restrict)
   guardianLinks GuardianLink[]
@@ -222,6 +230,7 @@ model AuditLog {
   tenantId    String?  @map("tenant_id") @db.Uuid
   actorUserId String?  @map("actor_user_id") @db.Uuid
   action      String   @db.VarChar(80)
+  reason      String?  @db.VarChar(500)
   resourceId  String   @map("resource_id") @db.VarChar(80)
   traceId     String   @map("trace_id") @db.VarChar(80)
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz

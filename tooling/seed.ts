@@ -71,6 +71,16 @@ export async function seed(db: PrismaClient, password: string) {
     },
     update: {},
   });
+  const accountant = await db.user.upsert({
+    where: { email: "accountant@example.test" },
+    create: {
+      email: "accountant@example.test",
+      displayName: "Kế toán kiểm thử",
+      passwordHash,
+      status: "ACTIVE",
+    },
+    update: {},
+  });
   for (const [id, slug, name] of [
     [developmentIds.tenantA, "test-center-a", "Trung tâm kiểm thử A"],
     [developmentIds.tenantB, "test-center-b", "Trung tâm kiểm thử B"],
@@ -118,6 +128,17 @@ export async function seed(db: PrismaClient, password: string) {
       },
       update: {},
     });
+    if (id === developmentIds.tenantA)
+      await db.membership.upsert({
+        where: { tenantId_userId: { tenantId: id, userId: accountant.id } },
+        create: {
+          tenantId: id,
+          userId: accountant.id,
+          status: "ACTIVE",
+          roles: { create: { role: "accountant" } },
+        },
+        update: {},
+      });
     await db.student.upsert({
       where: {
         tenantId_studentCode: { tenantId: id, studentCode: "TEST-001" },

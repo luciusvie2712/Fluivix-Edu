@@ -241,6 +241,22 @@ export interface paths {
     delete?: never;
     options?: never;
     head?: never;
+    patch: operations["StudentsController_update"];
+    trace?: never;
+  };
+  "/api/v1/students/{id}/deactivate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["StudentsController_deactivate"];
+    delete?: never;
+    options?: never;
+    head?: never;
     patch?: never;
     trace?: never;
   };
@@ -699,13 +715,55 @@ export interface components {
       page: components["schemas"]["PageView"];
       meta: components["schemas"]["MetaDto"];
     };
-    StudentResponse: {
-      data: components["schemas"]["StudentView"];
+    StudentDetailView: {
+      /** Format: uuid */
+      id: string;
+      studentCode: string;
+      fullName: string;
+      /** @enum {string} */
+      status: "ACTIVE" | "PAUSED" | "GRADUATED" | "INACTIVE";
+      version: number;
+      /** Format: date */
+      enrolledAt: string;
+      /** Format: date */
+      dateOfBirth?: string | null;
+      contactEmail?: string | null;
+      contactPhone?: string | null;
+      notesPrivate?: string | null;
+    };
+    StudentDetailResponse: {
+      data: components["schemas"]["StudentDetailView"];
       meta: components["schemas"]["MetaDto"];
     };
     CreateStudentDto: {
       studentCode: string;
       fullName: string;
+      /** Format: date */
+      dateOfBirth?: string | null;
+      contactEmail?: string | null;
+      contactPhone?: string | null;
+      notesPrivate?: string | null;
+    };
+    StudentResponse: {
+      data: components["schemas"]["StudentView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    UpdateStudentDto: {
+      studentCode?: string;
+      fullName?: string;
+      /** Format: date */
+      dateOfBirth?: string | null;
+      contactEmail?: string | null;
+      contactPhone?: string | null;
+      notesPrivate?: string | null;
+      version: number;
+      /** @enum {string} */
+      status?: "ACTIVE" | "PAUSED" | "GRADUATED";
+      reason?: string;
+    };
+    DeactivateStudentDto: {
+      version: number;
+      reason: string;
     };
     ChallengeView: {
       challengeToken: string;
@@ -1639,6 +1697,7 @@ export interface operations {
         page?: number;
         limit?: number;
         search?: string;
+        status?: "ACTIVE" | "PAUSED" | "GRADUATED" | "INACTIVE";
       };
       header?: never;
       path?: never;
@@ -1695,7 +1754,57 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["StudentResponse"];
+          "application/json": components["schemas"]["StudentDetailResponse"];
+        };
+      };
+    };
+  };
+  StudentsController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateStudentDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StudentDetailResponse"];
+        };
+      };
+    };
+  };
+  StudentsController_deactivate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DeactivateStudentDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StudentDetailResponse"];
         };
       };
     };

@@ -732,6 +732,15 @@
             "required": false,
             "in": "query",
             "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["ACTIVE", "PAUSED", "GRADUATED", "INACTIVE"]
+            }
           }
         ],
         "responses": {
@@ -786,7 +795,75 @@
             "description": "",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/StudentResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/StudentDetailResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["students"]
+      },
+      "patch": {
+        "operationId": "StudentsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateStudentDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentDetailResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["students"]
+      }
+    },
+    "/api/v1/students/{id}/deactivate": {
+      "post": {
+        "operationId": "StudentsController_deactivate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/DeactivateStudentDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentDetailResponse"
+                }
               }
             }
           }
@@ -2422,10 +2499,40 @@
         },
         "required": ["data", "page", "meta"]
       },
-      "StudentResponse": {
+      "StudentDetailView": {
         "type": "object",
         "properties": {
-          "data": { "$ref": "#/components/schemas/StudentView" },
+          "id": { "type": "string", "format": "uuid" },
+          "studentCode": { "type": "string" },
+          "fullName": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["ACTIVE", "PAUSED", "GRADUATED", "INACTIVE"]
+          },
+          "version": { "type": "number" },
+          "enrolledAt": { "type": "string", "format": "date" },
+          "dateOfBirth": {
+            "type": "string",
+            "nullable": true,
+            "format": "date"
+          },
+          "contactEmail": { "type": "string", "nullable": true },
+          "contactPhone": { "type": "string", "nullable": true },
+          "notesPrivate": { "type": "string", "nullable": true }
+        },
+        "required": [
+          "id",
+          "studentCode",
+          "fullName",
+          "status",
+          "version",
+          "enrolledAt"
+        ]
+      },
+      "StudentDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/StudentDetailView" },
           "meta": { "$ref": "#/components/schemas/MetaDto" }
         },
         "required": ["data", "meta"]
@@ -2434,9 +2541,79 @@
         "type": "object",
         "properties": {
           "studentCode": { "type": "string", "maxLength": 40 },
-          "fullName": { "type": "string", "maxLength": 150 }
+          "fullName": { "type": "string", "maxLength": 150 },
+          "dateOfBirth": {
+            "type": "string",
+            "nullable": true,
+            "format": "date"
+          },
+          "contactEmail": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 254
+          },
+          "contactPhone": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 30
+          },
+          "notesPrivate": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 2000
+          }
         },
         "required": ["studentCode", "fullName"]
+      },
+      "StudentResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/StudentView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "UpdateStudentDto": {
+        "type": "object",
+        "properties": {
+          "studentCode": { "type": "string", "maxLength": 40 },
+          "fullName": { "type": "string", "maxLength": 150 },
+          "dateOfBirth": {
+            "type": "string",
+            "nullable": true,
+            "format": "date"
+          },
+          "contactEmail": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 254
+          },
+          "contactPhone": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 30
+          },
+          "notesPrivate": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 2000
+          },
+          "version": { "type": "number", "minimum": 1 },
+          "status": {
+            "type": "string",
+            "enum": ["ACTIVE", "PAUSED", "GRADUATED"]
+          },
+          "reason": { "type": "string", "maxLength": 500 }
+        },
+        "required": ["version"]
+      },
+      "DeactivateStudentDto": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number", "minimum": 1 },
+          "reason": { "type": "string", "minLength": 10, "maxLength": 500 }
+        },
+        "required": ["version", "reason"]
       },
       "ChallengeView": {
         "type": "object",

@@ -7,6 +7,7 @@ import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { createServer } from "node:net";
 import { platformCases } from "./platform-cases";
+import { migrationCases } from "./migration-cases";
 
 let database: EmbeddedPostgres | undefined;
 let db: PrismaClient;
@@ -266,6 +267,223 @@ beforeEach(async () => {
 });
 
 describe("identity and tenant boundary against real PostgreSQL", () => {
+  migrationCases();
+  it("restores only validated server-side context on refresh and rejects old context after switching", async () => {
+    const signed = await login();
+    const selectedA = await api("/auth/switch-context", {
+      method: "POST",
+      token: signed.body.data.accessToken,
+      body: { tenantId: tenantA, role: "owner" },
+    });
+    const selectedB = await api("/auth/switch-context", {
+      method: "POST",
+      token: selectedA.body.data.accessToken,
+      body: { tenantId: tenantB, role: "owner" },
+    });
+    expect(selectedB.status).toBe(200);
+    expect(
+      (await api("/students", { token: selectedA.body.data.accessToken }))
+        .status,
+    ).toBe(401);
+    const rotated = await api("/auth/refresh", {
+      method: "POST",
+      cookie: signed.cookie,
+    });
+    expect(rotated.status).toBe(200);
+    expect(
+      (await api("/me", { token: rotated.body.data.accessToken })).body.data,
+    ).toMatchObject({ activeTenantId: tenantB, activeRole: "owner" });
+    await db.membership.update({
+      where: { tenantId_userId: { tenantId: tenantB, userId: owner } },
+      data: { status: "REVOKED" },
+    });
+    try {
+      const cleared = await api("/auth/refresh", {
+        method: "POST",
+        cookie: rotated.cookie,
+      });
+      expect(cleared.status).toBe(200);
+      expect(
+        (await api("/me", { token: cleared.body.data.accessToken })).body.data,
+      ).toMatchObject({ activeTenantId: null, activeRole: null });
+      expect(
+        (await api("/students", { token: cleared.body.data.accessToken }))
+          .status,
+      ).toBe(403);
+    } finally {
+      await db.membership.update({
+        where: { tenantId_userId: { tenantId: tenantB, userId: owner } },
+        data: { status: "ACTIVE" },
+      });
+    }
+  });
+  it("edits scoped student profiles with private-field redaction, optimistic locking and audited soft deactivation", async () => {
+    const profileTenant = randomUUID();
+    await db.tenant.create({
+      data: {
+        id: profileTenant,
+        slug: "profile-" + profileTenant,
+        name: "Profile isolated test",
+        timezone: "Pacific/Kiritimati",
+        status: "ACTIVE",
+        subscriptionEndsAt: new Date(Date.now() + 86400000),
+        graceUntil: new Date(Date.now() + 2 * 86400000),
+      },
+    });
+    const subscription = await db.subscription.findFirstOrThrow({
+      where: { tenantId: tenantA },
+    });
+    await db.subscription.create({
+      data: {
+        tenantId: profileTenant,
+        planId: subscription.planId,
+        startsAt: subscription.startsAt,
+        endsAt: subscription.endsAt,
+        graceUntil: subscription.graceUntil,
+      },
+    });
+    for (const [userId, role] of [
+      [owner, "owner"],
+      [accountant, "accountant"],
+    ] as const)
+      await db.membership.create({
+        data: {
+          userId,
+          tenantId: profileTenant,
+          status: "ACTIVE",
+          roles: { create: { role } },
+        },
+      });
+    const token = await context("owner@example.test", profileTenant, "owner");
+    const payload = {
+      studentCode: "PROFILE_" + randomUUID().slice(0, 8),
+      fullName: "Học viên hồ sơ",
+      dateOfBirth: "2010-02-28",
+      contactEmail: "student-profile@example.test",
+      contactPhone: "+84 901 234567",
+      notesPrivate: "PRIVATE-PROFILE",
+    };
+    const created = await api("/students", {
+      method: "POST",
+      token,
+      body: payload,
+    });
+    expect(created.status).toBe(201);
+    const id = String(created.body.data.id);
+    const detail = await api("/students/" + id, { token });
+    expect(detail.body.data).toMatchObject({ ...payload, version: 1 });
+    expect(detail.body.data.enrolledAt).toBe(
+      new Date(Date.now() + 14 * 3600000).toISOString().slice(0, 10),
+    );
+    const accountToken = await context(
+      "accountant@example.test",
+      profileTenant,
+      "accountant",
+    );
+    const limited = await api("/students/" + id, { token: accountToken });
+    expect(limited.status).toBe(200);
+    expect(JSON.stringify(limited.body)).not.toMatch(
+      /PRIVATE-PROFILE|notesPrivate|contactEmail|contactPhone|dateOfBirth/,
+    );
+    expect(
+      (
+        await api("/students/" + id, {
+          method: "PATCH",
+          token: accountToken,
+          body: { version: 1, fullName: "Forbidden" },
+        })
+      ).status,
+    ).toBe(403);
+    expect(
+      (
+        await api("/students/" + studentB, {
+          method: "PATCH",
+          token,
+          body: { version: 1, fullName: "Other tenant" },
+        })
+      ).status,
+    ).toBe(404);
+    const competing = await Promise.all(
+      ["Tên cập nhật một", "Tên cập nhật hai"].map((fullName) =>
+        api("/students/" + id, {
+          method: "PATCH",
+          token,
+          body: { version: 1, fullName },
+        }),
+      ),
+    );
+    expect(competing.map((result) => result.status).sort()).toEqual([200, 409]);
+    for (const patch of [
+      { fullName: null },
+      { studentCode: null },
+      { status: null },
+      { dateOfBirth: "2025-02-30" },
+      { dateOfBirth: "0000-01-01" },
+      { dateOfBirth: "2999-01-01" },
+      { contactPhone: "       " },
+      { status: "INACTIVE" },
+      { status: "PAUSED" },
+    ]) {
+      expect(
+        (
+          await api("/students/" + id, {
+            method: "PATCH",
+            token,
+            body: { version: 2, ...patch },
+          })
+        ).status,
+      ).toBe(422);
+    }
+    const deactivated = await api("/students/" + id + "/deactivate", {
+      method: "POST",
+      token,
+      body: { version: 2, reason: "Học viên chuyển trung tâm khác" },
+    });
+    expect(deactivated.status).toBe(201);
+    expect(deactivated.body.data).toMatchObject({
+      status: "INACTIVE",
+      version: 3,
+    });
+    expect(
+      await db.student.count({ where: { id, tenantId: profileTenant } }),
+    ).toBe(1);
+    expect(
+      await db.auditLog.findFirst({
+        where: { resourceId: id, action: "student.deactivate" },
+      }),
+    ).toMatchObject({
+      tenantId: profileTenant,
+      actorUserId: owner,
+      reason: "Học viên chuyển trung tâm khác",
+    });
+    expect(
+      (
+        await api(
+          "/students?status=INACTIVE&search=" +
+            encodeURIComponent("Tên cập nhật"),
+          { token },
+        )
+      ).body.data,
+    ).toEqual(expect.arrayContaining([expect.objectContaining({ id })]));
+    const active = await api("/students/" + id, {
+      method: "PATCH",
+      token,
+      body: {
+        version: 3,
+        status: "ACTIVE",
+        reason: "Học viên đăng ký học trở lại",
+        contactEmail: null,
+        notesPrivate: null,
+      },
+    });
+    expect(active.status).toBe(200);
+    expect(active.body.data).toMatchObject({
+      version: 4,
+      status: "ACTIVE",
+      contactEmail: null,
+      notesPrivate: null,
+    });
+  });
   it("returns 401 without auth and generic errors for unknown/invalid accounts", async () => {
     expect((await api("/me")).status).toBe(401);
     const missing = await api("/auth/login", {

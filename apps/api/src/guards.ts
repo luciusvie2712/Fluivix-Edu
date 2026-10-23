@@ -44,6 +44,12 @@ export class AccessGuard implements CanActivate {
         },
       });
       if (!session) throw new Error();
+      if (
+        req.claims.tenantId &&
+        (session.selectedTenantId !== req.claims.tenantId ||
+          session.selectedRole !== req.claims.role)
+      )
+        throw new Error();
     } catch {
       throw new UnauthorizedException("Vui lòng đăng nhập lại.");
     }

@@ -88,6 +88,24 @@ export class AuthService {
       }
       if (current.expiresAt <= new Date() || current.user.status !== "ACTIVE")
         return null;
+      const membership =
+        current.selectedTenantId && current.selectedRole
+          ? await tx.membership.findUnique({
+              where: {
+                tenantId_userId: {
+                  tenantId: current.selectedTenantId,
+                  userId: current.userId,
+                },
+              },
+              include: { tenant: true, roles: true },
+            })
+          : null;
+      const keepContext =
+        membership?.status === "ACTIVE" &&
+        membership.roles.some((entry) => entry.role === current.selectedRole) &&
+        !["SUSPENDED", "TERMINATED", "PENDING_ACTIVATION"].includes(
+          membership.tenant.status,
+        );
       await tx.authSession.update({
         where: { id: current.id },
         data: { consumedAt: new Date() },
@@ -98,6 +116,8 @@ export class AuthService {
           familyId: current.familyId,
           tokenHash: hashToken(nextToken),
           expiresAt: current.expiresAt,
+          selectedTenantId: keepContext ? current.selectedTenantId : null,
+          selectedRole: keepContext ? current.selectedRole : null,
         },
       });
     });
@@ -106,7 +126,13 @@ export class AuthService {
     return {
       refreshToken: nextToken,
       accessToken: await signAccess(
-        { sub: outcome.userId, sid: outcome.id },
+        {
+          sub: outcome.userId,
+          sid: outcome.id,
+          ...(outcome.selectedTenantId && outcome.selectedRole
+            ? { tenantId: outcome.selectedTenantId, role: outcome.selectedRole }
+            : {}),
+        },
         config().JWT_SECRET,
       ),
     };
@@ -155,18 +181,36 @@ export class AuthService {
     };
   }
   async switchContext(claims: Claims, tenantId: string, role: Role) {
-    const membership = await this.db.membership.findUnique({
-      where: { tenantId_userId: { tenantId, userId: claims.sub } },
-      include: { tenant: true, roles: true },
-    });
-    if (
-      membership?.status !== "ACTIVE" ||
-      !membership.roles.some((r) => r.role === role) ||
-      ["SUSPENDED", "TERMINATED", "PENDING_ACTIVATION"].includes(
-        membership.tenant.status,
+    await this.db.$transaction(async (tx) => {
+      await tx.$queryRaw`SELECT id FROM users WHERE id = ${claims.sub}::uuid FOR UPDATE`;
+      const session = await tx.authSession.findFirst({
+        where: {
+          id: claims.sid,
+          userId: claims.sub,
+          consumedAt: null,
+          revokedAt: null,
+          expiresAt: { gt: new Date() },
+        },
+      });
+      if (!session)
+        throw new UnauthorizedException("Phiên đăng nhập đã thay đổi.");
+      const membership = await tx.membership.findUnique({
+        where: { tenantId_userId: { tenantId, userId: claims.sub } },
+        include: { tenant: true, roles: true },
+      });
+      if (
+        membership?.status !== "ACTIVE" ||
+        !membership.roles.some((r) => r.role === role) ||
+        ["SUSPENDED", "TERMINATED", "PENDING_ACTIVATION"].includes(
+          membership.tenant.status,
+        )
       )
-    )
-      throw new ForbiddenException("Ngữ cảnh không khả dụng.");
+        throw new ForbiddenException("Ngữ cảnh không khả dụng.");
+      await tx.authSession.update({
+        where: { id: session.id },
+        data: { selectedTenantId: tenantId, selectedRole: role },
+      });
+    });
     return {
       accessToken: await signAccess(
         { sub: claims.sub, sid: claims.sid, tenantId, role },
