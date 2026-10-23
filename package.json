@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "turbo run dev",
     "lint": "eslint apps packages tooling tests --max-warnings=0",
-    "typecheck": "turbo run typecheck && tsc -p tsconfig.tools.json",
+    "typecheck": "turbo run build --filter=@fluivix/api --filter=@fluivix/worker && turbo run typecheck && tsc -p tsconfig.tools.json",
     "build": "turbo run build",
     "test": "vitest run --project unit",
     "test:integration": "vitest run --project integration",
