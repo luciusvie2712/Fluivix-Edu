@@ -4,6 +4,7 @@ import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { mkdirSync } from "node:fs";
 import { totp } from "../../apps/api/src/platform.security";
+import { reviewTaste } from "../../tooling/taste-review";
 const requireWeb = createRequire(path.resolve("apps/web/package.json"));
 const AxeBuilder = requireWeb("@axe-core/playwright")
   .default as typeof import("../../apps/web/node_modules/@axe-core/playwright").default;
@@ -11,6 +12,7 @@ const origin = "http://localhost:3001";
 test("platform enrollment, persisted MFA session, recovery re-enrollment and logout", async ({
   page,
 }) => {
+  test.setTimeout(90000);
   async function login() {
     await page.goto(origin + "/platform/login");
     await page.getByLabel("Email quản trị").fill("platform@example.test");
@@ -90,6 +92,126 @@ test("platform enrollment, persisted MFA session, recovery re-enrollment and log
       session: Object.keys(sessionStorage),
     })),
   ).toEqual({ local: [], session: [] });
+  await page
+    .getByRole("link", { name: "Nhật ký vận hành", exact: true })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Nhật ký vận hành", exact: true }),
+  ).toBeVisible();
+  await page
+    .getByLabel("Hành động chính xác", { exact: true })
+    .fill("platform.mfa.enrolled");
+  await page.getByRole("button", { name: "Lọc nhật ký", exact: true }).click();
+  await expect(
+    page
+      .getByRole("cell", { name: "platform.mfa.enrolled", exact: true })
+      .first(),
+  ).toBeVisible();
+  await page.reload();
+  await expect(
+    page.getByLabel("Hành động chính xác", { exact: true }),
+  ).toHaveValue("platform.mfa.enrolled");
+  await expect(
+    page
+      .getByRole("cell", { name: "platform.mfa.enrolled", exact: true })
+      .first(),
+  ).toBeVisible();
+  mkdirSync("docs/ai/evidence/audit", { recursive: true });
+  for (const width of [360, 768, 1024, 1440]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.evaluate(() => scrollTo(0, 0));
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    expect(
+      (
+        await new AxeBuilder({ page })
+          .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+          .analyze()
+      ).violations,
+    ).toEqual([]);
+    await page.screenshot({
+      path: `docs/ai/evidence/audit/platform-audit-${width}.png`,
+      fullPage: true,
+    });
+    await reviewTaste(page, `docs/ai/evidence/audit/taste-audit-${width}.json`);
+  }
+  await page
+    .getByLabel("Hành động chính xác", { exact: true })
+    .fill("not.existing.action");
+  await page.getByRole("button", { name: "Lọc nhật ký", exact: true }).click();
+  await expect(page.getByRole("status")).toContainText(
+    "Không có sự kiện phù hợp",
+  );
+  await page
+    .getByLabel("Mã người thực hiện (UUID)", { exact: true })
+    .fill("invalid-uuid");
+  await page.getByRole("button", { name: "Lọc nhật ký", exact: true }).click();
+  await expect(
+    page.getByRole("alert").filter({ hasText: "Nhập UUID" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Xóa bộ lọc", exact: true }).click();
+  await expect(
+    page.getByLabel("Mã người thực hiện (UUID)", { exact: true }),
+  ).toHaveValue("");
+  const healthResponse = page.waitForResponse(
+    (response) =>
+      response.url().endsWith("/api/v1/platform/system-health") &&
+      response.ok(),
+  );
+  await page
+    .getByRole("link", { name: "Tình trạng hệ thống", exact: true })
+    .click();
+  const actualHealth: import("../../packages/api-client/src").components["schemas"]["HealthResponse"] =
+    await (await healthResponse).json();
+  await expect(page.getByTestId("health-checked-at")).toHaveText(
+    new Date(actualHealth.data.checkedAt).toLocaleString("vi-VN"),
+  );
+  await expect(page.getByRole("status")).toContainText(
+    "Chưa cấu hình heartbeat worker",
+  );
+  for (const route of ["system-health", "support-access"]) {
+    if (route === "support-access") {
+      await page
+        .getByRole("link", { name: "Truy cập hỗ trợ", exact: true })
+        .click();
+      await expect(
+        page.getByRole("button", {
+          name: "Không thể mở phiên hỗ trợ",
+          exact: true,
+        }),
+      ).toBeDisabled();
+      await expect(page.getByRole("status")).toContainText(
+        "đang bị vô hiệu hóa",
+      );
+    }
+    for (const width of [360, 768, 1024, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.evaluate(() => scrollTo(0, 0));
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
+      expect(
+        (
+          await new AxeBuilder({ page })
+            .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+            .analyze()
+        ).violations,
+      ).toEqual([]);
+      await page.screenshot({
+        path: `docs/ai/evidence/audit/${route}-${width}.png`,
+        fullPage: true,
+      });
+      await reviewTaste(
+        page,
+        `docs/ai/evidence/audit/taste-${route}-${width}.json`,
+      );
+    }
+  }
   await page.getByRole("button", { name: "Đăng xuất", exact: true }).click();
   await expect(page).toHaveURL(origin + "/platform/login");
   await login();

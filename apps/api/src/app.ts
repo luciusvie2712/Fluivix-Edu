@@ -18,6 +18,11 @@ import { PlatformService } from "./platform.service";
 import { PlatformTenantsController } from "./platform-tenants.controller";
 import { PlatformTenantsService } from "./platform-tenants.service";
 import { TenantSubscriptionController } from "./tenant-subscription";
+import { PlatformHealthController } from "./platform-health";
+import {
+  PlatformAuditController,
+  PlatformAuditService,
+} from "./platform-audit";
 @Module({
   controllers: [
     AuthController,
@@ -25,6 +30,8 @@ import { TenantSubscriptionController } from "./tenant-subscription";
     PlatformController,
     PlatformTenantsController,
     TenantSubscriptionController,
+    PlatformAuditController,
+    PlatformHealthController,
   ],
   providers: [
     Db,
@@ -33,6 +40,7 @@ import { TenantSubscriptionController } from "./tenant-subscription";
     StudentsService,
     PlatformService,
     PlatformTenantsService,
+    PlatformAuditService,
   ],
 })
 export class AppModule {}

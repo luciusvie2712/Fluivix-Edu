@@ -28,7 +28,11 @@ export function Field({
           {hint}
         </span>
       )}
-      <span id={id + "-error"} className="field-error">
+      <span
+        id={id + "-error"}
+        className="field-error"
+        role={error ? "alert" : undefined}
+      >
         {error}
       </span>
     </div>

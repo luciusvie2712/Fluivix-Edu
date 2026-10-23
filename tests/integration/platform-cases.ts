@@ -59,6 +59,115 @@ export function platformCases(
       },
     });
   describe("platform mandatory MFA and distinct identity boundary", () => {
+    it("restricts operational audit to MFA sessions with exact filters, stable pages and explicit redaction", async () => {
+      const start = await account(),
+        signed = await verify(start.challengeToken, start.secret),
+        token = String(signed.body.data?.accessToken),
+        resourceId = randomUUID();
+      const timestamp = new Date("2026-01-02T03:04:05Z");
+      const entries = Array.from({ length: 3 }, () => ({
+        id: randomUUID(),
+        actorId: start.user.id,
+        action: "tenant.suspend",
+        resourceId,
+        traceId: randomUUID(),
+        createdAt: timestamp,
+        reason: "PRIVATE-REASON-MUST-NOT-BE-SERIALIZED",
+      })).sort((a, b) => a.id.localeCompare(b.id));
+      await getDb().platformAudit.createMany({ data: entries });
+      const filter = `?actorId=${start.user.id}&action=tenant.suspend&resourceId=${resourceId}&from=2026-01-02T03:04:05Z&until=2026-01-02T03:04:06Z&limit=1`;
+      expect((await call("/audit-logs")).status).toBe(401);
+      expect(
+        (await call("/audit-logs", { token: start.challengeToken })).status,
+      ).toBe(401);
+      const tenant = await tenantLogin();
+      expect(
+        (
+          await call("/system-health", {
+            token: String(tenant.body.data?.accessToken),
+          })
+        ).status,
+      ).toBe(401);
+      expect((await call("/system-health")).status).toBe(401);
+      const pending = await getDb().outboxEvent.count({
+        where: { processedAt: null },
+      });
+      const health = await call("/system-health", { token });
+      expect(health.status).toBe(200);
+      expect(health.body.data).toMatchObject({
+        pendingOutboxEvents: pending,
+        workerHeartbeat: "NOT_CONFIGURED",
+        apiProcessUptimeSeconds: expect.any(Number),
+        databaseRoundTripMs: expect.any(Number),
+      });
+      expect(health.body.data?.databaseRoundTripMs).toBeGreaterThanOrEqual(0);
+      expect(JSON.stringify(health.body)).not.toMatch(
+        /password|payload|encryptedToken|recipient|database_url/i,
+      );
+      expect(
+        (
+          await call("/support-access", {
+            method: "POST",
+            token,
+            body: { tenantId: resourceId },
+          })
+        ).status,
+      ).toBe(404);
+      expect(
+        (
+          await call("/audit-logs", {
+            token: String(tenant.body.data?.accessToken),
+          })
+        ).status,
+      ).toBe(401);
+      for (const [index, entry] of entries.entries()) {
+        const response = await call(
+          "/audit-logs" + filter + "&page=" + (index + 1),
+          { token },
+        );
+        expect(response.status).toBe(200);
+        expect(response.body).toMatchObject({
+          page: { page: index + 1, total: 3, totalPages: 3 },
+        });
+        expect(response.body.data).toEqual([
+          {
+            id: entry.id,
+            actorId: start.user.id,
+            action: "tenant.suspend",
+            resourceId,
+            traceId: entry.traceId,
+            createdAt: timestamp.toISOString(),
+          },
+        ]);
+        expect(JSON.stringify(response.body)).not.toContain("PRIVATE-REASON");
+      }
+      expect(
+        (
+          await call(
+            "/audit-logs?resourceId=" + resourceId + "&action=plan.create",
+            { token },
+          )
+        ).body.data,
+      ).toEqual([]);
+      for (const query of [
+        "actorId=bad",
+        "limit=101",
+        "from=2026-01-03",
+        "from=2026-01-03T00:00:00Z&until=2026-01-02T00:00:00Z",
+        "tenantId=" + randomUUID(),
+        "search=secret",
+      ]) {
+        expect((await call("/audit-logs?" + query, { token })).status).toBe(
+          422,
+        );
+      }
+      expect((await call("/audit-logs/export", { token })).status).toBe(404);
+      await getDb().platformUser.update({
+        where: { id: start.user.id },
+        data: { active: false },
+      });
+      expect((await call("/audit-logs", { token })).status).toBe(401);
+    });
     it("onboards owner transactionally, enforces concurrent student quota and blocks overlapping renewals", async () => {
       const start = await account(),
         signed = await verify(start.challengeToken, start.secret),

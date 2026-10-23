@@ -1973,6 +1973,114 @@
         },
         "tags": ["tenant"]
       }
+    },
+    "/api/v1/platform/audit-logs": {
+      "get": {
+        "operationId": "PlatformAuditController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "actorId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "action",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 80, "type": "string" }
+          },
+          {
+            "name": "resourceId",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 80, "type": "string" }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "date-time", "type": "string" }
+          },
+          {
+            "name": "until",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "date-time", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlatformAuditResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["platform-audit"]
+      }
+    },
+    "/api/v1/platform/system-health": {
+      "get": {
+        "operationId": "PlatformHealthController_health",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HealthResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["platform-operations"]
+      }
     }
   },
   "info": {
@@ -2720,6 +2828,70 @@
         "type": "object",
         "properties": {
           "data": { "$ref": "#/components/schemas/TenantSubscriptionView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "PlatformAuditView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "actorId": { "type": "string", "format": "uuid" },
+          "action": { "type": "string" },
+          "resourceId": { "type": "string" },
+          "traceId": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        },
+        "required": [
+          "id",
+          "actorId",
+          "action",
+          "resourceId",
+          "traceId",
+          "createdAt"
+        ]
+      },
+      "PlatformAuditResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PlatformAuditView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "HealthView": {
+        "type": "object",
+        "properties": {
+          "checkedAt": { "type": "string", "format": "date-time" },
+          "apiProcessUptimeSeconds": { "type": "number" },
+          "databaseRoundTripMs": { "type": "number" },
+          "pendingOutboxEvents": { "type": "number" },
+          "oldestPendingEventAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "uncertainMailDeliveries": { "type": "number" },
+          "workerHeartbeat": { "type": "string", "enum": ["NOT_CONFIGURED"] }
+        },
+        "required": [
+          "checkedAt",
+          "apiProcessUptimeSeconds",
+          "databaseRoundTripMs",
+          "pendingOutboxEvents",
+          "oldestPendingEventAt",
+          "uncertainMailDeliveries",
+          "workerHeartbeat"
+        ]
+      },
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/HealthView" },
           "meta": { "$ref": "#/components/schemas/MetaDto" }
         },
         "required": ["data", "meta"]

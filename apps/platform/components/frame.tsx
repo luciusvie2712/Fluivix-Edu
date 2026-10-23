@@ -47,6 +47,9 @@ export function PlatformNav() {
       <Link href="/platform/tenants">Trung tâm</Link>
       <Link href="/platform/plans">Gói dịch vụ</Link>
       <Link href="/platform/subscriptions">Thuê bao</Link>
+      <Link href="/platform/audit">Nhật ký vận hành</Link>
+      <Link href="/platform/system-health">Tình trạng hệ thống</Link>
+      <Link href="/platform/support-access">Truy cập hỗ trợ</Link>
     </nav>
   );
 }

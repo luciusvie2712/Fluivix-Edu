@@ -82,5 +82,13 @@ BIGINT, including values above JavaScript's safe integer range.
 Owners/managers can view their actual plan and usage at `/app/settings`. Student
 and account quotas are enforced under the tenant row lock; class/storage quota
 enforcement awaits those resource modules. This settings page does not yet cover
-rooms or the full tenant profile. Platform audit/health and most education/finance
-modules are still pending. Live Resend verification awaits private configuration.
+rooms or the full tenant profile. Most education/finance modules remain pending.
+Live Resend verification awaits private configuration.
+
+Platform operational audit (`/platform/audit`) supports exact actor/action/resource
+and half-open timestamp filters with server pagination. Its response explicitly
+selects metadata and excludes free-text reasons, authentication and learner content.
+`/platform/system-health` reports actual current-process uptime, PostgreSQL round-trip
+and persisted outbox/delivery counts. Worker heartbeat is explicitly not configured;
+these counters do not certify worker liveness or historical SLA. Support access is
+disabled pending an approved break-glass policy; no impersonation endpoint exists.
