@@ -66,6 +66,9 @@ importers:
       vitest:
         specifier: 5.0.5
         version: 5.0.5(@types/node@24.10.1)(vite@7.3.7(@types/node@24.10.1)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.20.6))
+      zod:
+        specifier: 4.1.12
+        version: 4.1.12
 
   apps/api:
     dependencies:
@@ -121,6 +124,61 @@ importers:
       '@types/express':
         specifier: 5.0.5
         version: 5.0.5
+
+  apps/platform:
+    dependencies:
+      '@fluivix/api-client':
+        specifier: workspace:*
+        version: link:../../packages/api-client
+      '@fluivix/ui-tokens':
+        specifier: workspace:*
+        version: link:../../packages/ui-tokens
+      '@hookform/resolvers':
+        specifier: 6.0.0
+        version: 6.0.0(@standard-schema/spec@1.1.0)(class-transformer@0.5.1)(class-validator@0.15.1)(react-hook-form@7.90.0(@types/react@19.2.2)(react@19.3.1))(zod@4.1.12)
+      '@radix-ui/react-slot':
+        specifier: 1.2.3
+        version: 1.2.3(@types/react@19.2.2)(react@19.3.1)
+      '@tailwindcss/postcss':
+        specifier: 4.3.3
+        version: 4.3.3
+      '@tanstack/react-query':
+        specifier: 5.104.5
+        version: 5.104.5(@types/react@19.2.2)(react@19.3.1)
+      class-variance-authority:
+        specifier: 0.7.1
+        version: 0.7.1
+      clsx:
+        specifier: 2.1.1
+        version: 2.1.1
+      next:
+        specifier: 16.4.2
+        version: 16.4.2(@playwright/test@1.64.1)(@types/node@24.10.1)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+      react:
+        specifier: 19.3.1
+        version: 19.3.1
+      react-dom:
+        specifier: 19.3.1
+        version: 19.3.1(react@19.3.1)
+      react-hook-form:
+        specifier: 7.90.0
+        version: 7.90.0(@types/react@19.2.2)(react@19.3.1)
+      tailwind-merge:
+        specifier: 3.3.1
+        version: 3.3.1
+      tailwindcss:
+        specifier: 4.3.3
+        version: 4.3.3
+      zod:
+        specifier: 4.1.12
+        version: 4.1.12
+    devDependencies:
+      '@types/react':
+        specifier: 19.2.2
+        version: 19.2.2
+      '@types/react-dom':
+        specifier: 19.2.2
+        version: 19.2.2(@types/react@19.2.2)
 
   apps/web:
     dependencies:

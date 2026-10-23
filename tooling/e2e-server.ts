@@ -8,6 +8,8 @@ import { seed } from "./seed";
 async function run() {
   process.env.NODE_ENV = "test";
   process.env.JWT_SECRET = randomBytes(48).toString("base64url");
+  process.env.PLATFORM_JWT_SECRET = randomBytes(48).toString("base64url");
+  process.env.PLATFORM_MFA_KEY = randomBytes(32).toString("hex");
   process.env.OUTBOX_TOKEN_KEY = randomBytes(32).toString("hex");
   process.env.WEB_ORIGIN = "http://localhost:3000";
   process.env.PLATFORM_ORIGIN = "http://localhost:3001";
@@ -72,9 +74,25 @@ async function run() {
       windowsHide: true,
     },
   );
+  const platform = spawn(
+    process.execPath,
+    [
+      path.resolve("apps/platform/node_modules/next/dist/bin/next"),
+      "start",
+      "--port",
+      "3001",
+    ],
+    {
+      cwd: path.resolve("apps/platform"),
+      env: { ...process.env, NODE_ENV: "production" },
+      stdio: "inherit",
+      windowsHide: true,
+    },
+  );
   async function stop() {
     worker.kill();
     next.kill();
+    platform.kill();
     await app.close();
     await postgres.stop();
     process.exit(0);

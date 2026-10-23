@@ -10,6 +10,16 @@ export async function seed(db: PrismaClient, password: string) {
       "Synthetic seed requires non-production mode and an explicit strong seed password",
     );
   const passwordHash = await hashPassword(password);
+  await db.platformUser.upsert({
+    where: { email: "platform@example.test" },
+    create: {
+      email: "platform@example.test",
+      displayName: "Vận hành kiểm thử",
+      passwordHash,
+      recoveryHashes: [],
+    },
+    update: {},
+  });
   const owner = await db.user.upsert({
     where: { email: "owner@example.test" },
     create: {

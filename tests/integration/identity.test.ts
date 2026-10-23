@@ -6,6 +6,7 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { createServer } from "node:net";
+import { platformCases } from "./platform-cases";
 
 let database: EmbeddedPostgres | undefined;
 let db: PrismaClient;
@@ -24,6 +25,12 @@ const studentA = randomUUID(),
   studentB = randomUUID();
 const password = randomBytes(24).toString("base64url");
 let hashPassword: typeof import("../../apps/api/dist/auth.service.js").hashPassword;
+platformCases(
+  () => db,
+  api,
+  (value) => hashPassword(value),
+  login,
+);
 async function freePort() {
   const server = createServer();
   await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", resolve));
@@ -84,6 +91,8 @@ async function context(email: string, tenantId: string, role: string) {
 beforeAll(async () => {
   process.env.NODE_ENV = "test";
   process.env.JWT_SECRET = randomBytes(48).toString("base64url");
+  process.env.PLATFORM_JWT_SECRET = randomBytes(48).toString("base64url");
+  process.env.PLATFORM_MFA_KEY = randomBytes(32).toString("hex");
   process.env.OUTBOX_TOKEN_KEY = randomBytes(32).toString("hex");
   process.env.WEB_ORIGIN = "http://localhost:3000";
   process.env.PLATFORM_ORIGIN = "http://localhost:3001";

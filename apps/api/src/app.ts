@@ -13,9 +13,11 @@ import { ApiErrors, Envelope } from "./http";
 import type { ApiRequest } from "./http";
 import type { Response, NextFunction } from "express";
 import { StudentsController, StudentsService } from "./students";
+import { PlatformController } from "./platform.controller";
+import { PlatformService } from "./platform.service";
 @Module({
-  controllers: [AuthController, StudentsController],
-  providers: [Db, AuthService, AccessGuard, StudentsService],
+  controllers: [AuthController, StudentsController, PlatformController],
+  providers: [Db, AuthService, AccessGuard, StudentsService, PlatformService],
 })
 export class AppModule {}
 export async function createApp() {

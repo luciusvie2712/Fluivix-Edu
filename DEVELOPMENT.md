@@ -41,7 +41,8 @@ requiring operator review; it is never blindly retried or marked successful.
 Integration and browser tests start isolated **real PostgreSQL 17.6** clusters
 under ignored `.cache/` and contain only synthetic data. Worker integration and
 email browser tests additionally require the real Redis and Mailpit services from
-Docker Compose. They do not certify staging restore, platform MFA or mobile.
+Docker Compose. Platform MFA tests cover enrollment, replay, recovery and session
+rotation; they do not certify staging restore, external UAT or mobile.
 If supplying `TEST_DATABASE_URL`, use a fresh disposable database ending `_test`.
 
 `pnpm openapi:generate` reads compiled Nest controllers/DTOs; regenerate the client
@@ -52,3 +53,23 @@ CI must provision those verified skills before invoking that inspection.
 
 See local `docs/ai/08_PROGRESS.md` and `docs/ai/14_RELEASE_EVIDENCE.md` for actual
 evidence and remaining scope. Those files are intentionally not pushed to Git.
+
+## Platform identity
+
+Run the separate app with `pnpm --filter @fluivix/platform dev` on port 3001.
+Configure a distinct random `PLATFORM_JWT_SECRET` and 32-byte hex `PLATFORM_MFA_KEY`
+in the API environment. Keep the encryption key in secret management; losing it
+requires verified operator recovery. Platform identities have separate SQL tables,
+JWT issuer/audience/key and Secure HttpOnly cookie. MFA is mandatory; challenge
+expires after five minutes/five failed attempts. Access lasts five minutes, rotating
+refresh sessions have a fixed eight-hour ceiling. A recovery code revokes existing
+sessions and requires new TOTP enrollment before granting access.
+
+For operator provisioning after API build, supply `PLATFORM_BOOTSTRAP_EMAIL`,
+`PLATFORM_BOOTSTRAP_NAME`, and a unique `PLATFORM_BOOTSTRAP_PASSWORD` (16+ characters)
+through the environment, then `pnpm exec tsx tooling/provision-platform.ts`.
+The tool never overwrites existing credentials. The local synthetic seed additionally
+creates platform@example.test using the explicitly supplied seed password.
+No support impersonation or access to student content is provided by platform auth.
+The overview currently displays actual tenant lifecycle counts only; plans, tenant
+provisioning and subscriptions are still pending.

@@ -1,16 +1,19 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 datasource db {
   provider = "postgresql"
-  url = env("DATABASE_URL")
+  url      = env("DATABASE_URL")
 }
+
 enum UserStatus {
   INVITED
   ACTIVE
   LOCKED
   DISABLED
 }
+
 enum TenantStatus {
   PENDING_ACTIVATION
   ACTIVE
@@ -19,12 +22,14 @@ enum TenantStatus {
   SUSPENDED
   TERMINATED
 }
+
 enum MembershipStatus {
   INVITED
   ACTIVE
   SUSPENDED
   REVOKED
 }
+
 enum Role {
   owner
   manager
@@ -34,148 +39,226 @@ enum Role {
   student
   guardian
 }
+
 model User {
-  id String @id @default(uuid()) @db.Uuid
-  email String @unique @db.VarChar(254)
-  passwordHash String? @map("password_hash")
-  displayName String @map("display_name") @db.VarChar(150)
-  status UserStatus @default(INVITED)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  memberships Membership[]
-  sessions AuthSession[]
-  resetTokens PasswordResetToken[]
+  id           String               @id @default(uuid()) @db.Uuid
+  email        String               @unique @db.VarChar(254)
+  passwordHash String?              @map("password_hash")
+  displayName  String               @map("display_name") @db.VarChar(150)
+  status       UserStatus           @default(INVITED)
+  createdAt    DateTime             @default(now()) @map("created_at") @db.Timestamptz
+  memberships  Membership[]
+  sessions     AuthSession[]
+  resetTokens  PasswordResetToken[]
+
   @@map("users")
 }
+
 model Tenant {
-  id String @id @default(uuid()) @db.Uuid
-  slug String @unique @db.VarChar(80)
-  name String @db.VarChar(150)
-  timezone String @default("Asia/Ho_Chi_Minh") @db.VarChar(80)
-  status TenantStatus @default(PENDING_ACTIVATION)
-  subscriptionEndsAt DateTime @map("subscription_ends_at") @db.Timestamptz
-  graceUntil DateTime @map("grace_until") @db.Timestamptz
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  memberships Membership[]
-  students Student[]
-  invitations Invitation[]
+  id                 String       @id @default(uuid()) @db.Uuid
+  slug               String       @unique @db.VarChar(80)
+  name               String       @db.VarChar(150)
+  timezone           String       @default("Asia/Ho_Chi_Minh") @db.VarChar(80)
+  status             TenantStatus @default(PENDING_ACTIVATION)
+  subscriptionEndsAt DateTime     @map("subscription_ends_at") @db.Timestamptz
+  graceUntil         DateTime     @map("grace_until") @db.Timestamptz
+  createdAt          DateTime     @default(now()) @map("created_at") @db.Timestamptz
+  memberships        Membership[]
+  students           Student[]
+  invitations        Invitation[]
+
   @@map("tenants")
 }
+
 model Membership {
-  id String @id @default(uuid()) @db.Uuid
-  tenantId String @map("tenant_id") @db.Uuid
-  userId String @map("user_id") @db.Uuid
-  status MembershipStatus @default(INVITED)
-  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
-  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
-  roles MembershipRole[]
+  id       String           @id @default(uuid()) @db.Uuid
+  tenantId String           @map("tenant_id") @db.Uuid
+  userId   String           @map("user_id") @db.Uuid
+  status   MembershipStatus @default(INVITED)
+  tenant   Tenant           @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  user     User             @relation(fields: [userId], references: [id], onDelete: Restrict)
+  roles    MembershipRole[]
+
   @@unique([tenantId, userId])
   @@unique([tenantId, id])
   @@index([userId, status])
   @@map("tenant_memberships")
 }
+
 model MembershipRole {
-  membershipId String @map("membership_id") @db.Uuid
-  role Role
-  membership Membership @relation(fields: [membershipId], references: [id], onDelete: Restrict)
+  membershipId String     @map("membership_id") @db.Uuid
+  role         Role
+  membership   Membership @relation(fields: [membershipId], references: [id], onDelete: Restrict)
+
   @@id([membershipId, role])
   @@map("membership_roles")
 }
+
 model AuthSession {
-  id String @id @default(uuid()) @db.Uuid
-  userId String @map("user_id") @db.Uuid
-  familyId String @map("family_id") @db.Uuid
-  tokenHash String @unique @map("token_hash") @db.Char(64)
-  expiresAt DateTime @map("expires_at") @db.Timestamptz
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  familyId   String    @map("family_id") @db.Uuid
+  tokenHash  String    @unique @map("token_hash") @db.Char(64)
+  expiresAt  DateTime  @map("expires_at") @db.Timestamptz
   consumedAt DateTime? @map("consumed_at") @db.Timestamptz
-  revokedAt DateTime? @map("revoked_at") @db.Timestamptz
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  revokedAt  DateTime? @map("revoked_at") @db.Timestamptz
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz
+  user       User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+
   @@index([userId, revokedAt])
   @@index([familyId])
   @@map("auth_sessions")
 }
+
 model PasswordResetToken {
-  id String @id @default(uuid()) @db.Uuid
-  userId String @map("user_id") @db.Uuid
-  tokenHash String @unique @map("token_hash") @db.Char(64)
-  expiresAt DateTime @map("expires_at") @db.Timestamptz
-  usedAt DateTime? @map("used_at") @db.Timestamptz
-  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  tokenHash String    @unique @map("token_hash") @db.Char(64)
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz
+  usedAt    DateTime? @map("used_at") @db.Timestamptz
+  user      User      @relation(fields: [userId], references: [id], onDelete: Restrict)
+
   @@map("password_reset_tokens")
 }
+
 model Invitation {
-  id String @id @default(uuid()) @db.Uuid
-  tenantId String @map("tenant_id") @db.Uuid
-  email String @db.VarChar(254)
-  role Role
-  tokenHash String @unique @map("token_hash") @db.Char(64)
-  expiresAt DateTime @map("expires_at") @db.Timestamptz
-  usedAt DateTime? @map("used_at") @db.Timestamptz
-  invitedBy String @map("invited_by") @db.Uuid
-  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  id        String    @id @default(uuid()) @db.Uuid
+  tenantId  String    @map("tenant_id") @db.Uuid
+  email     String    @db.VarChar(254)
+  role      Role
+  tokenHash String    @unique @map("token_hash") @db.Char(64)
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz
+  usedAt    DateTime? @map("used_at") @db.Timestamptz
+  invitedBy String    @map("invited_by") @db.Uuid
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+
   @@unique([tenantId, id])
   @@map("invitation_tokens")
 }
+
 model Student {
-  id String @id @default(uuid()) @db.Uuid
-  tenantId String @map("tenant_id") @db.Uuid
-  userId String? @map("user_id") @db.Uuid
-  studentCode String @map("student_code") @db.VarChar(40)
-  fullName String @map("full_name") @db.VarChar(150)
-  status String @default("ACTIVE") @db.VarChar(20)
-  notesPrivate String? @map("notes_private") @db.VarChar(2000)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
-  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  id            String         @id @default(uuid()) @db.Uuid
+  tenantId      String         @map("tenant_id") @db.Uuid
+  userId        String?        @map("user_id") @db.Uuid
+  studentCode   String         @map("student_code") @db.VarChar(40)
+  fullName      String         @map("full_name") @db.VarChar(150)
+  status        String         @default("ACTIVE") @db.VarChar(20)
+  notesPrivate  String?        @map("notes_private") @db.VarChar(2000)
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  tenant        Tenant         @relation(fields: [tenantId], references: [id], onDelete: Restrict)
   guardianLinks GuardianLink[]
+
   @@unique([tenantId, id])
   @@unique([tenantId, studentCode])
   @@unique([tenantId, userId])
   @@index([tenantId, status, fullName])
   @@map("student_profiles")
 }
+
 model GuardianLink {
-  id String @id @default(uuid()) @db.Uuid
-  tenantId String @map("tenant_id") @db.Uuid
-  studentId String @map("student_id") @db.Uuid
-  guardianUserId String @map("guardian_user_id") @db.Uuid
-  status String @default("PENDING") @db.VarChar(20)
-  verifiedBy String? @map("verified_by") @db.Uuid
-  verifiedAt DateTime? @map("verified_at") @db.Timestamptz
-  student Student @relation(fields: [tenantId, studentId], references: [tenantId, id], onDelete: Restrict)
+  id             String    @id @default(uuid()) @db.Uuid
+  tenantId       String    @map("tenant_id") @db.Uuid
+  studentId      String    @map("student_id") @db.Uuid
+  guardianUserId String    @map("guardian_user_id") @db.Uuid
+  status         String    @default("PENDING") @db.VarChar(20)
+  verifiedBy     String?   @map("verified_by") @db.Uuid
+  verifiedAt     DateTime? @map("verified_at") @db.Timestamptz
+  student        Student   @relation(fields: [tenantId, studentId], references: [tenantId, id], onDelete: Restrict)
+
   @@unique([tenantId, id])
   @@index([tenantId, guardianUserId, status])
   @@map("guardian_student_links")
 }
+
 model AuditLog {
-  id String @id @default(uuid()) @db.Uuid
-  tenantId String? @map("tenant_id") @db.Uuid
-  actorUserId String? @map("actor_user_id") @db.Uuid
-  action String @db.VarChar(80)
-  resourceId String @map("resource_id") @db.VarChar(80)
-  traceId String @map("trace_id") @db.VarChar(80)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  id          String   @id @default(uuid()) @db.Uuid
+  tenantId    String?  @map("tenant_id") @db.Uuid
+  actorUserId String?  @map("actor_user_id") @db.Uuid
+  action      String   @db.VarChar(80)
+  resourceId  String   @map("resource_id") @db.VarChar(80)
+  traceId     String   @map("trace_id") @db.VarChar(80)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+
   @@index([tenantId, createdAt])
   @@map("audit_logs")
 }
+
 model OutboxEvent {
-  id String @id @default(uuid()) @db.Uuid
-  tenantId String? @map("tenant_id") @db.Uuid
-  eventType String @map("event_type") @db.VarChar(80)
-  aggregateId String @map("aggregate_id") @db.Uuid
-  eventVersion Int @map("event_version")
-  payload Json
-  processedAt DateTime? @map("processed_at") @db.Timestamptz
-  attempts Int @default(0)
-  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  id           String        @id @default(uuid()) @db.Uuid
+  tenantId     String?       @map("tenant_id") @db.Uuid
+  eventType    String        @map("event_type") @db.VarChar(80)
+  aggregateId  String        @map("aggregate_id") @db.Uuid
+  eventVersion Int           @map("event_version")
+  payload      Json
+  processedAt  DateTime?     @map("processed_at") @db.Timestamptz
+  attempts     Int           @default(0)
+  createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz
   mailDelivery MailDelivery?
+
   @@unique([eventType, aggregateId, eventVersion])
   @@index([processedAt, createdAt])
   @@map("outbox_events")
 }
+
 model MailDelivery {
-  eventId String @id @map("event_id") @db.Uuid
-  status String @default("PENDING") @db.VarChar(20)
-  sentAt DateTime? @map("sent_at") @db.Timestamptz
-  event OutboxEvent @relation(fields: [eventId], references: [id], onDelete: Restrict)
+  eventId String      @id @map("event_id") @db.Uuid
+  status  String      @default("PENDING") @db.VarChar(20)
+  sentAt  DateTime?   @map("sent_at") @db.Timestamptz
+  event   OutboxEvent @relation(fields: [eventId], references: [id], onDelete: Restrict)
+
   @@map("mail_deliveries")
+}
+
+model PlatformUser {
+  id             String              @id @default(uuid()) @db.Uuid
+  email          String              @unique @db.VarChar(254)
+  displayName    String              @map("display_name") @db.VarChar(150)
+  passwordHash   String              @map("password_hash")
+  active         Boolean             @default(true)
+  mfaSecret      String?             @map("mfa_secret")
+  lastTotpStep   BigInt              @default(-1) @map("last_totp_step")
+  recoveryHashes String[]            @default([]) @map("recovery_hashes")
+  challenges     PlatformChallenge[]
+  sessions       PlatformSession[]
+
+  @@map("platform_users")
+}
+
+model PlatformChallenge {
+  id            String       @id @default(uuid()) @db.Uuid
+  userId        String       @map("user_id") @db.Uuid
+  tokenHash     String       @unique @map("token_hash") @db.Char(64)
+  pendingSecret String?      @map("pending_secret")
+  expiresAt     DateTime     @map("expires_at") @db.Timestamptz
+  usedAt        DateTime?    @map("used_at") @db.Timestamptz
+  attempts      Int          @default(0)
+  user          PlatformUser @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@map("platform_challenges")
+}
+
+model PlatformSession {
+  id         String       @id @default(uuid()) @db.Uuid
+  userId     String       @map("user_id") @db.Uuid
+  familyId   String       @map("family_id") @db.Uuid
+  tokenHash  String       @unique @map("token_hash") @db.Char(64)
+  expiresAt  DateTime     @map("expires_at") @db.Timestamptz
+  consumedAt DateTime?    @map("consumed_at") @db.Timestamptz
+  revokedAt  DateTime?    @map("revoked_at") @db.Timestamptz
+  user       PlatformUser @relation(fields: [userId], references: [id], onDelete: Restrict)
+
+  @@index([familyId])
+  @@map("platform_sessions")
+}
+
+model PlatformAudit {
+  id         String   @id @default(uuid()) @db.Uuid
+  actorId    String   @map("actor_id") @db.Uuid
+  action     String   @db.VarChar(80)
+  resourceId String   @map("resource_id") @db.VarChar(80)
+  traceId    String   @map("trace_id") @db.VarChar(80)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  @@index([createdAt])
+  @@map("platform_audit")
 }
