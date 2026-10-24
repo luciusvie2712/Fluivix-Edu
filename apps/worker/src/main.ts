@@ -3,6 +3,11 @@ import { Queue, UnrecoverableError, Worker } from "bullmq";
 import { z } from "zod";
 import { mailProvider } from "./mail";
 import { deliver, MAIL_EVENTS } from "./delivery";
+import {
+  checkPushReceipts,
+  deliverDomainEvent,
+  DOMAIN_EVENTS,
+} from "./notifications";
 async function main() {
   const provider = mailProvider();
   const origin = new URL(z.url().parse(process.env.WEB_ORIGIN));
@@ -31,6 +36,23 @@ async function main() {
     connection,
     prefix,
   });
+  const notificationQueue = new Queue<{ eventId: string }>(
+    "domain-notifications",
+    { connection, prefix },
+  );
+  const notificationWorker = new Worker<{ eventId: string }>(
+    "domain-notifications",
+    (job) => deliverDomainEvent(db, z.uuid().parse(job.data.eventId)),
+    { connection, prefix, concurrency: 2 },
+  );
+  notificationWorker.on("error", () =>
+    console.error(
+      JSON.stringify({ code: "NOTIFICATION_WORKER_CONNECTION_ERROR" }),
+    ),
+  );
+  notificationWorker.on("failed", () =>
+    console.error(JSON.stringify({ code: "NOTIFICATION_JOB_FAILED" })),
+  );
   const worker = new Worker<{ eventId: string }>(
     "identity-mail",
     async (job) => {
@@ -111,6 +133,25 @@ async function main() {
             removeOnFail: false,
           },
         );
+      const domainEvents = await db.outboxEvent.findMany({
+        where: { processedAt: null, eventType: { in: DOMAIN_EVENTS } },
+        take: 50,
+        orderBy: { createdAt: "asc" },
+        select: { id: true },
+      });
+      for (const event of domainEvents)
+        await notificationQueue.add(
+          "deliver",
+          { eventId: event.id },
+          {
+            jobId: event.id,
+            attempts: 5,
+            backoff: { type: "exponential", delay: 5000 },
+            removeOnComplete: { age: 86400 },
+            removeOnFail: false,
+          },
+        );
+      await checkPushReceipts(db);
     } catch {
       console.error(JSON.stringify({ code: "MAIL_DISPATCH_FAILED" }));
     } finally {
@@ -122,6 +163,8 @@ async function main() {
   async function stop() {
     clearInterval(timer);
     await worker.close();
+    await notificationWorker.close();
+    await notificationQueue.close();
     await queue.close();
     await db.$disconnect();
   }
