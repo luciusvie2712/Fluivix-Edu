@@ -1,0 +1,8 @@
+ALTER TABLE guardian_student_links ADD COLUMN relation_type varchar(20) NOT NULL DEFAULT 'GUARDIAN' CHECK(relation_type IN ('PARENT','GUARDIAN','OTHER'));
+ALTER TABLE guardian_student_links ADD COLUMN verification_method varchar(500);
+ALTER TABLE guardian_student_links ADD CONSTRAINT guardian_membership_fk FOREIGN KEY(tenant_id,guardian_user_id) REFERENCES tenant_memberships(tenant_id,user_id);
+CREATE TABLE grade_change_events(id uuid PRIMARY KEY,tenant_id uuid NOT NULL,assessment_id uuid NOT NULL,student_id uuid NOT NULL,version integer NOT NULL,before_value jsonb NOT NULL,after_value jsonb NOT NULL,actor_id uuid NOT NULL REFERENCES users(id),created_at timestamptz NOT NULL DEFAULT now(),FOREIGN KEY(tenant_id,assessment_id) REFERENCES assessments(tenant_id,id),FOREIGN KEY(tenant_id,student_id) REFERENCES student_profiles(tenant_id,id));
+CREATE TABLE lesson_report_revisions(id uuid PRIMARY KEY,tenant_id uuid NOT NULL,session_id uuid NOT NULL,version integer NOT NULL,lesson_summary varchar(2000) NOT NULL,homework_text varchar(2000) NOT NULL,teacher_notes_private varchar(2000) NOT NULL,actor_id uuid NOT NULL REFERENCES users(id),created_at timestamptz NOT NULL DEFAULT now(),UNIQUE(tenant_id,session_id,version),FOREIGN KEY(tenant_id,session_id) REFERENCES class_sessions(tenant_id,id));
+CREATE FUNCTION history_append_only() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'history is append only'; END $$;
+CREATE TRIGGER grade_history_append_only BEFORE UPDATE OR DELETE ON grade_change_events FOR EACH ROW EXECUTE FUNCTION history_append_only();
+CREATE TRIGGER lesson_history_append_only BEFORE UPDATE OR DELETE ON lesson_report_revisions FOR EACH ROW EXECUTE FUNCTION history_append_only();

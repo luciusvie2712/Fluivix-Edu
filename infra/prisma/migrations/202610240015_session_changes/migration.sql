@@ -1,0 +1,10 @@
+CREATE TABLE rooms(id uuid PRIMARY KEY,tenant_id uuid NOT NULL REFERENCES tenants(id),code varchar(40) NOT NULL,name varchar(150) NOT NULL,capacity integer NOT NULL CHECK(capacity>0),active boolean NOT NULL DEFAULT true,UNIQUE(tenant_id,id),UNIQUE(tenant_id,code));
+ALTER TABLE classes ADD COLUMN room_id uuid;
+ALTER TABLE classes ADD CONSTRAINT class_room_fk FOREIGN KEY(tenant_id,room_id) REFERENCES rooms(tenant_id,id);
+ALTER TABLE class_sessions ADD COLUMN room_id uuid;
+ALTER TABLE class_sessions ADD COLUMN change_count integer NOT NULL DEFAULT 0 CHECK(change_count>=0);
+ALTER TABLE class_sessions ADD COLUMN cancel_reason varchar(500);
+ALTER TABLE class_sessions ADD CONSTRAINT session_room_fk FOREIGN KEY(tenant_id,room_id) REFERENCES rooms(tenant_id,id);
+ALTER TABLE class_sessions ADD CONSTRAINT session_room_overlap EXCLUDE USING gist(tenant_id WITH =,room_id WITH =,tstzrange(starts_at,ends_at,'[)') WITH &&) WHERE(status<>'CANCELLED' AND room_id IS NOT NULL);
+CREATE TABLE session_changes(id uuid PRIMARY KEY,tenant_id uuid NOT NULL,session_id uuid NOT NULL,old_snapshot jsonb NOT NULL,new_snapshot jsonb NOT NULL,reason varchar(500) NOT NULL CHECK(length(reason)>=10),actor_id uuid NOT NULL REFERENCES users(id),created_at timestamptz NOT NULL DEFAULT now(),FOREIGN KEY(tenant_id,session_id) REFERENCES class_sessions(tenant_id,id));
+CREATE TRIGGER session_change_append_only BEFORE UPDATE OR DELETE ON session_changes FOR EACH ROW EXECUTE FUNCTION history_append_only();
