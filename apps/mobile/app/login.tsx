@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { Platform } from "react-native";
 import { router } from "expo-router";
-import { Button, Failure, Field, Screen } from "../components/ui";
+import { Body, Button, Failure, Field, Screen } from "../components/ui";
 import { useSession } from "../lib/session";
 export default function Login() {
   const session = useSession();
@@ -9,6 +10,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   async function submit() {
+    if (Platform.OS === "web") return;
     setError("");
     setBusy(true);
     try {
@@ -24,8 +26,15 @@ export default function Login() {
   const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   return (
     <Screen title="Đăng nhập FluivixEdu">
+      {Platform.OS === "web" && (
+        <Body>
+          Bạn đang xem trước giao diện Mobile. Hãy mở ứng dụng Android/iOS để
+          đăng nhập, hoặc dùng giao diện Web của trung tâm.
+        </Body>
+      )}
       <Field
         label="Email"
+        editable={Platform.OS !== "web"}
         value={email}
         onChangeText={setEmail}
         autoCapitalize="none"
@@ -35,6 +44,7 @@ export default function Login() {
       />
       <Field
         label="Mật khẩu"
+        editable={Platform.OS !== "web"}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -49,7 +59,9 @@ export default function Login() {
       <Button
         primary
         title={busy ? "Đang đăng nhập…" : "Đăng nhập"}
-        disabled={busy || !validEmail || password.length < 12}
+        disabled={
+          Platform.OS === "web" || busy || !validEmail || password.length < 12
+        }
         onPress={() => void submit()}
       />
       <Button title="Quên mật khẩu" onPress={() => router.push("/recover")} />

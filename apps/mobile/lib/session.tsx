@@ -7,7 +7,7 @@ import {
   type PropsWithChildren,
 } from "react";
 import { AppState } from "react-native";
-import * as SecureStore from "expo-secure-store";
+import { credentialStore } from "./credential-store";
 import NetInfo from "@react-native-community/netinfo";
 import {
   QueryClient,
@@ -22,7 +22,6 @@ const queryClient = new QueryClient({
     mutations: { retry: false },
   },
 });
-const credentialKey = "fluivixedu.native.refresh.v1";
 const apiUrl = process.env.EXPO_PUBLIC_API_BASE_URL ?? "http://localhost:4000";
 function useSessionState() {
   const [me, setMe] = useState<Me | null>(null);
@@ -37,14 +36,7 @@ function useSessionState() {
     () =>
       new NativeSession(
         apiUrl,
-        {
-          get: () => SecureStore.getItemAsync(credentialKey),
-          set: (value) =>
-            SecureStore.setItemAsync(credentialKey, value, {
-              keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
-            }),
-          remove: () => SecureStore.deleteItemAsync(credentialKey),
-        },
+        credentialStore,
         () => {
           queryClient.clear();
           setChild(null);
