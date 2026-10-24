@@ -8,6 +8,27 @@ actual evidence. Signed native builds and physical-device acceptance are not ver
 
 ## Mobile on Windows PowerShell
 
+For **Expo Go on an Android phone**, explicitly select Expo Go mode:
+
+```powershell
+pnpm.cmd --filter @fluivix/mobile dev:go --clear
+```
+
+The terminal must say `Using Expo Go`, not `Using development build`. If the
+server is already running in the other mode, press `s` then scan the new QR.
+The phone and computer must share a reachable network. On a physical phone,
+`localhost` refers to the phone; use the computer's LAN IPv4 for
+`EXPO_PUBLIC_API_BASE_URL` (for example `http://<computer-ip>:4000`) and run the
+API with `API_HOST=0.0.0.0` for intentional LAN testing. USB `adb reverse` is
+the alternative documented below. Do not change production exposure for this.
+
+Expo Go does not provide Android remote push. Notification module loading and
+push registration are therefore skipped in Expo Go; authentication and the API
+inbox remain available. Actual push testing requires a development/release build.
+The SDK58 notification entry imports ExpoTopicSubscriptionModule, which is absent
+in the tested Expo Go runtime; importing that entry eagerly can keep the app at
+its splash. Native push imports must remain behind the runtime capability check.
+
 Run from the repository root. Existing `.env` is never overwritten by these commands.
 The following API runner creates a fresh isolated synthetic PostgreSQL database and
 does not need the development database to be reset. It does not start a push/mail worker.
