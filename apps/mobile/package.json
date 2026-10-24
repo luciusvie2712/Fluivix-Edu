@@ -5,6 +5,7 @@
   "main": "expo-router/entry",
   "scripts": {
     "dev": "expo start",
+    "dev:go": "expo start --go --lan",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "build": "expo export --platform all",

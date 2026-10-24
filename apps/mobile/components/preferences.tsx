@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Platform, Switch, View } from "react-native";
-import * as Notifications from "expo-notifications";
 import * as Device from "expo-device";
 import Constants from "expo-constants";
 import { useQuery } from "@tanstack/react-query";
@@ -8,6 +7,7 @@ import type { components } from "@fluivix/api-client";
 import { Body, Button, Failure, Panel } from "./ui";
 import { useSession } from "../lib/session";
 import { unwrap } from "../lib/session-client";
+import { supportsRemotePush } from "../lib/push-capability";
 type Preferences = components["schemas"]["PreferencesInput"];
 const labels: Record<keyof Preferences, string> = {
   pushEnabled: "Nhận push trên thiết bị",
@@ -17,6 +17,7 @@ const labels: Record<keyof Preferences, string> = {
   schedule: "Thay đổi lịch học",
 };
 export function Preferences() {
+  const pushSupported = supportsRemotePush();
   const session = useSession(),
     [draft, setDraft] = useState<Preferences | null>(null),
     [busy, setBusy] = useState(false),
@@ -69,6 +70,10 @@ export function Preferences() {
         throw new Error(
           "Cần thiết bị Android/iOS thật và development/release build để kiểm tra push.",
         );
+      if (!pushSupported)
+        throw new Error(
+          "Đăng ký push cần development/release build. Bạn vẫn xem được hộp thư trong Expo Go.",
+        );
       const projectId =
         Constants.easConfig?.projectId ??
         process.env.EXPO_PUBLIC_EAS_PROJECT_ID;
@@ -76,6 +81,9 @@ export function Preferences() {
         throw new Error(
           "Chưa cấu hình EAS project ID. Liên hệ người vận hành.",
         );
+      // Load only after platform, Expo Go, device and project checks succeed.
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const Notifications: typeof import("expo-notifications") = require("expo-notifications");
       if (Platform.OS === "android")
         await Notifications.setNotificationChannelAsync("default", {
           name: "Thông báo FluivixEdu",
@@ -143,9 +151,15 @@ export function Preferences() {
       />
       <Button
         title="Cho phép và đăng ký push"
-        disabled={busy || !session.online}
+        disabled={!pushSupported || busy || !session.online}
         onPress={() => void register()}
       />
+      {!pushSupported && (
+        <Body>
+          Push cần ứng dụng development/release build. Hộp thư trong ứng dụng
+          vẫn hoạt động.
+        </Body>
+      )}
       <Button
         title="Gỡ đăng ký push thiết bị này"
         disabled={busy || !session.online}
