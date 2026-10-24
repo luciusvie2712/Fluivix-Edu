@@ -18,6 +18,23 @@ import { PlatformService } from "./platform.service";
 import { PlatformTenantsController } from "./platform-tenants.controller";
 import { PlatformTenantsService } from "./platform-tenants.service";
 import { TenantSubscriptionController } from "./tenant-subscription";
+import { MobileAuthController } from "./mobile-auth";
+import { MobilePeopleController } from "./mobile-people";
+import { TeachingController } from "./teaching.controller";
+import { TeachingService } from "./teaching.service";
+import { GradesController, GradesService } from "./grades";
+import { FinanceController } from "./finance.controller";
+import { FinanceService } from "./finance.service";
+import { NotificationsController, NotificationsService } from "./notifications";
+import { PrivacyController, PrivacyService } from "./privacy";
+import {
+  MobileDashboardController,
+  MobileDashboardService,
+} from "./mobile-dashboard";
+import {
+  GuardianLinksController,
+  GuardianLinksService,
+} from "./guardian-links";
 import { PlatformHealthController } from "./platform-health";
 import {
   PlatformAuditController,
@@ -26,6 +43,15 @@ import {
 @Module({
   controllers: [
     AuthController,
+    MobileAuthController,
+    MobilePeopleController,
+    TeachingController,
+    GradesController,
+    FinanceController,
+    NotificationsController,
+    PrivacyController,
+    MobileDashboardController,
+    GuardianLinksController,
     StudentsController,
     PlatformController,
     PlatformTenantsController,
@@ -36,6 +62,13 @@ import {
   providers: [
     Db,
     AuthService,
+    TeachingService,
+    GradesService,
+    FinanceService,
+    NotificationsService,
+    PrivacyService,
+    MobileDashboardService,
+    GuardianLinksService,
     AccessGuard,
     StudentsService,
     PlatformService,
@@ -68,6 +101,20 @@ export async function createApp() {
     res.setHeader("Cache-Control", "no-store");
     if (!["GET", "HEAD", "OPTIONS"].includes(req.method)) {
       const origin = req.headers.origin;
+      // Native refresh credentials never enter a browser response or cookie jar.
+      if (
+        req.path.startsWith("/api/v1/mobile/auth/") &&
+        (origin || req.headers.cookie)
+      ) {
+        res.status(403).json({
+          error: {
+            code: "NATIVE_TRANSPORT_REQUIRED",
+            message: "Yêu cầu ứng dụng di động.",
+          },
+          meta: { traceId: req.traceId },
+        });
+        return;
+      }
       if (
         (origin &&
           ![settings.WEB_ORIGIN, settings.PLATFORM_ORIGIN].includes(origin)) ||

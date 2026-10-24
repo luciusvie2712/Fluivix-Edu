@@ -61,7 +61,7 @@ export async function requireSubscriptionWrite(
 export async function assertQuota(
   tx: Prisma.TransactionClient,
   tenantId: string,
-  kind: "students" | "users",
+  kind: "students" | "users" | "classes",
   additional = 1,
   allowPending = false,
 ) {
@@ -70,10 +70,19 @@ export async function assertQuota(
   const used =
     kind === "students"
       ? await tx.student.count({ where: { tenantId, status: "ACTIVE" } })
-      : await tx.membership.count({
-          where: { tenantId, status: { in: ["ACTIVE", "INVITED"] } },
-        });
-  const max = kind === "students" ? limits.maxStudents : limits.maxUsers;
+      : kind === "classes"
+        ? await tx.educationClass.count({
+            where: { tenantId, status: { in: ["ACTIVE", "DRAFT"] } },
+          })
+        : await tx.membership.count({
+            where: { tenantId, status: { in: ["ACTIVE", "INVITED"] } },
+          });
+  const max =
+    kind === "students"
+      ? limits.maxStudents
+      : kind === "classes"
+        ? limits.maxClasses
+        : limits.maxUsers;
   if (used + additional > max)
     throw new ConflictException(
       "Đã đạt giới hạn gói dịch vụ. Liên hệ quản trị để nâng gói.",

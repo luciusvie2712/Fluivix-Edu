@@ -38,7 +38,12 @@ export class AuthService {
     if ((rows[0]?.attempts ?? 100) > 10)
       throw new HttpException("Vui lòng thử lại sau.", 429);
   }
-  async login(email: string, password: string, ip: string) {
+  async login(
+    email: string,
+    password: string,
+    ip: string,
+    clientType: "WEB" | "MOBILE" = "WEB",
+  ) {
     await this.limit("login-ip", ip);
     await this.limit("login-account", normalize(email));
     const user = await this.db.user.findUnique({
@@ -54,6 +59,7 @@ export class AuthService {
     const session = await this.db.authSession.create({
       data: {
         userId: user.id,
+        clientType,
         familyId: randomUUID(),
         tokenHash: hashToken(token),
         expiresAt: new Date(Date.now() + 30 * 86400000),
@@ -67,13 +73,14 @@ export class AuthService {
       ),
     };
   }
-  async refresh(token: string) {
+  async refresh(token: string, clientType: "WEB" | "MOBILE" = "WEB") {
     const tokenHash = hashToken(token);
     const nextToken = newToken();
     // Reuse revocation must commit before returning 401; throwing inside the transaction would roll it back.
     const outcome = await this.db.$transaction(async (tx) => {
       const old = await tx.authSession.findUnique({ where: { tokenHash } });
       if (!old) return null;
+      if (old.clientType !== clientType) return null;
       await tx.$queryRaw`SELECT id FROM users WHERE id = ${old.userId}::uuid FOR UPDATE`;
       const current = await tx.authSession.findUniqueOrThrow({
         where: { id: old.id },
@@ -113,6 +120,7 @@ export class AuthService {
       return tx.authSession.create({
         data: {
           userId: current.userId,
+          clientType: current.clientType,
           familyId: current.familyId,
           tokenHash: hashToken(nextToken),
           expiresAt: current.expiresAt,
@@ -227,6 +235,12 @@ export class AuthService {
         ? { userId: claims.sub }
         : { familyId: session.familyId, userId: claims.sub },
       data: { revokedAt: new Date() },
+    });
+    await this.db.devicePushToken.updateMany({
+      where: all
+        ? { userId: claims.sub }
+        : { userId: claims.sub, familyId: session.familyId },
+      data: { status: "REVOKED" },
     });
     return { revoked: true };
   }
