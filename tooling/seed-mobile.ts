@@ -6,15 +6,28 @@ import { GradesService } from "../apps/api/dist/grades";
 import { TeachingService } from "../apps/api/dist/teaching.service";
 import { seed, developmentIds } from "./seed";
 export async function seedMobile(db: Db, password: string) {
-  const url = new URL(process.env.DATABASE_URL ?? "");
+  if (process.env.NODE_ENV === "production")
+    throw new Error(
+      "MOBILE_SEED_PRODUCTION_BLOCKED: chỉ tạo dữ liệu thử trong môi trường development/test.",
+    );
+  if (password.length < 16)
+    throw new Error(
+      "MOBILE_SEED_PASSWORD_TOO_SHORT: đặt SEED_PASSWORD tối thiểu 16 ký tự trong terminal hiện tại rồi chạy lại pnpm.cmd db:seed:mobile.",
+    );
+  let url: URL;
+  try {
+    url = new URL(process.env.DATABASE_URL ?? "");
+  } catch {
+    throw new Error(
+      "MOBILE_SEED_DATABASE_URL_INVALID: cần DATABASE_URL hợp lệ cho database development local.",
+    );
+  }
   if (
-    process.env.NODE_ENV === "production" ||
-    password.length < 16 ||
     !["localhost", "127.0.0.1"].includes(url.hostname) ||
     !(url.pathname === "/fluivixedu" || url.pathname.endsWith("_test"))
   )
     throw new Error(
-      "Mobile seed requires an explicitly local synthetic database and16+ character password",
+      "MOBILE_SEED_DATABASE_BLOCKED: chỉ cho phép database local tên fluivixedu hoặc kết thúc bằng _test.",
     );
   await seed(db, password);
   const owner = await db.user.findUniqueOrThrow({
@@ -369,9 +382,13 @@ if (
         "Synthetic mobile fixtures ready: teacher/student/guardian@example.test; existing credentials preserved.",
       ),
     )
-    .catch(() => {
+    .catch((cause: unknown) => {
+      // Only our fixed setup messages are safe to display; never dump Prisma
+      // errors with connection strings, queries, credentials or learner data.
       console.error(
-        "MOBILE_SEED_FAILED: verify local database, migrations, subscription and explicit password.",
+        cause instanceof Error && cause.message.startsWith("MOBILE_SEED_")
+          ? cause.message
+          : "MOBILE_SEED_FAILED: verify local database, migrations and subscription. No credentials or raw database errors are logged.",
       );
       process.exitCode = 1;
     })
