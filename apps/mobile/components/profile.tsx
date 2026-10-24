@@ -40,7 +40,6 @@ export function Profile() {
         disabled={busy}
         onPress={() => {
           session.clearChild();
-          router.dismissAll();
           router.replace("/context");
         }}
       />

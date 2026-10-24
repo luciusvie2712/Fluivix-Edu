@@ -38,6 +38,17 @@ export function RoleLayout({ role }: { role: MobileRole }) {
         <Button title="Kiểm tra lại" onPress={() => void session.restore()} />
       </Screen>
     );
+  const tabs = [
+    { name: "index", title: role === "teacher" ? "Hôm nay" : "Trang chủ" },
+    { name: "schedule", title: role === "teacher" ? "Lịch dạy" : "Lịch học" },
+    ...(role !== "guardian" ? [{ name: "classes", title: "Lớp học" }] : []),
+    ...(role === "student" ? [{ name: "grades", title: "Kết quả" }] : []),
+    ...(role === "guardian" ? [{ name: "finance", title: "Học phí" }] : []),
+    ...(role !== "student"
+      ? [{ name: "notifications", title: "Thông báo" }]
+      : []),
+    { name: "profile", title: "Tài khoản" },
+  ];
   return (
     <Tabs
       key={session.scope.join(":")}
@@ -49,55 +60,38 @@ export function RoleLayout({ role }: { role: MobileRole }) {
         tabBarStyle: { minHeight: 64 },
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{ title: role === "teacher" ? "Hôm nay" : "Trang chủ" }}
-      />
-      <Tabs.Screen
-        name="schedule"
-        options={{ title: role === "teacher" ? "Lịch dạy" : "Lịch học" }}
-      />
-      {role !== "guardian" && (
-        <Tabs.Screen name="classes" options={{ title: "Lớp học" }} />
-      )}
-      {role === "student" && (
-        <Tabs.Screen name="grades" options={{ title: "Kết quả" }} />
-      )}
-      {role === "guardian" && (
-        <Tabs.Screen name="finance" options={{ title: "Học phí" }} />
-      )}
-      {role !== "student" && (
-        <Tabs.Screen name="notifications" options={{ title: "Thông báo" }} />
-      )}
-      <Tabs.Screen name="profile" options={{ title: "Tài khoản" }} />
-      <Tabs.Screen name="privacy" options={{ href: null }} />
-      {role === "teacher" && (
-        <>
-          <Tabs.Screen name="classes/[id]" options={{ href: null }} />
-          <Tabs.Screen name="assessments" options={{ href: null }} />
-          <Tabs.Screen name="assessment/[id]" options={{ href: null }} />
-          <Tabs.Screen
-            name="sessions/[id]/attendance"
-            options={{ href: null }}
-          />
-          <Tabs.Screen name="sessions/[id]/report" options={{ href: null }} />
-        </>
-      )}
-      {role === "student" && (
-        <>
-          <Tabs.Screen name="classes/[id]" options={{ href: null }} />
-          <Tabs.Screen name="attendance" options={{ href: null }} />
-          <Tabs.Screen name="notifications" options={{ href: null }} />
-        </>
-      )}
-      {role === "guardian" && (
-        <>
-          <Tabs.Screen name="children" options={{ href: null }} />
-          <Tabs.Screen name="child-profile" options={{ href: null }} />
-          <Tabs.Screen name="attendance" options={{ href: null }} />
-          <Tabs.Screen name="grades" options={{ href: null }} />
-        </>
-      )}
+      {tabs.map((tab) => (
+        <Tabs.Screen
+          key={tab.name}
+          name={tab.name}
+          options={{ title: tab.title }}
+        />
+      ))}
+      {[
+        "privacy",
+        ...(role === "teacher"
+          ? [
+              "classes/[id]",
+              "assessments",
+              "assessment/[id]",
+              "sessions/[id]/attendance",
+              "sessions/[id]/report",
+            ]
+          : role === "student"
+            ? ["classes/[id]", "attendance", "notifications"]
+            : ["children", "child-profile", "attendance", "grades"]),
+      ].map((name) => (
+        // SDK58 treats href:null as a hidden route and redirects away from it.
+        // Detail screens must stay navigable while their tab button stays absent.
+        <Tabs.Screen
+          key={name}
+          name={name}
+          options={{
+            tabBarButton: () => null,
+            tabBarItemStyle: { display: "none" },
+          }}
+        />
+      ))}
     </Tabs>
   );
 }

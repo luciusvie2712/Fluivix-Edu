@@ -14,7 +14,6 @@ export default function Context() {
     try {
       session.setMe(await session.client.switchContext(tenantId, role));
       session.setError("");
-      router.dismissAll();
       router.replace(
         role === "teacher"
           ? "/(teacher)"
