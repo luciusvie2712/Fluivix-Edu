@@ -1,0 +1,15 @@
+appId: com.fluivix.edu
+name: Student sees only published grades
+---
+- launchApp:
+    clearState: true
+- tapOn: Email
+- inputText: student@example.test
+- tapOn: Mật khẩu
+- inputText: ${SEED_PASSWORD}
+- tapOn: Đăng nhập
+- tapOn: Trung tâm kiểm thử A, Học viên
+- tapOn: Kết quả
+- assertVisible: Kết quả Mobile kiểm thử
+- assertVisible: '8\.00 / 10\.00'
+- assertNotVisible: Bản nháp không công bố

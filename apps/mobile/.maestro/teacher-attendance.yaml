@@ -1,0 +1,31 @@
+appId: com.fluivix.edu
+name: Teacher commits20 students through real API
+---
+- launchApp:
+    clearState: true
+- tapOn: Email
+- inputText: teacher@example.test
+- tapOn: Mật khẩu
+- inputText: ${SEED_PASSWORD}
+- tapOn: Đăng nhập
+- tapOn: Trung tâm kiểm thử A, Giáo viên
+- tapOn: Mở điểm danh
+- assertVisible: 0/20 đã đánh dấu
+- tapOn: Đánh dấu tất cả có mặt
+- tapOn: Đánh dấu
+- assertVisible: 20/20 đã đánh dấu
+- scrollUntilVisible:
+    element: Lưu nháp
+- tapOn: Lưu nháp
+- scrollUntilVisible:
+    direction: UP
+    element: Máy chủ đã lưu bản nháp.*
+- assertVisible: Máy chủ đã lưu bản nháp.*
+- scrollUntilVisible:
+    element: Xác nhận và khóa điểm danh
+- tapOn: Xác nhận và khóa điểm danh
+- tapOn: Chốt điểm danh
+- scrollUntilVisible:
+    direction: UP
+    element: Máy chủ đã xác nhận hoàn tất.*
+- assertVisible: Máy chủ đã xác nhận hoàn tất.*

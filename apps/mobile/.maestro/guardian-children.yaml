@@ -1,0 +1,23 @@
+appId: com.fluivix.edu
+name: Guardian switches2 authorized children and scoped finance
+---
+- launchApp:
+    clearState: true
+- tapOn: Email
+- inputText: guardian@example.test
+- tapOn: Mật khẩu
+- inputText: ${SEED_PASSWORD}
+- tapOn: Đăng nhập
+- tapOn: Trung tâm kiểm thử A, Phụ huynh
+- tapOn: Chọn Học viên Mobile 01 A
+- assertVisible: Học viên.*Mobile 01 A
+- tapOn: Học phí
+- assertVisible: Còn lại.*700.000.*
+- tapOn: Tài khoản
+- tapOn: Chọn học viên
+- tapOn: Chọn Học viên Mobile 02 A
+- assertVisible: Học viên.*Mobile 02 A
+- assertNotVisible: Học viên.*Mobile 01 A
+- tapOn: Học phí
+- assertVisible: Còn lại.*1.200.000.*
+- assertNotVisible: Còn lại.*700.000.*

@@ -13,7 +13,11 @@ export default ts.config(
   js.configs.recommended,
   ...ts.configs.recommended,
   {
-    files: ["**/*.{ts,tsx,js,mjs}"],
+    files: ["apps/mobile/__tests__/**/*.tsx"],
+    languageOptions: { globals: globals.jest },
+  },
+  {
+    files: ["**/*.{ts,tsx,js,mjs,cjs}"],
     languageOptions: { globals: { ...globals.node, ...globals.browser } },
     rules: {
       "@typescript-eslint/no-explicit-any": "error",

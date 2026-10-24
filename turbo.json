@@ -11,7 +11,9 @@
         "WEB_ORIGIN",
         "PLATFORM_ORIGIN",
         "JWT_SECRET",
-        "NEXT_PUBLIC_API_URL"
+        "NEXT_PUBLIC_API_URL",
+        "EXPO_PUBLIC_API_BASE_URL",
+        "EXPO_PUBLIC_EAS_PROJECT_ID"
       ]
     },
     "typecheck": { "dependsOn": ["^typecheck"] },

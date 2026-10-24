@@ -2,6 +2,7 @@
   "name": "@fluivix/ui-tokens",
   "private": true,
   "exports": {
+    "./native": "./native.ts",
     "./tokens.css": "./tokens.css"
   }
 }

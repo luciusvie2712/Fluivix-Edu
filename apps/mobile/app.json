@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "FluivixEdu",
+    "slug": "fluivixedu",
+    "scheme": "fluivixedu",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-notifications",
+      "expo-status-bar"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.fluivix.edu",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.fluivix.edu"
+    }
+  }
+}
