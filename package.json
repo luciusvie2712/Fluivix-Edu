@@ -16,6 +16,9 @@
     "db:generate": "prisma generate --schema infra/prisma/schema.prisma",
     "db:migrate": "prisma migrate deploy --schema infra/prisma/schema.prisma",
     "db:seed": "tsx tooling/seed.ts",
+    "db:seed:mobile": "tsx tooling/seed-mobile.ts",
+    "test:mobile:api": "tsx tooling/mobile-smoke.ts",
+    "dev:mobile:api": "tsx tooling/mobile-smoke.ts --serve",
     "openapi:generate": "tsx tooling/openapi.ts",
     "client:generate": "openapi-typescript apps/api/openapi.json -o packages/api-client/src/schema.d.ts && prettier --write packages/api-client/src/schema.d.ts",
     "format:check": "prettier --check apps packages tooling tests *.json *.yaml *.yml"
@@ -41,11 +44,13 @@
     "typescript": "5.9.3",
     "typescript-eslint": "8.72.0",
     "vitest": "5.0.5",
-    "zod": "4.1.12"
+    "zod": "4.6.7"
   },
   "pnpm": {
     "overrides": {
-      "deepmerge-ts": "8.0.2"
+      "deepmerge-ts": "8.0.2",
+      "zod": "4.6.7",
+      "multer": "2.5.0"
     },
     "onlyBuiltDependencies": [
       "@nestjs/core",
