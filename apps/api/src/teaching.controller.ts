@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Patch,
   Param,
   ParseUUIDPipe,
@@ -61,6 +62,8 @@ import {
   LifecycleVersion,
   WithdrawInput,
   RoomsResponse,
+  ScheduleRuleReplacement,
+  ScheduleRevisionsResponse,
 } from "./teaching.dto";
 
 @ApiTags("teaching")
@@ -74,6 +77,45 @@ import {
 @ApiResponse({ status: 422, type: ErrorResponse })
 export class TeachingController {
   constructor(private service: TeachingService) {}
+  @Post("classes/:id/schedule-rules/preview")
+  @HttpCode(200)
+  @TenantPermission("teaching.manage")
+  @ApiOkResponse({ type: SchedulePreviewResponse })
+  previewDraftRule(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() body: ScheduleRuleInput,
+  ) {
+    return this.service.previewDraftRule(requestClaims(r), id, body, r.traceId);
+  }
+  @Get("classes/:id/schedule-rules/:ruleId/history")
+  @TenantPermission("teaching.manage")
+  @ApiOkResponse({ type: ScheduleRevisionsResponse })
+  ruleHistory(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Param("ruleId", ParseUUIDPipe) ruleId: string,
+    @Query() q: ListDto,
+  ) {
+    return this.service.ruleHistory(requestClaims(r), id, ruleId, q);
+  }
+  @Patch("classes/:id/schedule-rules/:ruleId")
+  @TenantPermission("teaching.manage")
+  @ApiOkResponse({ type: ScheduleRuleResponse })
+  replaceRule(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Param("ruleId", ParseUUIDPipe) ruleId: string,
+    @Body() body: ScheduleRuleReplacement,
+  ) {
+    return this.service.replaceRule(
+      requestClaims(r),
+      id,
+      ruleId,
+      body,
+      r.traceId,
+    );
+  }
   @Get("rooms")
   @TenantPermission("teaching.manage")
   @ApiOkResponse({ type: RoomsResponse })

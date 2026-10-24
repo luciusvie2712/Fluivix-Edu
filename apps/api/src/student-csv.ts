@@ -16,7 +16,10 @@ export function parseStudentCsv(input: string): Array<Record<string, string>> {
     throw new Error("CSV_TOO_LARGE");
   for (const character of input) {
     const code = character.charCodeAt(0);
-    if ((code < 32 && code !== 9 && code !== 10 && code !== 13) || code === 65533)
+    if (
+      (code < 32 && code !== 9 && code !== 10 && code !== 13) ||
+      code === 65533
+    )
       throw new Error("CSV_INVALID_UTF8_OR_CONTROL");
   }
   const text = input.replace(/^\ufeff/, "");
@@ -80,10 +83,4 @@ export function parseStudentCsv(input: string): Array<Record<string, string>> {
         .filter(([, value]) => value !== ""),
     );
   });
-}
-
-/** Every exported cell, including user names, must be formula-safe. */
-export function safeCsvCell(value: string): string {
-  const safe = /^[\s]*[=+\-@\t\r]/.test(value) ? "'" + value : value;
-  return '"' + safe.replaceAll('"', '""') + '"';
 }

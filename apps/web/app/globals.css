@@ -49,6 +49,11 @@ textarea {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
   gap: 24px;
+  align-items: start;
+  margin: 16px 0;
+}
+.operations-grid .field {
+  margin: 0;
 }
 .operation-panel {
   padding: 20px 0;

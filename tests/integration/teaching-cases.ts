@@ -1,6 +1,8 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import type { PrismaClient } from "@prisma/client";
 import { randomUUID } from "node:crypto";
+import { createRequire } from "node:module";
+import path from "node:path";
 
 export function teachingCases(
   getBase: () => string,
@@ -179,6 +181,26 @@ export function teachingCases(
       expect(
         (await api(path, "POST", { ...body, localEnd: "05:00" })).status,
       ).toBe(422);
+      const ruleCount = await db.scheduleRule.count({
+        where: { tenantId, classId },
+      });
+      const auditCount = await db.auditLog.count({
+        where: { tenantId, action: "schedule.rule.created" },
+      });
+      const draft = await api(path + "/preview", "POST", body);
+      expect(draft.status).toBe(200);
+      expect(draft.body.data.candidates).toHaveLength(5);
+      expect(
+        await db.scheduleRule.count({ where: { tenantId, classId } }),
+      ).toBe(ruleCount);
+      expect(
+        await db.auditLog.count({
+          where: { tenantId, action: "schedule.rule.created" },
+        }),
+      ).toBe(auditCount);
+      expect(
+        (await api(path + "/preview", "POST", body, teacherToken)).status,
+      ).toBe(403);
       const rule = await api(path, "POST", body);
       expect(rule.status).toBe(201);
       expect(rule.body.data.timezone).toBe("Asia/Ho_Chi_Minh");
@@ -206,6 +228,14 @@ export function teachingCases(
       expect((await api(previewPath)).body.data.candidates[0].status).toBe(
         "CONFLICT",
       );
+      expect(
+        (await api(path + "/preview", "POST", body)).body.data.candidates[0]
+          .status,
+      ).toBe("CONFLICT");
+      expect((await api(path, "POST", body)).status).toBe(409);
+      expect(
+        await db.scheduleRule.count({ where: { tenantId, classId } }),
+      ).toBe(1);
       expect(
         (await api(`${path}/${ruleId}/generate`, "POST", window)).status,
       ).toBe(409);
@@ -577,8 +607,11 @@ export function teachingCases(
           endDate: new Date("2026-12-31Z"),
         },
       });
+      const foreignRuleId = randomUUID();
       const foreignRule = await db.scheduleRule.create({
         data: {
+          id: foreignRuleId,
+          lineageId: foreignRuleId,
           tenantId: foreignTenant,
           classId: foreignClass.id,
           teacherId: foreignTeacher.id,
@@ -598,6 +631,7 @@ export function teachingCases(
             classId: ownClass,
             teacherId,
             scheduleRuleId: foreignRule.id,
+            ruleOccurrenceDate: new Date("2026-12-20Z"),
             sessionType: "REGULAR",
             scheduledDate: new Date("2026-12-20Z"),
             startsAt: new Date("2026-12-20T01:00:00Z"),
@@ -695,6 +729,385 @@ export function teachingCases(
       });
       expect(expired.length).toBeGreaterThan(0);
       expect(expired.every((job) => job.rowsJson === null)).toBe(true);
+    });
+    it("TC027: replaces only future untouched occurrences, preserves manual/snapshotted/completed lessons, and rolls back a conflicting edit", async () => {
+      const db = getDb(),
+        classId = await cls("RECURRING-REVISIONS", 5);
+      expect(
+        (
+          await api(`/classes/${classId}/teachers`, "POST", {
+            teacherId,
+            effectiveFrom: "2026-11-01",
+            effectiveTo: "2026-12-31",
+          })
+        ).status,
+      ).toBe(201);
+      const ruleInput = {
+        teacherId,
+        weekday: 1,
+        localStart: "08:00",
+        localEnd: "09:00",
+        validFrom: "2026-11-01",
+        validTo: "2026-12-07",
+      };
+      const oldRule = (
+        await api(`/classes/${classId}/schedule-rules`, "POST", ruleInput)
+      ).body.data;
+      const basePath = `/classes/${classId}/schedule-rules/${oldRule.id}`;
+      expect(
+        (
+          await api(basePath + "/generate", "POST", {
+            from: "2026-11-01",
+            to: "2026-12-07",
+          })
+        ).status,
+      ).toBe(201);
+      const rows = await db.classSession.findMany({
+        where: { tenantId, scheduleRuleId: oldRule.id },
+        orderBy: { ruleOccurrenceDate: "asc" },
+      });
+      expect(rows).toHaveLength(6);
+      const s = await student("REVISION-ROSTER");
+      expect(
+        (
+          await api(`/classes/${classId}/enrollments`, "POST", {
+            studentId: s.id,
+            joinedAt: "2026-11-01",
+          })
+        ).status,
+      ).toBe(201);
+      expect(
+        (
+          await api(`/sessions/${rows[1]!.id}/reschedule`, "POST", {
+            teacherId,
+            sessionVersion: 1,
+            startsAt: "2026-11-10T01:00:00Z",
+            endsAt: "2026-11-10T02:00:00Z",
+            reason: "Manual date move must retain original occurrence",
+          })
+        ).status,
+      ).toBe(201);
+      // Retrying old generation must not resurrect Monday9 after the manual Tuesday move.
+      expect(
+        (
+          await api(basePath + "/generate", "POST", {
+            from: "2026-11-01",
+            to: "2026-11-30",
+          })
+        ).body.data.created,
+      ).toBe(0);
+      for (const index of [2, 3]) {
+        expect(
+          (
+            await api(`/sessions/${rows[index]!.id}/attendance/draft`, "PUT", {
+              sessionVersion: 1,
+              records: [{ studentId: s.id, status: "PRESENT" }],
+            })
+          ).status,
+        ).toBe(200);
+      }
+      expect(
+        (
+          await api(`/sessions/${rows[3]!.id}/attendance/finalize`, "POST", {
+            sessionVersion: 2,
+          })
+        ).status,
+      ).toBe(201);
+      expect(
+        (
+          await api(`/sessions/${rows[5]!.id}/lesson-report`, "PUT", {
+            sessionVersion: 1,
+            lessonSummary:
+              "Prepared lesson must not disappear after rule replacement",
+            homeworkText: "",
+            teacherNotesPrivate: "",
+          })
+        ).status,
+      ).toBe(200);
+      const before = await db.classSession.findMany({
+        where: {
+          id: { in: [rows[1]!.id, rows[2]!.id, rows[3]!.id, rows[5]!.id] },
+        },
+        orderBy: { id: "asc" },
+      });
+      const replacementInput = {
+        ...ruleInput,
+        version: 1,
+        validFrom: "2026-11-09",
+        localStart: "10:00",
+        localEnd: "11:00",
+        reason: "Change remaining recurring lessons from next week",
+      };
+      expect(
+        (await api(basePath, "PATCH", replacementInput, teacherToken)).status,
+      ).toBe(403);
+      const changed = await api(basePath, "PATCH", replacementInput);
+      expect(changed.status).toBe(200);
+      expect(changed.body.data.lineageId).toBe(oldRule.id);
+      expect(changed.body.data.id).not.toBe(oldRule.id);
+      const history = await api(
+        `/classes/${classId}/schedule-rules/${changed.body.data.id}/history`,
+      );
+      expect(history.status).toBe(200);
+      expect(history.body.data).toHaveLength(1);
+      expect(history.body.data[0]).toMatchObject({
+        before: { classId, localStart: "08:00", active: true },
+        after: { classId, localStart: "10:00", active: true },
+        actorId: ownerId,
+      });
+      expect(
+        (
+          await api(
+            `/classes/${classId}/schedule-rules/${changed.body.data.id}/history`,
+            "GET",
+            undefined,
+            teacherToken,
+          )
+        ).status,
+      ).toBe(403);
+      const after = await db.classSession.findMany({
+        where: { id: { in: before.map((v) => v.id) } },
+        orderBy: { id: "asc" },
+      });
+      expect(after).toEqual(before);
+      expect(
+        (
+          await db.classSession.findUniqueOrThrow({
+            where: { id: rows[4]!.id },
+          })
+        ).status,
+      ).toBe("CANCELLED");
+      expect(
+        (
+          await db.classSession.findUniqueOrThrow({
+            where: { id: rows[0]!.id },
+          })
+        ).version,
+      ).toBe(1);
+      const newSession = await db.classSession.findFirstOrThrow({
+        where: { scheduleRuleId: changed.body.data.id },
+      });
+      expect(newSession.scheduledDate.toISOString().slice(0, 10)).toBe(
+        "2026-11-30",
+      );
+      expect(newSession.startsAt.toISOString()).toBe(
+        "2026-11-30T03:00:00.000Z",
+      );
+      const preview = await api(
+        `/classes/${classId}/schedule-rules/${changed.body.data.id}/preview?from=2026-11-09&to=2026-12-07`,
+      );
+      expect(
+        preview.body.data.candidates.filter(
+          (v: { status: string }) => v.status === "PRESERVED",
+        ),
+      ).toHaveLength(4);
+      expect((await api(basePath, "PATCH", replacementInput)).status).toBe(409);
+      expect(
+        await db.scheduleRuleRevision.count({
+          where: { tenantId, ruleId: oldRule.id },
+        }),
+      ).toBe(1);
+      await expect(
+        db.$executeRaw`UPDATE schedule_rule_revisions SET reason='forbidden history rewrite' WHERE tenant_id=${tenantId}::uuid AND rule_id=${oldRule.id}::uuid`,
+      ).rejects.toThrow();
+      await expect(
+        db.classSession.update({
+          where: { id: rows[1]!.id },
+          data: { ruleOccurrenceDate: new Date("2026-11-10Z") },
+        }),
+      ).rejects.toThrow();
+      const other = await cls("REVISION-COMMIT-CONFLICT", 2);
+      expect(
+        (
+          await api(`/classes/${other}/teachers`, "POST", {
+            teacherId,
+            effectiveFrom: "2026-11-01",
+            effectiveTo: "2026-12-31",
+          })
+        ).status,
+      ).toBe(201);
+      expect(
+        (
+          await api(`/classes/${other}/sessions/extra`, "POST", {
+            teacherId,
+            startsAt: "2026-11-30T05:00:00Z",
+            endsAt: "2026-11-30T06:00:00Z",
+          })
+        ).status,
+      ).toBe(201);
+      expect(
+        (
+          await api(
+            `/classes/${classId}/schedule-rules/${changed.body.data.id}`,
+            "PATCH",
+            {
+              ...replacementInput,
+              version: 1,
+              validFrom: "2026-11-30",
+              localStart: "12:00",
+              localEnd: "13:00",
+            },
+          )
+        ).status,
+      ).toBe(409);
+      expect(
+        (
+          await db.classSession.findUniqueOrThrow({
+            where: { id: newSession.id },
+          })
+        ).status,
+      ).toBe("SCHEDULED");
+      expect(
+        (
+          await db.scheduleRule.findUniqueOrThrow({
+            where: { id: changed.body.data.id },
+          })
+        ).version,
+      ).toBe(1);
+      expect(
+        await db.scheduleRule.count({ where: { tenantId, classId } }),
+      ).toBe(2);
+    });
+    it("rolling recurring jobs run through real Redis/BullMQ, dedupe retry, advance the60day horizon and recheck subscription", async () => {
+      const db = getDb(),
+        classId = await cls("ROLLING-JOB", 2);
+      expect(
+        (
+          await api(`/classes/${classId}/teachers`, "POST", {
+            teacherId,
+            effectiveFrom: "2026-11-01",
+            effectiveTo: "2026-12-31",
+          })
+        ).status,
+      ).toBe(201);
+      const rule = (
+        await api(`/classes/${classId}/schedule-rules`, "POST", {
+          teacherId,
+          weekday: 4,
+          localStart: "05:00",
+          localEnd: "06:00",
+          validFrom: "2026-11-01",
+          validTo: "2026-12-31",
+        })
+      ).body.data;
+      const requireWorker = createRequire(
+        path.resolve("apps/worker/package.json"),
+      );
+      const { Queue, Worker } = requireWorker(
+        "bullmq",
+      ) as typeof import("../../apps/worker/node_modules/bullmq");
+      const { enqueueSchedulePage, generateScheduledRule } = await import(
+        "../../apps/worker/dist/schedule-jobs.js"
+      );
+      const redis = new URL(
+        process.env.TEST_REDIS_URL ?? "redis://127.0.0.1:6385",
+      );
+      const connection = {
+        host: redis.hostname,
+        port: Number(redis.port || "6379"),
+        ...(redis.password
+          ? { password: decodeURIComponent(redis.password) }
+          : {}),
+      };
+      const prefix = "schedule-test-" + randomUUID();
+      const queue = new Queue<{ ruleId: string }>("schedule-generation", {
+        connection,
+        prefix,
+      });
+      let now = new Date("2026-11-01T00:00:00Z");
+      const worker = new Worker<{ ruleId: string }>(
+        "schedule-generation",
+        (job) => generateScheduledRule(db, job.data.ruleId, now),
+        { connection, prefix },
+      );
+      try {
+        await worker.waitUntilReady();
+        await enqueueSchedulePage(db, queue, undefined, now);
+        const firstId = `${rule.id}-1-2026-11-01`;
+        await expect
+          .poll(async () => (await queue.getJob(firstId))?.getState(), {
+            timeout: 10000,
+          })
+          .toBe("completed");
+        expect(
+          await db.classSession.count({ where: { scheduleRuleId: rule.id } }),
+        ).toBe(8);
+        await enqueueSchedulePage(db, queue, undefined, now);
+        expect(
+          await db.classSession.count({ where: { scheduleRuleId: rule.id } }),
+        ).toBe(8);
+        now = new Date("2026-11-02T00:00:00Z");
+        await enqueueSchedulePage(db, queue, undefined, now);
+        await expect
+          .poll(
+            async () =>
+              (await queue.getJob(`${rule.id}-1-2026-11-02`))?.getState(),
+            { timeout: 10000 },
+          )
+          .toBe("completed");
+        expect(
+          await db.classSession.count({ where: { scheduleRuleId: rule.id } }),
+        ).toBe(9);
+        const audits = await db.auditLog.findMany({
+          where: {
+            tenantId,
+            resourceId: rule.id,
+            action: "schedule.rule.generated",
+          },
+        });
+        expect(audits).toHaveLength(2);
+        expect(audits.every((v) => v.actorUserId === null)).toBe(true);
+        const timezone = (
+          await db.tenant.findUniqueOrThrow({ where: { id: tenantId } })
+        ).timezone;
+        const privateMarker = "Invalid/PRIVATE_FAILURE_SENTINEL";
+        await db.tenant.update({
+          where: { id: tenantId },
+          data: { timezone: privateMarker },
+        });
+        try {
+          const failure = await queue.add(
+            "generate",
+            { ruleId: rule.id },
+            { jobId: "sanitized-failure-" + randomUUID() },
+          );
+          await expect
+            .poll(async () => (await queue.getJob(failure.id!))?.getState(), {
+              timeout: 10000,
+            })
+            .toBe("failed");
+          const storedFailure = await queue.getJob(failure.id!);
+          expect(storedFailure?.failedReason).toBe(
+            "SCHEDULE_GENERATION_FAILED",
+          );
+          expect(JSON.stringify(storedFailure?.asJSON())).not.toContain(
+            privateMarker,
+          );
+        } finally {
+          await db.tenant.update({
+            where: { id: tenantId },
+            data: { timezone },
+          });
+        }
+        await db.tenant.update({
+          where: { id: tenantId },
+          data: { status: "READ_ONLY" },
+        });
+        try {
+          await expect(generateScheduledRule(db, rule.id, now)).rejects.toThrow(
+            "SCHEDULE_POLICY_REQUIRES_REVIEW",
+          );
+        } finally {
+          await db.tenant.update({
+            where: { id: tenantId },
+            data: { status: "ACTIVE" },
+          });
+        }
+      } finally {
+        await worker.close();
+        await queue.obliterate({ force: true }); // this test's random, isolated queue prefix only
+        await queue.close();
+      }
     });
     it("serializes the final seat and rejects cross-tenant nested enrollment", async () => {
       const classId = await cls("LAST-SEAT", 1),

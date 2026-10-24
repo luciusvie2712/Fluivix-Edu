@@ -88,6 +88,9 @@ async function run() {
     env: {
       ...process.env,
       MAIL_PROVIDER: "mailpit",
+      // This suite tests manual preview/commit deterministically; rolling jobs
+      // have their own real Redis/PostgreSQL integration case.
+      SCHEDULE_GENERATION_ENABLED: "false",
       REDIS_URL: process.env.TEST_REDIS_URL ?? "redis://127.0.0.1:6379",
       QUEUE_PREFIX: "fluivixedu-e2e-" + randomUUID(),
     },

@@ -4,6 +4,7 @@ import { z } from "zod";
 import { mailProvider } from "./mail";
 import { deliver, MAIL_EVENTS } from "./delivery";
 import { purgeExpiredImports } from "./import-retention";
+import { enqueueSchedulePage, generateScheduledRule } from "./schedule-jobs";
 import {
   checkPushReceipts,
   deliverDomainEvent,
@@ -33,6 +34,11 @@ async function main() {
     .string()
     .regex(/^[a-zA-Z0-9_-]{1,100}$/)
     .parse(process.env.QUEUE_PREFIX ?? "fluivixedu");
+  const scheduleGenerationEnabled =
+    z
+      .enum(["true", "false"])
+      .default("true")
+      .parse(process.env.SCHEDULE_GENERATION_ENABLED) === "true";
   const queue = new Queue<{ eventId: string }>("identity-mail", {
     connection,
     prefix,
@@ -41,6 +47,28 @@ async function main() {
     "domain-notifications",
     { connection, prefix },
   );
+  const scheduleQueue = new Queue<{ ruleId: string }>("schedule-generation", {
+    connection,
+    prefix,
+  });
+  const scheduleWorker = new Worker<{ ruleId: string }>(
+    "schedule-generation",
+    (job) => generateScheduledRule(db, z.uuid().parse(job.data.ruleId)),
+    { connection, prefix, concurrency: 1, autorun: scheduleGenerationEnabled },
+  );
+  scheduleWorker.on("error", () =>
+    console.error(JSON.stringify({ code: "SCHEDULE_WORKER_CONNECTION_ERROR" })),
+  );
+  scheduleWorker.on("failed", (job) =>
+    console.error(
+      JSON.stringify({
+        code: "SCHEDULE_JOB_FAILED",
+        ruleId: job?.data.ruleId ?? null,
+      }),
+    ),
+  );
+  let scheduleCursor: string | undefined,
+    lastScheduleDispatch = 0;
   const notificationWorker = new Worker<{ eventId: string }>(
     "domain-notifications",
     (job) => deliverDomainEvent(db, z.uuid().parse(job.data.eventId)),
@@ -100,9 +128,17 @@ async function main() {
     }
   });
   try {
-    await worker.waitUntilReady();
+    await Promise.all([
+      worker.waitUntilReady(),
+      notificationWorker.waitUntilReady(),
+      scheduleWorker.waitUntilReady(),
+    ]);
   } catch (cause) {
     await worker.close(true);
+    await notificationWorker.close(true);
+    await scheduleWorker.close(true);
+    await notificationQueue.close();
+    await scheduleQueue.close();
     await queue.close();
     await db.$disconnect();
     throw new Error("MAIL_WORKER_NOT_READY", { cause });
@@ -113,6 +149,18 @@ async function main() {
     if (dispatching) return;
     dispatching = true;
     try {
+      if (
+        scheduleGenerationEnabled &&
+        Date.now() - lastScheduleDispatch >= 60000
+      ) {
+        const result = await enqueueSchedulePage(
+          db,
+          scheduleQueue,
+          scheduleCursor,
+        );
+        scheduleCursor = result.cursor;
+        lastScheduleDispatch = Date.now();
+      }
       if (Date.now() - lastImportSweep >= 60000) {
         await purgeExpiredImports(db);
         lastImportSweep = Date.now();
@@ -171,6 +219,8 @@ async function main() {
     await worker.close();
     await notificationWorker.close();
     await notificationQueue.close();
+    await scheduleWorker.close();
+    await scheduleQueue.close();
     await queue.close();
     await db.$disconnect();
   }

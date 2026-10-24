@@ -324,6 +324,54 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/classes/{id}/schedule-rules/preview": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["TeachingController_previewDraftRule"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/classes/{id}/schedule-rules/{ruleId}/history": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TeachingController_ruleHistory"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/classes/{id}/schedule-rules/{ruleId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["TeachingController_replaceRule"];
+    trace?: never;
+  };
   "/api/v1/rooms": {
     parameters: {
       query?: never;
@@ -1889,6 +1937,107 @@ export interface components {
       data: components["schemas"]["StudentDetailView"];
       meta: components["schemas"]["MetaDto"];
     };
+    ScheduleRuleInput: {
+      /** Format: uuid */
+      teacherId: string;
+      /** Format: uuid */
+      roomId?: string;
+      /** @description ISO weekday: Monday=1 */
+      weekday: number;
+      /** @example 18:00 */
+      localStart: string;
+      /** @example 19:30 */
+      localEnd: string;
+      /** Format: date */
+      validFrom: string;
+      /** Format: date */
+      validTo: string;
+    };
+    ScheduleCandidate: {
+      /** Format: date */
+      occurrenceDate?: string;
+      /** Format: date */
+      scheduledDate: string;
+      /** Format: date-time */
+      startsAt: string;
+      /** Format: date-time */
+      endsAt: string;
+      /** @enum {string} */
+      status: "AVAILABLE" | "EXISTING" | "PRESERVED" | "CONFLICT";
+      conflict?: string;
+    };
+    SchedulePreview: {
+      timezone: string;
+      candidates: components["schemas"]["ScheduleCandidate"][];
+      created: number;
+      skipped: number;
+    };
+    SchedulePreviewResponse: {
+      data: components["schemas"]["SchedulePreview"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    ScheduleRuleView: {
+      /** Format: uuid */
+      teacherId: string;
+      /** Format: uuid */
+      roomId?: string;
+      /** @description ISO weekday: Monday=1 */
+      weekday: number;
+      /** @example 18:00 */
+      localStart: string;
+      /** @example 19:30 */
+      localEnd: string;
+      /** Format: date */
+      validFrom: string;
+      /** Format: date */
+      validTo: string;
+      lineageId: string;
+      id: string;
+      classId: string;
+      timezone: string;
+      version: number;
+      active: boolean;
+    };
+    ScheduleRevisionView: {
+      id: string;
+      ruleId: string;
+      replacementId: string;
+      /** Format: date */
+      effectiveFrom: string;
+      reason: string;
+      actorId: string;
+      /** Format: date-time */
+      createdAt: string;
+      before: components["schemas"]["ScheduleRuleView"];
+      after: components["schemas"]["ScheduleRuleView"];
+    };
+    ScheduleRevisionsResponse: {
+      data: components["schemas"]["ScheduleRevisionView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    ScheduleRuleReplacement: {
+      /** Format: uuid */
+      teacherId: string;
+      /** Format: uuid */
+      roomId?: string;
+      /** @description ISO weekday: Monday=1 */
+      weekday: number;
+      /** @example 18:00 */
+      localStart: string;
+      /** @example 19:30 */
+      localEnd: string;
+      /** Format: date */
+      validFrom: string;
+      /** Format: date */
+      validTo: string;
+      version: number;
+      reason: string;
+    };
+    ScheduleRuleResponse: {
+      data: components["schemas"]["ScheduleRuleView"];
+      meta: components["schemas"]["MetaDto"];
+    };
     RoomView: {
       code: string;
       name: string;
@@ -2006,70 +2155,8 @@ export interface components {
       data: components["schemas"]["EnrollmentView"];
       meta: components["schemas"]["MetaDto"];
     };
-    ScheduleRuleView: {
-      /** Format: uuid */
-      teacherId: string;
-      /** Format: uuid */
-      roomId?: string;
-      /** @description ISO weekday: Monday=1 */
-      weekday: number;
-      /** @example 18:00 */
-      localStart: string;
-      /** @example 19:30 */
-      localEnd: string;
-      /** Format: date */
-      validFrom: string;
-      /** Format: date */
-      validTo: string;
-      id: string;
-      classId: string;
-      timezone: string;
-      version: number;
-      active: boolean;
-    };
     ScheduleRulesResponse: {
       data: components["schemas"]["ScheduleRuleView"][];
-      meta: components["schemas"]["MetaDto"];
-    };
-    ScheduleRuleInput: {
-      /** Format: uuid */
-      teacherId: string;
-      /** Format: uuid */
-      roomId?: string;
-      /** @description ISO weekday: Monday=1 */
-      weekday: number;
-      /** @example 18:00 */
-      localStart: string;
-      /** @example 19:30 */
-      localEnd: string;
-      /** Format: date */
-      validFrom: string;
-      /** Format: date */
-      validTo: string;
-    };
-    ScheduleRuleResponse: {
-      data: components["schemas"]["ScheduleRuleView"];
-      meta: components["schemas"]["MetaDto"];
-    };
-    ScheduleCandidate: {
-      /** Format: date */
-      scheduledDate: string;
-      /** Format: date-time */
-      startsAt: string;
-      /** Format: date-time */
-      endsAt: string;
-      /** @enum {string} */
-      status: "AVAILABLE" | "EXISTING" | "CONFLICT";
-      conflict?: string;
-    };
-    SchedulePreview: {
-      timezone: string;
-      candidates: components["schemas"]["ScheduleCandidate"][];
-      created: number;
-      skipped: number;
-    };
-    SchedulePreviewResponse: {
-      data: components["schemas"]["SchedulePreview"];
       meta: components["schemas"]["MetaDto"];
     };
     GenerationWindow: {
@@ -3782,6 +3869,203 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["StudentDetailResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_previewDraftRule: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ScheduleRuleInput"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SchedulePreviewResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_ruleHistory: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+        ruleId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ScheduleRevisionsResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_replaceRule: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+        ruleId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ScheduleRuleReplacement"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ScheduleRuleResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
     };

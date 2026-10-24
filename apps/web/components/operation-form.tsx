@@ -14,12 +14,18 @@ export function OperationForm({
   label,
   disabled,
   confirm,
+  previewAction,
+  previewLabel = "Xem trước",
+  successMessage = "Đã lưu thay đổi trên hệ thống.",
 }: {
   children: ReactNode;
   action: (data: FormData) => Promise<void>;
   label: string;
   disabled?: boolean;
   confirm?: string;
+  previewAction?: (data: FormData) => Promise<void>;
+  previewLabel?: string;
+  successMessage?: string;
 }) {
   const [busy, setBusy] = useState(false),
     [error, setError] = useState("");
@@ -28,9 +34,16 @@ export function OperationForm({
   const errorRef = useRef<HTMLParagraphElement>(null);
   return (
     <form
+      onChange={() => setSuccess(false)}
       onSubmit={async (e) => {
         e.preventDefault();
-        if (disabled || busy || (confirm && !accepted)) return;
+        const submitter =
+          "submitter" in e.nativeEvent ? e.nativeEvent.submitter : null;
+        const isPreview =
+          !!previewAction &&
+          submitter instanceof HTMLButtonElement &&
+          submitter.value === "preview";
+        if (disabled || busy || (!isPreview && confirm && !accepted)) return;
         if (!navigator.onLine) {
           setError("Đang ngoại tuyến. Kết nối lại trước khi lưu.");
           return;
@@ -40,8 +53,9 @@ export function OperationForm({
         setError("");
         setSuccess(false);
         try {
-          await action(data);
-          setSuccess(true);
+          if (isPreview && previewAction) await previewAction(data);
+          else await action(data);
+          setSuccess(!isPreview);
           setAccepted(false);
         } catch (cause) {
           setError(
@@ -67,8 +81,23 @@ export function OperationForm({
             {confirm}
           </label>
         )}
+        {previewAction && (
+          <div className="toolbar">
+            <Button
+              type="submit"
+              name="_intent"
+              value="preview"
+              variant="outline"
+              disabled={disabled || busy}
+            >
+              {previewLabel}
+            </Button>
+          </div>
+        )}
         <Button
           type="submit"
+          name="_intent"
+          value="commit"
           disabled={disabled || busy || (!!confirm && !accepted)}
         >
           {busy ? "Đang xử lý…" : label}
@@ -79,7 +108,7 @@ export function OperationForm({
           {error}
         </p>
       )}
-      {success && <p role="status">Đã lưu thay đổi trên hệ thống.</p>}
+      {success && <p role="status">{successMessage}</p>}
     </form>
   );
 }

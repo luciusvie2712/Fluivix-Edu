@@ -16,6 +16,12 @@ import {
 import { Button } from "./ui/button";
 
 const academic = ["owner", "manager", "academic_staff"];
+const candidateStatusLabels: Record<string, string> = {
+  AVAILABLE: "Có thể sinh",
+  EXISTING: "Buổi đã có",
+  PRESERVED: "Giữ buổi đã chốt/chỉnh tay",
+  CONFLICT: "Xung đột",
+};
 export function useTeachingScope() {
   const { me } = useSession();
   const tenant = me?.memberships.find(
@@ -504,6 +510,17 @@ function RuleBuilder({
     queryFn: () => teaching.rules(id),
   });
   const [selected, setSelected] = useState("");
+  const [draftPreview, setDraftPreview] = useState<
+    components["schemas"]["SchedulePreview"] | null
+  >(null);
+  const readRuleInput = (data: FormData) => ({
+    teacherId: text(data, "teacherId"),
+    weekday: Number(text(data, "weekday")),
+    localStart: text(data, "localStart"),
+    localEnd: text(data, "localEnd"),
+    validFrom: text(data, "validFrom"),
+    validTo: text(data, "validTo"),
+  });
   const [preview, setPreview] = useState<
     components["schemas"]["SchedulePreview"] | null
   >(null);
@@ -515,27 +532,34 @@ function RuleBuilder({
       <h2>Lịch học định kỳ</h2>
       <p>
         Múi giờ {scope.tenant?.timezone}. Preview xung đột trước khi sinh buổi;
-        mỗi batch tối đa 60 ngày.
+        mỗi batch tối đa 60 ngày. Quy tắc đã lưu được sinh lịch tự động cho 60
+        ngày sắp tới; có thể chạy sinh thủ công bên dưới.
       </p>
       <OperationForm
         label="Lưu quy tắc lịch"
         disabled={disabled || !teachers.length}
+        previewLabel="Xem trước quy tắc chưa lưu"
+        previewAction={async (data) => {
+          setDraftPreview(null);
+          setDraftPreview(
+            (await teaching.previewDraftRule(id, readRuleInput(data))).data,
+          );
+        }}
         action={async (data) => {
-          const rule = await teaching.createRule(id, {
-            teacherId: text(data, "teacherId"),
-            weekday: Number(text(data, "weekday")),
-            localStart: text(data, "localStart"),
-            localEnd: text(data, "localEnd"),
-            validFrom: text(data, "validFrom"),
-            validTo: text(data, "validTo"),
-          });
+          const rule = await teaching.createRule(id, readRuleInput(data));
+          setDraftPreview(null);
           setSelected(rule.data.id);
           setPreview(null);
           setWindow(null);
           await cache.invalidateQueries({ queryKey: ["teaching"] });
         }}
       >
-        <div className="operations-grid">
+        <div
+          className="operations-grid"
+          onChange={() => {
+            setDraftPreview(null);
+          }}
+        >
           <SelectField label="Giáo viên dạy lịch lặp" name="teacherId" required>
             <option value="">Chọn giáo viên đã phân công</option>
             {teachers.map((v) => (
@@ -591,10 +615,50 @@ function RuleBuilder({
           />
         </div>
       </OperationForm>
+      {draftPreview && (
+        <section aria-label="Kết quả xem trước quy tắc chưa lưu">
+          <h3>Xem trước quy tắc chưa lưu</h3>
+          <p>
+            {draftPreview.candidates.length} buổi trong tối đa 60 ngày từ ngày
+            hiệu lực;{" "}
+            {
+              draftPreview.candidates.filter((v) => v.status === "CONFLICT")
+                .length
+            }{" "}
+            xung đột. Chưa lưu quy tắc hoặc buổi học.
+          </p>
+          <div
+            className="table-scroll"
+            tabIndex={0}
+            role="region"
+            aria-label="Buổi dự kiến của quy tắc chưa lưu"
+          >
+            <table>
+              <thead>
+                <tr>
+                  <th>Ngày địa phương</th>
+                  <th>Kết quả</th>
+                  <th>Xung đột</th>
+                </tr>
+              </thead>
+              <tbody>
+                {draftPreview.candidates.map((v) => (
+                  <tr key={v.occurrenceDate ?? v.scheduledDate}>
+                    <td>{v.scheduledDate}</td>
+                    <td>{candidateStatusLabels[v.status] ?? v.status}</td>
+                    <td>{v.conflict ?? "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
       <h3>Kiểm tra và sinh buổi học</h3>
       {rules.error && <p role="alert">{rules.error.message}</p>}
       <OperationForm
         label="Kiểm tra xung đột"
+        successMessage="Đã kiểm tra xung đột. Thao tác xem trước không sinh buổi mới."
         disabled={disabled || !rules.data?.data.length}
         action={async (data) => {
           const range = { from: text(data, "from"), to: text(data, "to") };
@@ -642,6 +706,24 @@ function RuleBuilder({
           onChange={() => setPreview(null)}
         />
       </OperationForm>
+      {rules.data?.data
+        .filter((v) => v.id === selected)
+        .map((rule) => (
+          <RuleEditor
+            key={`${rule.id}:${rule.version}`}
+            id={id}
+            cls={cls}
+            rule={rule}
+            teachers={teachers}
+            disabled={disabled}
+            onReplaced={async (replacementId) => {
+              setSelected(replacementId);
+              setPreview(null);
+              setWindow(null);
+              await cache.invalidateQueries({ queryKey: ["teaching"] });
+            }}
+          />
+        ))}
       {preview && (
         <>
           <p>
@@ -665,9 +747,9 @@ function RuleBuilder({
               </thead>
               <tbody>
                 {preview.candidates.map((v) => (
-                  <tr key={v.scheduledDate}>
+                  <tr key={v.occurrenceDate ?? v.scheduledDate}>
                     <td>{v.scheduledDate}</td>
-                    <td>{v.status}</td>
+                    <td>{candidateStatusLabels[v.status] ?? v.status}</td>
                     <td>{v.conflict ?? "—"}</td>
                   </tr>
                 ))}
@@ -696,5 +778,182 @@ function RuleBuilder({
         </>
       )}
     </section>
+  );
+}
+function RuleEditor({
+  id,
+  cls,
+  rule,
+  teachers,
+  disabled,
+  onReplaced,
+}: {
+  id: string;
+  cls: components["schemas"]["ClassView"];
+  rule: components["schemas"]["ScheduleRuleView"];
+  teachers: components["schemas"]["TeacherView"][];
+  disabled: boolean;
+  onReplaced: (id: string) => Promise<void>;
+}) {
+  const scope = useTeachingScope(),
+    [page, setPage] = useState(1);
+  const history = useQuery({
+    queryKey: ["teaching", ...scope.key, "rule-history", id, rule.id, page],
+    queryFn: () => teaching.ruleHistory(id, rule.id, page),
+  });
+  const today = new Intl.DateTimeFormat("en-CA", {
+    timeZone: scope.tenant?.timezone ?? "UTC",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+  const tomorrow = new Date(Date.parse(today + "T00:00:00Z") + 86400000)
+    .toISOString()
+    .slice(0, 10);
+  const earliest = tomorrow > rule.validFrom ? tomorrow : rule.validFrom;
+  return (
+    <details className="operation-panel">
+      <summary>Đổi lịch định kỳ trong tương lai và xem lịch sử</summary>
+      <p>
+        Quy tắc đang chọn: {rule.validFrom} → {rule.validTo}, {rule.localStart}–
+        {rule.localEnd}. Chỉ buổi tương lai chưa chỉnh tay, chưa có roster hoặc
+        điểm danh mới được thay. Buổi đã chốt, đã chỉnh tay và lịch sử được giữ
+        nguyên. Nếu có xung đột, toàn bộ thay đổi bị từ chối.
+      </p>
+      <OperationForm
+        label="Xác nhận thay quy tắc lịch"
+        disabled={disabled || !rule.active || earliest > rule.validTo}
+        confirm="Tôi xác nhận thay các buổi chưa chỉnh trong tương lai và sinh lịch mới sau khi kiểm tra hợp lệ."
+        action={async (data) => {
+          const result = await teaching.replaceRule(id, rule.id, {
+            version: rule.version,
+            teacherId: text(data, "teacherId"),
+            ...(rule.roomId ? { roomId: rule.roomId } : {}),
+            weekday: Number(text(data, "weekday")),
+            localStart: text(data, "localStart"),
+            localEnd: text(data, "localEnd"),
+            validFrom: text(data, "validFrom"),
+            validTo: text(data, "validTo"),
+            reason: text(data, "reason"),
+          });
+          await onReplaced(result.data.id);
+        }}
+      >
+        <div className="operations-grid">
+          <SelectField
+            label="Giáo viên lịch thay thế"
+            name="teacherId"
+            defaultValue={rule.teacherId}
+            required
+          >
+            {!teachers.some((v) => v.id === rule.teacherId) && (
+              <option value={rule.teacherId}>
+                Giáo viên hiện tại của quy tắc
+              </option>
+            )}
+            {teachers.map((v) => (
+              <option key={v.id} value={v.id}>
+                {v.teacherCode} · {v.fullName}
+              </option>
+            ))}
+          </SelectField>
+          <SelectField
+            label="Thứ của lịch thay thế"
+            name="weekday"
+            defaultValue={rule.weekday}
+            required
+          >
+            {[
+              "Thứ hai",
+              "Thứ ba",
+              "Thứ tư",
+              "Thứ năm",
+              "Thứ sáu",
+              "Thứ bảy",
+              "Chủ nhật",
+            ].map((v, i) => (
+              <option key={v} value={i + 1}>
+                {v}
+              </option>
+            ))}
+          </SelectField>
+          <Field
+            label="Giờ bắt đầu lịch mới"
+            name="localStart"
+            type="time"
+            defaultValue={rule.localStart}
+            required
+          />
+          <Field
+            label="Giờ kết thúc lịch mới"
+            name="localEnd"
+            type="time"
+            defaultValue={rule.localEnd}
+            required
+          />
+          <Field
+            label="Thay lịch từ ngày"
+            name="validFrom"
+            type="date"
+            min={earliest}
+            max={rule.validTo}
+            defaultValue={earliest}
+            required
+          />
+          <Field
+            label="Lịch thay thế đến ngày"
+            name="validTo"
+            type="date"
+            min={earliest}
+            max={cls.endDate}
+            defaultValue={rule.validTo}
+            required
+          />
+        </div>
+        <Reason />
+      </OperationForm>
+      <h3>Lịch sử đổi quy tắc</h3>
+      {history.isPending && <p role="status">Đang tải lịch sử quy tắc…</p>}
+      {history.error && <p role="alert">{history.error.message}</p>}
+      {history.data && (
+        <>
+          {!history.data.data.length && (
+            <p>Chưa có lần đổi quy tắc trong chuỗi lịch này.</p>
+          )}
+          <ul>
+            {history.data.data.map((v) => (
+              <li key={v.id}>
+                Từ {v.effectiveFrom}: {v.before.localStart}–{v.before.localEnd}{" "}
+                → {v.after.localStart}–{v.after.localEnd}. Lý do: {v.reason}.
+                Ghi nhận{" "}
+                {new Intl.DateTimeFormat("vi-VN", {
+                  timeZone: scope.tenant?.timezone,
+                  dateStyle: "short",
+                  timeStyle: "short",
+                }).format(new Date(v.createdAt))}
+                .
+              </li>
+            ))}
+          </ul>
+          <div className="toolbar">
+            <Button
+              variant="outline"
+              disabled={page === 1}
+              onClick={() => setPage((v) => v - 1)}
+            >
+              Lịch sử trước
+            </Button>
+            <span>Trang {page}</span>
+            <Button
+              variant="outline"
+              disabled={page >= history.data.page.totalPages}
+              onClick={() => setPage((v) => v + 1)}
+            >
+              Lịch sử sau
+            </Button>
+          </div>
+        </>
+      )}
+    </details>
   );
 }

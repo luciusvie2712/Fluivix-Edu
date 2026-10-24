@@ -191,6 +191,7 @@ export class ScheduleRuleInput {
   validTo!: string;
 }
 export class ScheduleRuleView extends ScheduleRuleInput {
+  @ApiProperty() lineageId!: string;
   @ApiProperty() id!: string;
   @ApiProperty() classId!: string;
   @ApiProperty() timezone!: string;
@@ -205,6 +206,29 @@ export class ScheduleRulesResponse {
   @ApiProperty({ type: [ScheduleRuleView] }) data!: ScheduleRuleView[];
   @ApiProperty({ type: MetaDto }) meta!: MetaDto;
 }
+export class ScheduleRuleReplacement extends ScheduleRuleInput {
+  @ApiProperty({ minimum: 1 }) @IsInt() @Min(1) version!: number;
+  @ApiProperty({ minLength: 10, maxLength: 500 })
+  @IsString()
+  @Length(10, 500)
+  reason!: string;
+}
+export class ScheduleRevisionView {
+  @ApiProperty() id!: string;
+  @ApiProperty() ruleId!: string;
+  @ApiProperty() replacementId!: string;
+  @ApiProperty({ format: "date" }) effectiveFrom!: string;
+  @ApiProperty() reason!: string;
+  @ApiProperty() actorId!: string;
+  @ApiProperty({ format: "date-time" }) createdAt!: string;
+  @ApiProperty({ type: ScheduleRuleView }) before!: ScheduleRuleView;
+  @ApiProperty({ type: ScheduleRuleView }) after!: ScheduleRuleView;
+}
+export class ScheduleRevisionsResponse {
+  @ApiProperty({ type: [ScheduleRevisionView] }) data!: ScheduleRevisionView[];
+  @ApiProperty({ type: PageView }) page!: PageView;
+  @ApiProperty({ type: MetaDto }) meta!: MetaDto;
+}
 export class GenerationWindow {
   @ApiProperty({ format: "date" })
   @Matches(/^\d{4}-\d{2}-\d{2}$/)
@@ -216,10 +240,12 @@ export class GenerationWindow {
   to!: string;
 }
 export class ScheduleCandidate {
+  @ApiPropertyOptional({ format: "date" }) occurrenceDate?: string;
   @ApiProperty({ format: "date" }) scheduledDate!: string;
   @ApiProperty({ format: "date-time" }) startsAt!: string;
   @ApiProperty({ format: "date-time" }) endsAt!: string;
-  @ApiProperty({ enum: ["AVAILABLE", "EXISTING", "CONFLICT"] }) status!: string;
+  @ApiProperty({ enum: ["AVAILABLE", "EXISTING", "PRESERVED", "CONFLICT"] })
+  status!: string;
   @ApiPropertyOptional() conflict?: string;
 }
 export class SchedulePreview {

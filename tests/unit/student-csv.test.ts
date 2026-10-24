@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
-import {
-  CSV_MAX_BYTES,
-  parseStudentCsv,
-  safeCsvCell,
-} from "../../apps/api/src/student-csv";
+import { CSV_MAX_BYTES, parseStudentCsv } from "../../apps/api/src/student-csv";
+import { safeCsvCell } from "../../packages/contracts/src/csv";
 describe("bounded student CSV input", () => {
   it("accepts BOM, escaped quotes, Vietnamese and embedded commas/newlines", () => {
     expect(

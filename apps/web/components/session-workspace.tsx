@@ -75,6 +75,7 @@ function CalendarDetail() {
       </p>
       <OperationForm
         label="Xem lịch"
+        successMessage="Đã áp dụng bộ lọc lịch."
         action={async (data) => {
           setRange({ from: text(data, "from"), to: text(data, "to") });
           setPage(1);
@@ -201,6 +202,7 @@ function SessionDetail({ id }: { id: string }) {
   const [attendanceDirty, setAttendanceDirty] = useState(false),
     [lessonDirty, setLessonDirty] = useState(false);
   const [revision, setRevision] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
   const result = useQuery({
     queryKey: ["teaching", ...scope.key, "session", id],
     enabled: scope.allowed,
@@ -230,13 +232,19 @@ function SessionDetail({ id }: { id: string }) {
   if (!result.data) return null;
   const model = result.data.data,
     s = model.session;
-  const writable = scope.tenant?.status !== "READ_ONLY",
+  const lessonVersion = lesson.data?.data.sessionVersion;
+  const writable = scope.tenant?.status !== "READ_ONLY" && !refreshing,
     locked = ["COMPLETED", "CANCELLED"].includes(s.status);
   async function refresh() {
-    setAttendanceDirty(false);
-    setLessonDirty(false);
-    await cache.invalidateQueries({ queryKey: ["teaching"] });
-    setRevision((v) => v + 1);
+    setRefreshing(true);
+    try {
+      await cache.invalidateQueries({ queryKey: ["teaching"] });
+      setAttendanceDirty(false);
+      setLessonDirty(false);
+      setRevision((v) => v + 1);
+    } finally {
+      setRefreshing(false);
+    }
   }
   return (
     <>
@@ -245,6 +253,11 @@ function SessionDetail({ id }: { id: string }) {
         <Link href={`/app/classes/${s.classId}`}>{s.className}</Link>
       </p>
       <h1>Buổi học {s.scheduledDate}</h1>
+      {refreshing && (
+        <p role="status">
+          Đang đồng bộ dữ liệu buổi học; chờ hoàn tất trước khi sửa.
+        </p>
+      )}
       <p>
         {s.className} · {s.status} · Phiên bản {s.version} · {s.changeCount} lần
         thay lịch
@@ -267,6 +280,7 @@ function SessionDetail({ id }: { id: string }) {
         <summary>Tải lại dữ liệu khi có xung đột phiên bản</summary>
         <OperationForm
           label="Tải lại và bỏ bản sửa chưa lưu"
+          successMessage="Đã gửi yêu cầu tải lại dữ liệu."
           confirm="Tôi đã đối chiếu và đồng ý bỏ các thay đổi chưa lưu trên màn hình."
           action={refresh}
         >
@@ -299,14 +313,27 @@ function SessionDetail({ id }: { id: string }) {
             </dd>
           </dl>
         )}
+        {lesson.data && !locked && lessonVersion !== s.version && (
+          <p role="alert">
+            Nhật ký và buổi học đang khác phiên bản. Tải lại dữ liệu để đối
+            chiếu trước khi sửa nhật ký.
+          </p>
+        )}
         {lesson.data && !locked && (
           <OperationForm
             key={`${s.version}:${lesson.data.data.sessionVersion}:${revision}`}
             label="Lưu nhật ký"
-            disabled={!writable || locked || attendanceDirty}
+            disabled={
+              !writable ||
+              locked ||
+              attendanceDirty ||
+              lessonVersion !== s.version
+            }
             action={async (data) => {
+              if (lessonVersion === undefined)
+                throw new Error("Nhật ký chưa tải xong.");
               await teaching.saveLesson(id, {
-                sessionVersion: s.version,
+                sessionVersion: lessonVersion,
                 lessonSummary: text(data, "lessonSummary"),
                 homeworkText: text(data, "homeworkText"),
                 teacherNotesPrivate: text(data, "teacherNotesPrivate"),

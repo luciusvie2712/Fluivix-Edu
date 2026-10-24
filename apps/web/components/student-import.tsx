@@ -1,5 +1,6 @@
 "use client";
 import { useRef, useState } from "react";
+import { safeCsvCell } from "@fluivix/contracts";
 import { useQueryClient } from "@tanstack/react-query";
 import type { components } from "@fluivix/api-client";
 import {
@@ -73,9 +74,8 @@ export default function StudentImport({ disabled }: { disabled: boolean }) {
       "\ufeffrow,errors\r\n" +
       job.rows
         .filter((row) => row.errors.length)
-        .map(
-          (row) =>
-            `${row.row},"${row.errors.join("; ").replaceAll('"', '""')}"`,
+        .map((row) =>
+          [String(row.row), row.errors.join("; ")].map(safeCsvCell).join(","),
         )
         .join("\r\n");
     const url = URL.createObjectURL(

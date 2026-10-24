@@ -965,6 +965,260 @@
         "tags": ["mobile-people"]
       }
     },
+    "/api/v1/classes/{id}/schedule-rules/preview": {
+      "post": {
+        "operationId": "TeachingController_previewDraftRule",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ScheduleRuleInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchedulePreviewResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      }
+    },
+    "/api/v1/classes/{id}/schedule-rules/{ruleId}/history": {
+      "get": {
+        "operationId": "TeachingController_ruleHistory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ruleId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleRevisionsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      }
+    },
+    "/api/v1/classes/{id}/schedule-rules/{ruleId}": {
+      "patch": {
+        "operationId": "TeachingController_replaceRule",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ruleId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScheduleRuleReplacement"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleRuleResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      }
+    },
     "/api/v1/rooms": {
       "get": {
         "operationId": "TeachingController_rooms",
@@ -8729,6 +8983,178 @@
         },
         "required": ["data", "meta"]
       },
+      "ScheduleRuleInput": {
+        "type": "object",
+        "properties": {
+          "teacherId": { "type": "string", "format": "uuid" },
+          "roomId": { "type": "string", "format": "uuid" },
+          "weekday": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 7,
+            "description": "ISO weekday: Monday=1"
+          },
+          "localStart": { "type": "string", "example": "18:00" },
+          "localEnd": { "type": "string", "example": "19:30" },
+          "validFrom": { "type": "string", "format": "date" },
+          "validTo": { "type": "string", "format": "date" }
+        },
+        "required": [
+          "teacherId",
+          "weekday",
+          "localStart",
+          "localEnd",
+          "validFrom",
+          "validTo"
+        ]
+      },
+      "ScheduleCandidate": {
+        "type": "object",
+        "properties": {
+          "occurrenceDate": { "type": "string", "format": "date" },
+          "scheduledDate": { "type": "string", "format": "date" },
+          "startsAt": { "type": "string", "format": "date-time" },
+          "endsAt": { "type": "string", "format": "date-time" },
+          "status": {
+            "type": "string",
+            "enum": ["AVAILABLE", "EXISTING", "PRESERVED", "CONFLICT"]
+          },
+          "conflict": { "type": "string" }
+        },
+        "required": ["scheduledDate", "startsAt", "endsAt", "status"]
+      },
+      "SchedulePreview": {
+        "type": "object",
+        "properties": {
+          "timezone": { "type": "string" },
+          "candidates": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ScheduleCandidate" }
+          },
+          "created": { "type": "number" },
+          "skipped": { "type": "number" }
+        },
+        "required": ["timezone", "candidates", "created", "skipped"]
+      },
+      "SchedulePreviewResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/SchedulePreview" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "ScheduleRuleView": {
+        "type": "object",
+        "properties": {
+          "teacherId": { "type": "string", "format": "uuid" },
+          "roomId": { "type": "string", "format": "uuid" },
+          "weekday": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 7,
+            "description": "ISO weekday: Monday=1"
+          },
+          "localStart": { "type": "string", "example": "18:00" },
+          "localEnd": { "type": "string", "example": "19:30" },
+          "validFrom": { "type": "string", "format": "date" },
+          "validTo": { "type": "string", "format": "date" },
+          "lineageId": { "type": "string" },
+          "id": { "type": "string" },
+          "classId": { "type": "string" },
+          "timezone": { "type": "string" },
+          "version": { "type": "number" },
+          "active": { "type": "boolean" }
+        },
+        "required": [
+          "teacherId",
+          "weekday",
+          "localStart",
+          "localEnd",
+          "validFrom",
+          "validTo",
+          "lineageId",
+          "id",
+          "classId",
+          "timezone",
+          "version",
+          "active"
+        ]
+      },
+      "ScheduleRevisionView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "ruleId": { "type": "string" },
+          "replacementId": { "type": "string" },
+          "effectiveFrom": { "type": "string", "format": "date" },
+          "reason": { "type": "string" },
+          "actorId": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "before": { "$ref": "#/components/schemas/ScheduleRuleView" },
+          "after": { "$ref": "#/components/schemas/ScheduleRuleView" }
+        },
+        "required": [
+          "id",
+          "ruleId",
+          "replacementId",
+          "effectiveFrom",
+          "reason",
+          "actorId",
+          "createdAt",
+          "before",
+          "after"
+        ]
+      },
+      "ScheduleRevisionsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ScheduleRevisionView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "ScheduleRuleReplacement": {
+        "type": "object",
+        "properties": {
+          "teacherId": { "type": "string", "format": "uuid" },
+          "roomId": { "type": "string", "format": "uuid" },
+          "weekday": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 7,
+            "description": "ISO weekday: Monday=1"
+          },
+          "localStart": { "type": "string", "example": "18:00" },
+          "localEnd": { "type": "string", "example": "19:30" },
+          "validFrom": { "type": "string", "format": "date" },
+          "validTo": { "type": "string", "format": "date" },
+          "version": { "type": "number", "minimum": 1 },
+          "reason": { "type": "string", "minLength": 10, "maxLength": 500 }
+        },
+        "required": [
+          "teacherId",
+          "weekday",
+          "localStart",
+          "localEnd",
+          "validFrom",
+          "validTo",
+          "version",
+          "reason"
+        ]
+      },
+      "ScheduleRuleResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/ScheduleRuleView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
       "RoomView": {
         "type": "object",
         "properties": {
@@ -8944,41 +9370,6 @@
         },
         "required": ["data", "meta"]
       },
-      "ScheduleRuleView": {
-        "type": "object",
-        "properties": {
-          "teacherId": { "type": "string", "format": "uuid" },
-          "roomId": { "type": "string", "format": "uuid" },
-          "weekday": {
-            "type": "number",
-            "minimum": 1,
-            "maximum": 7,
-            "description": "ISO weekday: Monday=1"
-          },
-          "localStart": { "type": "string", "example": "18:00" },
-          "localEnd": { "type": "string", "example": "19:30" },
-          "validFrom": { "type": "string", "format": "date" },
-          "validTo": { "type": "string", "format": "date" },
-          "id": { "type": "string" },
-          "classId": { "type": "string" },
-          "timezone": { "type": "string" },
-          "version": { "type": "number" },
-          "active": { "type": "boolean" }
-        },
-        "required": [
-          "teacherId",
-          "weekday",
-          "localStart",
-          "localEnd",
-          "validFrom",
-          "validTo",
-          "id",
-          "classId",
-          "timezone",
-          "version",
-          "active"
-        ]
-      },
       "ScheduleRulesResponse": {
         "type": "object",
         "properties": {
@@ -8986,74 +9377,6 @@
             "type": "array",
             "items": { "$ref": "#/components/schemas/ScheduleRuleView" }
           },
-          "meta": { "$ref": "#/components/schemas/MetaDto" }
-        },
-        "required": ["data", "meta"]
-      },
-      "ScheduleRuleInput": {
-        "type": "object",
-        "properties": {
-          "teacherId": { "type": "string", "format": "uuid" },
-          "roomId": { "type": "string", "format": "uuid" },
-          "weekday": {
-            "type": "number",
-            "minimum": 1,
-            "maximum": 7,
-            "description": "ISO weekday: Monday=1"
-          },
-          "localStart": { "type": "string", "example": "18:00" },
-          "localEnd": { "type": "string", "example": "19:30" },
-          "validFrom": { "type": "string", "format": "date" },
-          "validTo": { "type": "string", "format": "date" }
-        },
-        "required": [
-          "teacherId",
-          "weekday",
-          "localStart",
-          "localEnd",
-          "validFrom",
-          "validTo"
-        ]
-      },
-      "ScheduleRuleResponse": {
-        "type": "object",
-        "properties": {
-          "data": { "$ref": "#/components/schemas/ScheduleRuleView" },
-          "meta": { "$ref": "#/components/schemas/MetaDto" }
-        },
-        "required": ["data", "meta"]
-      },
-      "ScheduleCandidate": {
-        "type": "object",
-        "properties": {
-          "scheduledDate": { "type": "string", "format": "date" },
-          "startsAt": { "type": "string", "format": "date-time" },
-          "endsAt": { "type": "string", "format": "date-time" },
-          "status": {
-            "type": "string",
-            "enum": ["AVAILABLE", "EXISTING", "CONFLICT"]
-          },
-          "conflict": { "type": "string" }
-        },
-        "required": ["scheduledDate", "startsAt", "endsAt", "status"]
-      },
-      "SchedulePreview": {
-        "type": "object",
-        "properties": {
-          "timezone": { "type": "string" },
-          "candidates": {
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/ScheduleCandidate" }
-          },
-          "created": { "type": "number" },
-          "skipped": { "type": "number" }
-        },
-        "required": ["timezone", "candidates", "created", "skipped"]
-      },
-      "SchedulePreviewResponse": {
-        "type": "object",
-        "properties": {
-          "data": { "$ref": "#/components/schemas/SchedulePreview" },
           "meta": { "$ref": "#/components/schemas/MetaDto" }
         },
         "required": ["data", "meta"]

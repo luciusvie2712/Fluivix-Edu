@@ -330,6 +330,9 @@ importers:
 
   apps/worker:
     dependencies:
+      '@fluivix/api':
+        specifier: workspace:*
+        version: link:../api
       '@fluivix/server-crypto':
         specifier: workspace:*
         version: link:../../packages/server-crypto

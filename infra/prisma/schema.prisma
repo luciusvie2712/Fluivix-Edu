@@ -314,6 +314,8 @@ model ClassSession {
   status        String    @default("SCHEDULED") @db.VarChar(20)
   version       Int       @default(1)
   scheduleRuleId String? @map("schedule_rule_id") @db.Uuid
+  ruleOccurrenceDate DateTime? @map("rule_occurrence_date") @db.Date
+  manualOverride Boolean @default(false) @map("manual_override")
   sessionType String @default("EXTRA") @map("session_type") @db.VarChar(20)
   roomId String? @map("room_id") @db.Uuid
   changeCount Int @default(0) @map("change_count")
@@ -330,6 +332,7 @@ model ScheduleRule {
   id String @id @default(uuid()) @db.Uuid
   tenantId String @map("tenant_id") @db.Uuid
   classId String @map("class_id") @db.Uuid
+  lineageId String @map("lineage_id") @db.Uuid
   teacherId String @map("teacher_id") @db.Uuid
   roomId String? @map("room_id") @db.Uuid
   weekday Int
@@ -342,8 +345,23 @@ model ScheduleRule {
   active Boolean @default(true)
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
   @@unique([tenantId,id,classId])
+  @@unique([tenantId,id])
   @@index([tenantId,classId])
   @@map("schedule_rules")
+}
+model ScheduleRuleRevision {
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  classId String @map("class_id") @db.Uuid
+  ruleId String @map("rule_id") @db.Uuid
+  replacementId String @map("replacement_id") @db.Uuid
+  oldSnapshot Json @map("old_snapshot")
+  newSnapshot Json @map("new_snapshot")
+  effectiveFrom DateTime @map("effective_from") @db.Date
+  reason String @db.VarChar(500)
+  actorId String @map("actor_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  @@map("schedule_rule_revisions")
 }
 model Room {
  id String @id @default(uuid()) @db.Uuid

@@ -8,6 +8,7 @@
     "start": "node dist/main.js"
   },
   "dependencies": {
+    "@fluivix/api": "workspace:*",
     "@fluivix/server-crypto": "workspace:*",
     "@prisma/client": "6.19.3",
     "bullmq": "6.4.0",

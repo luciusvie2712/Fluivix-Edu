@@ -1,5 +1,11 @@
-import { createApiClient, type components, type paths } from "@fluivix/api-client";
-type CalendarQuery = NonNullable<paths["/api/v1/schedule"]["get"]["parameters"]["query"]>;
+import {
+  createApiClient,
+  type components,
+  type paths,
+} from "@fluivix/api-client";
+type CalendarQuery = NonNullable<
+  paths["/api/v1/schedule"]["get"]["parameters"]["query"]
+>;
 export type Me = components["schemas"]["MeView"];
 export type Role = components["schemas"]["Role"];
 export class ApiError extends Error {
@@ -138,6 +144,33 @@ export const createStudent = (
   body: components["schemas"]["CreateStudentDto"],
 ) => unwrap(api.POST("/api/v1/students", { body }));
 export const teaching = {
+  previewDraftRule: (
+    id: string,
+    body: components["schemas"]["ScheduleRuleInput"],
+  ) =>
+    unwrap(
+      api.POST("/api/v1/classes/{id}/schedule-rules/preview", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+  replaceRule: (
+    id: string,
+    ruleId: string,
+    body: components["schemas"]["ScheduleRuleReplacement"],
+  ) =>
+    unwrap(
+      api.PATCH("/api/v1/classes/{id}/schedule-rules/{ruleId}", {
+        params: { path: { id, ruleId } },
+        body,
+      }),
+    ),
+  ruleHistory: (id: string, ruleId: string, page = 1) =>
+    unwrap(
+      api.GET("/api/v1/classes/{id}/schedule-rules/{ruleId}/history", {
+        params: { path: { id, ruleId }, query: { page, limit: 20 } },
+      }),
+    ),
   attendance: (id: string) =>
     unwrap(
       api.GET("/api/v1/sessions/{id}/attendance", { params: { path: { id } } }),

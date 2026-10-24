@@ -1,5 +1,6 @@
 import { z } from "zod";
 export { wallClockUtc } from "./schedule-time";
+export { safeCsvCell } from "./csv";
 // JSON decimal strings preserve all PostgreSQL bigint VND values without IEEE754 rounding.
 const exactInteger = /^(0|[1-9]\d{0,18})$/;
 export const vndSchema = z

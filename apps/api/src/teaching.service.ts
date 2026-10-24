@@ -2,12 +2,19 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
+  Inject,
   NotFoundException,
   UnprocessableEntityException,
 } from "@nestjs/common";
-import { Prisma, type ClassSession, type ScheduleRule } from "@prisma/client";
+import {
+  Prisma,
+  type PrismaClient,
+  type ClassSession,
+  type ScheduleRule,
+} from "@prisma/client";
 import { wallClockUtc } from "@fluivix/contracts";
 import { peakEnrollment } from "./enrollment-capacity";
+import { randomUUID } from "node:crypto";
 import { Db } from "./db";
 import type { Claims } from "./security";
 import { Paged } from "./http";
@@ -36,8 +43,12 @@ import {
   ClassUpdate,
   LifecycleVersion,
   WithdrawInput,
+  ScheduleRuleReplacement,
+  SchedulePreview,
 } from "./teaching.dto";
 type Tx = Prisma.TransactionClient;
+type TenantScope = Pick<Claims, "tenantId">;
+type ScheduleActor = TenantScope & { sub?: string };
 const day = (value: Date) => value.toISOString().slice(0, 10);
 const date = (value: string) => new Date(value + "T00:00:00Z");
 const staff = (c: Claims) =>
@@ -46,12 +57,17 @@ const validOn = (value: Date) => ({
   effectiveFrom: { lte: value },
   OR: [{ effectiveTo: null }, { effectiveTo: { gte: value } }],
 });
+class PreviewRollback extends Error {
+  constructor(readonly preview: SchedulePreview) {
+    super("PREVIEW_ONLY_ROLLBACK");
+  }
+}
 @Injectable()
 export class TeachingService {
-  constructor(private db: Db) {}
+  constructor(@Inject(Db) private db: PrismaClient) {}
   private async audit(
     tx: Tx,
-    c: Claims,
+    c: ScheduleActor,
     action: string,
     resourceId: string,
     traceId: string,
@@ -60,7 +76,7 @@ export class TeachingService {
     await tx.auditLog.create({
       data: {
         tenantId: c.tenantId!,
-        actorUserId: c.sub,
+        actorUserId: c.sub ?? null,
         action,
         resourceId,
         traceId,
@@ -68,7 +84,7 @@ export class TeachingService {
       },
     });
   }
-  private async lockTenant(tx: Tx, c: Claims) {
+  private async lockTenant(tx: Tx, c: TenantScope) {
     await tx.$queryRaw`SELECT id FROM tenants WHERE id=${c.tenantId!}::uuid FOR UPDATE`;
     await requireSubscriptionWrite(tx, c.tenantId!);
   }
@@ -681,7 +697,7 @@ export class TeachingService {
       finalizedAt: s.finalizedAt?.toISOString() ?? null,
     };
   }
-  private async activeTeacherAccount(tx: Tx, c: Claims, userId: string) {
+  private async activeTeacherAccount(tx: Tx, c: TenantScope, userId: string) {
     return tx.membership.findFirst({
       where: {
         tenantId: c.tenantId!,
@@ -694,7 +710,7 @@ export class TeachingService {
   }
   private async slot(
     tx: Tx,
-    c: Claims,
+    c: TenantScope,
     classId: string,
     input: SessionInput,
     excludeId?: string,
@@ -850,86 +866,377 @@ export class TeachingService {
     input: ScheduleRuleInput,
     traceId: string,
   ) {
-    return this.db.$transaction(async (tx) => {
-      await this.lockTenant(tx, c);
-      const cls = await tx.educationClass.findFirst({
-        where: { tenantId: c.tenantId!, id: classId, status: "ACTIVE" },
-      });
-      if (!cls)
-        throw new NotFoundException("Không tìm thấy lớp đang hoạt động.");
-      if (
-        input.validFrom > input.validTo ||
-        input.validFrom < day(cls.startDate) ||
-        input.validTo > day(cls.endDate) ||
-        input.localStart >= input.localEnd
-      )
-        throw new UnprocessableEntityException(
-          "Khoảng ngày hoặc giờ lặp không hợp lệ.",
+    return this.db.$transaction(
+      async (tx) => {
+        const rule = await this.insertRule(tx, c, classId, input, traceId);
+        const preview = await this.generateRuleTx(
+          tx,
+          c,
+          classId,
+          rule.id,
+          this.firstRuleWindow(input),
+          traceId,
+          false,
         );
-      const teacher = await tx.teacher.findFirst({
-        where: { tenantId: c.tenantId!, id: input.teacherId, status: "ACTIVE" },
-      });
-      const assignment = await tx.classTeacher.findFirst({
+        if (preview.candidates.some((v) => v.status === "CONFLICT"))
+          throw new ConflictException(
+            "SCHEDULE_CONFLICT: xem trước quy tắc và xử lý xung đột trước khi lưu.",
+          );
+        return this.ruleView(rule);
+      },
+      { timeout: 15000 },
+    );
+  }
+  private firstRuleWindow(input: ScheduleRuleInput) {
+    return {
+      from: input.validFrom,
+      to: day(
+        new Date(
+          Math.min(
+            date(input.validTo).getTime(),
+            date(input.validFrom).getTime() + 59 * 86400000,
+          ),
+        ),
+      ),
+    };
+  }
+  async previewDraftRule(
+    c: Claims,
+    classId: string,
+    input: ScheduleRuleInput,
+    traceId: string,
+  ) {
+    // Exercise real constraints, then roll back both transient rule and audit.
+    // No external side effect occurs inside this transaction.
+    try {
+      await this.db.$transaction(
+        async (tx) => {
+          const rule = await this.insertRule(tx, c, classId, input, traceId);
+          const preview = await this.generateRuleTx(
+            tx,
+            c,
+            classId,
+            rule.id,
+            this.firstRuleWindow(input),
+            traceId,
+            false,
+          );
+          throw new PreviewRollback(preview);
+        },
+        { timeout: 15000 },
+      );
+    } catch (error) {
+      if (error instanceof PreviewRollback) return error.preview;
+      throw error;
+    }
+    throw new Error("Preview must roll back");
+  }
+  private async insertRule(
+    tx: Tx,
+    c: Claims,
+    classId: string,
+    input: ScheduleRuleInput,
+    traceId: string,
+    lineageId?: string,
+  ) {
+    await this.lockTenant(tx, c);
+    const cls = await tx.educationClass.findFirst({
+      where: { tenantId: c.tenantId!, id: classId, status: "ACTIVE" },
+    });
+    if (!cls) throw new NotFoundException("Không tìm thấy lớp đang hoạt động.");
+    if (
+      input.validFrom > input.validTo ||
+      input.validFrom < day(cls.startDate) ||
+      input.validTo > day(cls.endDate) ||
+      input.localStart >= input.localEnd
+    )
+      throw new UnprocessableEntityException(
+        "Khoảng ngày hoặc giờ lặp không hợp lệ.",
+      );
+    const teacher = await tx.teacher.findFirst({
+      where: { tenantId: c.tenantId!, id: input.teacherId, status: "ACTIVE" },
+    });
+    const assignment = await tx.classTeacher.findFirst({
+      where: {
+        tenantId: c.tenantId!,
+        classId,
+        teacherId: input.teacherId,
+        effectiveFrom: { lte: date(input.validFrom) },
+        OR: [
+          { effectiveTo: null },
+          { effectiveTo: { gte: date(input.validTo) } },
+        ],
+      },
+    });
+    if (
+      !teacher ||
+      !assignment ||
+      !(await this.activeTeacherAccount(tx, c, teacher.userId))
+    )
+      throw new UnprocessableEntityException(
+        "Giáo viên phải được phân công trong toàn bộ khoảng lịch.",
+      );
+    const roomId = input.roomId ?? cls.roomId;
+    if (
+      roomId &&
+      !(await tx.room.findFirst({
         where: {
           tenantId: c.tenantId!,
-          classId,
-          teacherId: input.teacherId,
-          effectiveFrom: { lte: date(input.validFrom) },
-          OR: [
-            { effectiveTo: null },
-            { effectiveTo: { gte: date(input.validTo) } },
-          ],
+          id: roomId,
+          active: true,
+          capacity: { gte: cls.capacity },
         },
-      });
-      if (
-        !teacher ||
-        !assignment ||
-        !(await this.activeTeacherAccount(tx, c, teacher.userId))
-      )
-        throw new UnprocessableEntityException(
-          "Giáo viên phải được phân công trong toàn bộ khoảng lịch.",
+      }))
+    )
+      throw new UnprocessableEntityException(
+        "Phòng không hợp lệ hoặc không đủ sức chứa.",
+      );
+    const tenant = await tx.tenant.findUniqueOrThrow({
+      where: { id: c.tenantId! },
+    });
+    const id = randomUUID();
+    const rule = await tx.scheduleRule.create({
+      data: {
+        id,
+        lineageId: lineageId ?? id,
+        teacherId: input.teacherId,
+        weekday: input.weekday,
+        localStart: input.localStart,
+        localEnd: input.localEnd,
+        roomId,
+        tenantId: c.tenantId!,
+        classId,
+        timezone: tenant.timezone,
+        validFrom: date(input.validFrom),
+        validTo: date(input.validTo),
+      },
+    });
+    await this.audit(tx, c, "schedule.rule.created", rule.id, traceId);
+    return rule;
+  }
+  async replaceRule(
+    c: Claims,
+    classId: string,
+    ruleId: string,
+    input: ScheduleRuleReplacement,
+    traceId: string,
+  ) {
+    return this.db.$transaction(
+      async (tx) => {
+        await this.lockTenant(tx, c);
+        const old = await tx.scheduleRule.findFirst({
+          where: { tenantId: c.tenantId!, classId, id: ruleId, active: true },
+        });
+        if (!old)
+          throw new NotFoundException(
+            "Không tìm thấy quy tắc lịch đang hoạt động.",
+          );
+        if (old.version !== input.version)
+          throw new ConflictException(
+            "VERSION_CONFLICT: tải lại quy tắc lịch.",
+          );
+        const tenant = await tx.tenant.findUniqueOrThrow({
+          where: { id: c.tenantId! },
+        });
+        const today = new Intl.DateTimeFormat("en-CA", {
+          timeZone: tenant.timezone,
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }).format(new Date());
+        if (
+          input.validFrom <= today ||
+          input.validFrom < day(old.validFrom) ||
+          input.validFrom > day(old.validTo)
+        )
+          throw new UnprocessableEntityException(
+            "Chỉ thay lịch từ một ngày tương lai trong khoảng hiệu lực cũ.",
+          );
+        const replacement = await this.insertRule(
+          tx,
+          c,
+          classId,
+          input,
+          traceId,
+          old.lineageId,
         );
-      const roomId = input.roomId ?? cls.roomId;
-      if (
-        roomId &&
-        !(await tx.room.findFirst({
+        const oldEnd = new Date(date(input.validFrom).getTime() - 86400000);
+        await tx.scheduleRule.update({
+          where: { id: ruleId },
+          data: {
+            ...(oldEnd < old.validFrom
+              ? { active: false }
+              : { validTo: oldEnd }),
+            version: { increment: 1 },
+          },
+        });
+        // Cancel only untouched future occurrences. Locked/manual/snapshotted rows survive.
+        const future = await tx.classSession.findMany({
           where: {
             tenantId: c.tenantId!,
-            id: roomId,
-            active: true,
-            capacity: { gte: cls.capacity },
+            classId,
+            scheduleRuleId: ruleId,
+            ruleOccurrenceDate: { gte: date(input.validFrom) },
+            status: "SCHEDULED",
+            manualOverride: false,
+            version: 1,
           },
-        }))
-      )
-        throw new UnprocessableEntityException(
-          "Phòng không hợp lệ hoặc không đủ sức chứa.",
+        });
+        for (const session of future) {
+          if (
+            await tx.rosterRow.count({
+              where: { tenantId: c.tenantId!, sessionId: session.id },
+            })
+          )
+            continue;
+          const next = await tx.classSession.update({
+            where: { id: session.id },
+            data: {
+              status: "CANCELLED",
+              cancelReason: input.reason,
+              version: { increment: 1 },
+              changeCount: { increment: 1 },
+            },
+          });
+          const snapshot = (v: ClassSession) => ({
+            startsAt: v.startsAt.toISOString(),
+            endsAt: v.endsAt.toISOString(),
+            scheduledDate: day(v.scheduledDate),
+            teacherId: v.teacherId,
+            roomId: v.roomId,
+            status: v.status,
+            version: v.version,
+          });
+          await tx.sessionChange.create({
+            data: {
+              tenantId: c.tenantId!,
+              sessionId: session.id,
+              oldSnapshot: snapshot(session),
+              newSnapshot: snapshot(next),
+              reason: input.reason,
+              actorId: c.sub,
+            },
+          });
+          await tx.outboxEvent.create({
+            data: {
+              tenantId: c.tenantId!,
+              eventType: "CLASS_SCHEDULE_CHANGED",
+              aggregateId: session.id,
+              eventVersion: next.version,
+              payload: { sessionId: session.id },
+            },
+          });
+        }
+        const snapshot = (v: ScheduleRule) => ({
+          id: v.id,
+          classId: v.classId,
+          active: v.active,
+          lineageId: v.lineageId,
+          teacherId: v.teacherId,
+          ...(v.roomId ? { roomId: v.roomId } : {}),
+          weekday: v.weekday,
+          localStart: v.localStart,
+          localEnd: v.localEnd,
+          validFrom: day(v.validFrom),
+          validTo: day(v.validTo),
+          timezone: v.timezone,
+          version: v.version,
+        });
+        await tx.scheduleRuleRevision.create({
+          data: {
+            tenantId: c.tenantId!,
+            classId,
+            ruleId,
+            replacementId: replacement.id,
+            oldSnapshot: snapshot(old),
+            newSnapshot: snapshot(replacement),
+            effectiveFrom: date(input.validFrom),
+            reason: input.reason,
+            actorId: c.sub,
+          },
+        });
+        await this.audit(
+          tx,
+          c,
+          "schedule.rule.replaced",
+          replacement.id,
+          traceId,
+          input.reason,
         );
-      const tenant = await tx.tenant.findUniqueOrThrow({
-        where: { id: c.tenantId! },
-      });
-      const rule = await tx.scheduleRule.create({
-        data: {
-          ...input,
-          roomId,
-          tenantId: c.tenantId!,
+        const horizon = day(
+          new Date(
+            Math.min(
+              replacement.validTo.getTime(),
+              replacement.validFrom.getTime() + 59 * 86400000,
+            ),
+          ),
+        );
+        await this.generateRuleTx(
+          tx,
+          c,
           classId,
-          timezone: tenant.timezone,
-          validFrom: date(input.validFrom),
-          validTo: date(input.validTo),
-        },
+          replacement.id,
+          { from: input.validFrom, to: horizon },
+          traceId,
+          true,
+        );
+        return this.ruleView(replacement);
+      },
+      { timeout: 15000 },
+    );
+  }
+  async ruleHistory(c: Claims, classId: string, ruleId: string, q: ListDto) {
+    return this.db.$transaction(async (tx) => {
+      const rule = await tx.scheduleRule.findFirst({
+        where: { tenantId: c.tenantId!, classId, id: ruleId },
       });
-      await this.audit(tx, c, "schedule.rule.created", rule.id, traceId);
-      return this.ruleView(rule);
+      if (!rule) throw new NotFoundException("Không tìm thấy lịch trong lớp.");
+      const family = await tx.scheduleRule.findMany({
+        where: { tenantId: c.tenantId!, classId, lineageId: rule.lineageId },
+        select: { id: true },
+      });
+      const where = {
+        tenantId: c.tenantId!,
+        classId,
+        ruleId: { in: family.map((v) => v.id) },
+      };
+      const items = await tx.scheduleRuleRevision.findMany({
+        where,
+        orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+        take: q.limit,
+        skip: (q.page - 1) * q.limit,
+      });
+      const total = await tx.scheduleRuleRevision.count({ where });
+      return new Paged(
+        items.map((v) => ({
+          id: v.id,
+          ruleId: v.ruleId,
+          replacementId: v.replacementId,
+          effectiveFrom: day(v.effectiveFrom),
+          reason: v.reason,
+          actorId: v.actorId,
+          createdAt: v.createdAt.toISOString(),
+          before: v.oldSnapshot,
+          after: v.newSnapshot,
+        })),
+        {
+          page: q.page,
+          limit: q.limit,
+          total,
+          totalPages: Math.ceil(total / q.limit),
+        },
+      );
     });
   }
   async generateRule(
-    c: Claims,
+    c: ScheduleActor,
     classId: string,
     ruleId: string,
     window: GenerationWindow,
     traceId: string,
     commit: boolean,
   ) {
+    if (!c.tenantId) throw new ForbiddenException("Chưa chọn trung tâm.");
     if (
       window.from > window.to ||
       date(window.to).getTime() - date(window.from).getTime() > 59 * 86400000
@@ -938,143 +1245,220 @@ export class TeachingService {
         "Mỗi lần chỉ được sinh tối đa 60 ngày.",
       );
     return this.db.$transaction(
-      async (tx) => {
-        // Preview and commit share exactly the same validation. Commit repeats it under lock.
-        if (commit) await this.lockTenant(tx, c);
-        const rule = await tx.scheduleRule.findFirst({
-          where: { tenantId: c.tenantId!, classId, id: ruleId, active: true },
-        });
-        if (!rule)
-          throw new NotFoundException(
-            "Không tìm thấy quy tắc lịch đang hoạt động.",
-          );
-        const tenant = await tx.tenant.findUniqueOrThrow({
-          where: { id: c.tenantId! },
-        });
-        if (rule.timezone !== tenant.timezone)
-          throw new ConflictException(
-            "Múi giờ trung tâm đã đổi; cần xem xét quy tắc trước khi sinh lịch.",
-          );
-        const candidates: ScheduleCandidate[] = [];
-        for (
-          let ms = Math.max(
-            date(window.from).getTime(),
-            rule.validFrom.getTime(),
-          );
-          ms <= Math.min(date(window.to).getTime(), rule.validTo.getTime());
-          ms += 86400000
-        ) {
-          const d = new Date(ms);
-          if ((d.getUTCDay() || 7) !== rule.weekday) continue;
-          const scheduledDate = day(d);
-          let startsAt: string, endsAt: string;
-          try {
-            startsAt = wallClockUtc(
-              scheduledDate,
-              rule.localStart,
-              rule.timezone,
-            ).toISOString();
-            endsAt = wallClockUtc(
-              scheduledDate,
-              rule.localEnd,
-              rule.timezone,
-            ).toISOString();
-          } catch {
-            candidates.push({
-              scheduledDate,
-              startsAt: "",
-              endsAt: "",
-              status: "CONFLICT",
-              conflict: "DST_LOCAL_TIME_REQUIRES_REVIEW",
-            });
-            continue;
-          }
-          const existing = await tx.classSession.findFirst({
-            where: {
-              tenantId: c.tenantId!,
-              scheduleRuleId: rule.id,
-              scheduledDate: d,
-            },
-          });
-          if (existing) {
-            candidates.push({
-              scheduledDate,
-              startsAt: existing.startsAt.toISOString(),
-              endsAt: existing.endsAt.toISOString(),
-              status: "EXISTING",
-            });
-            continue;
-          }
-          try {
-            await this.slot(tx, c, classId, {
-              teacherId: rule.teacherId,
-              ...(rule.roomId ? { roomId: rule.roomId } : {}),
-              startsAt,
-              endsAt,
-            });
-            candidates.push({
-              scheduledDate,
-              startsAt,
-              endsAt,
-              status: "AVAILABLE",
-            });
-          } catch (error) {
-            if (
-              !(
-                error instanceof ConflictException ||
-                error instanceof UnprocessableEntityException
-              )
-            )
-              throw error;
-            candidates.push({
-              scheduledDate,
-              startsAt,
-              endsAt,
-              status: "CONFLICT",
-              conflict: error.message,
-            });
-          }
-        }
-        if (commit && candidates.some((v) => v.status === "CONFLICT"))
-          throw new ConflictException(
-            "SCHEDULE_CONFLICT: xem preview mới trước khi sinh lịch; toàn bộ batch chưa được ghi.",
-          );
-        let created = 0;
-        if (commit) {
-          for (const v of candidates.filter((v) => v.status === "AVAILABLE")) {
-            await tx.classSession.create({
-              data: {
-                tenantId: c.tenantId!,
-                classId,
-                teacherId: rule.teacherId,
-                roomId: rule.roomId,
-                scheduleRuleId: rule.id,
-                sessionType: "REGULAR",
-                scheduledDate: date(v.scheduledDate),
-                startsAt: new Date(v.startsAt),
-                endsAt: new Date(v.endsAt),
-              },
-            });
-            created++;
-          }
-          if (created)
-            await this.audit(
-              tx,
-              c,
-              "schedule.rule.generated",
-              rule.id,
-              traceId,
-            );
-        }
-        return {
-          timezone: rule.timezone,
-          candidates,
-          created,
-          skipped: candidates.filter((v) => v.status === "EXISTING").length,
-        };
-      },
+      (tx) =>
+        this.generateRuleTx(tx, c, classId, ruleId, window, traceId, commit),
       { timeout: 15000 },
     );
+  }
+  private async generateRuleTx(
+    tx: Tx,
+    c: ScheduleActor,
+    classId: string,
+    ruleId: string,
+    window: GenerationWindow,
+    traceId: string,
+    commit: boolean,
+  ) {
+    // Preview and commit share exactly the same validation. Commit repeats it under lock.
+    if (commit) await this.lockTenant(tx, c);
+    const rule = await tx.scheduleRule.findFirst({
+      where: { tenantId: c.tenantId!, classId, id: ruleId, active: true },
+    });
+    if (!rule)
+      throw new NotFoundException(
+        "Không tìm thấy quy tắc lịch đang hoạt động.",
+      );
+    const tenant = await tx.tenant.findUniqueOrThrow({
+      where: { id: c.tenantId! },
+    });
+    if (rule.timezone !== tenant.timezone)
+      throw new ConflictException(
+        "Múi giờ trung tâm đã đổi; cần xem xét quy tắc trước khi sinh lịch.",
+      );
+    const candidates: ScheduleCandidate[] = [];
+    const family = await tx.scheduleRule.findMany({
+      where: { tenantId: c.tenantId!, classId, lineageId: rule.lineageId },
+      select: { id: true },
+    });
+    const ancestors = await tx.classSession.findMany({
+      where: {
+        tenantId: c.tenantId!,
+        classId,
+        scheduleRuleId: {
+          in: family.map((v) => v.id).filter((id) => id !== rule.id),
+        },
+        ruleOccurrenceDate: { gte: date(window.from), lte: date(window.to) },
+      },
+    });
+    const snapshots = new Set(
+      (
+        await tx.rosterRow.findMany({
+          where: {
+            tenantId: c.tenantId!,
+            sessionId: { in: ancestors.map((v) => v.id) },
+          },
+          select: { sessionId: true },
+        })
+      ).map((v) => v.sessionId),
+    );
+    const protectedRows = ancestors.filter(
+      (v) =>
+        v.manualOverride ||
+        ["COMPLETED", "IN_PROGRESS", "REOPENED"].includes(v.status) ||
+        (v.status !== "CANCELLED" && v.version > 1) ||
+        snapshots.has(v.id),
+    );
+    for (
+      let ms = Math.max(date(window.from).getTime(), rule.validFrom.getTime());
+      ms <= Math.min(date(window.to).getTime(), rule.validTo.getTime());
+      ms += 86400000
+    ) {
+      const d = new Date(ms);
+      if ((d.getUTCDay() || 7) !== rule.weekday) continue;
+      const scheduledDate = day(d);
+      const preserved = protectedRows.find(
+        (v) =>
+          v.ruleOccurrenceDate && day(v.ruleOccurrenceDate) === scheduledDate,
+      );
+      if (preserved) {
+        candidates.push({
+          occurrenceDate: scheduledDate,
+          scheduledDate: day(preserved.scheduledDate),
+          startsAt: preserved.startsAt.toISOString(),
+          endsAt: preserved.endsAt.toISOString(),
+          status: "PRESERVED",
+        });
+        continue;
+      }
+      let startsAt: string, endsAt: string;
+      try {
+        startsAt = wallClockUtc(
+          scheduledDate,
+          rule.localStart,
+          rule.timezone,
+        ).toISOString();
+        endsAt = wallClockUtc(
+          scheduledDate,
+          rule.localEnd,
+          rule.timezone,
+        ).toISOString();
+      } catch {
+        candidates.push({
+          scheduledDate,
+          startsAt: "",
+          endsAt: "",
+          status: "CONFLICT",
+          conflict: "DST_LOCAL_TIME_REQUIRES_REVIEW",
+        });
+        continue;
+      }
+      const existing = await tx.classSession.findFirst({
+        where: {
+          tenantId: c.tenantId!,
+          scheduleRuleId: rule.id,
+          ruleOccurrenceDate: d,
+        },
+      });
+      if (existing) {
+        candidates.push({
+          occurrenceDate: scheduledDate,
+          scheduledDate: day(existing.scheduledDate),
+          startsAt: existing.startsAt.toISOString(),
+          endsAt: existing.endsAt.toISOString(),
+          status: "EXISTING",
+        });
+        continue;
+      }
+      try {
+        await this.slot(tx, c, classId, {
+          teacherId: rule.teacherId,
+          ...(rule.roomId ? { roomId: rule.roomId } : {}),
+          startsAt,
+          endsAt,
+        });
+        candidates.push({
+          scheduledDate,
+          startsAt,
+          endsAt,
+          status: "AVAILABLE",
+        });
+      } catch (error) {
+        if (
+          !(
+            error instanceof ConflictException ||
+            error instanceof UnprocessableEntityException
+          )
+        )
+          throw error;
+        candidates.push({
+          scheduledDate,
+          startsAt,
+          endsAt,
+          status: "CONFLICT",
+          conflict: error.message,
+        });
+      }
+    }
+    // A manually moved lesson can belong to a weekday removed by the replacement.
+    // Keep it visible in preview rather than silently adding another occurrence.
+    for (const preserved of protectedRows) {
+      const occurrence = preserved.ruleOccurrenceDate;
+      if (
+        !occurrence ||
+        occurrence < rule.validFrom ||
+        occurrence > rule.validTo ||
+        candidates.some(
+          (v) => (v.occurrenceDate ?? v.scheduledDate) === day(occurrence),
+        )
+      )
+        continue;
+      candidates.push({
+        occurrenceDate: day(occurrence),
+        scheduledDate: day(preserved.scheduledDate),
+        startsAt: preserved.startsAt.toISOString(),
+        endsAt: preserved.endsAt.toISOString(),
+        status: "PRESERVED",
+      });
+    }
+    candidates.sort((a, b) =>
+      (a.occurrenceDate ?? a.scheduledDate).localeCompare(
+        b.occurrenceDate ?? b.scheduledDate,
+      ),
+    );
+    if (commit && candidates.some((v) => v.status === "CONFLICT"))
+      throw new ConflictException(
+        "SCHEDULE_CONFLICT: xem preview mới trước khi sinh lịch; toàn bộ batch chưa được ghi.",
+      );
+    let created = 0;
+    if (commit) {
+      for (const v of candidates.filter((v) => v.status === "AVAILABLE")) {
+        await tx.classSession.create({
+          data: {
+            tenantId: c.tenantId!,
+            classId,
+            teacherId: rule.teacherId,
+            roomId: rule.roomId,
+            scheduleRuleId: rule.id,
+            ruleOccurrenceDate: date(v.scheduledDate),
+            sessionType: "REGULAR",
+            scheduledDate: date(v.scheduledDate),
+            startsAt: new Date(v.startsAt),
+            endsAt: new Date(v.endsAt),
+          },
+        });
+        created++;
+      }
+      if (created)
+        await this.audit(tx, c, "schedule.rule.generated", rule.id, traceId);
+    }
+    return {
+      timezone: rule.timezone,
+      candidates,
+      created,
+      skipped: candidates.filter((v) =>
+        ["EXISTING", "PRESERVED"].includes(v.status),
+      ).length,
+    };
   }
   async room(c: Claims, input: RoomInput, traceId: string) {
     return this.db.$transaction(async (tx) => {
@@ -1165,6 +1549,7 @@ export class TeachingService {
             : {}),
           version: { increment: 1 },
           changeCount: { increment: 1 },
+          manualOverride: true,
         },
       });
       const snapshot = (v: ClassSession) => ({
