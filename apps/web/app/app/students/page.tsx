@@ -7,6 +7,7 @@ import { useSession } from "../../../components/providers";
 import { students } from "../../../lib/api";
 import { Button } from "../../../components/ui/button";
 import { studentStatuses } from "../../../components/student-form";
+import StudentImport from "../../../components/student-import";
 const statusSchema = z.enum(["ACTIVE", "PAUSED", "GRADUATED", "INACTIVE"]);
 export default function Page() {
   const { me } = useSession();
@@ -71,6 +72,15 @@ export default function Page() {
     <>
       <h1>Học viên</h1>
       <p className="muted">Danh sách hồ sơ trong trung tâm đang chọn.</p>
+      {writable && (
+        <details>
+          <summary>Nhập CSV có kiểm tra trước khi ghi</summary>
+          <StudentImport
+            key={`${me?.id}:${me?.activeTenantId}:${me?.activeRole}`}
+            disabled={readOnly}
+          />
+        </details>
+      )}
       {writable && !readOnly && (
         <div className="toolbar">
           <Button asChild>

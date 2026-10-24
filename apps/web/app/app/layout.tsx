@@ -54,6 +54,12 @@ export default function Layout({ children }: { children: ReactNode }) {
         </Link>
         <nav aria-label="Điều hướng trung tâm">
           <Link href="/app/students">Học viên</Link>
+          {["owner", "manager", "academic_staff", "teacher"].includes(
+            session.me.activeRole ?? "",
+          ) && <Link href="/app/classes">Lớp học và lịch học</Link>}
+          {["owner", "manager", "academic_staff", "teacher"].includes(
+            session.me.activeRole ?? "",
+          ) && <Link href="/app/schedule">Lịch buổi học</Link>}
           <Link href="/app/account">Tài khoản và phiên</Link>
           {["owner", "manager"].includes(session.me.activeRole ?? "") && (
             <Link href="/app/settings">Gói dịch vụ</Link>

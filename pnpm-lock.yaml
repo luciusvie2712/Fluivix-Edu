@@ -269,6 +269,9 @@ importers:
       '@fluivix/api-client':
         specifier: workspace:*
         version: link:../../packages/api-client
+      '@fluivix/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
       '@fluivix/ui-tokens':
         specifier: workspace:*
         version: link:../../packages/ui-tokens

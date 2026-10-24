@@ -59,6 +59,81 @@ async function capture(page: Page, name: string) {
     );
   }
 }
+test("CSV preview100 rejects five invalid rows then commits a clean batch through the real API", async ({
+  page,
+}) => {
+  await login(page);
+  await page
+    .getByText("Nhập CSV có kiểm tra trước khi ghi", { exact: true })
+    .click();
+  const prefix = "E2ECSV" + Date.now();
+  const lines = Array.from(
+    { length: 100 },
+    (_, index) =>
+      `${prefix}${index},Synthetic CSV ${index},${index < 5 ? "invalid-email" : `csv${index}@example.test`}`,
+  );
+  await page
+    .getByLabel("Tệp CSV học viên", { exact: true })
+    .setInputFiles({
+      name: "invalid.csv",
+      mimeType: "text/csv",
+      buffer: Buffer.from(
+        "studentCode,fullName,contactEmail\n" + lines.join("\n"),
+        "utf8",
+      ),
+    });
+  await page
+    .getByRole("button", { name: "Xem trước CSV", exact: true })
+    .click();
+  await expect(
+    page.getByRole("status").filter({ hasText: "100 dòng; 5 dòng lỗi" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Xác nhận nhập học viên", exact: true }),
+  ).toHaveCount(0);
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Tải báo cáo dòng lỗi" }).click();
+  expect((await download).suggestedFilename()).toBe(
+    "fluivixedu-import-errors.csv",
+  );
+  await capture(page, "csv-preview-errors");
+  await page
+    .getByLabel("Tệp CSV học viên", { exact: true })
+    .setInputFiles({
+      name: "valid.csv",
+      mimeType: "text/csv",
+      buffer: Buffer.from(
+        `studentCode,fullName\n${prefix}A,CSV browser learner A\n${prefix}B,CSV browser learner B`,
+        "utf8",
+      ),
+    });
+  await page
+    .getByRole("button", { name: "Xem trước CSV", exact: true })
+    .click();
+  await expect(
+    page.getByRole("status").filter({ hasText: "2 dòng; 0 dòng lỗi" }),
+  ).toBeVisible();
+  const commit = page.getByRole("button", {
+    name: "Xác nhận nhập học viên",
+    exact: true,
+  });
+  await expect(commit).toBeDisabled();
+  await page
+    .getByRole("checkbox", {
+      name: "Tôi xác nhận nhập toàn bộ 2 học viên vào trung tâm đang chọn.",
+    })
+    .check();
+  await commit.click();
+  await expect(
+    page.getByRole("status").filter({ hasText: "Đã nhập 2 học viên" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("cell", { name: "CSV browser learner A", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("cell", { name: "CSV browser learner B", exact: true }),
+  ).toBeVisible();
+});
 test("staff creates and edits a real student, resolves version conflict, deactivates with reason and denies another tenant", async ({
   page,
   browser,

@@ -5,6 +5,7 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { seed } from "./seed";
+import { seedTeachingForE2E } from "./e2e-teaching-fixture";
 import { testOrigins, testPorts } from "./test-origins";
 import { createServer } from "node:net";
 async function databasePort() {
@@ -78,6 +79,7 @@ async function run() {
   );
   const db = new PrismaClient();
   await seed(db, "Fluivix-Test-Password-2026");
+  await seedTeachingForE2E(db);
   await db.$disconnect();
   const { createApp } = await import("../apps/api/dist/app.js");
   const app = await createApp();

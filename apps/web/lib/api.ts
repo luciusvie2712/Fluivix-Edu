@@ -1,4 +1,5 @@
-import { createApiClient, type components } from "@fluivix/api-client";
+import { createApiClient, type components, type paths } from "@fluivix/api-client";
+type CalendarQuery = NonNullable<paths["/api/v1/schedule"]["get"]["parameters"]["query"]>;
 export type Me = components["schemas"]["MeView"];
 export type Role = components["schemas"]["Role"];
 export class ApiError extends Error {
@@ -17,6 +18,20 @@ const api = createApiClient(
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/v1\/?$/, "") ??
     "http://localhost:4000",
 );
+export const previewStudentImport = (
+  body: components["schemas"]["StudentCsvInput"],
+) => unwrap(api.POST("/api/v1/students/imports", { body }));
+export const readStudentImport = (id: string) =>
+  unwrap(
+    api.GET("/api/v1/students/imports/{id}", { params: { path: { id } } }),
+  );
+export const commitStudentImport = (id: string) =>
+  unwrap(
+    api.POST("/api/v1/students/imports/{id}/commit", {
+      params: { path: { id } },
+      headers: { "Content-Type": "application/json" },
+    }),
+  );
 api.use({
   onRequest({ request }) {
     if (accessToken)
@@ -122,6 +137,169 @@ export const students = (
 export const createStudent = (
   body: components["schemas"]["CreateStudentDto"],
 ) => unwrap(api.POST("/api/v1/students", { body }));
+export const teaching = {
+  attendance: (id: string) =>
+    unwrap(
+      api.GET("/api/v1/sessions/{id}/attendance", { params: { path: { id } } }),
+    ),
+  saveAttendance: (
+    id: string,
+    body: components["schemas"]["AttendanceDraft"],
+  ) =>
+    unwrap(
+      api.PUT("/api/v1/sessions/{id}/attendance/draft", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+  finalize: (id: string, body: components["schemas"]["VersionInput"]) =>
+    unwrap(
+      api.POST("/api/v1/sessions/{id}/attendance/finalize", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+  reopen: (id: string, body: components["schemas"]["ReopenInput"]) =>
+    unwrap(
+      api.POST("/api/v1/sessions/{id}/attendance/reopen", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+  cancel: (id: string, body: components["schemas"]["ReopenInput"]) =>
+    unwrap(
+      api.POST("/api/v1/sessions/{id}/cancel", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+  reschedule: (id: string, body: components["schemas"]["RescheduleInput"]) =>
+    unwrap(
+      api.POST("/api/v1/sessions/{id}/reschedule", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+  lesson: (id: string) =>
+    unwrap(
+      api.GET("/api/v1/sessions/{id}/lesson-report", {
+        params: { path: { id } },
+      }),
+    ),
+  saveLesson: (id: string, body: components["schemas"]["LessonInput"]) =>
+    unwrap(
+      api.PUT("/api/v1/sessions/{id}/lesson-report", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+  classes: (page = 1, search = "") =>
+    unwrap(
+      api.GET("/api/v1/classes", {
+        params: { query: { page, limit: 20, search } },
+      }),
+    ),
+  createClass: (body: components["schemas"]["ClassInput"]) =>
+    unwrap(api.POST("/api/v1/classes", { body })),
+  classDetail: (id: string) =>
+    unwrap(api.GET("/api/v1/classes/{id}", { params: { path: { id } } })),
+  updateClass: (id: string, body: components["schemas"]["ClassUpdate"]) =>
+    unwrap(
+      api.PATCH("/api/v1/classes/{id}", { params: { path: { id } }, body }),
+    ),
+  closeClass: (id: string, body: components["schemas"]["LifecycleVersion"]) =>
+    unwrap(
+      api.POST("/api/v1/classes/{id}/close", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+  roster: (id: string, page = 1) =>
+    unwrap(
+      api.GET("/api/v1/classes/{id}/enrollments", {
+        params: { path: { id }, query: { page, limit: 20 } },
+      }),
+    ),
+  enroll: (id: string, body: components["schemas"]["EnrollmentInput"]) =>
+    unwrap(
+      api.POST("/api/v1/classes/{id}/enrollments", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+  withdraw: (
+    id: string,
+    enrollmentId: string,
+    body: components["schemas"]["WithdrawInput"],
+  ) =>
+    unwrap(
+      api.POST("/api/v1/classes/{id}/enrollments/{enrollmentId}/withdraw", {
+        params: { path: { id, enrollmentId } },
+        body,
+      }),
+    ),
+  teachers: (page = 1, search = "") =>
+    unwrap(
+      api.GET("/api/v1/teachers", {
+        params: { query: { page, limit: 20, search } },
+      }),
+    ),
+  teacherDetail: (id: string) =>
+    unwrap(api.GET("/api/v1/teachers/{id}", { params: { path: { id } } })),
+  updateTeacher: (id: string, body: components["schemas"]["TeacherUpdate"]) =>
+    unwrap(
+      api.PATCH("/api/v1/teachers/{id}", { params: { path: { id } }, body }),
+    ),
+  assign: (id: string, body: components["schemas"]["TeacherAssignmentInput"]) =>
+    unwrap(
+      api.POST("/api/v1/classes/{id}/teachers", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+  rules: (id: string) =>
+    unwrap(
+      api.GET("/api/v1/classes/{id}/schedule-rules", {
+        params: { path: { id } },
+      }),
+    ),
+  createRule: (id: string, body: components["schemas"]["ScheduleRuleInput"]) =>
+    unwrap(
+      api.POST("/api/v1/classes/{id}/schedule-rules", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+  preview: (
+    id: string,
+    ruleId: string,
+    query: components["schemas"]["GenerationWindow"],
+  ) =>
+    unwrap(
+      api.GET("/api/v1/classes/{id}/schedule-rules/{ruleId}/preview", {
+        params: { path: { id, ruleId }, query },
+      }),
+    ),
+  generate: (
+    id: string,
+    ruleId: string,
+    body: components["schemas"]["GenerationWindow"],
+  ) =>
+    unwrap(
+      api.POST("/api/v1/classes/{id}/schedule-rules/{ruleId}/generate", {
+        params: { path: { id, ruleId } },
+        body,
+      }),
+    ),
+  calendar: (query: CalendarQuery) =>
+    unwrap(api.GET("/api/v1/schedule", { params: { query } })),
+  classSessions: (id: string, query: CalendarQuery) =>
+    unwrap(
+      api.GET("/api/v1/classes/{id}/sessions", {
+        params: { path: { id }, query },
+      }),
+    ),
+};
 export const studentDetail = (id: string, signal?: AbortSignal) =>
   unwrap(
     api.GET("/api/v1/students/{id}", {
