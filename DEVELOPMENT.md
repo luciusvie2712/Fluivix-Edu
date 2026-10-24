@@ -1,8 +1,71 @@
 # FluivixEdu implementation checkpoint
 
-This repository currently implements tenant/platform identity, center subscriptions,
-operational audit/diagnostics, and scoped student profile management. It does **not** implement all P0 Web,
-Platform or business modules. Do not deploy it for real learner data.
+This repository implements tenant/platform identity, subscriptions, operational audit,
+student profiles and the Prompt02 Expo app with teaching, published results,
+guardian finance and inbox APIs. Full P0 release remains BLOCKED; see
+`docs/ai/evidence/mobile/HANDOFF.md` for all21 mobile routes, all30 TC statuses and
+actual evidence. Signed native builds and physical-device acceptance are not verified.
+
+## Mobile on Windows PowerShell
+
+Run from the repository root. Existing `.env` is never overwritten by these commands.
+The following API runner creates a fresh isolated synthetic PostgreSQL database and
+does not need the development database to be reset. It does not start a push/mail worker.
+
+```powershell
+pnpm.cmd install --frozen-lockfile
+pnpm.cmd db:generate
+pnpm.cmd --filter @fluivix/api build
+$env:SEED_PASSWORD = Read-Host 'Synthetic seed password (16+ characters)'
+pnpm.cmd dev:mobile:api
+```
+
+Keep that terminal running. In a second terminal:
+
+```powershell
+$env:EXPO_PUBLIC_API_BASE_URL = 'http://localhost:4200'
+pnpm.cmd --filter @fluivix/mobile dev
+```
+
+Synthetic users: `teacher@example.test`, `student@example.test`,
+`guardian@example.test`, with the password entered above. Select Center A; the
+guardian has two verified synthetic children and the teacher has a20-person class.
+Teacher also has a second role/tenant for switching checks. Starting a fresh isolated
+runner restores fixtures after destructive test flows. No real consent is seeded.
+
+Android emulator/device requires installed Android SDK/adb and an attached target.
+With USB/emulator `adb reverse tcp:4200 tcp:4200` makes this localhost API reachable.
+For LAN development set `API_HOST=0.0.0.0` before starting the synthetic API and set
+`EXPO_PUBLIC_API_BASE_URL` to this Windows machine's reachable LAN address; configure
+the firewall intentionally. Production requires an HTTPS API origin. Never put
+server secrets in Expo public variables. iOS native builds require macOS/Xcode or
+a configured EAS account/project and signing credentials. None were available here.
+
+```powershell
+pnpm.cmd test:mobile:api
+pnpm.cmd --filter @fluivix/mobile test
+pnpm.cmd --filter @fluivix/mobile build
+```
+
+The last command exports Hermes bundles, not APK/IPA. Prepared Maestro journeys
+are in `apps/mobile/.maestro/`; they require a real installed development build,
+Maestro/adb, fresh synthetic API data and the `SEED_PASSWORD` flow variable. They
+have not been executed on a device. Expo Push requires a configured EAS project,
+physical device, platform push credentials, an approved privacy notice/version and
+consent; default `PUSH_PROVIDER=disabled`. Inbox APIs remain independent of OS permission.
+
+If local Redis6379 is occupied by another project, use a dedicated port:
+
+```powershell
+$env:FLUIVIX_REDIS_PORT='6385'
+docker compose up -d --wait redis
+$env:TEST_REDIS_URL='redis://127.0.0.1:6385'
+```
+
+For an existing *synthetic local* development DB, `pnpm.cmd db:migrate` followed
+by `pnpm.cmd db:seed:mobile` adds fixtures without overwriting existing credentials.
+It requires `SEED_PASSWORD`, refuses production/remote databases, and does not imply
+all production migrations or backup/restore checks are approved.
 
 ## Windows PowerShell
 
