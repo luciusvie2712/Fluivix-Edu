@@ -1,6 +1,82 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/api/v1/students/imports": {
+      "post": {
+        "operationId": "StudentImportsController_preview",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/StudentCsvInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ImportResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["students-import"]
+      }
+    },
+    "/api/v1/students/imports/{id}": {
+      "get": {
+        "operationId": "StudentImportsController_detail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ImportResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["students-import"]
+      }
+    },
+    "/api/v1/students/imports/{id}/commit": {
+      "post": {
+        "operationId": "StudentImportsController_commit",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ImportResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["students-import"]
+      }
+    },
     "/api/v1/auth/login": {
       "post": {
         "operationId": "AuthController_login",
@@ -889,6 +965,1327 @@
         "tags": ["mobile-people"]
       }
     },
+    "/api/v1/rooms": {
+      "get": {
+        "operationId": "TeachingController_rooms",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RoomsResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      },
+      "post": {
+        "operationId": "TeachingController_room",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RoomInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RoomResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      }
+    },
+    "/api/v1/schedule": {
+      "get": {
+        "operationId": "TeachingController_calendar",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "teacherId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "roomId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionsListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      }
+    },
+    "/api/v1/classes/{id}/sessions": {
+      "get": {
+        "operationId": "TeachingController_classSessions",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "teacherId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "roomId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionsListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      }
+    },
+    "/api/v1/sessions/{id}": {
+      "get": {
+        "operationId": "TeachingController_sessionDetail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SessionResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      }
+    },
+    "/api/v1/teachers": {
+      "get": {
+        "operationId": "TeachingController_teachers",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TeachersResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      },
+      "post": {
+        "operationId": "TeachingController_teacher",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TeacherInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TeacherResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      }
+    },
+    "/api/v1/teachers/{id}": {
+      "get": {
+        "operationId": "TeachingController_teacherDetail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TeacherResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      },
+      "patch": {
+        "operationId": "TeachingController_updateTeacher",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TeacherUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TeacherResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      }
+    },
+    "/api/v1/classes/{id}": {
+      "patch": {
+        "operationId": "TeachingController_updateClass",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ClassUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ClassResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      },
+      "get": {
+        "operationId": "TeachingController_detail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ClassResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      }
+    },
+    "/api/v1/classes/{id}/close": {
+      "post": {
+        "operationId": "TeachingController_closeClass",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LifecycleVersion" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ClassResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      }
+    },
+    "/api/v1/classes/{id}/enrollments/{enrollmentId}/withdraw": {
+      "post": {
+        "operationId": "TeachingController_withdraw",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "enrollmentId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/WithdrawInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/EnrollmentResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      }
+    },
+    "/api/v1/classes/{id}/schedule-rules": {
+      "get": {
+        "operationId": "TeachingController_rules",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleRulesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      },
+      "post": {
+        "operationId": "TeachingController_rule",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ScheduleRuleInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScheduleRuleResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      }
+    },
+    "/api/v1/classes/{id}/schedule-rules/{ruleId}/preview": {
+      "get": {
+        "operationId": "TeachingController_previewRule",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ruleId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchedulePreviewResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      }
+    },
+    "/api/v1/classes/{id}/schedule-rules/{ruleId}/generate": {
+      "post": {
+        "operationId": "TeachingController_generateRule",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ruleId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/GenerationWindow" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchedulePreviewResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      }
+    },
     "/api/v1/mobile/my/attendance/summary": {
       "get": {
         "operationId": "TeachingController_attendanceSummary",
@@ -915,6 +2312,24 @@
             "required": false,
             "in": "query",
             "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "teacherId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "roomId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
           },
           {
             "name": "from",
@@ -1019,6 +2434,24 @@
             "schema": { "maxLength": 100, "type": "string" }
           },
           {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "teacherId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "roomId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
             "name": "from",
             "required": true,
             "in": "query",
@@ -1039,72 +2472,6 @@
                 "schema": {
                   "$ref": "#/components/schemas/AttendanceSummaryResponse"
                 }
-              }
-            }
-          },
-          "401": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "403": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "409": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "422": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        },
-        "security": [{ "bearer": [] }],
-        "tags": ["teaching"]
-      }
-    },
-    "/api/v1/rooms": {
-      "post": {
-        "operationId": "TeachingController_room",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/RoomInput" }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/RoomResponse" }
               }
             }
           },
@@ -1251,72 +2618,6 @@
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/SessionResponse" }
-              }
-            }
-          },
-          "401": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "403": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "409": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "422": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        },
-        "security": [{ "bearer": [] }],
-        "tags": ["teaching"]
-      }
-    },
-    "/api/v1/teachers": {
-      "post": {
-        "operationId": "TeachingController_teacher",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/TeacherInput" }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/TeacherResponse" }
               }
             }
           },
@@ -1545,71 +2846,6 @@
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/ClassesResponse" }
-              }
-            }
-          },
-          "401": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "403": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "409": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "422": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        },
-        "security": [{ "bearer": [] }],
-        "tags": ["teaching"]
-      }
-    },
-    "/api/v1/classes/{id}": {
-      "get": {
-        "operationId": "TeachingController_detail",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": { "type": "string" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ClassResponse" }
               }
             }
           },
@@ -1993,6 +3229,24 @@
             "schema": { "maxLength": 100, "type": "string" }
           },
           {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "teacherId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "roomId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
             "name": "from",
             "required": true,
             "in": "query",
@@ -2095,6 +3349,24 @@
             "schema": { "maxLength": 100, "type": "string" }
           },
           {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "teacherId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "roomId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
             "name": "from",
             "required": true,
             "in": "query",
@@ -2189,6 +3461,24 @@
             "required": false,
             "in": "query",
             "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "teacherId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "roomId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
           },
           {
             "name": "from",
@@ -2291,6 +3581,24 @@
             "required": false,
             "in": "query",
             "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "teacherId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "roomId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
           },
           {
             "name": "from",
@@ -6981,6 +8289,61 @@
       "bearer": { "scheme": "bearer", "bearerFormat": "JWT", "type": "http" }
     },
     "schemas": {
+      "StudentCsvInput": {
+        "type": "object",
+        "properties": {
+          "csv": {
+            "type": "string",
+            "description": "UTF-8 CSV text; max 512 KiB, 5000 rows; atomic commit"
+          }
+        },
+        "required": ["csv"]
+      },
+      "ImportRowView": {
+        "type": "object",
+        "properties": {
+          "row": { "type": "number" },
+          "studentCode": { "type": "string" },
+          "fullName": { "type": "string" },
+          "errors": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["row", "studentCode", "fullName", "errors"]
+      },
+      "ImportView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "status": { "type": "string" },
+          "rowCount": { "type": "number" },
+          "errorCount": { "type": "number" },
+          "expiresAt": { "type": "string" },
+          "rows": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ImportRowView" }
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "rowCount",
+          "errorCount",
+          "expiresAt",
+          "rows"
+        ]
+      },
+      "MetaDto": {
+        "type": "object",
+        "properties": { "traceId": { "type": "string" } },
+        "required": ["traceId"]
+      },
+      "ImportResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/ImportView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
       "ErrorView": {
         "type": "object",
         "properties": {
@@ -6988,11 +8351,6 @@
           "message": { "type": "string" }
         },
         "required": ["code", "message"]
-      },
-      "MetaDto": {
-        "type": "object",
-        "properties": { "traceId": { "type": "string" } },
-        "required": ["traceId"]
       },
       "ErrorResponse": {
         "type": "object",
@@ -7371,6 +8729,343 @@
         },
         "required": ["data", "meta"]
       },
+      "RoomView": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string" },
+          "name": { "type": "string" },
+          "capacity": { "type": "number", "minimum": 1, "maximum": 1000 },
+          "id": { "type": "string" },
+          "active": { "type": "boolean" }
+        },
+        "required": ["code", "name", "capacity", "id", "active"]
+      },
+      "RoomsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/RoomView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "TeachingSessionView": {
+        "type": "object",
+        "properties": {
+          "roomId": { "type": "string", "format": "uuid" },
+          "teacherId": { "type": "string", "format": "uuid" },
+          "startsAt": { "type": "string", "format": "date-time" },
+          "endsAt": { "type": "string", "format": "date-time" },
+          "roomName": { "type": "string", "nullable": true },
+          "changeCount": { "type": "number" },
+          "id": { "type": "string" },
+          "classId": { "type": "string" },
+          "className": { "type": "string" },
+          "scheduledDate": { "type": "string", "format": "date" },
+          "status": { "type": "string" },
+          "version": { "type": "number" },
+          "finalizedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "teacherId",
+          "startsAt",
+          "endsAt",
+          "roomName",
+          "changeCount",
+          "id",
+          "classId",
+          "className",
+          "scheduledDate",
+          "status",
+          "version",
+          "finalizedAt"
+        ]
+      },
+      "SessionsListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/TeachingSessionView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "SessionResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/TeachingSessionView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "TeacherView": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "string", "format": "uuid" },
+          "teacherCode": { "type": "string" },
+          "fullName": { "type": "string" },
+          "id": { "type": "string" },
+          "status": { "type": "string" },
+          "version": { "type": "number" }
+        },
+        "required": [
+          "userId",
+          "teacherCode",
+          "fullName",
+          "id",
+          "status",
+          "version"
+        ]
+      },
+      "TeachersResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/TeacherView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "TeacherResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/TeacherView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "TeacherUpdate": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number", "minimum": 1 },
+          "reason": { "type": "string", "minLength": 10, "maxLength": 500 },
+          "fullName": { "type": "string" },
+          "status": { "type": "string", "enum": ["ACTIVE", "INACTIVE"] }
+        },
+        "required": ["version", "reason", "fullName", "status"]
+      },
+      "ClassUpdate": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number", "minimum": 1 },
+          "reason": { "type": "string", "minLength": 10, "maxLength": 500 },
+          "name": { "type": "string" },
+          "capacity": { "type": "number", "minimum": 1, "maximum": 1000 }
+        },
+        "required": ["version", "reason", "name", "capacity"]
+      },
+      "ClassView": {
+        "type": "object",
+        "properties": {
+          "roomId": { "type": "string", "format": "uuid" },
+          "code": { "type": "string" },
+          "name": { "type": "string" },
+          "capacity": { "type": "number", "minimum": 1, "maximum": 1000 },
+          "startDate": { "type": "string", "format": "date" },
+          "endDate": { "type": "string", "format": "date" },
+          "id": { "type": "string" },
+          "status": { "type": "string" },
+          "version": { "type": "number" }
+        },
+        "required": [
+          "code",
+          "name",
+          "capacity",
+          "startDate",
+          "endDate",
+          "id",
+          "status",
+          "version"
+        ]
+      },
+      "ClassResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/ClassView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "LifecycleVersion": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number", "minimum": 1 },
+          "reason": { "type": "string", "minLength": 10, "maxLength": 500 }
+        },
+        "required": ["version", "reason"]
+      },
+      "WithdrawInput": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number", "minimum": 1 },
+          "reason": { "type": "string", "minLength": 10, "maxLength": 500 },
+          "leftAt": { "type": "string", "format": "date" }
+        },
+        "required": ["version", "reason", "leftAt"]
+      },
+      "EnrollmentView": {
+        "type": "object",
+        "properties": {
+          "studentId": { "type": "string", "format": "uuid" },
+          "joinedAt": { "type": "string", "format": "date" },
+          "id": { "type": "string" },
+          "classId": { "type": "string" },
+          "status": { "type": "string" },
+          "version": { "type": "number" },
+          "leftAt": { "type": "string", "format": "date", "nullable": true }
+        },
+        "required": [
+          "studentId",
+          "joinedAt",
+          "id",
+          "classId",
+          "status",
+          "version"
+        ]
+      },
+      "EnrollmentResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/EnrollmentView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "ScheduleRuleView": {
+        "type": "object",
+        "properties": {
+          "teacherId": { "type": "string", "format": "uuid" },
+          "roomId": { "type": "string", "format": "uuid" },
+          "weekday": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 7,
+            "description": "ISO weekday: Monday=1"
+          },
+          "localStart": { "type": "string", "example": "18:00" },
+          "localEnd": { "type": "string", "example": "19:30" },
+          "validFrom": { "type": "string", "format": "date" },
+          "validTo": { "type": "string", "format": "date" },
+          "id": { "type": "string" },
+          "classId": { "type": "string" },
+          "timezone": { "type": "string" },
+          "version": { "type": "number" },
+          "active": { "type": "boolean" }
+        },
+        "required": [
+          "teacherId",
+          "weekday",
+          "localStart",
+          "localEnd",
+          "validFrom",
+          "validTo",
+          "id",
+          "classId",
+          "timezone",
+          "version",
+          "active"
+        ]
+      },
+      "ScheduleRulesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ScheduleRuleView" }
+          },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "ScheduleRuleInput": {
+        "type": "object",
+        "properties": {
+          "teacherId": { "type": "string", "format": "uuid" },
+          "roomId": { "type": "string", "format": "uuid" },
+          "weekday": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 7,
+            "description": "ISO weekday: Monday=1"
+          },
+          "localStart": { "type": "string", "example": "18:00" },
+          "localEnd": { "type": "string", "example": "19:30" },
+          "validFrom": { "type": "string", "format": "date" },
+          "validTo": { "type": "string", "format": "date" }
+        },
+        "required": [
+          "teacherId",
+          "weekday",
+          "localStart",
+          "localEnd",
+          "validFrom",
+          "validTo"
+        ]
+      },
+      "ScheduleRuleResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/ScheduleRuleView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "ScheduleCandidate": {
+        "type": "object",
+        "properties": {
+          "scheduledDate": { "type": "string", "format": "date" },
+          "startsAt": { "type": "string", "format": "date-time" },
+          "endsAt": { "type": "string", "format": "date-time" },
+          "status": {
+            "type": "string",
+            "enum": ["AVAILABLE", "EXISTING", "CONFLICT"]
+          },
+          "conflict": { "type": "string" }
+        },
+        "required": ["scheduledDate", "startsAt", "endsAt", "status"]
+      },
+      "SchedulePreview": {
+        "type": "object",
+        "properties": {
+          "timezone": { "type": "string" },
+          "candidates": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ScheduleCandidate" }
+          },
+          "created": { "type": "number" },
+          "skipped": { "type": "number" }
+        },
+        "required": ["timezone", "candidates", "created", "skipped"]
+      },
+      "SchedulePreviewResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/SchedulePreview" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "GenerationWindow": {
+        "type": "object",
+        "properties": {
+          "from": { "type": "string", "format": "date" },
+          "to": { "type": "string", "format": "date" }
+        },
+        "required": ["from", "to"]
+      },
       "AttendanceSummaryView": {
         "type": "object",
         "properties": {
@@ -7413,17 +9108,6 @@
         },
         "required": ["code", "name", "capacity"]
       },
-      "RoomView": {
-        "type": "object",
-        "properties": {
-          "code": { "type": "string" },
-          "name": { "type": "string" },
-          "capacity": { "type": "number", "minimum": 1, "maximum": 1000 },
-          "id": { "type": "string" },
-          "active": { "type": "boolean" }
-        },
-        "required": ["code", "name", "capacity", "id", "active"]
-      },
       "RoomResponse": {
         "type": "object",
         "properties": {
@@ -7450,50 +9134,6 @@
           "reason"
         ]
       },
-      "TeachingSessionView": {
-        "type": "object",
-        "properties": {
-          "roomId": { "type": "string", "format": "uuid" },
-          "teacherId": { "type": "string", "format": "uuid" },
-          "startsAt": { "type": "string", "format": "date-time" },
-          "endsAt": { "type": "string", "format": "date-time" },
-          "roomName": { "type": "string", "nullable": true },
-          "changeCount": { "type": "number" },
-          "id": { "type": "string" },
-          "classId": { "type": "string" },
-          "className": { "type": "string" },
-          "scheduledDate": { "type": "string", "format": "date" },
-          "status": { "type": "string" },
-          "version": { "type": "number" },
-          "finalizedAt": {
-            "type": "string",
-            "nullable": true,
-            "format": "date-time"
-          }
-        },
-        "required": [
-          "teacherId",
-          "startsAt",
-          "endsAt",
-          "roomName",
-          "changeCount",
-          "id",
-          "classId",
-          "className",
-          "scheduledDate",
-          "status",
-          "version",
-          "finalizedAt"
-        ]
-      },
-      "SessionResponse": {
-        "type": "object",
-        "properties": {
-          "data": { "$ref": "#/components/schemas/TeachingSessionView" },
-          "meta": { "$ref": "#/components/schemas/MetaDto" }
-        },
-        "required": ["data", "meta"]
-      },
       "ReopenInput": {
         "type": "object",
         "properties": {
@@ -7511,25 +9151,6 @@
         },
         "required": ["userId", "teacherCode", "fullName"]
       },
-      "TeacherView": {
-        "type": "object",
-        "properties": {
-          "userId": { "type": "string", "format": "uuid" },
-          "teacherCode": { "type": "string" },
-          "fullName": { "type": "string" },
-          "id": { "type": "string" },
-          "status": { "type": "string" }
-        },
-        "required": ["userId", "teacherCode", "fullName", "id", "status"]
-      },
-      "TeacherResponse": {
-        "type": "object",
-        "properties": {
-          "data": { "$ref": "#/components/schemas/TeacherView" },
-          "meta": { "$ref": "#/components/schemas/MetaDto" }
-        },
-        "required": ["data", "meta"]
-      },
       "ClassInput": {
         "type": "object",
         "properties": {
@@ -7541,36 +9162,6 @@
           "endDate": { "type": "string", "format": "date" }
         },
         "required": ["code", "name", "capacity", "startDate", "endDate"]
-      },
-      "ClassView": {
-        "type": "object",
-        "properties": {
-          "roomId": { "type": "string", "format": "uuid" },
-          "code": { "type": "string" },
-          "name": { "type": "string" },
-          "capacity": { "type": "number", "minimum": 1, "maximum": 1000 },
-          "startDate": { "type": "string", "format": "date" },
-          "endDate": { "type": "string", "format": "date" },
-          "id": { "type": "string" },
-          "status": { "type": "string" }
-        },
-        "required": [
-          "code",
-          "name",
-          "capacity",
-          "startDate",
-          "endDate",
-          "id",
-          "status"
-        ]
-      },
-      "ClassResponse": {
-        "type": "object",
-        "properties": {
-          "data": { "$ref": "#/components/schemas/ClassView" },
-          "meta": { "$ref": "#/components/schemas/MetaDto" }
-        },
-        "required": ["data", "meta"]
       },
       "ClassesResponse": {
         "type": "object",
@@ -7587,12 +9178,21 @@
       "ClassRosterRow": {
         "type": "object",
         "properties": {
+          "id": { "type": "string" },
+          "version": { "type": "number" },
           "studentId": { "type": "string" },
           "fullName": { "type": "string" },
           "status": { "type": "string" },
           "joinedAt": { "type": "string", "format": "date" }
         },
-        "required": ["studentId", "fullName", "status", "joinedAt"]
+        "required": [
+          "id",
+          "version",
+          "studentId",
+          "fullName",
+          "status",
+          "joinedAt"
+        ]
       },
       "ClassRosterResponse": {
         "type": "object",
@@ -7641,25 +9241,6 @@
         },
         "required": ["studentId", "joinedAt"]
       },
-      "EnrollmentView": {
-        "type": "object",
-        "properties": {
-          "studentId": { "type": "string", "format": "uuid" },
-          "joinedAt": { "type": "string", "format": "date" },
-          "id": { "type": "string" },
-          "classId": { "type": "string" },
-          "status": { "type": "string" }
-        },
-        "required": ["studentId", "joinedAt", "id", "classId", "status"]
-      },
-      "EnrollmentResponse": {
-        "type": "object",
-        "properties": {
-          "data": { "$ref": "#/components/schemas/EnrollmentView" },
-          "meta": { "$ref": "#/components/schemas/MetaDto" }
-        },
-        "required": ["data", "meta"]
-      },
       "SessionInput": {
         "type": "object",
         "properties": {
@@ -7669,18 +9250,6 @@
           "endsAt": { "type": "string", "format": "date-time" }
         },
         "required": ["teacherId", "startsAt", "endsAt"]
-      },
-      "SessionsListResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/TeachingSessionView" }
-          },
-          "page": { "$ref": "#/components/schemas/PageView" },
-          "meta": { "$ref": "#/components/schemas/MetaDto" }
-        },
-        "required": ["data", "page", "meta"]
       },
       "PublishedAttendance": {
         "type": "object",

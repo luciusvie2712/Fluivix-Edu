@@ -235,11 +235,26 @@ model Teacher {
   teacherCode String @map("teacher_code") @db.VarChar(40)
   fullName    String @map("full_name") @db.VarChar(150)
   status      String @default("ACTIVE") @db.VarChar(20)
+  version Int @default(1)
 
   @@unique([tenantId, id])
   @@unique([tenantId, userId])
   @@unique([tenantId, teacherCode])
   @@map("teacher_profiles")
+}
+model StudentImport {
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  actorId String @map("actor_id") @db.Uuid
+  status String @default("PREVIEW") @db.VarChar(20)
+  rowsJson Json? @map("rows_json")
+  rowCount Int @map("row_count")
+  errorCount Int @map("error_count")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  expiresAt DateTime @map("expires_at") @db.Timestamptz
+  committedAt DateTime? @map("committed_at") @db.Timestamptz
+  @@index([tenantId,actorId,createdAt])
+  @@map("student_imports")
 }
 
 model EducationClass {
@@ -251,6 +266,7 @@ model EducationClass {
   startDate DateTime @map("start_date") @db.Date
   endDate   DateTime @map("end_date") @db.Date
   status    String   @default("ACTIVE") @db.VarChar(20)
+  version Int @default(1)
   roomId String? @map("room_id") @db.Uuid
 
   @@unique([tenantId, id])
@@ -279,6 +295,7 @@ model Enrollment {
   joinedAt  DateTime  @map("joined_at") @db.Date
   leftAt    DateTime? @map("left_at") @db.Date
   status    String    @default("ACTIVE") @db.VarChar(20)
+  version Int @default(1)
 
   @@unique([tenantId, id])
   @@unique([tenantId, id, classId, studentId])
@@ -296,6 +313,8 @@ model ClassSession {
   endsAt        DateTime  @map("ends_at") @db.Timestamptz
   status        String    @default("SCHEDULED") @db.VarChar(20)
   version       Int       @default(1)
+  scheduleRuleId String? @map("schedule_rule_id") @db.Uuid
+  sessionType String @default("EXTRA") @map("session_type") @db.VarChar(20)
   roomId String? @map("room_id") @db.Uuid
   changeCount Int @default(0) @map("change_count")
   cancelReason String? @map("cancel_reason") @db.VarChar(500)
@@ -306,6 +325,25 @@ model ClassSession {
   @@unique([tenantId, id, classId])
   @@index([tenantId, teacherId, startsAt])
   @@map("class_sessions")
+}
+model ScheduleRule {
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  classId String @map("class_id") @db.Uuid
+  teacherId String @map("teacher_id") @db.Uuid
+  roomId String? @map("room_id") @db.Uuid
+  weekday Int
+  localStart String @map("local_start") @db.VarChar(5)
+  localEnd String @map("local_end") @db.VarChar(5)
+  validFrom DateTime @map("valid_from") @db.Date
+  validTo DateTime @map("valid_to") @db.Date
+  timezone String @db.VarChar(80)
+  version Int @default(1)
+  active Boolean @default(true)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  @@unique([tenantId,id,classId])
+  @@index([tenantId,classId])
+  @@map("schedule_rules")
 }
 model Room {
  id String @id @default(uuid()) @db.Uuid

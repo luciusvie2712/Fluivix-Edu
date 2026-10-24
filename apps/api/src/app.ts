@@ -1,6 +1,11 @@
 import "reflect-metadata";
 import { Module, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+import type { NestExpressApplication } from "@nestjs/platform-express";
+import {
+  StudentImportsController,
+  StudentImportsService,
+} from "./student-imports";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import { randomUUID } from "node:crypto";
@@ -42,6 +47,7 @@ import {
 } from "./platform-audit";
 @Module({
   controllers: [
+    StudentImportsController,
     AuthController,
     MobileAuthController,
     MobilePeopleController,
@@ -60,6 +66,7 @@ import {
     PlatformHealthController,
   ],
   providers: [
+    StudentImportsService,
     Db,
     AuthService,
     TeachingService,
@@ -79,9 +86,10 @@ import {
 export class AppModule {}
 export async function createApp() {
   const settings = config();
-  const app = await NestFactory.create(AppModule, {
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: ["error", "warn"],
   });
+  app.useBodyParser("json", { limit: "1mb" });
   app.setGlobalPrefix("api/v1");
   app.use(helmet());
   app.use(cookieParser());

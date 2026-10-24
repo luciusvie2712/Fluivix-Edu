@@ -3,6 +3,7 @@ import { Queue, UnrecoverableError, Worker } from "bullmq";
 import { z } from "zod";
 import { mailProvider } from "./mail";
 import { deliver, MAIL_EVENTS } from "./delivery";
+import { purgeExpiredImports } from "./import-retention";
 import {
   checkPushReceipts,
   deliverDomainEvent,
@@ -107,10 +108,15 @@ async function main() {
     throw new Error("MAIL_WORKER_NOT_READY", { cause });
   }
   let dispatching = false;
+  let lastImportSweep = 0;
   async function dispatch() {
     if (dispatching) return;
     dispatching = true;
     try {
+      if (Date.now() - lastImportSweep >= 60000) {
+        await purgeExpiredImports(db);
+        lastImportSweep = Date.now();
+      }
       const events = await db.outboxEvent.findMany({
         where: {
           processedAt: null,

@@ -152,6 +152,550 @@ export function teachingCases(
         },
       });
     }
+    it("TC007: recurring preview detects conflict, atomic commit rechecks, retries and concurrent generation are idempotent", async () => {
+      const db = getDb(),
+        classId = await cls("RECURRING", 20),
+        other = await cls("RECURRING-CONFLICT", 20);
+      for (const id of [classId, other])
+        expect(
+          (
+            await api(`/classes/${id}/teachers`, "POST", {
+              teacherId,
+              effectiveFrom: "2026-11-01",
+              effectiveTo: "2026-12-31",
+            })
+          ).status,
+        ).toBe(201);
+      const path = `/classes/${classId}/schedule-rules`;
+      const body = {
+        teacherId,
+        weekday: 1,
+        localStart: "06:00",
+        localEnd: "07:00",
+        validFrom: "2026-11-01",
+        validTo: "2026-11-30",
+      };
+      expect((await api(path, "POST", body, teacherToken)).status).toBe(403);
+      expect(
+        (await api(path, "POST", { ...body, localEnd: "05:00" })).status,
+      ).toBe(422);
+      const rule = await api(path, "POST", body);
+      expect(rule.status).toBe(201);
+      expect(rule.body.data.timezone).toBe("Asia/Ho_Chi_Minh");
+      const ruleId = rule.body.data.id as string,
+        window = { from: "2026-11-01", to: "2026-11-30" };
+      const previewPath = `${path}/${ruleId}/preview?from=${window.from}&to=${window.to}`;
+      const preview = await api(previewPath);
+      expect(preview.status).toBe(200);
+      expect(preview.body.data.candidates).toHaveLength(5);
+      expect(preview.body.data.candidates[0]).toMatchObject({
+        scheduledDate: "2026-11-02",
+        startsAt: "2026-11-01T23:00:00.000Z",
+        status: "AVAILABLE",
+      });
+      expect(
+        await db.classSession.count({ where: { scheduleRuleId: ruleId } }),
+      ).toBe(0);
+      // A competing schedule arrives after the successful preview.
+      const extra = await api(`/classes/${other}/sessions/extra`, "POST", {
+        teacherId,
+        startsAt: "2026-11-01T23:00:00Z",
+        endsAt: "2026-11-02T00:00:00Z",
+      });
+      expect(extra.status).toBe(201);
+      expect((await api(previewPath)).body.data.candidates[0].status).toBe(
+        "CONFLICT",
+      );
+      expect(
+        (await api(`${path}/${ruleId}/generate`, "POST", window)).status,
+      ).toBe(409);
+      expect(
+        await db.classSession.count({ where: { scheduleRuleId: ruleId } }),
+      ).toBe(0);
+      expect(
+        (
+          await api(`/sessions/${extra.body.data.id}/cancel`, "POST", {
+            sessionVersion: 1,
+            reason: "Synthetic recurring conflict resolved",
+          })
+        ).status,
+      ).toBe(201);
+      const generated = await Promise.all(
+        [1, 2].map(() => api(`${path}/${ruleId}/generate`, "POST", window)),
+      );
+      expect(generated.map((v) => v.status)).toEqual([201, 201]);
+      expect(generated.map((v) => v.body.data.created).sort()).toEqual([0, 5]);
+      expect(
+        await db.classSession.count({
+          where: { scheduleRuleId: ruleId, sessionType: "REGULAR" },
+        }),
+      ).toBe(5);
+      const first = await db.classSession.findFirstOrThrow({
+        where: { scheduleRuleId: ruleId },
+        orderBy: { scheduledDate: "asc" },
+      });
+      await db.classSession.update({
+        where: { id: first.id },
+        data: { changeCount: 1, version: 2 },
+      });
+      expect(
+        (await api(`${path}/${ruleId}/generate`, "POST", window)).body.data
+          .skipped,
+      ).toBe(5);
+      expect(
+        (await db.classSession.findUniqueOrThrow({ where: { id: first.id } }))
+          .version,
+      ).toBe(2);
+      expect(
+        (
+          await api(
+            `/classes/${other}/schedule-rules/${ruleId}/preview?from=2026-11-01&to=2026-11-30`,
+          )
+        ).status,
+      ).toBe(404);
+      expect(
+        (
+          await api(`${path}/${ruleId}/generate`, "POST", {
+            from: "2026-11-01",
+            to: "2027-02-01",
+          })
+        ).status,
+      ).toBe(422);
+    });
+    it("TC003: CSV100 previews five invalid rows, atomic commit, duplicate retry, fresh collision and tenant/role isolation", async () => {
+      const db = getDb(),
+        header = "studentCode,fullName,contactEmail\n";
+      const lines = Array.from(
+        { length: 100 },
+        (_, i) => `CSV${i},Synthetic learner ${i},learner${i}@example.test`,
+      );
+      for (let i = 0; i < 5; i++)
+        lines[i] = `CSV${i},Synthetic learner ${i},invalid-email`;
+      const invalid = await api("/students/imports", "POST", {
+        csv: header + lines.join("\n"),
+      });
+      expect(invalid.status).toBe(201);
+      expect(invalid.body.data).toMatchObject({
+        rowCount: 100,
+        errorCount: 5,
+        status: "PREVIEW",
+      });
+      expect(
+        (
+          await api(
+            `/students/imports/${invalid.body.data.id}/commit`,
+            "POST",
+            {},
+          )
+        ).status,
+      ).toBe(409);
+      expect(
+        await db.student.count({
+          where: { tenantId, studentCode: { startsWith: "CSV" } },
+        }),
+      ).toBe(0);
+      expect(
+        (
+          await api(
+            "/students/imports",
+            "POST",
+            { csv: header + "X,Name,name@example.test" },
+            teacherToken,
+          )
+        ).status,
+      ).toBe(403);
+      const foreignMembership = await db.membership.findFirstOrThrow({
+        where: { tenantId: { not: tenantId } },
+      });
+      const foreign = await db.studentImport.create({
+        data: {
+          tenantId: foreignMembership.tenantId,
+          actorId: foreignMembership.userId,
+          rowCount: 1,
+          errorCount: 0,
+          rowsJson: [
+            { studentCode: "FOREIGN_IMPORT", fullName: "Foreign synthetic" },
+          ],
+          expiresAt: new Date(Date.now() + 3600000),
+        },
+      });
+      expect((await api(`/students/imports/${foreign.id}`)).status).toBe(404);
+      expect(
+        (await api(`/students/imports/${foreign.id}/commit`, "POST", {}))
+          .status,
+      ).toBe(404);
+      const valid = await api("/students/imports", "POST", {
+        csv: "studentCode,fullName\nCSVGOOD1,Synthetic one\nCSVGOOD2,Synthetic two",
+      });
+      const id = valid.body.data.id as string;
+      expect(valid.status).toBe(201);
+      const committed = await Promise.all(
+        [1, 2].map(() => api(`/students/imports/${id}/commit`, "POST", {})),
+      );
+      expect(committed.map((v) => v.status)).toEqual([201, 201]);
+      expect(committed.map((v) => v.body.data.status)).toEqual([
+        "COMMITTED",
+        "COMMITTED",
+      ]);
+      expect(
+        await db.student.count({
+          where: { tenantId, studentCode: { in: ["CSVGOOD1", "CSVGOOD2"] } },
+        }),
+      ).toBe(2);
+      expect(
+        (await db.studentImport.findUniqueOrThrow({ where: { id } })).rowsJson,
+      ).toBeNull();
+      expect(
+        await db.auditLog.count({
+          where: {
+            tenantId,
+            resourceId: id,
+            action: "student.import.committed",
+          },
+        }),
+      ).toBe(1);
+      const stale = await api("/students/imports", "POST", {
+        csv: "studentCode,fullName\nCSVCOLLIDE,First\nCSVROLLBACK,Second",
+      });
+      await student("CSVCOLLIDE");
+      expect(
+        (await api(`/students/imports/${stale.body.data.id}`)).body.data
+          .errorCount,
+      ).toBe(1);
+      expect(
+        (
+          await api(
+            `/students/imports/${stale.body.data.id}/commit`,
+            "POST",
+            {},
+          )
+        ).status,
+      ).toBe(409);
+      expect(
+        await db.student.count({
+          where: { tenantId, studentCode: "CSVROLLBACK" },
+        }),
+      ).toBe(0);
+      // Same tenant, different actor cannot inspect or commit the preview.
+      await db.membershipRole.create({
+        data: {
+          membershipId: (
+            await db.membership.findFirstOrThrow({
+              where: { tenantId, userId: otherTeacherId },
+            })
+          ).id,
+          role: "academic_staff",
+        },
+      });
+      const staffToken = await context(
+        otherTeacherId + "@example.test",
+        "academic_staff",
+      );
+      expect(
+        (
+          await api(
+            `/students/imports/${stale.body.data.id}`,
+            "GET",
+            undefined,
+            staffToken,
+          )
+        ).status,
+      ).toBe(404);
+      await db.studentImport.update({
+        where: { id: stale.body.data.id },
+        data: { expiresAt: new Date(0) },
+      });
+      expect(
+        (await api(`/students/imports/${stale.body.data.id}`)).status,
+      ).toBe(404);
+      expect(
+        (
+          await api(
+            `/students/imports/${stale.body.data.id}/commit`,
+            "POST",
+            {},
+          )
+        ).status,
+      ).toBe(409);
+    });
+    it("class and teacher lifecycle: optimistic writes, effective withdrawal, re-enroll, capacity and closed-class safety", async () => {
+      const db = getDb(),
+        classId = await cls("LIFECYCLE", 1),
+        s = await student("LIFECYCLE-STUDENT");
+      const enrollment = await api(`/classes/${classId}/enrollments`, "POST", {
+        studentId: s.id,
+        joinedAt: "2026-11-01",
+      });
+      expect(enrollment.status).toBe(201);
+      const withdrawPath = `/classes/${classId}/enrollments/${enrollment.body.data.id}/withdraw`;
+      expect(
+        (
+          await api(withdrawPath, "POST", {
+            version: 1,
+            leftAt: "2026-11-10",
+            reason: "Synthetic withdrawal for lifecycle test",
+          })
+        ).status,
+      ).toBe(201);
+      expect(
+        (
+          await api(withdrawPath, "POST", {
+            version: 1,
+            leftAt: "2026-11-10",
+            reason: "Synthetic duplicate withdrawal test",
+          })
+        ).status,
+      ).toBe(409);
+      const another = await student("LIFECYCLE-SEAT");
+      expect(
+        (
+          await api(`/classes/${classId}/enrollments`, "POST", {
+            studentId: another.id,
+            joinedAt: "2026-11-10",
+          })
+        ).status,
+      ).toBe(409);
+      expect(
+        (
+          await api(`/classes/${classId}/enrollments`, "POST", {
+            studentId: s.id,
+            joinedAt: "2026-11-11",
+          })
+        ).status,
+      ).toBe(201);
+      const reason = "Synthetic lifecycle version validation";
+      expect(
+        (
+          await api(`/classes/${classId}`, "PATCH", {
+            version: 1,
+            name: "Updated",
+            capacity: 2,
+            reason,
+          })
+        ).status,
+      ).toBe(200);
+      expect(
+        (
+          await api(`/classes/${classId}`, "PATCH", {
+            version: 1,
+            name: "Stale",
+            capacity: 1,
+            reason,
+          })
+        ).status,
+      ).toBe(409);
+      expect(
+        (await api(`/classes/${classId}/close`, "POST", { version: 2, reason }))
+          .status,
+      ).toBe(409);
+      const empty = await cls("LIFECYCLE-CLOSE", 2);
+      expect(
+        (await api(`/classes/${empty}/close`, "POST", { version: 1, reason }))
+          .status,
+      ).toBe(201);
+      expect(
+        (
+          await api(`/classes/${empty}/enrollments`, "POST", {
+            studentId: s.id,
+            joinedAt: "2026-11-01",
+          })
+        ).status,
+      ).toBe(404);
+      const profile = await db.teacher.findFirstOrThrow({
+        where: { tenantId, userId: otherTeacherId },
+      });
+      expect(
+        (
+          await api(`/teachers/${profile.id}`, "PATCH", {
+            version: 1,
+            fullName: "Inactive synthetic teacher",
+            status: "INACTIVE",
+            reason,
+          })
+        ).status,
+      ).toBe(200);
+      expect(
+        (
+          await api(`/classes/${classId}/teachers`, "POST", {
+            teacherId: profile.id,
+            effectiveFrom: "2026-11-01",
+          })
+        ).status,
+      ).toBe(404);
+      expect(
+        (
+          await api(`/teachers/${profile.id}`, "PATCH", {
+            version: 1,
+            fullName: "Stale",
+            status: "ACTIVE",
+            reason,
+          })
+        ).status,
+      ).toBe(409);
+      expect(
+        (await api(`/teachers/${profile.id}`, "GET", undefined, teacherToken))
+          .status,
+      ).toBe(403);
+      expect(
+        (await api("/teachers?limit=20&page=1")).body.data.length,
+      ).toBeGreaterThanOrEqual(2);
+      // Restore independent fixture for later existing scheduling tests.
+      await db.teacher.update({
+        where: { id: profile.id },
+        data: { status: "ACTIVE" },
+      });
+    });
+    it("TC029: new lifecycle, recurring, calendar and directory routes keep tenant/object scope and READ_ONLY enforcement", async () => {
+      const db = getDb(),
+        foreignMembership = await db.membership.findFirstOrThrow({
+          where: { tenantId: { not: tenantId } },
+        });
+      const foreignTenant = foreignMembership.tenantId;
+      const foreignRoom = await db.room.create({
+        data: {
+          tenantId: foreignTenant,
+          code: "FOREIGN-SCOPE",
+          name: "Foreign synthetic room",
+          capacity: 10,
+        },
+      });
+      const foreignTeacher = await db.teacher.create({
+        data: {
+          tenantId: foreignTenant,
+          userId: foreignMembership.userId,
+          teacherCode: "FOREIGN-SCOPE",
+          fullName: "Foreign synthetic teacher",
+        },
+      });
+      const foreignClass = await db.educationClass.create({
+        data: {
+          tenantId: foreignTenant,
+          code: "FOREIGN-SCOPE",
+          name: "Foreign synthetic class",
+          capacity: 10,
+          startDate: new Date("2026-11-01Z"),
+          endDate: new Date("2026-12-31Z"),
+        },
+      });
+      const foreignRule = await db.scheduleRule.create({
+        data: {
+          tenantId: foreignTenant,
+          classId: foreignClass.id,
+          teacherId: foreignTeacher.id,
+          weekday: 1,
+          localStart: "09:00",
+          localEnd: "10:00",
+          validFrom: new Date("2026-11-01Z"),
+          validTo: new Date("2026-11-30Z"),
+          timezone: "Asia/Ho_Chi_Minh",
+        },
+      });
+      const ownClass = await cls("RULE-FK-NEGATIVE", 2);
+      await expect(
+        db.classSession.create({
+          data: {
+            tenantId,
+            classId: ownClass,
+            teacherId,
+            scheduleRuleId: foreignRule.id,
+            sessionType: "REGULAR",
+            scheduledDate: new Date("2026-12-20Z"),
+            startsAt: new Date("2026-12-20T01:00:00Z"),
+            endsAt: new Date("2026-12-20T02:00:00Z"),
+          },
+        }),
+      ).rejects.toMatchObject({ code: "P2003" });
+      const reason = "Synthetic negative isolation test";
+      const requests: Array<[string, string, unknown?]> = [
+        [`/teachers/${foreignTeacher.id}`, "GET"],
+        [
+          `/teachers/${foreignTeacher.id}`,
+          "PATCH",
+          {
+            version: 1,
+            fullName: "Attempted change",
+            status: "INACTIVE",
+            reason,
+          },
+        ],
+        [
+          `/classes/${foreignClass.id}`,
+          "PATCH",
+          { version: 1, name: "Attempted change", capacity: 10, reason },
+        ],
+        [`/classes/${foreignClass.id}/close`, "POST", { version: 1, reason }],
+        [`/classes/${foreignClass.id}/schedule-rules`, "GET"],
+        [
+          `/classes/${foreignClass.id}/schedule-rules/${foreignRule.id}/preview?from=2026-11-01&to=2026-11-30`,
+          "GET",
+        ],
+        [
+          `/classes/${foreignClass.id}/schedule-rules/${foreignRule.id}/generate`,
+          "POST",
+          { from: "2026-11-01", to: "2026-11-30" },
+        ],
+        [
+          `/classes/${foreignClass.id}/sessions?from=2026-11-01&to=2026-11-30`,
+          "GET",
+        ],
+      ];
+      for (const [path, method, body] of requests)
+        expect((await api(path, method, body)).status, path).toBe(404);
+      expect(
+        (
+          await api(
+            `/schedule?from=2026-11-01&to=2026-11-30&classId=${foreignClass.id}`,
+          )
+        ).body.data,
+      ).toEqual([]);
+      expect(
+        (await api("/rooms")).body.data.every(
+          (row: { id: string }) => row.id !== foreignRoom.id,
+        ),
+      ).toBe(true);
+      await db.tenant.update({
+        where: { id: tenantId },
+        data: { status: "READ_ONLY" },
+      });
+      try {
+        expect((await api("/teachers")).status).toBe(200);
+        expect(
+          (
+            await api("/students/imports", "POST", {
+              csv: "studentCode,fullName\nREADONLY,Blocked",
+            })
+          ).status,
+        ).toBe(403);
+        expect(
+          (
+            await api(`/classes/${foreignClass.id}/close`, "POST", {
+              version: 1,
+              reason,
+            })
+          ).status,
+        ).toBe(403);
+      } finally {
+        await db.tenant.update({
+          where: { id: tenantId },
+          data: { status: "ACTIVE" },
+        });
+      }
+      const { purgeExpiredImports } = await import(
+        "../../apps/worker/dist/import-retention.js"
+      );
+      await purgeExpiredImports(db);
+      expect(
+        await db.studentImport.count({
+          where: { status: "PREVIEW", expiresAt: { lte: new Date() } },
+        }),
+      ).toBe(0);
+      const expired = await db.studentImport.findMany({
+        where: { status: "EXPIRED" },
+        select: { rowsJson: true },
+      });
+      expect(expired.length).toBeGreaterThan(0);
+      expect(expired.every((job) => job.rowsJson === null)).toBe(true);
+    });
     it("serializes the final seat and rejects cross-tenant nested enrollment", async () => {
       const classId = await cls("LAST-SEAT", 1),
         a = await student("SEAT-A"),

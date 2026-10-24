@@ -26,6 +26,40 @@ export class TeacherInput {
 export class TeacherView extends TeacherInput {
   @ApiProperty() id!: string;
   @ApiProperty() status!: string;
+  @ApiProperty() version!: number;
+}
+export class TeachersResponse {
+  @ApiProperty({ type: [TeacherView] }) data!: TeacherView[];
+  @ApiProperty({ type: PageView }) page!: PageView;
+  @ApiProperty({ type: MetaDto }) meta!: MetaDto;
+}
+export class LifecycleVersion {
+  @ApiProperty({ minimum: 1 }) @IsInt() @Min(1) version!: number;
+  @ApiProperty({ minLength: 10, maxLength: 500 })
+  @IsString()
+  @Matches(/\S/)
+  @Length(10, 500)
+  reason!: string;
+}
+export class TeacherUpdate extends LifecycleVersion {
+  @ApiProperty() @IsString() @Matches(/\S/) @Length(1, 150) fullName!: string;
+  @ApiProperty({ enum: ["ACTIVE", "INACTIVE"] })
+  @IsIn(["ACTIVE", "INACTIVE"])
+  status!: string;
+}
+export class ClassUpdate extends LifecycleVersion {
+  @ApiProperty() @IsString() @Matches(/\S/) @Length(1, 150) name!: string;
+  @ApiProperty({ minimum: 1, maximum: 1000 })
+  @IsInt()
+  @Min(1)
+  @Max(1000)
+  capacity!: number;
+}
+export class WithdrawInput extends LifecycleVersion {
+  @ApiProperty({ format: "date" })
+  @Matches(/^\d{4}-\d{2}-\d{2}$/)
+  @IsISO8601({ strict: true })
+  leftAt!: string;
 }
 export class TeacherResponse {
   @ApiProperty({ type: TeacherView }) data!: TeacherView;
@@ -55,6 +89,7 @@ export class ClassInput {
 export class ClassView extends ClassInput {
   @ApiProperty() id!: string;
   @ApiProperty() status!: string;
+  @ApiProperty() version!: number;
 }
 export class ClassResponse {
   @ApiProperty({ type: ClassView }) data!: ClassView;
@@ -66,6 +101,8 @@ export class ClassesResponse {
   @ApiProperty({ type: MetaDto }) meta!: MetaDto;
 }
 export class ClassRosterRow {
+  @ApiProperty() id!: string;
+  @ApiProperty() version!: number;
   @ApiProperty() studentId!: string;
   @ApiProperty() fullName!: string;
   @ApiProperty() status!: string;
@@ -87,6 +124,9 @@ export class EnrollmentView extends EnrollmentInput {
   @ApiProperty() id!: string;
   @ApiProperty() classId!: string;
   @ApiProperty() status!: string;
+  @ApiProperty() version!: number;
+  @ApiPropertyOptional({ type: String, format: "date", nullable: true })
+  leftAt?: string | null;
 }
 export class EnrollmentResponse {
   @ApiProperty({ type: EnrollmentView }) data!: EnrollmentView;
@@ -124,6 +164,74 @@ export class SessionInput {
   @IsISO8601({ strict: true })
   endsAt!: string;
 }
+export class ScheduleRuleInput {
+  @ApiProperty({ format: "uuid" }) @IsUUID() teacherId!: string;
+  @ApiPropertyOptional({ format: "uuid" })
+  @IsOptional()
+  @IsUUID()
+  roomId?: string;
+  @ApiProperty({ minimum: 1, maximum: 7, description: "ISO weekday: Monday=1" })
+  @IsInt()
+  @Min(1)
+  @Max(7)
+  weekday!: number;
+  @ApiProperty({ example: "18:00" })
+  @Matches(/^([01]\d|2[0-3]):[0-5]\d$/)
+  localStart!: string;
+  @ApiProperty({ example: "19:30" })
+  @Matches(/^([01]\d|2[0-3]):[0-5]\d$/)
+  localEnd!: string;
+  @ApiProperty({ format: "date" })
+  @Matches(/^\d{4}-\d{2}-\d{2}$/)
+  @IsISO8601({ strict: true })
+  validFrom!: string;
+  @ApiProperty({ format: "date" })
+  @Matches(/^\d{4}-\d{2}-\d{2}$/)
+  @IsISO8601({ strict: true })
+  validTo!: string;
+}
+export class ScheduleRuleView extends ScheduleRuleInput {
+  @ApiProperty() id!: string;
+  @ApiProperty() classId!: string;
+  @ApiProperty() timezone!: string;
+  @ApiProperty() version!: number;
+  @ApiProperty() active!: boolean;
+}
+export class ScheduleRuleResponse {
+  @ApiProperty({ type: ScheduleRuleView }) data!: ScheduleRuleView;
+  @ApiProperty({ type: MetaDto }) meta!: MetaDto;
+}
+export class ScheduleRulesResponse {
+  @ApiProperty({ type: [ScheduleRuleView] }) data!: ScheduleRuleView[];
+  @ApiProperty({ type: MetaDto }) meta!: MetaDto;
+}
+export class GenerationWindow {
+  @ApiProperty({ format: "date" })
+  @Matches(/^\d{4}-\d{2}-\d{2}$/)
+  @IsISO8601({ strict: true })
+  from!: string;
+  @ApiProperty({ format: "date" })
+  @Matches(/^\d{4}-\d{2}-\d{2}$/)
+  @IsISO8601({ strict: true })
+  to!: string;
+}
+export class ScheduleCandidate {
+  @ApiProperty({ format: "date" }) scheduledDate!: string;
+  @ApiProperty({ format: "date-time" }) startsAt!: string;
+  @ApiProperty({ format: "date-time" }) endsAt!: string;
+  @ApiProperty({ enum: ["AVAILABLE", "EXISTING", "CONFLICT"] }) status!: string;
+  @ApiPropertyOptional() conflict?: string;
+}
+export class SchedulePreview {
+  @ApiProperty() timezone!: string;
+  @ApiProperty({ type: [ScheduleCandidate] }) candidates!: ScheduleCandidate[];
+  @ApiProperty() created!: number;
+  @ApiProperty() skipped!: number;
+}
+export class SchedulePreviewResponse {
+  @ApiProperty({ type: SchedulePreview }) data!: SchedulePreview;
+  @ApiProperty({ type: MetaDto }) meta!: MetaDto;
+}
 export class TeachingSessionView extends SessionInput {
   @ApiProperty({ type: String, nullable: true }) roomName!: string | null;
   @ApiProperty() changeCount!: number;
@@ -146,6 +254,18 @@ export class SessionsListResponse {
   @ApiProperty({ type: MetaDto }) meta!: MetaDto;
 }
 export class ScheduleQuery extends ListDto {
+  @ApiPropertyOptional({ format: "uuid" })
+  @IsOptional()
+  @IsUUID()
+  classId?: string;
+  @ApiPropertyOptional({ format: "uuid" })
+  @IsOptional()
+  @IsUUID()
+  teacherId?: string;
+  @ApiPropertyOptional({ format: "uuid" })
+  @IsOptional()
+  @IsUUID()
+  roomId?: string;
   @ApiProperty({ format: "date" })
   @Matches(/^\d{4}-\d{2}-\d{2}$/)
   @IsISO8601({ strict: true })
@@ -207,6 +327,11 @@ export class RoomView extends RoomInput {
 }
 export class RoomResponse {
   @ApiProperty({ type: RoomView }) data!: RoomView;
+  @ApiProperty({ type: MetaDto }) meta!: MetaDto;
+}
+export class RoomsResponse {
+  @ApiProperty({ type: [RoomView] }) data!: RoomView[];
+  @ApiProperty({ type: PageView }) page!: PageView;
   @ApiProperty({ type: MetaDto }) meta!: MetaDto;
 }
 export class RosterView extends AttendanceInput {

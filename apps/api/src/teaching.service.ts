@@ -5,7 +5,9 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from "@nestjs/common";
-import { Prisma, type ClassSession } from "@prisma/client";
+import { Prisma, type ClassSession, type ScheduleRule } from "@prisma/client";
+import { wallClockUtc } from "@fluivix/contracts";
+import { peakEnrollment } from "./enrollment-capacity";
 import { Db } from "./db";
 import type { Claims } from "./security";
 import { Paged } from "./http";
@@ -27,6 +29,13 @@ import {
   TeacherInput,
   RoomInput,
   RescheduleInput,
+  ScheduleRuleInput,
+  GenerationWindow,
+  ScheduleCandidate,
+  TeacherUpdate,
+  ClassUpdate,
+  LifecycleVersion,
+  WithdrawInput,
 } from "./teaching.dto";
 type Tx = Prisma.TransactionClient;
 const day = (value: Date) => value.toISOString().slice(0, 10);
@@ -86,6 +95,254 @@ export class TeachingService {
       return result;
     });
   }
+  async teachers(c: Claims, q: ListDto) {
+    const where = {
+      tenantId: c.tenantId!,
+      ...(q.search
+        ? { fullName: { contains: q.search, mode: "insensitive" as const } }
+        : {}),
+    };
+    const [items, total] = await this.db.$transaction([
+      this.db.teacher.findMany({
+        where,
+        orderBy: [{ fullName: "asc" }, { id: "asc" }],
+        take: q.limit,
+        skip: (q.page - 1) * q.limit,
+      }),
+      this.db.teacher.count({ where }),
+    ]);
+    return new Paged(items, {
+      page: q.page,
+      limit: q.limit,
+      total,
+      totalPages: Math.ceil(total / q.limit),
+    });
+  }
+  async teacherDetail(c: Claims, id: string) {
+    const item = await this.db.teacher.findFirst({
+      where: { tenantId: c.tenantId!, id },
+    });
+    if (!item) throw new NotFoundException("Không tìm thấy giáo viên.");
+    return item;
+  }
+  async updateTeacher(
+    c: Claims,
+    id: string,
+    input: TeacherUpdate,
+    traceId: string,
+  ) {
+    return this.db.$transaction(async (tx) => {
+      await this.lockTenant(tx, c);
+      const old = await tx.teacher.findFirst({
+        where: { tenantId: c.tenantId!, id },
+      });
+      if (!old) throw new NotFoundException("Không tìm thấy giáo viên.");
+      if (old.version !== input.version)
+        throw new ConflictException("VERSION_CONFLICT");
+      if (
+        input.status === "ACTIVE" &&
+        !(await this.activeTeacherAccount(tx, c, old.userId))
+      )
+        throw new UnprocessableEntityException(
+          "Tài khoản/vai trò giáo viên chưa hoạt động.",
+        );
+      const item = await tx.teacher.update({
+        where: { id },
+        data: {
+          fullName: input.fullName.trim(),
+          status: input.status,
+          version: { increment: 1 },
+        },
+      });
+      await this.audit(tx, c, "teacher.updated", id, traceId, input.reason);
+      return item;
+    });
+  }
+  async updateClass(
+    c: Claims,
+    id: string,
+    input: ClassUpdate,
+    traceId: string,
+  ) {
+    return this.db.$transaction(async (tx) => {
+      await this.lockTenant(tx, c);
+      const old = await tx.educationClass.findFirst({
+        where: { tenantId: c.tenantId!, id },
+      });
+      if (!old) throw new NotFoundException("Không tìm thấy lớp.");
+      if (old.version !== input.version)
+        throw new ConflictException("VERSION_CONFLICT");
+      if (!["DRAFT", "ACTIVE"].includes(old.status))
+        throw new ConflictException("Lớp đã đóng không thể sửa.");
+      const enrolled = peakEnrollment(
+        await tx.enrollment.findMany({
+          where: { tenantId: c.tenantId!, classId: id },
+          select: { joinedAt: true, leftAt: true },
+        }),
+        old.startDate,
+        old.endDate,
+      );
+      if (input.capacity < enrolled)
+        throw new ConflictException(
+          "Sĩ số mới nhỏ hơn số học viên đang ghi danh.",
+        );
+      const rooms = await tx.classSession.findMany({
+        where: {
+          tenantId: c.tenantId!,
+          classId: id,
+          status: { in: ["SCHEDULED", "IN_PROGRESS"] },
+          roomId: { not: null },
+        },
+        select: { roomId: true },
+      });
+      const roomIds = [
+        ...new Set(
+          [old.roomId, ...rooms.map((v) => v.roomId)].filter(
+            (v): v is string => !!v,
+          ),
+        ),
+      ];
+      if (
+        await tx.room.count({
+          where: {
+            tenantId: c.tenantId!,
+            id: { in: roomIds },
+            capacity: { lt: input.capacity },
+          },
+        })
+      )
+        throw new ConflictException(
+          "Sĩ số mới vượt sức chứa phòng đã xếp lịch.",
+        );
+      const item = await tx.educationClass.update({
+        where: { id },
+        data: {
+          name: input.name.trim(),
+          capacity: input.capacity,
+          version: { increment: 1 },
+        },
+      });
+      await this.audit(tx, c, "class.updated", id, traceId, input.reason);
+      return this.classView(item);
+    });
+  }
+  async closeClass(
+    c: Claims,
+    id: string,
+    input: LifecycleVersion,
+    traceId: string,
+  ) {
+    return this.db.$transaction(async (tx) => {
+      await this.lockTenant(tx, c);
+      const old = await tx.educationClass.findFirst({
+        where: { tenantId: c.tenantId!, id },
+      });
+      if (!old) throw new NotFoundException("Không tìm thấy lớp.");
+      if (old.version !== input.version)
+        throw new ConflictException("VERSION_CONFLICT");
+      if (!["DRAFT", "ACTIVE"].includes(old.status))
+        throw new ConflictException("Lớp đã đóng.");
+      if (
+        await tx.enrollment.count({
+          where: { tenantId: c.tenantId!, classId: id, status: "ACTIVE" },
+        })
+      )
+        throw new ConflictException(
+          "Cần kết thúc ghi danh đang hoạt động trước khi đóng lớp.",
+        );
+      if (
+        await tx.classSession.count({
+          where: {
+            tenantId: c.tenantId!,
+            classId: id,
+            status: { in: ["SCHEDULED", "IN_PROGRESS", "REOPENED"] },
+          },
+        })
+      )
+        throw new ConflictException(
+          "Cần hoàn tất hoặc hủy các buổi chưa khóa trước khi đóng lớp.",
+        );
+      await tx.scheduleRule.updateMany({
+        where: { tenantId: c.tenantId!, classId: id, active: true },
+        data: { active: false, version: { increment: 1 } },
+      });
+      const item = await tx.educationClass.update({
+        where: { id },
+        data: { status: "CLOSED", version: { increment: 1 } },
+      });
+      await this.audit(tx, c, "class.closed", id, traceId, input.reason);
+      return this.classView(item);
+    });
+  }
+  async withdraw(
+    c: Claims,
+    classId: string,
+    id: string,
+    input: WithdrawInput,
+    traceId: string,
+  ) {
+    return this.db.$transaction(async (tx) => {
+      await this.lockTenant(tx, c);
+      const old = await tx.enrollment.findFirst({
+        where: { tenantId: c.tenantId!, classId, id },
+      });
+      if (!old) throw new NotFoundException("Không tìm thấy ghi danh.");
+      if (old.version !== input.version || old.status !== "ACTIVE")
+        throw new ConflictException("VERSION_CONFLICT");
+      const cls = await tx.educationClass.findFirstOrThrow({
+        where: { tenantId: c.tenantId!, id: classId },
+      });
+      if (input.leftAt < day(old.joinedAt) || input.leftAt > day(cls.endDate))
+        throw new UnprocessableEntityException(
+          "Ngày rút ngoài thời gian ghi danh.",
+        );
+      // Existing immutable snapshots are historical facts; never delete or rewrite them.
+      if (
+        await tx.rosterRow.count({
+          where: {
+            tenantId: c.tenantId!,
+            enrollmentId: id,
+            sessionId: {
+              in: (
+                await tx.classSession.findMany({
+                  where: {
+                    tenantId: c.tenantId!,
+                    classId,
+                    scheduledDate: { gt: date(input.leftAt) },
+                  },
+                  select: { id: true },
+                })
+              ).map((v) => v.id),
+            },
+          },
+        })
+      )
+        throw new ConflictException(
+          "Không thể rút hồi tố trước buổi đã có roster snapshot.",
+        );
+      const item = await tx.enrollment.update({
+        where: { id },
+        data: {
+          status: "WITHDRAWN",
+          leftAt: date(input.leftAt),
+          version: { increment: 1 },
+        },
+      });
+      await this.audit(
+        tx,
+        c,
+        "enrollment.withdrawn",
+        id,
+        traceId,
+        input.reason,
+      );
+      return {
+        ...item,
+        joinedAt: day(item.joinedAt),
+        leftAt: day(item.leftAt!),
+      };
+    });
+  }
   async createClass(c: Claims, input: ClassInput, traceId: string) {
     if (input.endDate < input.startDate)
       throw new UnprocessableEntityException(
@@ -123,6 +380,7 @@ export class TeachingService {
     name: string;
     capacity: number;
     status: string;
+    version: number;
     startDate: Date;
     endDate: Date;
   }) {
@@ -132,6 +390,7 @@ export class TeachingService {
       name: item.name,
       capacity: item.capacity,
       status: item.status,
+      version: item.version,
       startDate: day(item.startDate),
       endDate: day(item.endDate),
     };
@@ -256,6 +515,8 @@ export class TeachingService {
       });
       return new Paged(
         rows.map((r) => ({
+          id: r.id,
+          version: r.version,
           studentId: r.studentId,
           fullName: students.find((s) => s.id === r.studentId)!.fullName,
           status: r.status,
@@ -339,9 +600,14 @@ export class TeachingService {
           "Ngày ghi danh ngoài thời gian lớp.",
         );
       if (
-        (await tx.enrollment.count({
-          where: { tenantId: c.tenantId!, classId, status: "ACTIVE" },
-        })) >= cls.capacity
+        peakEnrollment(
+          await tx.enrollment.findMany({
+            where: { tenantId: c.tenantId!, classId },
+            select: { joinedAt: true, leftAt: true },
+          }),
+          date(input.joinedAt),
+          cls.endDate,
+        ) >= cls.capacity
       )
         throw new ConflictException("Lớp đã đủ sĩ số.");
       // Check existing student schedule under the same tenant lock used by session creation.
@@ -349,7 +615,8 @@ export class TeachingService {
         where: {
           tenantId: c.tenantId!,
           studentId: student.id,
-          status: "ACTIVE",
+          joinedAt: { lte: cls.endDate },
+          OR: [{ leftAt: null }, { leftAt: { gte: date(input.joinedAt) } }],
         },
         select: { classId: true },
       });
@@ -560,6 +827,255 @@ export class TeachingService {
       return this.sessionView(tx, item);
     });
   }
+  private ruleView(rule: ScheduleRule) {
+    return {
+      ...rule,
+      validFrom: day(rule.validFrom),
+      validTo: day(rule.validTo),
+      ...(rule.roomId ? { roomId: rule.roomId } : { roomId: undefined }),
+    };
+  }
+  async scheduleRules(c: Claims, classId: string) {
+    await this.classDetail(c, classId);
+    return (
+      await this.db.scheduleRule.findMany({
+        where: { tenantId: c.tenantId!, classId },
+        orderBy: [{ validFrom: "asc" }, { id: "asc" }],
+      })
+    ).map((rule) => this.ruleView(rule));
+  }
+  async createRule(
+    c: Claims,
+    classId: string,
+    input: ScheduleRuleInput,
+    traceId: string,
+  ) {
+    return this.db.$transaction(async (tx) => {
+      await this.lockTenant(tx, c);
+      const cls = await tx.educationClass.findFirst({
+        where: { tenantId: c.tenantId!, id: classId, status: "ACTIVE" },
+      });
+      if (!cls)
+        throw new NotFoundException("Không tìm thấy lớp đang hoạt động.");
+      if (
+        input.validFrom > input.validTo ||
+        input.validFrom < day(cls.startDate) ||
+        input.validTo > day(cls.endDate) ||
+        input.localStart >= input.localEnd
+      )
+        throw new UnprocessableEntityException(
+          "Khoảng ngày hoặc giờ lặp không hợp lệ.",
+        );
+      const teacher = await tx.teacher.findFirst({
+        where: { tenantId: c.tenantId!, id: input.teacherId, status: "ACTIVE" },
+      });
+      const assignment = await tx.classTeacher.findFirst({
+        where: {
+          tenantId: c.tenantId!,
+          classId,
+          teacherId: input.teacherId,
+          effectiveFrom: { lte: date(input.validFrom) },
+          OR: [
+            { effectiveTo: null },
+            { effectiveTo: { gte: date(input.validTo) } },
+          ],
+        },
+      });
+      if (
+        !teacher ||
+        !assignment ||
+        !(await this.activeTeacherAccount(tx, c, teacher.userId))
+      )
+        throw new UnprocessableEntityException(
+          "Giáo viên phải được phân công trong toàn bộ khoảng lịch.",
+        );
+      const roomId = input.roomId ?? cls.roomId;
+      if (
+        roomId &&
+        !(await tx.room.findFirst({
+          where: {
+            tenantId: c.tenantId!,
+            id: roomId,
+            active: true,
+            capacity: { gte: cls.capacity },
+          },
+        }))
+      )
+        throw new UnprocessableEntityException(
+          "Phòng không hợp lệ hoặc không đủ sức chứa.",
+        );
+      const tenant = await tx.tenant.findUniqueOrThrow({
+        where: { id: c.tenantId! },
+      });
+      const rule = await tx.scheduleRule.create({
+        data: {
+          ...input,
+          roomId,
+          tenantId: c.tenantId!,
+          classId,
+          timezone: tenant.timezone,
+          validFrom: date(input.validFrom),
+          validTo: date(input.validTo),
+        },
+      });
+      await this.audit(tx, c, "schedule.rule.created", rule.id, traceId);
+      return this.ruleView(rule);
+    });
+  }
+  async generateRule(
+    c: Claims,
+    classId: string,
+    ruleId: string,
+    window: GenerationWindow,
+    traceId: string,
+    commit: boolean,
+  ) {
+    if (
+      window.from > window.to ||
+      date(window.to).getTime() - date(window.from).getTime() > 59 * 86400000
+    )
+      throw new UnprocessableEntityException(
+        "Mỗi lần chỉ được sinh tối đa 60 ngày.",
+      );
+    return this.db.$transaction(
+      async (tx) => {
+        // Preview and commit share exactly the same validation. Commit repeats it under lock.
+        if (commit) await this.lockTenant(tx, c);
+        const rule = await tx.scheduleRule.findFirst({
+          where: { tenantId: c.tenantId!, classId, id: ruleId, active: true },
+        });
+        if (!rule)
+          throw new NotFoundException(
+            "Không tìm thấy quy tắc lịch đang hoạt động.",
+          );
+        const tenant = await tx.tenant.findUniqueOrThrow({
+          where: { id: c.tenantId! },
+        });
+        if (rule.timezone !== tenant.timezone)
+          throw new ConflictException(
+            "Múi giờ trung tâm đã đổi; cần xem xét quy tắc trước khi sinh lịch.",
+          );
+        const candidates: ScheduleCandidate[] = [];
+        for (
+          let ms = Math.max(
+            date(window.from).getTime(),
+            rule.validFrom.getTime(),
+          );
+          ms <= Math.min(date(window.to).getTime(), rule.validTo.getTime());
+          ms += 86400000
+        ) {
+          const d = new Date(ms);
+          if ((d.getUTCDay() || 7) !== rule.weekday) continue;
+          const scheduledDate = day(d);
+          let startsAt: string, endsAt: string;
+          try {
+            startsAt = wallClockUtc(
+              scheduledDate,
+              rule.localStart,
+              rule.timezone,
+            ).toISOString();
+            endsAt = wallClockUtc(
+              scheduledDate,
+              rule.localEnd,
+              rule.timezone,
+            ).toISOString();
+          } catch {
+            candidates.push({
+              scheduledDate,
+              startsAt: "",
+              endsAt: "",
+              status: "CONFLICT",
+              conflict: "DST_LOCAL_TIME_REQUIRES_REVIEW",
+            });
+            continue;
+          }
+          const existing = await tx.classSession.findFirst({
+            where: {
+              tenantId: c.tenantId!,
+              scheduleRuleId: rule.id,
+              scheduledDate: d,
+            },
+          });
+          if (existing) {
+            candidates.push({
+              scheduledDate,
+              startsAt: existing.startsAt.toISOString(),
+              endsAt: existing.endsAt.toISOString(),
+              status: "EXISTING",
+            });
+            continue;
+          }
+          try {
+            await this.slot(tx, c, classId, {
+              teacherId: rule.teacherId,
+              ...(rule.roomId ? { roomId: rule.roomId } : {}),
+              startsAt,
+              endsAt,
+            });
+            candidates.push({
+              scheduledDate,
+              startsAt,
+              endsAt,
+              status: "AVAILABLE",
+            });
+          } catch (error) {
+            if (
+              !(
+                error instanceof ConflictException ||
+                error instanceof UnprocessableEntityException
+              )
+            )
+              throw error;
+            candidates.push({
+              scheduledDate,
+              startsAt,
+              endsAt,
+              status: "CONFLICT",
+              conflict: error.message,
+            });
+          }
+        }
+        if (commit && candidates.some((v) => v.status === "CONFLICT"))
+          throw new ConflictException(
+            "SCHEDULE_CONFLICT: xem preview mới trước khi sinh lịch; toàn bộ batch chưa được ghi.",
+          );
+        let created = 0;
+        if (commit) {
+          for (const v of candidates.filter((v) => v.status === "AVAILABLE")) {
+            await tx.classSession.create({
+              data: {
+                tenantId: c.tenantId!,
+                classId,
+                teacherId: rule.teacherId,
+                roomId: rule.roomId,
+                scheduleRuleId: rule.id,
+                sessionType: "REGULAR",
+                scheduledDate: date(v.scheduledDate),
+                startsAt: new Date(v.startsAt),
+                endsAt: new Date(v.endsAt),
+              },
+            });
+            created++;
+          }
+          if (created)
+            await this.audit(
+              tx,
+              c,
+              "schedule.rule.generated",
+              rule.id,
+              traceId,
+            );
+        }
+        return {
+          timezone: rule.timezone,
+          candidates,
+          created,
+          skipped: candidates.filter((v) => v.status === "EXISTING").length,
+        };
+      },
+      { timeout: 15000 },
+    );
+  }
   async room(c: Claims, input: RoomInput, traceId: string) {
     return this.db.$transaction(async (tx) => {
       await this.lockTenant(tx, c);
@@ -575,6 +1091,38 @@ export class TeachingService {
         active: r.active,
       };
     });
+  }
+  async rooms(c: Claims, q: ListDto) {
+    const where = {
+      tenantId: c.tenantId!,
+      ...(q.search
+        ? { name: { contains: q.search, mode: "insensitive" as const } }
+        : {}),
+    };
+    const [items, total] = await this.db.$transaction([
+      this.db.room.findMany({
+        where,
+        orderBy: [{ name: "asc" }, { id: "asc" }],
+        take: q.limit,
+        skip: (q.page - 1) * q.limit,
+      }),
+      this.db.room.count({ where }),
+    ]);
+    return new Paged(items, {
+      page: q.page,
+      limit: q.limit,
+      total,
+      totalPages: Math.ceil(total / q.limit),
+    });
+  }
+  async sessionDetail(c: Claims, id: string) {
+    return this.db.$transaction(async (tx) =>
+      this.sessionView(tx, await this.authorizedSession(tx, c, id)),
+    );
+  }
+  async classSessions(c: Claims, classId: string, q: ScheduleQuery) {
+    await this.classDetail(c, classId);
+    return this.schedule(c, { ...q, classId });
   }
   async changeSession(
     c: Claims,
@@ -891,6 +1439,11 @@ export class TeachingService {
         tenantId: c.tenantId!,
         scheduledDate: { gte: date(q.from), lte: date(q.to) },
         ...(teacherId ? { teacherId } : {}),
+        ...(!teacherId && staff(c) && q.teacherId
+          ? { teacherId: q.teacherId }
+          : {}),
+        ...(q.classId ? { AND: [{ classId: q.classId }] } : {}),
+        ...(q.roomId ? { roomId: q.roomId } : {}),
         ...(ids ? { classId: { in: ids } } : {}),
         ...(attendance ? { status: "COMPLETED" } : {}),
       };

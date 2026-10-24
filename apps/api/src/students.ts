@@ -105,7 +105,7 @@ export class StudentListQuery extends ListDto {
   @IsIn(["ACTIVE", "PAUSED", "GRADUATED", "INACTIVE"])
   status?: string;
 }
-function tenantDate(timezone: string) {
+export function tenantDate(timezone: string) {
   const parts = new Intl.DateTimeFormat("en", {
     timeZone: timezone,
     year: "numeric",
@@ -116,7 +116,7 @@ function tenantDate(timezone: string) {
     .map((part) => parts.find((entry) => entry.type === part)?.value)
     .join("-");
 }
-function privateFields(dto: Partial<CreateStudentDto>, today: string) {
+export function privateFields(dto: Partial<CreateStudentDto>, today: string) {
   if (dto.dateOfBirth && dto.dateOfBirth > today)
     throw new UnprocessableEntityException("Ngày sinh không được ở tương lai.");
   return {

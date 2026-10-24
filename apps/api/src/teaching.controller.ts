@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Patch,
   Param,
   ParseUUIDPipe,
   Post,
@@ -49,6 +50,17 @@ import {
   RescheduleInput,
   RoomInput,
   RoomResponse,
+  ScheduleRuleInput,
+  ScheduleRuleResponse,
+  ScheduleRulesResponse,
+  GenerationWindow,
+  SchedulePreviewResponse,
+  TeachersResponse,
+  TeacherUpdate,
+  ClassUpdate,
+  LifecycleVersion,
+  WithdrawInput,
+  RoomsResponse,
 } from "./teaching.dto";
 
 @ApiTags("teaching")
@@ -62,6 +74,149 @@ import {
 @ApiResponse({ status: 422, type: ErrorResponse })
 export class TeachingController {
   constructor(private service: TeachingService) {}
+  @Get("rooms")
+  @TenantPermission("teaching.manage")
+  @ApiOkResponse({ type: RoomsResponse })
+  rooms(@Req() r: ApiRequest, @Query() q: ListDto) {
+    return this.service.rooms(requestClaims(r), q);
+  }
+  @Get("schedule")
+  @TenantPermission("teaching.read", "teaching.read.assigned")
+  @ApiOkResponse({ type: SessionsListResponse })
+  calendar(@Req() r: ApiRequest, @Query() q: ScheduleQuery) {
+    return this.service.schedule(requestClaims(r), q);
+  }
+  @Get("classes/:id/sessions")
+  @TenantPermission(
+    "teaching.read",
+    "teaching.read.assigned",
+    "teaching.read.own",
+  )
+  @ApiOkResponse({ type: SessionsListResponse })
+  classSessions(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Query() q: ScheduleQuery,
+  ) {
+    return this.service.classSessions(requestClaims(r), id, q);
+  }
+  @Get("sessions/:id")
+  @TenantPermission("teaching.read", "teaching.read.assigned")
+  @ApiOkResponse({ type: SessionResponse })
+  sessionDetail(@Req() r: ApiRequest, @Param("id", ParseUUIDPipe) id: string) {
+    return this.service.sessionDetail(requestClaims(r), id);
+  }
+  @Get("teachers")
+  @TenantPermission("teaching.manage")
+  @ApiOkResponse({ type: TeachersResponse })
+  teachers(@Req() r: ApiRequest, @Query() q: ListDto) {
+    return this.service.teachers(requestClaims(r), q);
+  }
+  @Get("teachers/:id")
+  @TenantPermission("teaching.manage")
+  @ApiOkResponse({ type: TeacherResponse })
+  teacherDetail(@Req() r: ApiRequest, @Param("id", ParseUUIDPipe) id: string) {
+    return this.service.teacherDetail(requestClaims(r), id);
+  }
+  @Patch("teachers/:id")
+  @TenantPermission("teaching.manage")
+  @ApiOkResponse({ type: TeacherResponse })
+  updateTeacher(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() dto: TeacherUpdate,
+  ) {
+    return this.service.updateTeacher(requestClaims(r), id, dto, r.traceId);
+  }
+  @Patch("classes/:id")
+  @TenantPermission("teaching.manage")
+  @ApiOkResponse({ type: ClassResponse })
+  updateClass(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() dto: ClassUpdate,
+  ) {
+    return this.service.updateClass(requestClaims(r), id, dto, r.traceId);
+  }
+  @Post("classes/:id/close")
+  @TenantPermission("teaching.manage")
+  @ApiCreatedResponse({ type: ClassResponse })
+  closeClass(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() dto: LifecycleVersion,
+  ) {
+    return this.service.closeClass(requestClaims(r), id, dto, r.traceId);
+  }
+  @Post("classes/:id/enrollments/:enrollmentId/withdraw")
+  @TenantPermission("teaching.manage")
+  @ApiCreatedResponse({ type: EnrollmentResponse })
+  withdraw(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Param("enrollmentId", ParseUUIDPipe) enrollmentId: string,
+    @Body() dto: WithdrawInput,
+  ) {
+    return this.service.withdraw(
+      requestClaims(r),
+      id,
+      enrollmentId,
+      dto,
+      r.traceId,
+    );
+  }
+  @Get("classes/:id/schedule-rules")
+  @TenantPermission("teaching.manage")
+  @ApiOkResponse({ type: ScheduleRulesResponse })
+  rules(@Req() r: ApiRequest, @Param("id", ParseUUIDPipe) id: string) {
+    return this.service.scheduleRules(requestClaims(r), id);
+  }
+  @Post("classes/:id/schedule-rules")
+  @TenantPermission("teaching.manage")
+  @ApiCreatedResponse({ type: ScheduleRuleResponse })
+  rule(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() dto: ScheduleRuleInput,
+  ) {
+    return this.service.createRule(requestClaims(r), id, dto, r.traceId);
+  }
+  @Get("classes/:id/schedule-rules/:ruleId/preview")
+  @TenantPermission("teaching.manage")
+  @ApiOkResponse({ type: SchedulePreviewResponse })
+  previewRule(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Param("ruleId", ParseUUIDPipe) ruleId: string,
+    @Query() q: GenerationWindow,
+  ) {
+    return this.service.generateRule(
+      requestClaims(r),
+      id,
+      ruleId,
+      q,
+      r.traceId,
+      false,
+    );
+  }
+  @Post("classes/:id/schedule-rules/:ruleId/generate")
+  @TenantPermission("teaching.manage")
+  @ApiCreatedResponse({ type: SchedulePreviewResponse })
+  generateRule(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Param("ruleId", ParseUUIDPipe) ruleId: string,
+    @Body() dto: GenerationWindow,
+  ) {
+    return this.service.generateRule(
+      requestClaims(r),
+      id,
+      ruleId,
+      dto,
+      r.traceId,
+      true,
+    );
+  }
   @Get("mobile/my/attendance/summary")
   @TenantPermission("attendance.read.own")
   @ApiOkResponse({ type: AttendanceSummaryResponse })

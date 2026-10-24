@@ -4,6 +4,54 @@
  */
 
 export interface paths {
+  "/api/v1/students/imports": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["StudentImportsController_preview"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/students/imports/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["StudentImportsController_detail"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/students/imports/{id}/commit": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["StudentImportsController_commit"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/auth/login": {
     parameters: {
       query?: never;
@@ -276,6 +324,198 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/rooms": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TeachingController_rooms"];
+    put?: never;
+    post: operations["TeachingController_room"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/schedule": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TeachingController_calendar"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/classes/{id}/sessions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TeachingController_classSessions"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/sessions/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TeachingController_sessionDetail"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/teachers": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TeachingController_teachers"];
+    put?: never;
+    post: operations["TeachingController_teacher"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/teachers/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TeachingController_teacherDetail"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["TeachingController_updateTeacher"];
+    trace?: never;
+  };
+  "/api/v1/classes/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TeachingController_detail"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["TeachingController_updateClass"];
+    trace?: never;
+  };
+  "/api/v1/classes/{id}/close": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["TeachingController_closeClass"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/classes/{id}/enrollments/{enrollmentId}/withdraw": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["TeachingController_withdraw"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/classes/{id}/schedule-rules": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TeachingController_rules"];
+    put?: never;
+    post: operations["TeachingController_rule"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/classes/{id}/schedule-rules/{ruleId}/preview": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TeachingController_previewRule"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/classes/{id}/schedule-rules/{ruleId}/generate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["TeachingController_generateRule"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/mobile/my/attendance/summary": {
     parameters: {
       query?: never;
@@ -302,22 +542,6 @@ export interface paths {
     get: operations["TeachingController_childAttendanceSummary"];
     put?: never;
     post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/rooms": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["TeachingController_room"];
     delete?: never;
     options?: never;
     head?: never;
@@ -356,22 +580,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/v1/teachers": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["TeachingController_teacher"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   "/api/v1/classes": {
     parameters: {
       query?: never;
@@ -396,22 +604,6 @@ export interface paths {
       cookie?: never;
     };
     get: operations["TeachingController_myClasses"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/classes/{id}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["TeachingController_detail"];
     put?: never;
     post?: never;
     delete?: never;
@@ -1464,12 +1656,34 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
-    ErrorView: {
-      code: string;
-      message: string;
+    StudentCsvInput: {
+      /** @description UTF-8 CSV text; max 512 KiB, 5000 rows; atomic commit */
+      csv: string;
+    };
+    ImportRowView: {
+      row: number;
+      studentCode: string;
+      fullName: string;
+      errors: string[];
+    };
+    ImportView: {
+      id: string;
+      status: string;
+      rowCount: number;
+      errorCount: number;
+      expiresAt: string;
+      rows: components["schemas"]["ImportRowView"][];
     };
     MetaDto: {
       traceId: string;
+    };
+    ImportResponse: {
+      data: components["schemas"]["ImportView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    ErrorView: {
+      code: string;
+      message: string;
     };
     ErrorResponse: {
       error: components["schemas"]["ErrorView"];
@@ -1675,26 +1889,6 @@ export interface components {
       data: components["schemas"]["StudentDetailView"];
       meta: components["schemas"]["MetaDto"];
     };
-    AttendanceSummaryView: {
-      from: string;
-      to: string;
-      total: number;
-      present: number;
-      late: number;
-      excused: number;
-      unexcused: number;
-      attendedPercent: string | null;
-      denominator: string;
-    };
-    AttendanceSummaryResponse: {
-      data: components["schemas"]["AttendanceSummaryView"];
-      meta: components["schemas"]["MetaDto"];
-    };
-    RoomInput: {
-      code: string;
-      name: string;
-      capacity: number;
-    };
     RoomView: {
       code: string;
       name: string;
@@ -1702,21 +1896,10 @@ export interface components {
       id: string;
       active: boolean;
     };
-    RoomResponse: {
-      data: components["schemas"]["RoomView"];
+    RoomsResponse: {
+      data: components["schemas"]["RoomView"][];
+      page: components["schemas"]["PageView"];
       meta: components["schemas"]["MetaDto"];
-    };
-    RescheduleInput: {
-      /** Format: uuid */
-      roomId?: string;
-      /** Format: uuid */
-      teacherId: string;
-      /** Format: date-time */
-      startsAt: string;
-      /** Format: date-time */
-      endsAt: string;
-      sessionVersion: number;
-      reason: string;
     };
     TeachingSessionView: {
       /** Format: uuid */
@@ -1739,19 +1922,14 @@ export interface components {
       /** Format: date-time */
       finalizedAt: string | null;
     };
+    SessionsListResponse: {
+      data: components["schemas"]["TeachingSessionView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
+    };
     SessionResponse: {
       data: components["schemas"]["TeachingSessionView"];
       meta: components["schemas"]["MetaDto"];
-    };
-    ReopenInput: {
-      sessionVersion: number;
-      reason: string;
-    };
-    TeacherInput: {
-      /** Format: uuid */
-      userId: string;
-      teacherCode: string;
-      fullName: string;
     };
     TeacherView: {
       /** Format: uuid */
@@ -1760,21 +1938,29 @@ export interface components {
       fullName: string;
       id: string;
       status: string;
+      version: number;
+    };
+    TeachersResponse: {
+      data: components["schemas"]["TeacherView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
     };
     TeacherResponse: {
       data: components["schemas"]["TeacherView"];
       meta: components["schemas"]["MetaDto"];
     };
-    ClassInput: {
-      /** Format: uuid */
-      roomId?: string;
-      code: string;
+    TeacherUpdate: {
+      version: number;
+      reason: string;
+      fullName: string;
+      /** @enum {string} */
+      status: "ACTIVE" | "INACTIVE";
+    };
+    ClassUpdate: {
+      version: number;
+      reason: string;
       name: string;
       capacity: number;
-      /** Format: date */
-      startDate: string;
-      /** Format: date */
-      endDate: string;
     };
     ClassView: {
       /** Format: uuid */
@@ -1788,10 +1974,166 @@ export interface components {
       endDate: string;
       id: string;
       status: string;
+      version: number;
     };
     ClassResponse: {
       data: components["schemas"]["ClassView"];
       meta: components["schemas"]["MetaDto"];
+    };
+    LifecycleVersion: {
+      version: number;
+      reason: string;
+    };
+    WithdrawInput: {
+      version: number;
+      reason: string;
+      /** Format: date */
+      leftAt: string;
+    };
+    EnrollmentView: {
+      /** Format: uuid */
+      studentId: string;
+      /** Format: date */
+      joinedAt: string;
+      id: string;
+      classId: string;
+      status: string;
+      version: number;
+      /** Format: date */
+      leftAt?: string | null;
+    };
+    EnrollmentResponse: {
+      data: components["schemas"]["EnrollmentView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    ScheduleRuleView: {
+      /** Format: uuid */
+      teacherId: string;
+      /** Format: uuid */
+      roomId?: string;
+      /** @description ISO weekday: Monday=1 */
+      weekday: number;
+      /** @example 18:00 */
+      localStart: string;
+      /** @example 19:30 */
+      localEnd: string;
+      /** Format: date */
+      validFrom: string;
+      /** Format: date */
+      validTo: string;
+      id: string;
+      classId: string;
+      timezone: string;
+      version: number;
+      active: boolean;
+    };
+    ScheduleRulesResponse: {
+      data: components["schemas"]["ScheduleRuleView"][];
+      meta: components["schemas"]["MetaDto"];
+    };
+    ScheduleRuleInput: {
+      /** Format: uuid */
+      teacherId: string;
+      /** Format: uuid */
+      roomId?: string;
+      /** @description ISO weekday: Monday=1 */
+      weekday: number;
+      /** @example 18:00 */
+      localStart: string;
+      /** @example 19:30 */
+      localEnd: string;
+      /** Format: date */
+      validFrom: string;
+      /** Format: date */
+      validTo: string;
+    };
+    ScheduleRuleResponse: {
+      data: components["schemas"]["ScheduleRuleView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    ScheduleCandidate: {
+      /** Format: date */
+      scheduledDate: string;
+      /** Format: date-time */
+      startsAt: string;
+      /** Format: date-time */
+      endsAt: string;
+      /** @enum {string} */
+      status: "AVAILABLE" | "EXISTING" | "CONFLICT";
+      conflict?: string;
+    };
+    SchedulePreview: {
+      timezone: string;
+      candidates: components["schemas"]["ScheduleCandidate"][];
+      created: number;
+      skipped: number;
+    };
+    SchedulePreviewResponse: {
+      data: components["schemas"]["SchedulePreview"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    GenerationWindow: {
+      /** Format: date */
+      from: string;
+      /** Format: date */
+      to: string;
+    };
+    AttendanceSummaryView: {
+      from: string;
+      to: string;
+      total: number;
+      present: number;
+      late: number;
+      excused: number;
+      unexcused: number;
+      attendedPercent: string | null;
+      denominator: string;
+    };
+    AttendanceSummaryResponse: {
+      data: components["schemas"]["AttendanceSummaryView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    RoomInput: {
+      code: string;
+      name: string;
+      capacity: number;
+    };
+    RoomResponse: {
+      data: components["schemas"]["RoomView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    RescheduleInput: {
+      /** Format: uuid */
+      roomId?: string;
+      /** Format: uuid */
+      teacherId: string;
+      /** Format: date-time */
+      startsAt: string;
+      /** Format: date-time */
+      endsAt: string;
+      sessionVersion: number;
+      reason: string;
+    };
+    ReopenInput: {
+      sessionVersion: number;
+      reason: string;
+    };
+    TeacherInput: {
+      /** Format: uuid */
+      userId: string;
+      teacherCode: string;
+      fullName: string;
+    };
+    ClassInput: {
+      /** Format: uuid */
+      roomId?: string;
+      code: string;
+      name: string;
+      capacity: number;
+      /** Format: date */
+      startDate: string;
+      /** Format: date */
+      endDate: string;
     };
     ClassesResponse: {
       data: components["schemas"]["ClassView"][];
@@ -1799,6 +2141,8 @@ export interface components {
       meta: components["schemas"]["MetaDto"];
     };
     ClassRosterRow: {
+      id: string;
+      version: number;
       studentId: string;
       fullName: string;
       status: string;
@@ -1837,19 +2181,6 @@ export interface components {
       /** Format: date */
       joinedAt: string;
     };
-    EnrollmentView: {
-      /** Format: uuid */
-      studentId: string;
-      /** Format: date */
-      joinedAt: string;
-      id: string;
-      classId: string;
-      status: string;
-    };
-    EnrollmentResponse: {
-      data: components["schemas"]["EnrollmentView"];
-      meta: components["schemas"]["MetaDto"];
-    };
     SessionInput: {
       /** Format: uuid */
       roomId?: string;
@@ -1859,11 +2190,6 @@ export interface components {
       startsAt: string;
       /** Format: date-time */
       endsAt: string;
-    };
-    SessionsListResponse: {
-      data: components["schemas"]["TeachingSessionView"][];
-      page: components["schemas"]["PageView"];
-      meta: components["schemas"]["MetaDto"];
     };
     PublishedAttendance: {
       /** Format: uuid */
@@ -2552,6 +2878,71 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  StudentImportsController_preview: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["StudentCsvInput"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ImportResponse"];
+        };
+      };
+    };
+  };
+  StudentImportsController_detail: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ImportResponse"];
+        };
+      };
+    };
+  };
+  StudentImportsController_commit: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ImportResponse"];
+        };
+      };
+    };
+  };
   AuthController_login: {
     parameters: {
       query?: never;
@@ -3395,12 +3786,1106 @@ export interface operations {
       };
     };
   };
+  TeachingController_rooms: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RoomsResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_room: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RoomInput"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RoomResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_calendar: {
+    parameters: {
+      query: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        classId?: string;
+        teacherId?: string;
+        roomId?: string;
+        from: string;
+        to: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SessionsListResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_classSessions: {
+    parameters: {
+      query: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        classId?: string;
+        teacherId?: string;
+        roomId?: string;
+        from: string;
+        to: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SessionsListResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_sessionDetail: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SessionResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_teachers: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TeachersResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_teacher: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TeacherInput"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TeacherResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_teacherDetail: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TeacherResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_updateTeacher: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TeacherUpdate"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TeacherResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_detail: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ClassResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_updateClass: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ClassUpdate"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ClassResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_closeClass: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["LifecycleVersion"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ClassResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_withdraw: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+        enrollmentId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["WithdrawInput"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EnrollmentResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_rules: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ScheduleRulesResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_rule: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ScheduleRuleInput"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ScheduleRuleResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_previewRule: {
+    parameters: {
+      query: {
+        from: string;
+        to: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+        ruleId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SchedulePreviewResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_generateRule: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+        ruleId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GenerationWindow"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SchedulePreviewResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
   TeachingController_attendanceSummary: {
     parameters: {
       query: {
         page?: number;
         limit?: number;
         search?: string;
+        classId?: string;
+        teacherId?: string;
+        roomId?: string;
         from: string;
         to: string;
       };
@@ -3466,6 +4951,9 @@ export interface operations {
         page?: number;
         limit?: number;
         search?: string;
+        classId?: string;
+        teacherId?: string;
+        roomId?: string;
         from: string;
         to: string;
       };
@@ -3483,69 +4971,6 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["AttendanceSummaryResponse"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  TeachingController_room: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["RoomInput"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["RoomResponse"];
         };
       };
       401: {
@@ -3676,69 +5101,6 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["SessionResponse"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  TeachingController_teacher: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["TeacherInput"];
-      };
-    };
-    responses: {
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TeacherResponse"];
         };
       };
       401: {
@@ -3928,67 +5290,6 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ClassesResponse"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      403: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      409: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-      422: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponse"];
-        };
-      };
-    };
-  };
-  TeachingController_detail: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ClassResponse"];
         };
       };
       401: {
@@ -4299,6 +5600,9 @@ export interface operations {
         page?: number;
         limit?: number;
         search?: string;
+        classId?: string;
+        teacherId?: string;
+        roomId?: string;
         from: string;
         to: string;
       };
@@ -4364,6 +5668,9 @@ export interface operations {
         page?: number;
         limit?: number;
         search?: string;
+        classId?: string;
+        teacherId?: string;
+        roomId?: string;
         from: string;
         to: string;
       };
@@ -4431,6 +5738,9 @@ export interface operations {
         page?: number;
         limit?: number;
         search?: string;
+        classId?: string;
+        teacherId?: string;
+        roomId?: string;
         from: string;
         to: string;
       };
@@ -4496,6 +5806,9 @@ export interface operations {
         page?: number;
         limit?: number;
         search?: string;
+        classId?: string;
+        teacherId?: string;
+        roomId?: string;
         from: string;
         to: string;
       };
