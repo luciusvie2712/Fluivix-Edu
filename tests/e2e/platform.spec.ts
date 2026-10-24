@@ -1,3 +1,4 @@
+import { testOrigins } from "../../tooling/test-origins";
 import { expect, test } from "@playwright/test";
 import { createRequire } from "node:module";
 import { execFileSync } from "node:child_process";
@@ -8,7 +9,7 @@ import { reviewTaste } from "../../tooling/taste-review";
 const requireWeb = createRequire(path.resolve("apps/web/package.json"));
 const AxeBuilder = requireWeb("@axe-core/playwright")
   .default as typeof import("../../apps/web/node_modules/@axe-core/playwright").default;
-const origin = "http://localhost:3001";
+const origin = testOrigins.platform;
 test("platform enrollment, persisted MFA session, recovery re-enrollment and logout", async ({
   page,
 }) => {

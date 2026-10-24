@@ -1,3 +1,4 @@
+import { testOrigins, mailLinkPattern } from "../../tooling/test-origins";
 import { test, expect, type Page } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 import { createRequire } from "node:module";
@@ -39,7 +40,7 @@ test("platform creates plan and tenant, delivers owner invitation, activates and
     slug = "e2e-" + randomUUID().slice(0, 8),
     name = "Trung tâm " + slug,
     email = slug + "@example.test";
-  await page.goto("http://localhost:3001/platform/login");
+  await page.goto(testOrigins.platform + "/platform/login");
   await page
     .getByLabel("Email quản trị")
     .fill("platform-onboarding@example.test");
@@ -162,7 +163,7 @@ test("platform creates plan and tenant, delivers owner invitation, activates and
     "http://127.0.0.1:8025/api/v1/message/" + messageId,
   ).then((result) => result.json());
   const link = String(message.Text).match(
-    /http:\/\/localhost:3000\/invite\/accept#token=[A-Za-z0-9_-]{43}/,
+    mailLinkPattern("/invite/accept"),
   )?.[0];
   expect(link).toBeTruthy();
   const owner = await context.newPage();
@@ -184,7 +185,7 @@ test("platform creates plan and tenant, delivers owner invitation, activates and
     .getByLabel("Mật khẩu", { exact: true })
     .fill("Onboarding-Owner-Password-2026");
   await owner.getByRole("button", { name: "Đăng nhập", exact: true }).click();
-  await expect(owner).toHaveURL("http://localhost:3000/tenant/select");
+  await expect(owner).toHaveURL(testOrigins.web + "/tenant/select");
   await expect(
     owner.getByRole("heading", { name: "Trung tâm kiểm thử A" }),
   ).toHaveCount(0);

@@ -53,6 +53,7 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+      - run: pnpm --filter @fluivix/mobile test
       - run: pnpm build
       - run: pnpm openapi:generate && pnpm client:generate
       - run: git diff --exit-code -- apps/api/openapi.json packages/api-client/src/schema.d.ts

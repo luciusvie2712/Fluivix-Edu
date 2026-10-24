@@ -1,3 +1,4 @@
+import { testOrigins, mailLinkPattern } from "../../tooling/test-origins";
 import { expect, test } from "@playwright/test";
 import { createRequire } from "node:module";
 import path from "node:path";
@@ -106,7 +107,7 @@ test("Taste app inspection of the live login page", async () => {
     [
       ".agents/skills/design-taste-frontend/scripts/inspect.mjs",
       "--app",
-      "http://localhost:3000/login",
+      testOrigins.web + "/login",
       "--out",
       "docs/ai/evidence/taste-login",
       "--widths",
@@ -156,7 +157,7 @@ test("forgot password sends through real worker and Mailpit, reset link is one-u
     `http://127.0.0.1:8025/api/v1/message/${id}`,
   ).then((response) => response.json());
   const link = String(message.Text).match(
-    /http:\/\/localhost:3000\/reset-password#token=[A-Za-z0-9_-]{43}/,
+    mailLinkPattern("/reset-password"),
   )?.[0];
   expect(link).toBeTruthy();
   await page.goto(link!);
@@ -185,9 +186,9 @@ test("staff invitation activates a new account from the actual delivered email",
   const recipient = `invite-${Date.now()}@example.test`;
   const headers = {
     "Content-Type": "application/json",
-    Origin: "http://localhost:3000",
+    Origin: testOrigins.web,
   };
-  const signedIn = await fetch("http://localhost:4000/api/v1/auth/login", {
+  const signedIn = await fetch(testOrigins.api + "/api/v1/auth/login", {
     method: "POST",
     headers,
     body: JSON.stringify({
@@ -196,7 +197,7 @@ test("staff invitation activates a new account from the actual delivered email",
     }),
   }).then((response) => response.json());
   const selected = await fetch(
-    "http://localhost:4000/api/v1/auth/switch-context",
+    testOrigins.api + "/api/v1/auth/switch-context",
     {
       method: "POST",
       headers: {
@@ -209,7 +210,7 @@ test("staff invitation activates a new account from the actual delivered email",
       }),
     },
   ).then((response) => response.json());
-  const created = await fetch("http://localhost:4000/api/v1/staff", {
+  const created = await fetch(testOrigins.api + "/api/v1/staff", {
     method: "POST",
     headers: {
       ...headers,
@@ -236,7 +237,7 @@ test("staff invitation activates a new account from the actual delivered email",
     "http://127.0.0.1:8025/api/v1/message/" + messageId,
   ).then((response) => response.json());
   const link = String(message.Text).match(
-    /http:\/\/localhost:3000\/invite\/accept#token=[A-Za-z0-9_-]{43}/,
+    mailLinkPattern("/invite/accept"),
   )?.[0];
   expect(link).toBeTruthy();
   await page.goto(link!);

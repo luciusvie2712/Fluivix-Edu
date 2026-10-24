@@ -1,3 +1,4 @@
+import { testOrigins } from "../../tooling/test-origins";
 import { test, expect, type Page } from "@playwright/test";
 import { randomUUID } from "node:crypto";
 import { createRequire } from "node:module";
@@ -12,13 +13,13 @@ async function login(
   email = "inviter@example.test",
   role = "Chủ trung tâm",
 ) {
-  await page.goto("http://localhost:3000/login");
+  await page.goto(testOrigins.web + "/login");
   await page.getByLabel("Email", { exact: true }).fill(email);
   await page
     .getByLabel("Mật khẩu", { exact: true })
     .fill("Fluivix-Test-Password-2026");
   await page.getByRole("button", { name: "Đăng nhập", exact: true }).click();
-  await expect(page).toHaveURL("http://localhost:3000/tenant/select");
+  await expect(page).toHaveURL(testOrigins.web + "/tenant/select");
   await page
     .locator("section")
     .filter({
@@ -29,7 +30,7 @@ async function login(
     })
     .getByRole("button", { name: role, exact: true })
     .click();
-  await expect(page).toHaveURL("http://localhost:3000/app/students");
+  await expect(page).toHaveURL(testOrigins.web + "/app/students");
 }
 async function capture(page: Page, name: string) {
   mkdirSync("docs/ai/evidence/students", { recursive: true });

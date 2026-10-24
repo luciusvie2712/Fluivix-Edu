@@ -1,13 +1,17 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import EmbeddedPostgres from "embedded-postgres";
+import EmbeddedPostgres from "../../tooling/test-postgres";
 import { PrismaClient } from "@prisma/client";
 import { execFileSync, spawn, type ChildProcess } from "node:child_process";
 import { randomBytes, randomUUID } from "node:crypto";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { createServer } from "node:net";
+import type { Server } from "node:http";
+import { once } from "node:events";
 import { platformCases } from "./platform-cases";
 import { migrationCases } from "./migration-cases";
+import { nativeCases } from "./native-cases";
+import { teachingCases } from "./teaching-cases";
 
 let database: EmbeddedPostgres | undefined;
 let db: PrismaClient;
@@ -25,6 +29,17 @@ const owner = randomUUID(),
 const studentA = randomUUID(),
   studentB = randomUUID();
 const password = randomBytes(24).toString("base64url");
+nativeCases(
+  () => base,
+  () => db,
+  password,
+);
+teachingCases(
+  () => base,
+  () => db,
+  password,
+  () => hashPassword(password),
+);
 let hashPassword: typeof import("../../apps/api/dist/auth.service.js").hashPassword;
 platformCases(
   () => db,
@@ -125,17 +140,28 @@ beforeAll(async () => {
     await database.createDatabase("fluivixedu_test");
     process.env.DATABASE_URL = `postgresql://fluivix_test:${databasePassword}@127.0.0.1:${port}/fluivixedu_test`;
   }
-  execFileSync(
-    process.execPath,
-    [
-      "node_modules/prisma/build/index.js",
-      "migrate",
-      "deploy",
-      "--schema",
-      "infra/prisma/schema.prisma",
-    ],
-    { env: process.env, stdio: "pipe" },
-  );
+  try {
+    execFileSync(
+      process.execPath,
+      [
+        "node_modules/prisma/build/index.js",
+        "migrate",
+        "deploy",
+        "--schema",
+        "infra/prisma/schema.prisma",
+      ],
+      { env: process.env, stdio: "pipe" },
+    );
+  } catch (cause) {
+    const output = cause as { stdout?: Buffer; stderr?: Buffer };
+    const diagnostics = [output.stdout, output.stderr]
+      .map((value) => value?.toString() ?? "")
+      .join("\n")
+      .replace(/postgres(?:ql)?:\/\/\S+/g, "[REDACTED_DATABASE_URL]");
+    throw new Error("Test database migration failed:\n" + diagnostics, {
+      cause,
+    });
+  }
   db = new PrismaClient();
   const services = await import("../../apps/api/dist/auth.service.js");
   hashPassword = services.hashPassword;
@@ -257,10 +283,23 @@ beforeAll(async () => {
   base = (await app.getUrl()) + "/api/v1";
 }, 60000);
 afterAll(async () => {
-  mailWorker?.kill();
+  if (
+    mailWorker &&
+    mailWorker.exitCode === null &&
+    mailWorker.signalCode === null
+  ) {
+    const exited = once(mailWorker, "exit");
+    mailWorker.kill();
+    await exited;
+  }
+  console.info("Integration cleanup: worker stopped");
+  (app?.getHttpServer() as Server | undefined)?.closeAllConnections();
   await app?.close();
+  console.info("Integration cleanup: API closed");
   await db?.$disconnect();
+  console.info("Integration cleanup: client disconnected");
   await database?.stop();
+  console.info("Integration cleanup: database stopped");
 });
 beforeEach(async () => {
   await db.$executeRaw`DELETE FROM auth_rate_limits`;
@@ -782,7 +821,8 @@ describe("identity and tenant boundary against real PostgreSQL", () => {
   });
   it("real Redis/BullMQ/Mailpit: invitation outbox delivers once and repeat delivery is idempotent", async () => {
     process.env.MAIL_PROVIDER = "mailpit";
-    process.env.REDIS_URL = "redis://127.0.0.1:6379";
+    process.env.REDIS_URL =
+      process.env.TEST_REDIS_URL ?? "redis://127.0.0.1:6379";
     process.env.QUEUE_PREFIX = "fluivixedu-test-" + randomUUID();
     const token = await context("owner@example.test", tenantA, "owner");
     const recipient = `mail-${randomUUID()}@example.test`;
