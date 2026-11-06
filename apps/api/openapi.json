@@ -7238,6 +7238,24 @@
             "required": false,
             "in": "query",
             "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "membershipStatus",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["INVITED", "ACTIVE", "SUSPENDED", "REVOKED"]
+            }
+          },
+          {
+            "name": "relationshipStatus",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["PENDING", "ACTIVE", "REVOKED"]
+            }
           }
         ],
         "responses": {
@@ -7292,11 +7310,79 @@
         },
         "security": [{ "bearer": [] }],
         "tags": ["guardian-links"]
+      },
+      "post": {
+        "operationId": "GuardianLinksController_provision",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GuardianProvisionInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuardianUserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["guardian-links"]
       }
     },
     "/api/v1/guardians/invite": {
       "post": {
-        "operationId": "GuardianLinksController_invite",
+        "operationId": "GuardianLinksController_inviteEmail",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -7360,6 +7446,398 @@
         "tags": ["guardian-links"]
       }
     },
+    "/api/v1/guardians/{userId}": {
+      "get": {
+        "operationId": "GuardianLinksController_detail",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuardianUserResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["guardian-links"]
+      }
+    },
+    "/api/v1/guardians/{userId}/links": {
+      "get": {
+        "operationId": "GuardianLinksController_profileLinks",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["PENDING", "ACTIVE", "REVOKED"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuardianLinksResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["guardian-links"]
+      }
+    },
+    "/api/v1/guardians/{userId}/invitations": {
+      "get": {
+        "operationId": "GuardianLinksController_invitations",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuardianInvitationsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["guardian-links"]
+      }
+    },
+    "/api/v1/guardians/{userId}/invite": {
+      "post": {
+        "operationId": "GuardianLinksController_invite",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/InviteResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["guardian-links"]
+      }
+    },
+    "/api/v1/guardians/{userId}/invitations/{invitationId}/resend": {
+      "post": {
+        "operationId": "GuardianLinksController_resend",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "invitationId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/InviteResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["guardian-links"]
+      }
+    },
     "/api/v1/students/{id}/guardians": {
       "get": {
         "operationId": "GuardianLinksController_links",
@@ -7369,6 +7847,38 @@
             "required": true,
             "in": "path",
             "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["PENDING", "ACTIVE", "REVOKED"]
+            }
           }
         ],
         "responses": {
@@ -7613,6 +8123,102 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GuardianLinkResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["guardian-links"]
+      }
+    },
+    "/api/v1/students/{id}/guardians/{linkId}/history": {
+      "get": {
+        "operationId": "GuardianLinksController_history",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "linkId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GuardianHistoryResponse"
                 }
               }
             }
@@ -11041,9 +11647,30 @@
         "properties": {
           "userId": { "type": "string" },
           "displayName": { "type": "string" },
-          "email": { "type": "string" }
+          "email": { "type": "string" },
+          "membershipStatus": {
+            "type": "string",
+            "enum": ["INVITED", "ACTIVE", "SUSPENDED", "REVOKED"]
+          },
+          "activationPending": { "type": "boolean" },
+          "guardianRoleGranted": { "type": "boolean" },
+          "accessReady": { "type": "boolean" },
+          "relationshipEligible": { "type": "boolean" },
+          "activeStudents": { "type": "number", "minimum": 0 },
+          "recordedAt": { "type": "string" }
         },
-        "required": ["userId", "displayName", "email"]
+        "required": [
+          "userId",
+          "displayName",
+          "email",
+          "membershipStatus",
+          "activationPending",
+          "guardianRoleGranted",
+          "accessReady",
+          "relationshipEligible",
+          "activeStudents",
+          "recordedAt"
+        ]
       },
       "GuardiansResponse": {
         "type": "object",
@@ -11057,15 +11684,38 @@
         },
         "required": ["data", "page", "meta"]
       },
-      "GuardianLinkView": {
+      "GuardianProvisionInput": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "format": "email", "maxLength": 254 }
+        },
+        "required": ["email"]
+      },
+      "GuardianUserResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/GuardianUserView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "GuardianLinkListView": {
         "type": "object",
         "properties": {
           "id": { "type": "string" },
           "guardianUserId": { "type": "string" },
           "studentId": { "type": "string" },
-          "status": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "ACTIVE", "REVOKED"]
+          },
           "relationType": { "type": "string" },
-          "verifiedAt": { "type": "string", "nullable": true }
+          "version": { "type": "number" },
+          "verifiedAt": { "type": "string", "nullable": true },
+          "studentName": { "type": "string" },
+          "studentCode": { "type": "string" },
+          "guardianDisplayName": { "type": "string" },
+          "guardianEmail": { "type": "string" }
         },
         "required": [
           "id",
@@ -11073,7 +11723,12 @@
           "studentId",
           "status",
           "relationType",
-          "verifiedAt"
+          "version",
+          "verifiedAt",
+          "studentName",
+          "studentCode",
+          "guardianDisplayName",
+          "guardianEmail"
         ]
       },
       "GuardianLinksResponse": {
@@ -11081,11 +11736,38 @@
         "properties": {
           "data": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/GuardianLinkView" }
+            "items": { "$ref": "#/components/schemas/GuardianLinkListView" }
           },
+          "page": { "$ref": "#/components/schemas/PageView" },
           "meta": { "$ref": "#/components/schemas/MetaDto" }
         },
-        "required": ["data", "meta"]
+        "required": ["data", "page", "meta"]
+      },
+      "InvitationLifecycleView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "email": { "type": "string" },
+          "role": { "allOf": [{ "$ref": "#/components/schemas/Role" }] },
+          "expiresAt": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "EXPIRED", "ACCEPTED", "REVOKED"]
+          }
+        },
+        "required": ["id", "email", "role", "expiresAt", "status"]
+      },
+      "GuardianInvitationsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/InvitationLifecycleView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
       },
       "LinkInput": {
         "type": "object",
@@ -11098,6 +11780,30 @@
         },
         "required": ["guardianUserId", "relationType"]
       },
+      "GuardianLinkView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "guardianUserId": { "type": "string" },
+          "studentId": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "ACTIVE", "REVOKED"]
+          },
+          "relationType": { "type": "string" },
+          "version": { "type": "number" },
+          "verifiedAt": { "type": "string", "nullable": true }
+        },
+        "required": [
+          "id",
+          "guardianUserId",
+          "studentId",
+          "status",
+          "relationType",
+          "version",
+          "verifiedAt"
+        ]
+      },
       "GuardianLinkResponse": {
         "type": "object",
         "properties": {
@@ -11108,13 +11814,66 @@
       },
       "VerifyLink": {
         "type": "object",
-        "properties": { "verificationMethod": { "type": "string" } },
+        "properties": {
+          "version": { "type": "number", "minimum": 1 },
+          "verificationMethod": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 500
+          }
+        },
         "required": ["verificationMethod"]
       },
       "RevokeLink": {
         "type": "object",
-        "properties": { "reason": { "type": "string" } },
+        "properties": {
+          "version": { "type": "number", "minimum": 1 },
+          "reason": { "type": "string", "minLength": 10, "maxLength": 500 }
+        },
         "required": ["reason"]
+      },
+      "GuardianLinkEventView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "version": { "type": "number" },
+          "eventType": { "type": "string" },
+          "beforeStatus": { "type": "string", "nullable": true },
+          "afterStatus": { "type": "string" },
+          "relationType": { "type": "string" },
+          "verificationMethod": { "type": "string", "nullable": true },
+          "verifiedAt": { "type": "string", "nullable": true },
+          "actorDisplayName": { "type": "string", "nullable": true },
+          "reason": { "type": "string", "nullable": true },
+          "traceId": { "type": "string", "nullable": true },
+          "recordedAt": { "type": "string" }
+        },
+        "required": [
+          "id",
+          "version",
+          "eventType",
+          "beforeStatus",
+          "afterStatus",
+          "relationType",
+          "verificationMethod",
+          "verifiedAt",
+          "actorDisplayName",
+          "reason",
+          "traceId",
+          "recordedAt"
+        ]
+      },
+      "GuardianHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/GuardianLinkEventView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
       },
       "CreateStudentDto": {
         "type": "object",

@@ -1405,7 +1405,7 @@ export interface paths {
     };
     get: operations["GuardianLinksController_directory"];
     put?: never;
-    post?: never;
+    post: operations["GuardianLinksController_provision"];
     delete?: never;
     options?: never;
     head?: never;
@@ -1421,7 +1421,87 @@ export interface paths {
     };
     get?: never;
     put?: never;
+    post: operations["GuardianLinksController_inviteEmail"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/guardians/{userId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GuardianLinksController_detail"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/guardians/{userId}/links": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GuardianLinksController_profileLinks"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/guardians/{userId}/invitations": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GuardianLinksController_invitations"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/guardians/{userId}/invite": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
     post: operations["GuardianLinksController_invite"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/guardians/{userId}/invitations/{invitationId}/resend": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["GuardianLinksController_resend"];
     delete?: never;
     options?: never;
     head?: never;
@@ -1471,6 +1551,22 @@ export interface paths {
     put?: never;
     post?: never;
     delete: operations["GuardianLinksController_revoke"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/students/{id}/guardians/{linkId}/history": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GuardianLinksController_history"];
+    put?: never;
+    post?: never;
+    delete?: never;
     options?: never;
     head?: never;
     patch?: never;
@@ -2822,22 +2918,59 @@ export interface components {
       userId: string;
       displayName: string;
       email: string;
+      /** @enum {string} */
+      membershipStatus: "INVITED" | "ACTIVE" | "SUSPENDED" | "REVOKED";
+      activationPending: boolean;
+      guardianRoleGranted: boolean;
+      accessReady: boolean;
+      relationshipEligible: boolean;
+      activeStudents: number;
+      recordedAt: string;
     };
     GuardiansResponse: {
       data: components["schemas"]["GuardianUserView"][];
       page: components["schemas"]["PageView"];
       meta: components["schemas"]["MetaDto"];
     };
-    GuardianLinkView: {
+    GuardianProvisionInput: {
+      /** Format: email */
+      email: string;
+    };
+    GuardianUserResponse: {
+      data: components["schemas"]["GuardianUserView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    GuardianLinkListView: {
       id: string;
       guardianUserId: string;
       studentId: string;
-      status: string;
+      /** @enum {string} */
+      status: "PENDING" | "ACTIVE" | "REVOKED";
       relationType: string;
+      version: number;
       verifiedAt: string | null;
+      studentName: string;
+      studentCode: string;
+      guardianDisplayName: string;
+      guardianEmail: string;
     };
     GuardianLinksResponse: {
-      data: components["schemas"]["GuardianLinkView"][];
+      data: components["schemas"]["GuardianLinkListView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    InvitationLifecycleView: {
+      /** Format: uuid */
+      id: string;
+      email: string;
+      role: components["schemas"]["Role"];
+      expiresAt: string;
+      /** @enum {string} */
+      status: "PENDING" | "EXPIRED" | "ACCEPTED" | "REVOKED";
+    };
+    GuardianInvitationsResponse: {
+      data: components["schemas"]["InvitationLifecycleView"][];
+      page: components["schemas"]["PageView"];
       meta: components["schemas"]["MetaDto"];
     };
     LinkInput: {
@@ -2846,15 +2979,46 @@ export interface components {
       /** @enum {string} */
       relationType: "PARENT" | "GUARDIAN" | "OTHER";
     };
+    GuardianLinkView: {
+      id: string;
+      guardianUserId: string;
+      studentId: string;
+      /** @enum {string} */
+      status: "PENDING" | "ACTIVE" | "REVOKED";
+      relationType: string;
+      version: number;
+      verifiedAt: string | null;
+    };
     GuardianLinkResponse: {
       data: components["schemas"]["GuardianLinkView"];
       meta: components["schemas"]["MetaDto"];
     };
     VerifyLink: {
+      version?: number;
       verificationMethod: string;
     };
     RevokeLink: {
+      version?: number;
       reason: string;
+    };
+    GuardianLinkEventView: {
+      id: string;
+      version: number;
+      eventType: string;
+      beforeStatus: string | null;
+      afterStatus: string;
+      relationType: string;
+      verificationMethod: string | null;
+      verifiedAt: string | null;
+      actorDisplayName: string | null;
+      reason: string | null;
+      traceId: string | null;
+      recordedAt: string;
+    };
+    GuardianHistoryResponse: {
+      data: components["schemas"]["GuardianLinkEventView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
     };
     CreateStudentDto: {
       studentCode: string;
@@ -9174,6 +9338,8 @@ export interface operations {
         page?: number;
         limit?: number;
         search?: string;
+        membershipStatus?: "INVITED" | "ACTIVE" | "SUSPENDED" | "REVOKED";
+        relationshipStatus?: "PENDING" | "ACTIVE" | "REVOKED";
       };
       header?: never;
       path?: never;
@@ -9231,7 +9397,70 @@ export interface operations {
       };
     };
   };
-  GuardianLinksController_invite: {
+  GuardianLinksController_provision: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["GuardianProvisionInput"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GuardianUserResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  GuardianLinksController_inviteEmail: {
     parameters: {
       query?: never;
       header?: never;
@@ -9294,9 +9523,329 @@ export interface operations {
       };
     };
   };
-  GuardianLinksController_links: {
+  GuardianLinksController_detail: {
     parameters: {
       query?: never;
+      header?: never;
+      path: {
+        userId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GuardianUserResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  GuardianLinksController_profileLinks: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        status?: "PENDING" | "ACTIVE" | "REVOKED";
+      };
+      header?: never;
+      path: {
+        userId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GuardianLinksResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  GuardianLinksController_invitations: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+      };
+      header?: never;
+      path: {
+        userId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GuardianInvitationsResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  GuardianLinksController_invite: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        userId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["InviteResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  GuardianLinksController_resend: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        userId: string;
+        invitationId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["InviteResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  GuardianLinksController_links: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        status?: "PENDING" | "ACTIVE" | "REVOKED";
+      };
       header?: never;
       path: {
         id: string;
@@ -9508,6 +10057,72 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["GuardianLinkResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  GuardianLinksController_history: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+        linkId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GuardianHistoryResponse"];
         };
       };
       401: {

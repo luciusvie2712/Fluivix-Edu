@@ -38,6 +38,17 @@
 .attendance-table {
   min-width: 680px;
 }
+.guardian-directory {
+  min-width: 640px;
+}
+.record-list {
+  list-style: none;
+  padding: 0;
+}
+.record-list > li {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-border);
+}
 textarea {
   font: inherit;
   width: 100%;

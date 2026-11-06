@@ -1,5 +1,7 @@
 # Security report — current assessment
 
+Guardian/W06 local security verification (2026-11-06): contact provisioning grants no guardian role to an active staff identity. Pending tenant memberships remain activation-gated even for globally active users; invitation acceptance requires credential proof. Relationship verification is independent of privacy consent. Tenant/profile/student/verifier/history foreign keys, unique open pairs and immutable history are exercised against PostgreSQL. Mutations recheck current membership, selected session/role and subscription after acquiring the canonical tenant lock. Six new guardian cases pass, including a waiting verifier suspended before commit and an actual native client rejecting delayed genuine profile bytes after revocation. Full58 integration passes; signed-device UAT and external security/legal approval remain open. Bodyless Web invitation calls send the existing required JSON header; the CSRF policy is preserved.
+
 Date: 2026-10-24. Verdict: **BLOCKED**. This is a scoped engineering assessment,
 not a penetration-test or legal certification.
 

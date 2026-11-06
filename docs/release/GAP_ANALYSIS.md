@@ -1,5 +1,7 @@
 # Baseline P0 gap analysis
 
+Current delta 2026-11-06: Staff/W17 commitdb88cbb has exact-SHA successful CI42182941288. Guardian/W06 now has production contact/profile and relationship/history APIs, tenant-scoped Web list/detail/student panel, confirmation-based verification/revocation, and invitation activation through the real mail worker. Local58 integration,49 unit,15 mobile Jest, mobile API smoke, generated142-operation contract and full29-browser regression pass. Exact Guardian commit/CI remains NOT_VERIFIED until observed. This is scoped technical evidence, not full FR/P0 acceptance. Teacher/assessment/finance/report/dashboard/audit/privacy work and external release gates remain open.
+
 Base: `d43b338`, branch `feat/p0-release-hardening`, inspected 2026-10-24.
 Status refers to end-to-end requirements, not manifest membership.
 

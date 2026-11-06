@@ -3,6 +3,111 @@ import { Client } from "pg";
 import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 export function migrationCases() {
+  it("backfills guardian relationship history honestly and rejects conflicting legacy open pairs", async () => {
+    const connectionString = process.env.DATABASE_URL;
+    if (
+      !connectionString ||
+      !new URL(connectionString).pathname.endsWith("_test")
+    )
+      throw new Error("Disposable database required");
+    const client = new Client({ connectionString });
+    await client.connect();
+    const sql = readFileSync(
+      "infra/prisma/migrations/202611060021_guardian_administration/migration.sql",
+      "utf8",
+    );
+    try {
+      for (const duplicate of [false, true]) {
+        await client.query("BEGIN");
+        const schema = "guardian_upgrade_" + randomUUID().replaceAll("-", "");
+        await client.query(`CREATE SCHEMA "${schema}"`);
+        await client.query(`SET LOCAL search_path TO "${schema}"`);
+        await client.query(
+          "CREATE TABLE tenant_memberships(id uuid UNIQUE,tenant_id uuid,user_id uuid,status text,PRIMARY KEY(tenant_id,user_id)); CREATE TABLE membership_roles(membership_id uuid,role text); CREATE TABLE guardian_student_links(id uuid PRIMARY KEY,tenant_id uuid,student_id uuid,guardian_user_id uuid,status text,relation_type text,verification_method text,verified_at timestamptz,verified_by uuid,UNIQUE(tenant_id,id));",
+        );
+        const tenant = randomUUID(),
+          guardian = randomUUID(),
+          owner = randomUUID(),
+          link = randomUUID(),
+          student = randomUUID();
+        for (const user of [guardian, owner])
+          await client.query(
+            "INSERT INTO tenant_memberships VALUES($1,$2,$3,'ACTIVE')",
+            [randomUUID(), tenant, user],
+          );
+        await client.query(
+          "INSERT INTO membership_roles SELECT id,'guardian' FROM tenant_memberships WHERE user_id=$1",
+          [guardian],
+        );
+        await client.query(
+          "INSERT INTO guardian_student_links VALUES($1,$2,$3,$4,'ACTIVE','parent','Original verified basis','2025-01-01T00:00:00Z',$5)",
+          [link, tenant, student, guardian, owner],
+        );
+        if (duplicate)
+          await client.query(
+            "INSERT INTO guardian_student_links VALUES($1,$2,$3,$4,'PENDING','parent',NULL,NULL,NULL)",
+            [randomUUID(), tenant, student, guardian],
+          );
+        await client.query("SAVEPOINT upgrade");
+        if (duplicate) {
+          await expect(client.query(sql)).rejects.toThrow("guardian_open_pair");
+          await client.query("ROLLBACK TO SAVEPOINT upgrade");
+          expect(
+            (
+              await client.query(
+                "SELECT status FROM guardian_student_links ORDER BY status",
+              )
+            ).rows,
+          ).toEqual([{ status: "ACTIVE" }, { status: "PENDING" }]);
+        } else {
+          await client.query(sql);
+          expect(
+            (await client.query("SELECT user_id FROM guardian_profiles")).rows,
+          ).toEqual([{ user_id: guardian }]);
+          const baseline = (
+            await client.query("SELECT * FROM guardian_link_events")
+          ).rows[0];
+          expect(baseline).toMatchObject({
+            link_id: link,
+            version: 1,
+            event_type: "BASELINE",
+            actor_user_id: null,
+            actor_display_name: null,
+            verification_method: "Original verified basis",
+          });
+          expect(baseline.verified_at.toISOString()).toBe(
+            "2025-01-01T00:00:00.000Z",
+          );
+          expect(baseline.recorded_at.getTime()).toBeGreaterThan(
+            baseline.verified_at.getTime(),
+          );
+          await client.query(
+            "UPDATE guardian_student_links SET status='REVOKED' WHERE id=$1",
+            [link],
+          );
+          expect(
+            (
+              await client.query(
+                "SELECT version,event_type FROM guardian_link_events ORDER BY version",
+              )
+            ).rows,
+          ).toEqual([
+            { version: 1, event_type: "BASELINE" },
+            { version: 2, event_type: "REVOKED" },
+          ]);
+          await client.query("SAVEPOINT immutable");
+          await expect(
+            client.query("DELETE FROM guardian_link_events"),
+          ).rejects.toThrow("append only");
+          await client.query("ROLLBACK TO SAVEPOINT immutable");
+        }
+        await client.query("ROLLBACK");
+      }
+    } finally {
+      await client.query("ROLLBACK");
+      await client.end();
+    }
+  });
   it("upgrades existing memberships and invitations without granting delegation or losing history", async () => {
     const connectionString = process.env.DATABASE_URL;
     if (

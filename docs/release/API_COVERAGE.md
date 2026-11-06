@@ -1,6 +1,6 @@
 # API contract coverage
 
-Generated inventory: 135 actual OpenAPI operations; 134
+Generated inventory: 142 actual OpenAPI operations; 134
 method/path intents in the master specification (includes non-P0 design intent).
 Path parameter names are normalized when comparing. MATCH means route metadata
 exists; it does not verify DTOs, permission, object scope or runtime behavior.
@@ -161,6 +161,3 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
 - VND values remain canonical decimal strings backed by PostgreSQL BIGINT, avoiding
   JavaScript precision loss. Existing clients must not coerce them to Number.
 - Native auth remains separate from browser HttpOnly-cookie transport.
-
-
-Staff decision (2026-11-06): eight additional operations bring inventory to135. Existing POST staff is reused. Role IDs are named Role enums, scoped through a tenant membership. PATCH/role writes require version and reason; permission catalog/role writes owner-only. A boolean owner-controlled manager delegation grants lower-staff invite/status operations only. GET staff/invitations and POST .../{id}/resend expose lifecycle metadata, never invitation credentials. Effective permissions are empty for non-active members/accounts; object/subscription constraints still apply. API metadata coverage is not an acceptance verdict.

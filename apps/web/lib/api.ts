@@ -398,6 +398,117 @@ export const studentDetail = (id: string, signal?: AbortSignal) =>
       ...(signal ? { signal } : {}),
     }),
   );
+type GuardianDirectoryQuery = NonNullable<
+  paths["/api/v1/guardians"]["get"]["parameters"]["query"]
+>;
+export type GuardianLinkStatus = NonNullable<
+  GuardianDirectoryQuery["relationshipStatus"]
+>;
+export const guardians = {
+  list: (query: GuardianDirectoryQuery, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/guardians", {
+        params: { query },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  provision: (email: string) =>
+    unwrap(api.POST("/api/v1/guardians", { body: { email } })),
+  detail: (userId: string, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/guardians/{userId}", {
+        params: { path: { userId } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  links: (
+    userId: string,
+    page: number,
+    status: GuardianLinkStatus | "",
+    signal?: AbortSignal,
+  ) =>
+    unwrap(
+      api.GET("/api/v1/guardians/{userId}/links", {
+        params: {
+          path: { userId },
+          query: { page, limit: 20, ...(status ? { status } : {}) },
+        },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  studentLinks: (
+    id: string,
+    page: number,
+    status: GuardianLinkStatus | "",
+    signal?: AbortSignal,
+  ) =>
+    unwrap(
+      api.GET("/api/v1/students/{id}/guardians", {
+        params: {
+          path: { id },
+          query: { page, limit: 20, ...(status ? { status } : {}) },
+        },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  createLink: (id: string, body: components["schemas"]["LinkInput"]) =>
+    unwrap(
+      api.POST("/api/v1/students/{id}/guardians", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+  approve: (
+    id: string,
+    linkId: string,
+    body: components["schemas"]["VerifyLink"],
+  ) =>
+    unwrap(
+      api.POST("/api/v1/students/{id}/guardians/{linkId}/approve", {
+        params: { path: { id, linkId } },
+        body,
+      }),
+    ),
+  revoke: (
+    id: string,
+    linkId: string,
+    body: components["schemas"]["RevokeLink"],
+  ) =>
+    unwrap(
+      api.DELETE("/api/v1/students/{id}/guardians/{linkId}", {
+        params: { path: { id, linkId } },
+        body,
+      }),
+    ),
+  history: (id: string, linkId: string, page: number, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/students/{id}/guardians/{linkId}/history", {
+        params: { path: { id, linkId }, query: { page, limit: 20 } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  invitations: (userId: string, page: number, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/guardians/{userId}/invitations", {
+        params: { path: { userId }, query: { page, limit: 20 } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  invite: (userId: string) =>
+    unwrap(
+      api.POST("/api/v1/guardians/{userId}/invite", {
+        params: { path: { userId } },
+        headers: { "Content-Type": "application/json" },
+      }),
+    ),
+  resend: (userId: string, invitationId: string) =>
+    unwrap(
+      api.POST("/api/v1/guardians/{userId}/invitations/{invitationId}/resend", {
+        params: { path: { userId, invitationId } },
+        headers: { "Content-Type": "application/json" },
+      }),
+    ),
+};
 export const updateStudent = (
   id: string,
   body: components["schemas"]["UpdateStudentDto"],

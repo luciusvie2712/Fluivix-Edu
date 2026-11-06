@@ -1,0 +1,139 @@
+{
+  "date": "2026-11-06",
+  "module": "Guardian/W06",
+  "localVerdict": "PASS",
+  "remoteVerdict": "NOT_VERIFIED",
+  "releaseVerdict": "BLOCKED",
+  "baseCommit": "db88cbb5aa590b4326fd2faf96fcaa3f0c67b860",
+  "checks": {
+    "lint": "PASS",
+    "format": "PASS",
+    "typecheckIncludingTools": "PASS",
+    "unit": 49,
+    "mobileJest": 15,
+    "build": "8 tasks PASS",
+    "integration": {
+      "passed": 58,
+      "skipped": 0,
+      "report": "docs/release/evidence/integration-2026-11-06-guardian-full.json"
+    },
+    "e2e": {
+      "passed": 29,
+      "skipped": 0,
+      "flaky": 0,
+      "report": "docs/release/evidence/e2e-2026-11-06-guardian-verified.json"
+    },
+    "mobileApiSmoke": "PASS; actual API and client, not signed-device UI",
+    "expoAlignment": "PASS",
+    "contractGeneration": {
+      "stable": true,
+      "sha256": {
+        "apps/api/openapi.json": "4BF289219C785A1A3F2AA58DE1D2E7B5D621B48FA21F6B39B40FB37E90403E93",
+        "packages/api-client/src/schema.d.ts": "FF4D04D41F33DF4F816AE47B6EBDD03CAACC560334146E17D9C754F209925521"
+      }
+    },
+    "dependencyAudit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    },
+    "localSecretScreen": "PASS; no values printed"
+  },
+  "implementation": [
+    "contact profile separate from role grants",
+    "pending relationship before activation",
+    "credential-proven invitation lifecycle",
+    "tenant-scoped directory/detail/student relationship panel",
+    "versioned verification/revocation with confirmation and reasons",
+    "SQL immutable relationship history and one open pair",
+    "same-tenant nested verifier/actor/profile FKs",
+    "post-lock live actor recheck",
+    "actual native cache and delayed genuine response invalidation",
+    "consent independent of verification"
+  ],
+  "visual": {
+    "widths": [
+      360,
+      768,
+      1024,
+      1440
+    ],
+    "axe": "no violations on exercised views",
+    "keyboard": "narrow table scroll verified",
+    "reducedMotion": "detail exercised",
+    "style": "existing framed-sheet, seed1920114305",
+    "manualReview": "all eight final directory/detail images viewed",
+    "tasteFindings": [],
+    "skills": [
+      {
+        "source": "taste-skill",
+        "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+        "installed": "design-taste-frontend",
+        "verifiedFiles": 38,
+        "status": "PASS"
+      },
+      {
+        "source": "ui-ux-pro-max-skill",
+        "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+        "installed": "ui-ux-pro-max",
+        "verifiedFiles": 73,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "accessible-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "micro-interaction",
+        "verifiedFiles": 4,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "60fps-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      }
+    ]
+  },
+  "sourceHashes": {
+    "normalization": "CRLF to LF",
+    "sha256": {
+      "apps/api/src/guardian.dto.ts": "cb15138ad0144cd7d4803130965be6e7811201de06b652eaf1bc3cefd2ba98b8",
+      "apps/api/src/guardian.service.ts": "c296a50dad85671faa1899835aeb0c4ede065711422c3b3cb851e04cd4875610",
+      "apps/api/src/invitation-view.ts": "bc954bc7f0a2bfe92a96262055f2a03ec1c4e3b5104c0b66cb4f9f71f6d87215",
+      "apps/api/src/tenant-actor.ts": "8076d8a06051cd48578ad04996c3293fc682f1bd844179d3e6261ab5fa2305ac",
+      "apps/web/app/app/guardians/[id]/page.tsx": "67606a71b482551831a8d07d3d56cfb5c382e20d4520441e6801ed6334057948",
+      "apps/web/app/app/guardians/page.tsx": "05e4e94c6e0ed5b19cf8ff155bbfd347d4fe51a25f2a569eb34ead8b27cf18b5",
+      "apps/web/components/guardian-workspace.tsx": "f6c79160b51b1c6e24f9c0e8497a0b76377d6882a403ec46873fff784c698121",
+      "infra/prisma/migrations/202611060021_guardian_administration/migration.sql": "141f2de13f89f8f7d485153d75bbe18c7db5f514298e9ce49c45a9747f48c367",
+      "tests/e2e/guardians.spec.ts": "8bcc2d432968e6f96dd33879f6c996e322a56ce20480aecf89d48ed4fc8ce27a",
+      "tests/integration/guardian-cases.ts": "e3ebad3197071c6b70b027bccc4230b208516b27932137cd29948711e0c57b58",
+      "apps/api/openapi.json": "4bf289219c785a1a3f2aa58de1d2e7b5d621b48fa21f6b39b40fb37e90403e93",
+      "apps/api/src/auth.service.ts": "411dd08b11a0a7c1286e3365e597005233aa81f313989a82d813febdc6c71ff3",
+      "apps/api/src/guardian-links.ts": "2ef3fbd3e9684be0ef79dee9fc669407b05e558f9e14465089e3f9ff4dd3c086",
+      "apps/api/src/staff-policy.ts": "277babcdaa99da4f0d9538bf611097329001822c253104f7b81d699a9b34761f",
+      "apps/api/src/staff.ts": "c0dc8b85bb22220f40945e54aab1157ba6038abd18c8f7e299c398d29bf4fc59",
+      "apps/web/app/app/layout.tsx": "7ddd04ec3850bceaf7343027e7d7ff13184687f142401b7002d45921ff13a5f6",
+      "apps/web/app/app/students/[id]/page.tsx": "9e8487a90c3c1de98382c0180a6c7b48aec86d6661e363f309c942d0db876ce6",
+      "apps/web/app/globals.css": "57971f8a09eef1cfd6d94532c60607254890cbe234a85916caa8e1b3639af07c",
+      "apps/web/lib/api.ts": "0f58a4704e4853fac18fa68df5605b19bff7ce26063c255e83ffd48441666d96",
+      "infra/prisma/schema.prisma": "24f34cd3a1e86c57bd833b5b45a2d4006adb87ade86de4ac66f3a0da01dab7c4",
+      "packages/api-client/src/schema.d.ts": "ff4d04d41f33df4f816ae47b6ebdd03caacc560334146e17d9c754f209925521",
+      "tests/e2e/fixtures.ts": "1b520cbd3a4f53257d7e87791f6b921afb002aa87c05d27e20e42929a89df15a",
+      "tests/integration/identity.test.ts": "15c2f4be0800b2bb7e07250eac4f8f6001993f24e812e989dec2b70d20ff707a",
+      "tests/integration/migration-cases.ts": "955d96b6c0909ac6514f9758ebbe29461b4686893a657a7cf8ba24f65658885a",
+      "tooling/release-inventory.ts": "fc72420836ddd178ec65f16b268034b4d404538d11be30ef11aa3f58e0d82b5b"
+    }
+  },
+  "priorFailures": "Dated reports retained: stale initial build; missing JSON header; shared account login quota. No timeout increase, retries or assertion removal.",
+  "remaining": "Teacher/Assessment/Finance/Dashboard/Reports/Audit/Privacy/Notifications and M4 remain. Staging/legal/signed-device/real-push/store approvals absent."
+}

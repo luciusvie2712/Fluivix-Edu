@@ -1,5 +1,7 @@
 # Migration and rollback
 
+Guardian migration021 (2026-11-06): adds a contact profile separate from membership roles, versioned guardian relationships, same-tenant verifier/profile foreign keys, one open relationship per student/guardian pair, and append-only relationship events. Existing guardian roles or historical links receive profiles. Existing links receive a BASELINE event recorded at migration time with no invented historical actor; original verification time and basis remain intact. Conflicting legacy PENDING/ACTIVE pairs stop the upgrade; review and repair them explicitly without deleting historical rows. A transactional rehearsal executes the actual migration against legacy fixtures and verifies preservation, conflict rejection and immutable events. Full58 integration passes locally. Staging upgrade/backup restore remains NOT_VERIFIED. Deploy compatible API/auth/worker before the new Guardian Web. Do not drop profiles/history or undo revocation for rollback; review old-writer compatibility and use a forward repair.
+
 Status: local fresh-db migrations tested; staging upgrade/restore **NOT_VERIFIED**.
 Do not modify applied migrations001..015. New migrations are016 schedule rules,
 017 teaching lifecycle versions and018 private CSV previews. All are forward,

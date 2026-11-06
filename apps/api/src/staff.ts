@@ -50,6 +50,7 @@ import {
 import { permissions, type Claims } from "./security";
 import { assertQuota } from "./subscription-policy";
 import { managedStaffRoles, staffActor, staffRoles } from "./staff-policy";
+import { InvitationLifecycleView, invitationView } from "./invitation-view";
 
 export class StaffQuery extends ListDto {
   @ApiPropertyOptional({ enum: MembershipStatus })
@@ -102,14 +103,7 @@ export class PermissionCatalogResponse {
   @ApiProperty({ type: [EffectiveRole] }) data!: EffectiveRole[];
   @ApiProperty({ type: MetaDto }) meta!: MetaDto;
 }
-export class StaffInvitationView {
-  @ApiProperty({ format: "uuid" }) id!: string;
-  @ApiProperty() email!: string;
-  @ApiProperty({ enum: Role, enumName: "Role" }) role!: Role;
-  @ApiProperty() expiresAt!: string;
-  @ApiProperty({ enum: ["PENDING", "EXPIRED", "ACCEPTED", "REVOKED"] })
-  status!: string;
-}
+export class StaffInvitationView extends InvitationLifecycleView {}
 export class StaffInvitationsResponse {
   @ApiProperty({ type: [StaffInvitationView] }) data!: StaffInvitationView[];
   @ApiProperty({ type: PageView }) page!: PageView;
@@ -401,27 +395,12 @@ export class StaffService {
       }),
       this.db.invitation.count({ where }),
     ]);
-    return new Paged(
-      rows.map((i) => ({
-        id: i.id,
-        email: i.email,
-        role: i.role,
-        expiresAt: i.expiresAt.toISOString(),
-        status: i.usedAt
-          ? "ACCEPTED"
-          : i.revokedAt
-            ? "REVOKED"
-            : i.expiresAt <= new Date()
-              ? "EXPIRED"
-              : "PENDING",
-      })),
-      {
-        page: q.page,
-        limit: q.limit,
-        total,
-        totalPages: Math.ceil(total / q.limit),
-      },
-    );
+    return new Paged(rows.map(invitationView), {
+      page: q.page,
+      limit: q.limit,
+      total,
+      totalPages: Math.ceil(total / q.limit),
+    });
   }
   async resend(c: Claims, id: string, traceId: string) {
     const i = await this.db.invitation.findFirst({

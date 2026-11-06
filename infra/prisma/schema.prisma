@@ -128,6 +128,12 @@ model Membership {
   tenant         Tenant           @relation(fields: [tenantId], references: [id], onDelete: Restrict)
   user           User             @relation(fields: [userId], references: [id], onDelete: Restrict)
   roles          MembershipRole[]
+  guardianLinks GuardianLink[] @relation("GuardianMembership")
+  guardianVerifications GuardianLink[] @relation("GuardianVerifier")
+  guardianLinkActions GuardianLinkEvent[] @relation("GuardianEventActor")
+  guardianVerifiedEvents GuardianLinkEvent[] @relation("GuardianEventVerifier")
+  guardianProfile GuardianProfile? @relation("GuardianProfileMembership")
+  createdGuardianProfiles GuardianProfile[] @relation("GuardianProfileCreator")
 
   @@unique([tenantId, userId])
   @@unique([tenantId, id])
@@ -216,6 +222,7 @@ model Student {
 }
 
 model GuardianLink {
+  version Int @default(1)
   id                 String    @id @default(uuid()) @db.Uuid
   tenantId           String    @map("tenant_id") @db.Uuid
   studentId          String    @map("student_id") @db.Uuid
@@ -226,10 +233,51 @@ model GuardianLink {
   relationType       String    @default("GUARDIAN") @map("relation_type") @db.VarChar(20)
   verificationMethod String?   @map("verification_method") @db.VarChar(500)
   student            Student   @relation(fields: [tenantId, studentId], references: [tenantId, id], onDelete: Restrict)
+  guardianMembership Membership @relation("GuardianMembership",fields:[tenantId,guardianUserId],references:[tenantId,userId],onDelete:NoAction,onUpdate:NoAction,map:"guardian_membership_fk")
+  verifiedMembership Membership? @relation("GuardianVerifier",fields:[tenantId,verifiedBy],references:[tenantId,userId],onDelete:Restrict,onUpdate:NoAction,map:"guardian_verified_member_fk")
+  events GuardianLinkEvent[]
+  guardianProfile GuardianProfile @relation("GuardianContactLinks",fields:[tenantId,guardianUserId],references:[tenantId,userId],onDelete:Restrict,onUpdate:NoAction,map:"guardian_profile_link_fk")
 
   @@unique([tenantId, id])
   @@index([tenantId, guardianUserId, status])
   @@map("guardian_student_links")
+}
+
+model GuardianProfile {
+  tenantId String @map("tenant_id") @db.Uuid
+  userId String @map("user_id") @db.Uuid
+  createdBy String? @map("created_by") @db.Uuid
+  recordedAt DateTime @default(now()) @map("recorded_at") @db.Timestamptz
+  membership Membership @relation("GuardianProfileMembership",fields:[tenantId,userId],references:[tenantId,userId],onDelete:Restrict,onUpdate:NoAction,map:"guardian_profile_member_fk")
+  creatorMembership Membership? @relation("GuardianProfileCreator",fields:[tenantId,createdBy],references:[tenantId,userId],onDelete:Restrict,onUpdate:NoAction,map:"guardian_profile_creator_fk")
+  links GuardianLink[] @relation("GuardianContactLinks")
+  @@id([tenantId,userId])
+  @@map("guardian_profiles")
+}
+
+model GuardianLinkEvent {
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  linkId String @map("link_id") @db.Uuid
+  version Int
+  eventType String @map("event_type") @db.VarChar(24)
+  beforeStatus String? @map("before_status") @db.VarChar(20)
+  afterStatus String @map("after_status") @db.VarChar(20)
+  relationType String @map("relation_type") @db.VarChar(20)
+  verificationMethod String? @map("verification_method") @db.VarChar(500)
+  verifiedAt DateTime? @map("verified_at") @db.Timestamptz
+  verifiedBy String? @map("verified_by") @db.Uuid
+  actorUserId String? @map("actor_user_id") @db.Uuid
+  actorDisplayName String? @map("actor_display_name") @db.VarChar(150)
+  reason String? @db.VarChar(500)
+  traceId String? @map("trace_id") @db.VarChar(80)
+  recordedAt DateTime @default(now()) @map("recorded_at") @db.Timestamptz
+  link GuardianLink @relation(fields:[tenantId,linkId],references:[tenantId,id],onDelete:Restrict,onUpdate:NoAction)
+  actorMembership Membership? @relation("GuardianEventActor",fields:[tenantId,actorUserId],references:[tenantId,userId],onDelete:Restrict,onUpdate:NoAction,map:"guardian_event_actor_fk")
+  verifiedMembership Membership? @relation("GuardianEventVerifier",fields:[tenantId,verifiedBy],references:[tenantId,userId],onDelete:Restrict,onUpdate:NoAction,map:"guardian_event_verifier_fk")
+  @@unique([tenantId,linkId,version])
+  @@index([tenantId,linkId,recordedAt],map:"guardian_history_page_idx")
+  @@map("guardian_link_events")
 }
 
 model Teacher {

@@ -21,12 +21,23 @@ export const test = base.extend<{ rateLimitIsolation: void }>({
       const db = new Client({ connectionString: value });
       try {
         await db.connect();
-        // Each browser scenario starts with fresh IP counters. Production limits
-        // remain unchanged and a separate scenario verifies actual throttling.
+        // Each scenario starts with fresh IP and synthetic-user account counters.
+        // The growing suite must not consume a later scenario's login allowance.
+        // Production limits remain unchanged; no counter is reset during a test.
         const keys = ["127.0.0.1", "::ffff:127.0.0.1", "::1"].map((ip) =>
           createHash("sha256")
             .update("login-ip:" + ip)
             .digest("hex"),
+        );
+        const users = await db.query<{ email: string }>(
+          "SELECT email FROM users",
+        );
+        keys.push(
+          ...users.rows.map(({ email }) =>
+            createHash("sha256")
+              .update("login-account:" + email.trim().toLowerCase())
+              .digest("hex"),
+          ),
         );
         await db.query(
           "DELETE FROM auth_rate_limits WHERE key = ANY($1::text[])",

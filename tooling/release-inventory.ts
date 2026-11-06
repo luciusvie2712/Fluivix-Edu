@@ -39,7 +39,7 @@ if (fr.length !== 33 || tc.length !== 30)
 const evidence: Record<string, string> = {
   PL: "apps/api/src/platform*; tests/integration/platform-cases.ts; tests/e2e/platform*",
   AU: "apps/api/src/auth*; staff.ts; staff-policy.ts; mobile-auth.ts; tests/integration/identity.test.ts; staff-cases.ts; native-cases.ts; tests/e2e/staff.spec.ts",
-  US: "apps/api/src/students.ts; guardian-links.ts; teaching.service.ts; tests/integration/identity.test.ts; teaching-cases.ts",
+  US: "apps/api/src/students.ts; guardian-links.ts; guardian.service.ts; teaching.service.ts; apps/web/components/guardian-workspace.tsx; tests/integration/identity.test.ts; guardian-cases.ts; teaching-cases.ts; tests/e2e/guardians.spec.ts",
   CL: "apps/api/src/teaching.*; infra/prisma/migrations/202610240016_schedule_rules; tests/integration/teaching-cases.ts",
   AT: "apps/api/src/teaching.*; apps/mobile/app; tests/integration/teaching-cases.ts",
   GR: "apps/api/src/grades.ts; apps/mobile/app; tests/integration/teaching-cases.ts",
@@ -65,7 +65,7 @@ const acceptance: Record<string, [string, string]> = {
   ],
   "TC-005": [
     "PARTIAL",
-    "integration + mobile smoke revoke next request; physical open-screen/cache UAT missing",
+    "guardian real PostgreSQL + Web email activation/revocation; actual native client rejects delayed genuine bytes and clears child cache; physical open-screen/cache UAT missing",
   ],
   "TC-006": [
     "DONE_VERIFIED",

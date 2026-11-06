@@ -2,10 +2,12 @@
 
 ## Latest checkpoint — 2026-11-06
 
-Remote main1a86b2b has verified successful CI42168349871. Staff/RBAC is now locally
-verified (51 integration,26 browser,49 unit,15 mobile), awaiting its module commit
-and exact-SHA remote CI. See evidence/staff/verification.json. Remaining Guardian,
-Teacher Web, Assessment, Finance, Dashboard/Reports/Audit, Privacy/Notifications and
+Remote maindb88cbb has verified successful CI42182941288. Staff/RBAC is technically
+verified locally and on CI (51 integration,26 browser,49 unit,15 mobile). See
+evidence/staff/verification.json and evidence/ci-db88cbb-success-2026-11-06.json.
+Guardian/W06 is locally verified (58 integration,29 browser,49 unit,15 mobile),
+awaiting module commit and exact-SHA CI. See evidence/guardians/verification.json.
+Remaining Teacher Web, Assessment, Finance, Dashboard/Reports/Audit, Privacy/Notifications and
 M4 work are incomplete. Overall release BLOCKED. Older dated sections below retain
 historical findings and failed attempts; they are not current acceptance verdicts.
 
@@ -265,3 +267,16 @@ Owner availability clarification (2026-11-06): both service and SQL count only o
 - Authoritative reports: integration-2026-11-06-staff-owner-account-final.json; e2e-2026-11-06-staff-verified.json; evidence/staff/verification.json includes normalized source hashes. Earlier failed/intermediate reports are preserved, never relabeled PASS. Historical teaching snapshots restored; final Staff screenshots/Taste/axe/keyboard and self-revocation regression retained.
 - Implemented W17 technical Staff/RBAC slice: scoped directory/detail/search/pagination, invitations/resend/expiry, activation proof independent of global account, status/role lifecycle, bounded delegation, permission visibility, audit/version/concurrency and last usable owner protection. Manager may manage academic_staff/teacher only; accountant/admin memberships remain owner-only. Service owner writes use READ COMMITTED; SQL rejects snapshot-isolated removal to prevent stale counts.
 - Remote Staff commit/CI NOT_VERIFIED until the exact pushed SHA is observed. Overall release BLOCKED; remaining P0 business modules and external gates remain open. No production deployment or native-device/legal/staging acceptance is inferred.
+
+
+### Staff exact-commit CI verified (2026-11-06)
+- Commitdb88cbb5aa590b4326fd2faf96fcaa3f0c67b860 pushed to main; GitHub Actions run42182941288 SUCCESS, including51 real integration,26 browser E2E, mobile API smoke, audit and generated-contract drift checks. URL:https://github.com/luciusvie2712/Fluivix-Edu/actions/runs/42182941288. Staff/W17 IMPLEMENTED_TECHNICAL_VERIFIED. This does not complete the broader FR-AU requirements or authorize release.
+- Actual Staff1440 Taste has one WARN panel-void (44px semantic section spacing), no FAIL; retained without artificial filler or finding waiver. Other exercised Staff viewports/detail have no findings. Axe/keyboard/reduced-motion cases passed.
+- Beginning Guardian/W06: reconcile WF02 provision -> pending relationship -> verification -> invitation -> activation. Current API only permits ACTIVE guardian membership at link creation and lacks profile/history Web. Preserve independent consent and activation, strict tenant scope, authoritative link checks and existing native epoch/cache invalidation.
+
+
+### Guardian/W06 local acceptance gate PASS (2026-11-06)
+- Implemented contact provisioning independent of active staff role grants, scoped search/filter/paging/detail, student relationship panel, pending -> verified -> invitation -> activation journey, invitation resend/history, versioned verification/revocation with confirmation/reasons, and append-only same-tenant SQL history. Existing accounts prove their password; names remain redacted while activation is pending. Verification does not record privacy consent.
+- Evidence:58 PostgreSQL/Redis integration (including actual migration021 legacy rehearsal, duplicate open pairs, cross-tenant nested FKs, verifier suspension while waiting on lock, and actual native delayed-response/cache revocation);29 browser E2E with0skip/flaky, real worker/Mailpit acceptance and revocation, read-only/empty/missing/forbidden states;49 unit;15 mobile Jest;8 build tasks; lint/typecheck/tools/format; native API smoke; Expo alignment; stable142-operation generated contract; audit0HIGH/0CRITICAL (1LOW/4MODERATE tracked); local secret screen PASS.
+- Three vendor SHAs and all five installed skill IDs reverified byte-for-byte against their canonical distributed files. Pro Max confirmation/submit feedback applied; existing framed-sheet seed1920114305 retained; shared accessible focus/press/reduced-motion behavior used. Guardian directory/detail360/768/1024/1440 axe/Taste and keyboard scroll passed, all eight final images inspected. Findings are saved without waiver. No native-device UI claim.
+- Source hashes and command/report scope: evidence/guardians/verification.json. Historical failed/intermediate reports remain separate. Broader FR-US/AU and overall P0/M4 remain incomplete; release BLOCKED. Guardian commit/exact-SHA CI remain NOT_VERIFIED until observed.

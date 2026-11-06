@@ -15,6 +15,7 @@ import { AcceptInvitationDto } from "./auth.dto";
 import { sealToken } from "@fluivix/server-crypto";
 import { assertQuota } from "./subscription-policy";
 import { managedStaffRoles, staffActor } from "./staff-policy";
+import { setActorContext } from "./tenant-actor";
 
 const normalize = (email: string) => email.trim().toLowerCase();
 const passwordOptions = {
@@ -465,6 +466,7 @@ export class AuthService {
     traceId: string,
     replacingId?: string,
     guardianWorkflow = false,
+    expectedUserId?: string,
   ) {
     if (!claims.tenantId) throw new ForbiddenException();
     const tenantId = claims.tenantId;
@@ -478,6 +480,14 @@ export class AuthService {
           ? "guardian.manage"
           : "staff.invite",
       );
+      if (role === "guardian")
+        await setActorContext(
+          tx,
+          claims,
+          actor.user.displayName,
+          traceId,
+          "Gửi lời mời phụ huynh theo phạm vi trung tâm",
+        );
       if (
         claims.role === "manager" &&
         ![...managedStaffRoles, "guardian"].includes(role)
@@ -508,6 +518,10 @@ export class AuthService {
         },
         update: {},
       });
+      if (expectedUserId && user.id !== expectedUserId)
+        throw new ConflictException(
+          "Tài khoản của lời mời đã thay đổi. Vui lòng tải lại.",
+        );
       if (user.id === actor.userId)
         throw new ForbiddenException("Không tự mời để nâng quyền.");
       const existing = await tx.membership.findUnique({
