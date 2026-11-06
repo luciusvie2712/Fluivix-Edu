@@ -9,7 +9,13 @@ verified locally and on exact-SHA CI. Fee-plan evidence uses Node24.22.2:
 152-operation contract. Invoice/W14 has a verified local gate:74 integration,
 44 browser cases with no skips/flakiness,49 unit,15 mobile Jest and stable156-operation
 contract. Full build/types/lint/format, mobile API and Expo checks pass. Its
-module commit and exact-SHA remote CI remain pending.
+module416378f was pushed to main. CI42238649247 passed43/44 browser cases but
+exposed a visual-test navigation race: page.url() was captured before the client
+route completed. The follow-up asserts the actual detail URL before capturing it;
+no timeout/retry/assertion was relaxed. Full repair regression PASS:44 browser,
+74 integration,49 unit,15 mobile Jest, uncached build/types and remaining local
+gates. Production sources and applied migrations are unchanged by the repair.
+Exact-SHA successful remote CI remains pending.
 Remaining Payment/Receivables,
 Dashboard/Reports/Audit, Privacy/Notifications and
 M4 work are incomplete. Overall release BLOCKED. Older dated sections below retain
@@ -329,3 +335,9 @@ Owner availability clarification (2026-11-06): both service and SQL count only o
 - Local matrix PASS on Node24.22.2:74 PostgreSQL/Redis integration,44 browser E2E with0skip/flaky,49 unit,15 mobile Jest,8 build tasks and final Web rebuild, lint/typecheck/tools/format, actual mobile API smoke, Expo alignment, stable156-operation contract, frozen offline install, audit0HIGH/0CRITICAL (1LOW/4MODERATE tracked), secret screen with values withheld. Reports/source hashes: evidence/invoices/verification.json. Initial diagnostic failures retained separately, no timeout/retry/assertion relaxation.
 - Three skill sources/five IDs verified; existing framed-sheet design and accessible reduced-motion-safe form feedback applied. Four viewport axe/Taste, keyboard/focus and eight final images inspected. Any43px section gap WARN retained without waiver. Earlier-module visual output archived and original commit evidence restored.
 - Invoice remote commit/exact-SHA CI NOT_VERIFIED until observed. Payment/Receivables/print receipts, dashboard/reports/audit/privacy/notifications, broader class/schedule/auth and external M4 staging/legal/device/push/store evidence remain. Overall release BLOCKED.
+
+
+### Invoice CI navigation repair local PASS (2026-11-06)
+- CI42238649247 at416378f passed43/44 browser cases; its artifact proves the visual scenario captured the directory URL before the client-side detail route completed. Added an assertion of the actual detail URL before capturing it; no timeout/retry/assertion relaxation and no production source change. Failure evidence retained in evidence/ci-416378f-failure-2026-11-06.json.
+- Fresh full verification PASS:44 E2E (0skip/flaky),74 PostgreSQL/Redis integration,49 unit,15 mobile Jest,8 uncached builds,8 uncached typecheck tasks plus tools, lint/format, actual mobile API smoke, Expo alignment, stable156-operation generated contract, frozen offline install and0HIGH/0CRITICAL audit. Source hash and reports in evidence/invoices/ci-repair-verification.json. Initial local setup/command diagnostics are recorded there.
+- Repair commit/exact-SHA remote CI NOT_VERIFIED until observed. Payment/W15 work is preserved separately. All unfinished P0 and external M4 gates remain; release BLOCKED.

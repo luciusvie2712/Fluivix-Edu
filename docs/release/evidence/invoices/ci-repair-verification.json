@@ -1,0 +1,56 @@
+{
+  "date": "2026-11-06",
+  "baseCommit": "416378f26a97fd2254f2dff270af32f0bdceffce",
+  "module": "Invoice/W14 CI navigation repair",
+  "localVerdict": "PASS",
+  "remoteVerdict": "NOT_VERIFIED",
+  "releaseVerdict": "BLOCKED",
+  "failure": {
+    "run": 42238649247,
+    "head_sha": "416378f26a97fd2254f2dff270af32f0bdceffce",
+    "passedBrowser": 43,
+    "failedBrowser": 1,
+    "artifact": 13514560936,
+    "cause": "Visual scenario captured the directory URL before Next client navigation completed; CI error-context confirmed the directory instead of detail."
+  },
+  "repair": "Assert actual UUID detail URL before capturing it. No timeout/retry/expectation relaxed; no production implementation change.",
+  "checks": {
+    "runtime": "Node24.22.2/libuv1.52.1;pnpm10.34.7",
+    "build": "8 uncached tasks PASS",
+    "typecheck": "8 uncached tasks plus tsconfig.tools PASS",
+    "unit": 49,
+    "mobileJest": 15,
+    "integration": {
+      "passed": 74,
+      "report": "docs/release/evidence/integration-2026-11-06-invoice-ci-repair.json"
+    },
+    "browser": {
+      "passed": 44,
+      "skipped": 0,
+      "flaky": 0,
+      "report": "docs/release/evidence/e2e-2026-11-06-invoice-ci-repair.json"
+    },
+    "lint": "PASS",
+    "format": "PASS",
+    "actualMobileApiSmoke": "PASS",
+    "expoAlignment": "PASS",
+    "contract": "stable156 operations; git diff empty after regeneration",
+    "frozenOfflineInstall": "PASS",
+    "audit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    },
+    "localSecretScreen": "PASS; values withheld"
+  },
+  "sourceHash": {
+    "path": "tests/e2e/invoices.spec.ts",
+    "normalization": "CRLF to LF",
+    "sha256": "c1ac369d6b7f06326761e560c300b48f582935efaf9631f12f2f6cea4b374a3c"
+  },
+  "evidence": "Previously reviewed UI evidence restored from416378f; all newly generated regression visuals archived locally. No UI implementation changed.",
+  "diagnostics": "First local repair setup left empty directories/page from parked Payment work, causing a build/module error and Prisma P3015 before tests. Only those empty owned paths were removed; clean uncached build and full regression then passed. An incorrectly forwarded --force option was corrected to turbo --force, without changing TypeScript settings.",
+  "remaining": "Exact repair-SHA CI pending; Payment work preserved separately; remaining P0 and external M4 gates remain open."
+}

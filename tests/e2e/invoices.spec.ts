@@ -369,6 +369,7 @@ test("invoice list and detail have accessible responsive forms and reduced-motio
       .getByRole("link")
       .first()
       .click();
+    await expect(page).toHaveURL(/\/app\/finance\/invoices\/[0-9a-f-]+$/);
     const detail = new URL(page.url()).pathname;
     mkdirSync("docs/release/evidence/invoices", { recursive: true });
     for (const surface of ["directory", "detail"]) {

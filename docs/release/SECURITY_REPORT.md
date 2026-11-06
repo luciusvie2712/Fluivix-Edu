@@ -10,7 +10,8 @@ internal void reasons; staff-only item/history routes reject teaching/learner
 roles. Forward024 binds invoice/run/reversal actors to tenant membership and
 requires trimmed meaningful reasons, retaining original financial values.
 Local legacy migration rehearsal,74 integration and44 browser cases pass;
-exact-SHA remote acceptance is pending. No external release approval is implied.
+CI42238649247 for416378f failed one visual navigation synchronization test;
+remote acceptance remains pending its repair. No external release approval is implied.
 Fee-plan ea8fb17 exact CI42232459218 SUCCESS is verified separately.
 
 Fee plans/W13 security delta (2026-11-06): owner/accountant configuration uses
