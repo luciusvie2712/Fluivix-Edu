@@ -1,5 +1,5 @@
 import { testOrigins } from "../../tooling/test-origins";
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 import { createRequire } from "node:module";
 import { execFileSync } from "node:child_process";
 import path from "node:path";

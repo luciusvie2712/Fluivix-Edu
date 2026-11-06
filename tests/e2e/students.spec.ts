@@ -1,5 +1,5 @@
 import { testOrigins } from "../../tooling/test-origins";
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Page } from "./fixtures";
 import { randomUUID } from "node:crypto";
 import { createRequire } from "node:module";
 import path from "node:path";
@@ -72,16 +72,14 @@ test("CSV preview100 rejects five invalid rows then commits a clean batch throug
     (_, index) =>
       `${prefix}${index},Synthetic CSV ${index},${index < 5 ? "invalid-email" : `csv${index}@example.test`}`,
   );
-  await page
-    .getByLabel("Tệp CSV học viên", { exact: true })
-    .setInputFiles({
-      name: "invalid.csv",
-      mimeType: "text/csv",
-      buffer: Buffer.from(
-        "studentCode,fullName,contactEmail\n" + lines.join("\n"),
-        "utf8",
-      ),
-    });
+  await page.getByLabel("Tệp CSV học viên", { exact: true }).setInputFiles({
+    name: "invalid.csv",
+    mimeType: "text/csv",
+    buffer: Buffer.from(
+      "studentCode,fullName,contactEmail\n" + lines.join("\n"),
+      "utf8",
+    ),
+  });
   await page
     .getByRole("button", { name: "Xem trước CSV", exact: true })
     .click();
@@ -97,16 +95,14 @@ test("CSV preview100 rejects five invalid rows then commits a clean batch throug
     "fluivixedu-import-errors.csv",
   );
   await capture(page, "csv-preview-errors");
-  await page
-    .getByLabel("Tệp CSV học viên", { exact: true })
-    .setInputFiles({
-      name: "valid.csv",
-      mimeType: "text/csv",
-      buffer: Buffer.from(
-        `studentCode,fullName\n${prefix}A,CSV browser learner A\n${prefix}B,CSV browser learner B`,
-        "utf8",
-      ),
-    });
+  await page.getByLabel("Tệp CSV học viên", { exact: true }).setInputFiles({
+    name: "valid.csv",
+    mimeType: "text/csv",
+    buffer: Buffer.from(
+      `studentCode,fullName\n${prefix}A,CSV browser learner A\n${prefix}B,CSV browser learner B`,
+      "utf8",
+    ),
+  });
   await page
     .getByRole("button", { name: "Xem trước CSV", exact: true })
     .click();

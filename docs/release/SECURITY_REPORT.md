@@ -40,3 +40,23 @@ tenant-negative tests for each resource, revocation/context/child-switch tests,
 financial allocation races, upload abuse and log-redaction tests. Save tool
 version, exact commit, command, exit status and findings. Assign a named security
 owner before final approval; none is invented in this record.
+
+
+## Reassessment 2026-11-06
+
+The prior no-patch finding above is historical. The official forge release
+https://github.com/digitalbazaar/forge/releases/tag/v1.4.3 is now available.
+Expo CLI58.1.19 accepts node-forge ^1.4.0; the workspace pins the compatible
+official1.4.3 with a pnpm override, without a fork or advisory suppression.
+The actual resolved CLI dependency passes Node RSA signature interoperability
+and rejects a correctly encoded signature containing extra nested DigestAlgorithm
+elements (tests/unit/forge-signature.test.ts). Frozen lockfile updated.
+
+Fresh audit evidence: dependency-audit-2026-11-06-baseline.json reports6HIGH;
+dependency-audit-2026-11-06-final.json reports0HIGH/0CRITICAL,1LOW/4MODERATE.
+No moderate/low findings are suppressed. They concern deepmerge, glob and
+minimatch in the toolchain and remain tracked for compatible upstream remediation.
+Expo install --check passes after official SDK58/RN0.88.1 patch alignment.
+Full build produces Web/Platform outputs and Android/iOS Hermes bundles only;
+signed device verification, deployed security review and legal approval remain
+BLOCKED_EXTERNAL. This dependency result does not approve a production release.

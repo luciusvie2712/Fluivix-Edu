@@ -29,6 +29,9 @@ jobs:
       redis:
         image: redis:7.4.6-alpine
         ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 3s --health-retries 20
       mailpit:
         image: axllent/mailpit:v1.27.10
         ports: ["1025:1025", "8025:8025"]
@@ -51,6 +54,7 @@ jobs:
       - run: pnpm db:generate
       - run: pnpm --filter @fluivix/server-crypto build
       - run: pnpm lint
+      - run: pnpm format:check
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm --filter @fluivix/mobile test
@@ -60,10 +64,12 @@ jobs:
       - run: pnpm test:integration
         env:
           TEST_DATABASE_URL: postgresql://fluivix_ci:isolated-ci-only@127.0.0.1:5432/fluivixedu_test
+          TEST_REDIS_URL: redis://127.0.0.1:6379
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:e2e
         env:
           E2E_DATABASE_URL: postgresql://fluivix_ci:isolated-ci-only@127.0.0.1:55433/fluivixedu_e2e_test
+          TEST_REDIS_URL: redis://127.0.0.1:6379
       - run: pnpm audit --audit-level=high
       - uses: actions/upload-artifact@v4
         if: always()

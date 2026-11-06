@@ -12,7 +12,7 @@
     "build": "turbo run build",
     "test": "vitest run --project unit",
     "test:integration": "vitest run --project integration",
-    "test:e2e": "playwright test",
+    "test:e2e": "tsx tooling/e2e-runner.ts",
     "db:generate": "prisma generate --schema infra/prisma/schema.prisma",
     "db:migrate": "prisma migrate deploy --schema infra/prisma/schema.prisma",
     "db:seed": "tsx tooling/seed.ts",
@@ -50,7 +50,8 @@
     "overrides": {
       "deepmerge-ts": "8.0.2",
       "zod": "4.6.7",
-      "multer": "2.5.0"
+      "multer": "2.5.0",
+      "node-forge": "1.4.3"
     },
     "onlyBuiltDependencies": [
       "@nestjs/core",

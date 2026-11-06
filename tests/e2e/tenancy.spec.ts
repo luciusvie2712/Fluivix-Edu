@@ -1,5 +1,5 @@
 import { testOrigins, mailLinkPattern } from "../../tooling/test-origins";
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Page } from "./fixtures";
 import { randomUUID } from "node:crypto";
 import { createRequire } from "node:module";
 import path from "node:path";

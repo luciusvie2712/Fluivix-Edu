@@ -3,6 +3,8 @@ import type { PrismaClient } from "@prisma/client";
 import { randomUUID } from "node:crypto";
 import { createRequire } from "node:module";
 import path from "node:path";
+import { redisConnection } from "../../apps/worker/src/redis";
+import { testRedisUrl } from "../../tooling/test-redis";
 
 export function teachingCases(
   getBase: () => string,
@@ -999,16 +1001,7 @@ export function teachingCases(
       const { enqueueSchedulePage, generateScheduledRule } = await import(
         "../../apps/worker/dist/schedule-jobs.js"
       );
-      const redis = new URL(
-        process.env.TEST_REDIS_URL ?? "redis://127.0.0.1:6385",
-      );
-      const connection = {
-        host: redis.hostname,
-        port: Number(redis.port || "6379"),
-        ...(redis.password
-          ? { password: decodeURIComponent(redis.password) }
-          : {}),
-      };
+      const connection = redisConnection(testRedisUrl());
       const prefix = "schedule-test-" + randomUUID();
       const queue = new Queue<{ ruleId: string }>("schedule-generation", {
         connection,

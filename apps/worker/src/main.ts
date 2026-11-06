@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Queue, UnrecoverableError, Worker } from "bullmq";
 import { z } from "zod";
+import { redisConnection } from "./redis";
 import { mailProvider } from "./mail";
 import { deliver, MAIL_EVENTS } from "./delivery";
 import { purgeExpiredImports } from "./import-retention";
@@ -18,16 +19,7 @@ async function main() {
     !["localhost", "127.0.0.1"].includes(origin.hostname)
   )
     throw new Error("Local mail testing requires a local web origin");
-  const redis = new URL(z.url().parse(process.env.REDIS_URL));
-  if (!["redis:", "rediss:"].includes(redis.protocol))
-    throw new Error("Unsupported Redis scheme");
-  const connection = {
-    host: redis.hostname,
-    port: Number(redis.port || "6379"),
-    ...(redis.password ? { password: decodeURIComponent(redis.password) } : {}),
-    ...(redis.username ? { username: decodeURIComponent(redis.username) } : {}),
-    ...(redis.protocol === "rediss:" ? { tls: {} } : {}),
-  };
+  const connection = redisConnection(process.env.REDIS_URL);
   const db = new PrismaClient();
   await db.$connect();
   const prefix = z

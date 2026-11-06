@@ -9,7 +9,7 @@ not a completed production release candidate. Do not deploy or publish it.
 | 19Web +9Platform +21Mobile real workflows | PARTIAL | Manifest accounted for; actual route/workflow gaps recorded in GAP_ANALYSIS |
 | TC-001..030 exact expectations pass | NOT_VERIFIED | Fresh per-scenario evidence and TC030 staging restore required |
 | Tenant A/B, finance, attendance concurrency | PARTIAL | Existing and new tests pass in bounded local suites; complete new-route regression ongoing |
-| High/critical security findings=0 | BLOCKED | node-forge high advisory, no published patch |
+| High/critical dependency findings=0 | PASS (bounded audit 2026-11-06) | Official node-forge1.4.3;0HIGH/0CRITICAL. Independent/deployed security review not verified |
 | Fresh baseline→upgrade migrations and rollback | PARTIAL | Fresh local migration exercised; staging upgrade/rollback not verified |
 | Backup restore + integrity + agreed RPO/RTO | NOT_VERIFIED | Staging rehearsal and operations sign-off absent |
 | Load, metrics, alerting and worker operations | NOT_VERIFIED | Representative environment and measured evidence absent |

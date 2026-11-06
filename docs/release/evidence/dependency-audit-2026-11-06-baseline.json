@@ -1,0 +1,622 @@
+﻿{
+  "actions": [],
+  "advisories": {
+    "1240912": {
+      "findings": [
+        {
+          "version": "1.4.0",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>node-forge"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2026-85393\n- https://github.com/digitalbazaar/forge/issues/1149\n- https://github.com/advisories/GHSA-ppp5-5v6c-4jwp\n- https://github.com/digitalbazaar/forge/blob/v1.4.0/lib/asn1.js\n- https://github.com/digitalbazaar/forge/blob/v1.4.0/lib/rsa.js\n- https://www.vulncheck.com/advisories/node-forge-through-1.4.0-rsa-pkcs-1-1.5-signature-forgery-via-nested-digestalgorithm-padding\n- https://github.com/digitalbazaar/forge/pull/1152\n- https://github.com/advisories/GHSA-86w9-cpqp-85rv",
+      "created": "2026-09-03T21:31:15.000Z",
+      "id": 1240912,
+      "npm_advisory_id": null,
+      "overview": "node-forge through 1.4.0 fails to validate element count in nested DigestAlgorithm sequences during RSA PKCS#1 v1.5 signature verification. Attackers can embed garbage bytes inside the DigestAlgorithm sequence to forge valid signatures for arbitrary messages using low-exponent RSA keys. This is an incomplete fix for CVE-2026-33894.",
+      "reported_by": null,
+      "title": "node-forge RSA PKCS#1 v1.5 signature verification accepts extra nested DigestAlgorithm elements",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-85393"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "node-forge",
+      "vulnerable_versions": "<=1.4.0",
+      "github_advisory_id": "GHSA-86w9-cpqp-85rv",
+      "recommendation": "None",
+      "patched_versions": "<0.0.0",
+      "updated": "2026-10-01T21:09:10.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+      },
+      "cwe": [
+        "CWE-347"
+      ],
+      "url": "https://github.com/advisories/GHSA-86w9-cpqp-85rv"
+    },
+    "1243505": {
+      "findings": [
+        {
+          "version": "4.3.1",
+          "paths": [
+            "apps__mobile>jest>@jest/core>jest-config>deepmerge"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2026-93753\n- https://github.com/TehShrike/deepmerge/issues/273\n- https://github.com/TehShrike/deepmerge/blob/5b87756a5671635679001cbac72aa42f23472c81/index.js#L39-L60\n- https://www.vulncheck.com/advisories/deepmerge-through-4.3.1-prototype-poisoning-via-mergeobject\n- https://github.com/advisories/GHSA-gcqx-w48m-w2h4",
+      "created": "2026-09-18T18:31:44.000Z",
+      "id": 1243505,
+      "npm_advisory_id": null,
+      "overview": "deepmerge through 4.3.1 contains a prototype poisoning vulnerability in the mergeObject() function that fails to properly validate keys being written to target objects. Attackers can supply malicious source objects in merge operations to inject attacker-controlled properties into the returned object's prototype, causing applications to inherit unintended values when accessing properties without own-property checks.",
+      "reported_by": null,
+      "title": "deepmerge mergeObject() allows prototype poisoning of returned objects",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-93753"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "deepmerge",
+      "vulnerable_versions": ">=4.2.0 <=4.3.1",
+      "github_advisory_id": "GHSA-gcqx-w48m-w2h4",
+      "recommendation": "None",
+      "patched_versions": "<0.0.0",
+      "updated": "2026-10-27T21:34:58.000Z",
+      "cvss": {
+        "score": 5.3,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:N"
+      },
+      "cwe": [
+        "CWE-1321"
+      ],
+      "url": "https://github.com/advisories/GHSA-gcqx-w48m-w2h4"
+    },
+    "1244013": {
+      "findings": [
+        {
+          "version": "13.0.6",
+          "paths": [
+            "apps__mobile>jest>@jest/core>@jest/reporters>glob"
+          ]
+        },
+        {
+          "version": "10.5.0",
+          "paths": [
+            "apps__mobile>jest>@jest/core>@jest/transform>babel-plugin-istanbul>test-exclude>glob"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/isaacs/node-glob/security/advisories/GHSA-3g3m-2fjr-6pw4\n- https://nvd.nist.gov/vuln/detail/CVE-2026-118773\n- https://github.com/isaacs/node-glob/commit/4682e8c9babee1b385202ede36389634e12076d7\n- https://github.com/isaacs/node-glob/releases/tag/v14.0.2\n- https://github.com/advisories/GHSA-3g3m-2fjr-6pw4",
+      "created": "2026-10-30T23:09:11.000Z",
+      "id": 1244013,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nIn glob 13.0.6, an aborted async walk rejects or emits an error but continues recursively reading directories in the background.\n\nThe root cause is that abort branches in src/walker.ts call cb() without returning. As a result, callers that rely on signal or AbortSignal.timeout() to bound glob traversal cost can still incur filesystem I/O and CPU work after the request has already been rejected.\n\n### Details\n\nThis was reproduced on glob v13.0.6 (commit e80cb38ae60d6cbff9e75f39032a994858994d35).\n\nThe README documents that the signal option cancels the glob walk. However, in src/walker.ts, the following methods call cb() when this.signal?.aborted is true but do not return:\n\n- GlobUtil.walkCB()\n- GlobUtil.walkCB2()\n- GlobUtil.walkCBSync()\n- GlobUtil.walkCB2Sync()\n\nExample vulnerable pattern:\n\nif (this.signal?.aborted) cb()\n\nBecause execution continues after cb(), the walker still reaches processor.processPatterns(), readdirCB(), and recursive walkCB2() calls.\n\nThe issue was directly demonstrated against v13.0.6. A source-history review shows the same missing-return pattern is present in tagged releases from v9.0.0 through v13.0.6.\n\nThe issue affects both glob() and globStream().\n\nRecommended fix:\nChange each abort branch to return immediately:\n\nif (this.signal?.aborted) return cb()\n\n### Proof of concept\n\nEnvironment:\n- Linux x86_64\n- Node.js v22.23.3\n- npm 10.9.9\n- glob 13.0.6\n\nReproduction steps:\n\n1. Install the affected package:\n   npm init -y\n   npm install glob@13.0.6\n\n2. Run the attached PoC:\n   node poc/abort-continues-work.mjs\n\nThe PoC aborts after the first readdir() call, waits briefly, and counts how many more directory reads happen after the promise has already rejected.\n\nObserved output on the vulnerable version:\n\n{\n  \"rejection\": \"Error: probe-abort\",\n  \"readdirCalls\": 1365,\n  \"readdirCallsAtReject\": 5,\n  \"readdirCallsAfterReject\": 1360\n}\n\nExpected behavior:\nreaddirCallsAfterReject should be 0.\n\nA second PoC using AbortSignal.timeout() also reproduces the issue:\n\n{\n  \"rejection\": \"TimeoutError: The operation was aborted due to timeout\",\n  \"readdirCalls\": 133,\n  \"readdirCallsAtReject\": 1,\n  \"readdirCallsAfterReject\": 132\n}\n\nThe same test against a patched build with return cb() in the four abort branches stops immediately:\n\n{\n  \"readdirCalls\": 1,\n  \"readdirCallsAtReject\": 1,\n  \"readdirCallsAfterReject\": 0\n}\n\n### Impact\n\nThis is an availability issue.\n\nApplications that expose globbing over attacker-influenced patterns or attacker-controlled directory trees and use AbortSignal / AbortSignal.timeout() as a traversal budget can still perform significant filesystem I/O and CPU work after a request has already timed out or been canceled.\n\nRepeated timed-out requests can stack background glob walks and degrade worker throughput or service availability.\n\nNo confidentiality or integrity impact was observed.",
+      "reported_by": null,
+      "title": "Glob: AbortSignal cancellation bypass allows post-timeout filesystem traversal",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-118773"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "glob",
+      "vulnerable_versions": ">=9.0.0 <=14.0.1",
+      "github_advisory_id": "GHSA-3g3m-2fjr-6pw4",
+      "recommendation": "Upgrade to version 14.0.2 or later",
+      "patched_versions": ">=14.0.2",
+      "updated": "2026-10-30T23:09:15.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-400"
+      ],
+      "url": "https://github.com/advisories/GHSA-3g3m-2fjr-6pw4"
+    },
+    "1244014": {
+      "findings": [
+        {
+          "version": "1.4.0",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>node-forge"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/digitalbazaar/forge/security/advisories/GHSA-4642-5mcj-2rqw\n- https://nvd.nist.gov/vuln/detail/CVE-2026-118775\n- https://github.com/digitalbazaar/forge/commit/e56a3dde8e4e63bae566bb32546eeaf92f515e1e\n- https://github.com/digitalbazaar/forge/releases/tag/v1.4.1\n- https://github.com/advisories/GHSA-4642-5mcj-2rqw",
+      "created": "2026-10-30T23:02:40.000Z",
+      "id": 1244014,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\n`asn1.oidToDer()` did not range-check the first two arcs of an OID string, so an OID such as `0.42.840.113549.1.1.1` or `4294977127.18.840.113549.1.1.1` was encoded as the DER of a different OID (here rsaEncryption, `1.2.840.113549.1.1.1`). This is an incomplete fix of CVE-2025-66030. Fixed in node-forge 1.4.1.\n\n### Details\n\nX.690 section 8.19 encodes the first two arcs of an OID as one subidentifier, `40 * arc1 + arc2`, where the first arc is 0, 1 or 2 and the second arc is at most 39 when the first is 0 or 1. `asn1.oidToDer()` in `lib/asn1.js` computed that value with no range check and wrote it with `putByte()`, which keeps only the low 16 bits. Out-of-range first arcs therefore produced the encoding of a different OID: `0.42.840.113549.1.1.1` gives `40 * 0 + 42 = 42` and `4294977127.18.840.113549.1.1.1` wraps to 42, both the first byte of rsaEncryption. The fix for CVE-2025-66030 (GHSA-65ch-62r8-g69g, node-forge 1.3.2) added a 32-bit check for the later arcs only.\n\nA related encoding bug made valid OIDs with a first subidentifier above 127 (`2.48` and higher, e.g. `2.999`) encode and decode incorrectly, because the first subidentifier was always written and read as a single byte.\n\nThe fix rejects out-of-range first arcs and encodes and decodes the first subidentifier in base 128 like the others (the latter from public PR #1148).\n\n### Patches\nFixed in node-forge 1.4.1. `asn1.oidToDer()` throws for OIDs with out-of-range first arcs, and the first subidentifier is encoded and decoded correctly.\n\n### Workarounds\nValidate OID strings from untrusted input before passing them to node-forge: the first arc must be 0, 1 or 2, and the second arc at most 39 when the first arc is 0 or 1.\n\n### Credits\nReported by wzc. The first subidentifier encoding fix is from PR #1148 by @spokodev.\n\n### Proof of concept\n\n    var forge = require('node-forge');\n    var der = forge.asn1.oidToDer('0.42.840.113549.1.1.1');\n    console.log(der.toHex()); // 2a864886f70d010101\n    console.log(forge.asn1.derToOid(der)); // 1.2.840.113549.1.1.1\n\nOn 1.4.0 the out-of-range OID string encodes to exactly the DER of rsaEncryption (the same happens with `4294977127.18.840.113549.1.1.1`). On 1.4.1 `oidToDer()` throws \"Invalid OID; the first two arcs are out of range.\".\n\nRegression tests are in tests/unit/asn1.js (\"should reject OIDs with out of range first arcs\").\n\n### Impact\n\nApplications that accept OID strings from untrusted input, check or authorize them as strings, and then encode them with node-forge (for example when building certificates, CSRs or other ASN.1 structures from user-supplied extension or attribute OIDs) can be made to emit a different, trusted OID than the one that was checked. Parsing DER is not affected. There is no confidentiality or availability impact.",
+      "reported_by": null,
+      "title": "Forge: ASN.1 OID first arc truncation in asn1.oidToDer",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-118775"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "node-forge",
+      "vulnerable_versions": "<=1.4.0",
+      "github_advisory_id": "GHSA-4642-5mcj-2rqw",
+      "recommendation": "Upgrade to version 1.4.1 or later",
+      "patched_versions": ">=1.4.1",
+      "updated": "2026-10-30T23:02:44.000Z",
+      "cvss": {
+        "score": 3.7,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:N"
+      },
+      "cwe": [
+        "CWE-190"
+      ],
+      "url": "https://github.com/advisories/GHSA-4642-5mcj-2rqw"
+    },
+    "1244015": {
+      "findings": [
+        {
+          "version": "1.4.0",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>node-forge"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/digitalbazaar/forge/security/advisories/GHSA-6wvx-3r32-xmcg\n- https://nvd.nist.gov/vuln/detail/CVE-2026-118777\n- https://github.com/digitalbazaar/forge/commit/797c3f816a22748a96fceebb34eb3a6716853991\n- https://github.com/digitalbazaar/forge/releases/tag/v1.4.1\n- https://github.com/advisories/GHSA-6wvx-3r32-xmcg",
+      "created": "2026-10-30T23:02:35.000Z",
+      "id": 1244015,
+      "npm_advisory_id": null,
+      "overview": "### Summary\nThe `forge.http` client stored cookies from `Set-Cookie` response headers in a plain object keyed by cookie name and path. A malicious server could use the cookie name `__proto__` to add properties to `Object.prototype`, use inherited names such as `constructor` to add properties to `Object`, and send an empty cookie value to delete `Object.prototype` properties. Fixed in node-forge 1.4.1.\n\n### Details\n`client.setCookie()` in `lib/http.js` stored a cookie with `client.cookies[cookie.name][cookie.path] = cookie`, creating `client.cookies[cookie.name]` only when `!(cookie.name in client.cookies)`. Both values come from the server's `Set-Cookie` header via `response.getCookies()`. Because `in` also sees inherited properties:\n\n- a cookie named `__proto__` skipped the initialization, `client.cookies['__proto__']` returned `Object.prototype`, and the cookie path was written as a new `Object.prototype` property, visible on every object;\n- a cookie named `constructor` wrote onto the global `Object` function the same way;\n- a cookie with an empty value calls `client.removeCookie(name, path)`, which used the same `in` checks and then `delete client.cookies[name][path]`, so `Set-Cookie: __proto__=; path=toString` deleted `Object.prototype.toString`. This path skipped the cookie's secure-flag and domain checks, so it also worked for `http://` clients.\n\n`forge.http` is not loaded by `require('node-forge')`. It is included in the `forge.all` browser bundle and is used with a socket pool, for example by `forge.xhr`.\n\nThe fix uses own-property checks for the cookie store and ignores cookies named `__proto__` or with the path `__proto__`.\n\n#### Patches\nFixed in node-forge 1.4.1. Cookies from a server can no longer add or remove properties of `Object.prototype` or `Object`.\n\n#### Workarounds\nDon't use `forge.http` or `forge.xhr` with servers that aren't trusted, or filter `Set-Cookie` headers named `__proto__`, `constructor` or other `Object.prototype` property names before they reach the client.\n\n#### Credits\nReported by @arunmozhivarman-dtx and @Dremig.\n\n### Proof of concept\nA server response for a `forge.http` client (`http.createClient({url: 'https://...', socketPool: ...})`) containing:\n\n    Set-Cookie: __proto__=evil; path=polluted\n\nOn 1.4.0, after the client processes the response, `({}).polluted` is the cookie object. With `Set-Cookie: __proto__=; path=toLocaleString`, `Object.prototype.toLocaleString` is deleted (for `http://` and `https://` clients). On 1.4.1 these cookies are ignored and `Object.prototype` is unchanged.\n\nRegression tests are in tests/security/ghsa-6wvx-3r32-xmcg.js.\n\n### Impact\nApplications that use the `forge.http` client (directly, or through `forge.xhr` in the `forge.all` browser bundle) against a server that can be malicious are affected. The server can add properties to `Object.prototype` and `Object` for the whole JavaScript realm, which can change application logic that reads properties from plain objects, and can delete built-in `Object.prototype` methods, breaking the page or process. Applications that don't use `forge.http` are not affected.",
+      "reported_by": null,
+      "title": "Forge: Prototype Pollution in forge.http cookie handling via a malicious Set-Cookie",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-118777"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "node-forge",
+      "vulnerable_versions": "<=1.4.0",
+      "github_advisory_id": "GHSA-6wvx-3r32-xmcg",
+      "recommendation": "Upgrade to version 1.4.1 or later",
+      "patched_versions": ">=1.4.1",
+      "updated": "2026-10-30T23:02:39.000Z",
+      "cvss": {
+        "score": 4.8,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:L/A:L"
+      },
+      "cwe": [
+        "CWE-1321"
+      ],
+      "url": "https://github.com/advisories/GHSA-6wvx-3r32-xmcg"
+    },
+    "1244016": {
+      "findings": [
+        {
+          "version": "1.4.0",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>node-forge"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/digitalbazaar/forge/security/advisories/GHSA-525v-9gp9-w22h\n- https://nvd.nist.gov/vuln/detail/CVE-2026-118778\n- https://github.com/digitalbazaar/forge/commit/7be9fbd40df2e2f15f29fea2846b1c87d58f6888\n- https://github.com/digitalbazaar/forge/releases/tag/v1.4.1\n- https://github.com/advisories/GHSA-525v-9gp9-w22h",
+      "created": "2026-10-30T23:02:30.000Z",
+      "id": 1244016,
+      "npm_advisory_id": null,
+      "overview": "### Summary\nThe forge TLS client's check for a missing server certificate read the wrong property and never ran. A malicious TLS server, or an on-path attacker who removes the server's Certificate message, can make `connection.process()` throw a `TypeError`, which crashes applications that use the forge TLS client. Fixed in node-forge 1.4.1.\n\n### Details\nAfter ServerHelloDone, `tls.handleServerHelloDone()` in `lib/tls.js` is meant to reject a server that sent no certificate with a fatal `insufficient_security` alert, after consulting the application's `verify` callback. The check tested `c.serverCertificate`, which is never set (the certificate is stored as `c.session.serverCertificate`), so it never ran. The client state machine allows ServerHelloDone directly after ServerHello, so the handshake continued to `tls.createClientKeyExchange()`, which reads `c.session.serverCertificate.publicKey` and throws a `TypeError` on the null certificate. The exception propagates out of `connection.process()` without calling the `verify` or `error` callbacks.\n\nThere is no authentication bypass: without a server certificate the client cannot build its RSA key exchange, so the handshake cannot complete.\n\nThe fix reads `c.session.serverCertificate` and always fails the handshake in that case, still calling `verify` so the application can customize the alert. Failing even when `verify` returns `true` is needed because the key exchange requires the certificate.\n\n#### Patches\nFixed in node-forge 1.4.1. The TLS client fails the handshake with an `insufficient_security` alert when the server sends no certificate.\n\n#### Workarounds\nCatch exceptions thrown by `connection.process()` in the code that feeds it network data, and close the connection when one occurs.\n\n#### Credits\nReported by @arpitjain099.\n\n### Proof of concept\nConnect a forge TLS client (`forge.tls.createConnection({server: false, ...})`) to a server whose first flight contains ServerHello and ServerHelloDone but no Certificate message. For example, run a forge TLS server and remove the Certificate handshake message (type 11) from its first flight before passing it to the client's `process()`.\n\nOn 1.4.0 the client's `process()` throws \"TypeError: Cannot read properties of null (reading 'publicKey')\", and the `verify` and `error` callbacks are not called. On 1.4.1 the client calls `verify` with `insufficient_security` and no certificates, calls `error` with \"No server certificate provided. Not enough security.\", sends a fatal alert and closes the connection.\n\nRegression tests are in tests/unit/tls.js (\"missing server certificate\").\n\n### Impact\nApplications that use the forge TLS client (`forge.tls.createConnection` with `server: false`) are affected. A malicious server the application connects to, or an on-path attacker who can modify the unauthenticated handshake, can make the client throw from `connection.process()`. Since `process()` is normally called from a socket data handler, the uncaught exception terminates a Node.js process. There is no confidentiality or integrity impact. Applications using Node.js's own TLS implementation are not affected.",
+      "reported_by": null,
+      "title": "Forge: TLS client crash when the server sends no certificate",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-118778"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "node-forge",
+      "vulnerable_versions": "<=1.4.0",
+      "github_advisory_id": "GHSA-525v-9gp9-w22h",
+      "recommendation": "Upgrade to version 1.4.1 or later",
+      "patched_versions": ">=1.4.1",
+      "updated": "2026-10-30T23:02:34.000Z",
+      "cvss": {
+        "score": 5.9,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-476"
+      ],
+      "url": "https://github.com/advisories/GHSA-525v-9gp9-w22h"
+    },
+    "1244017": {
+      "findings": [
+        {
+          "version": "1.4.0",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>node-forge"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/digitalbazaar/forge/security/advisories/GHSA-7wch-p9px-956x\n- https://nvd.nist.gov/vuln/detail/CVE-2026-118779\n- https://github.com/digitalbazaar/forge/commit/412345db583cd28a9d23636d0d93e9f751b935f3\n- https://github.com/digitalbazaar/forge/releases/tag/v1.4.1\n- https://github.com/advisories/GHSA-7wch-p9px-956x",
+      "created": "2026-10-30T23:02:25.000Z",
+      "id": 1244017,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n`pem.decode()`, which every node-forge API that parses PEM input uses, split messages with a regular expression that takes polynomial time on input without a matching END line, and parsed encapsulated headers with regular expressions that take quadratic time on long header lines. A remote attacker can block the Node.js event loop for seconds to minutes with a crafted input of a few tens of kilobytes. Fixed in node-forge 1.4.1.\n\n### Details\n`pem.decode()` in `lib/pem.js` found PEM messages with this regular expression:\n\n    /\\s*-----BEGIN ([A-Z0-9- ]+)-----\\r?\\n?([\\x21-\\x7e\\s]+?(?:\\r?\\n\\r?\\n))?([:A-Za-z0-9+\\/=\\s]+?)-----END \\1-----/g\n\nThe optional headers group and the body group are adjacent, lazy, and share characters (whitespace and the base64 alphabet), and the match must end with an END line whose label equals the BEGIN label (`\\1`). When no such END line follows, the engine tries every split of the text between the two groups, for every label split and at every BEGIN line in the input. The work grows polynomially with the input length (roughly cubic for repeated BEGIN/END lines with mismatched labels, quadratic for a BEGIN line followed by many newlines).\n\nThe encapsulated header parsing in the same function had two smaller quadratic cases: trimming each header line with `/\\s+$/`, and an unanchored header regex `([\\x21-\\x7e]+):...` that retries at every position of a long line without a colon. These are reachable when a message does match.\n\nAll PEM entry points call `pem.decode()`, including `pki.certificateFromPem()`, `pki.privateKeyFromPem()`, `pki.publicKeyFromPem()`, `pki.certificationRequestFromPem()`, `pki.encryptedPrivateKeyFromPem()`, `pki.decryptRsaPrivateKey()` and `pkcs7.messageFromPem()`.\n\nThe fix replaces the message regular expression with a scanner that indexes the END lines once and matches each BEGIN line in linear time, finding the same messages as before. The one difference: a label containing `-----` (`-----BEGIN A-----B-----`) was matched as `A-----B` if possible; now only the shortest label, `A`, is used. RFC 7468 labels can't contain `--`. Header parsing now trims lines with a loop and only starts a header match at the beginning of a run of printable characters, which gives the same result.\n\n#### Patches\nFixed in node-forge 1.4.1. PEM messages and encapsulated headers are now parsed in linear time.\n\n#### Workarounds\nRejecting untrusted PEM input larger than a few kilobytes before passing it to node-forge limits the delay but doesn't remove it: on 1.4.0, about 7 KB of crafted input blocked for 0.4 s, and 29 KB for 24 s.\n\n#### Credits\nReported by Ahmed Mokhtari (@AhmedMokhtari), @mwlik and @imenyoo2, and independently by @offset, @bibu123456 (coordinated by @Kayiz-PT), and @Mucahic.\n\n### Proof of concept\n    var forge = require('node-forge');\n    var pem = ' -----BEGIN I-----G-----END B'.repeat(1000) + '\\x00'; // 29 KB\n    try {\n      forge.pki.certificateFromPem(pem);\n    } catch(e) {}\n\nOn 1.4.0 (Node.js 24) this call blocks for about 24 seconds before throwing \"Invalid PEM formatted message.\"; 14 KB takes about 3 seconds. A BEGIN line followed by 32 KB of newlines and no END line takes about 1.5 seconds, and the time grows quadratically from there. On 1.4.1 each of these inputs is rejected in a few milliseconds, and 1 MB inputs of any of these shapes take under 100 ms.\n\nThe PoC is in tests/pocs/ghsa-7wch-p9px-956x.js. Regression tests are in tests/unit/pem.js (\"GHSA-7wch-p9px-956x ReDoS checks\").\n\n### Impact\nAny application that passes untrusted PEM text to node-forge is affected: for example, services that accept uploaded certificates, keys or certificate signing requests, or that parse certificates from configuration, SAML metadata or other user-supplied documents. A remote, unauthenticated attacker can send a small crafted input that blocks the Node.js event loop for seconds to minutes per request, so the process stops serving other requests. Repeated requests keep it unavailable. There is no confidentiality or integrity impact.",
+      "reported_by": null,
+      "title": "Forge: Regular expression denial of service in PEM decoding (pem.decode)",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-118779"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "node-forge",
+      "vulnerable_versions": "<=1.4.0",
+      "github_advisory_id": "GHSA-7wch-p9px-956x",
+      "recommendation": "Upgrade to version 1.4.1 or later",
+      "patched_versions": ">=1.4.1",
+      "updated": "2026-10-30T23:02:29.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-400",
+        "CWE-1333"
+      ],
+      "url": "https://github.com/advisories/GHSA-7wch-p9px-956x"
+    },
+    "1244018": {
+      "findings": [
+        {
+          "version": "1.4.0",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>node-forge"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/digitalbazaar/forge/security/advisories/GHSA-h6cr-wjv9-3cpp\n- https://nvd.nist.gov/vuln/detail/CVE-2026-118781\n- https://github.com/digitalbazaar/forge/commit/e96c47b7f006dec66fb7bb1934e7375498b04a72\n- https://github.com/digitalbazaar/forge/releases/tag/v1.4.1\n- https://github.com/advisories/GHSA-h6cr-wjv9-3cpp",
+      "created": "2026-10-30T23:02:20.000Z",
+      "id": 1244018,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\n`BigInteger.prototype.modInverse()` in node-forge's bundled jsbn library enters an infinite loop when the value or the modulus is negative, for example when a negative public exponent is passed to `forge.pki.rsa.generateKeyPair()`. This is an incomplete fix of CVE-2026-33891 (GHSA-5m6q-g25r-mvwx), which handled only a zero value. Fixed in node-forge 1.4.1.\n\n### Details\n\n`bnModInverse()` (`lib/jsbn.js`, exposed as `forge.jsbn.BigInteger.prototype.modInverse`) implements the binary extended Euclidean algorithm (Handbook of Applied Cryptography, Algorithm 14.61), which is defined for positive integers. With a negative operand the loop cannot terminate: `rShiftTo` is an arithmetic shift, so a negative value never moves towards zero, and the loop's exit condition (`u` reaching zero) is never met. The calling thread spins at 100% CPU indefinitely; in Node.js this blocks the event loop. Memory does not grow.\n\nnode-forge 1.4.0 fixed CVE-2026-33891 (GHSA-5m6q-g25r-mvwx) by returning zero early when `this.signum() == 0`, although its changelog describes the check as \"<= 0\". Negative values were not covered, and a negative modulus was never handled. Every negative input that did terminate already returned zero.\n\nWithin node-forge, RSA key generation is the only path to a negative operand: the caller's public exponent `e` becomes `BigInteger.fromInt(e)`, and `state.e.modInverse(state.phi)` is called with it. `gcd()` works on absolute values, so the coprimality checks pass and the loop is reached. Any exponent other than 3 or 65537 uses the pure JavaScript implementation, even when `forge.options.usePureJavaScript` is not set. RFC 8017, Section 3.1 requires the RSA public exponent to be at least 3.\n\nValues that node-forge parses (DER, PEM, JWK, PKCS#12, X.509, TLS) are always read as unsigned integers and cannot produce a negative operand.\n\nThe fix makes `modInverse()` return zero when the value or the modulus is zero or negative, as it already does when no inverse exists. Results for positive inputs are unchanged.\n\nThis issue was reported by wzc.\n\n### Patches\nFixed in node-forge 1.4.1. `modInverse()` now returns zero when the value or the modulus is zero or negative.\n\n### Workarounds\n- Pass only fixed, valid RSA public exponents (e.g. 65537) to key generation, or validate caller-supplied exponents first: an odd integer `>= 3`.\n- Do not call `BigInteger#modInverse()` with negative operands. Reduce the value modulo a positive modulus first (`x.mod(m).modInverse(m)`).\n\n### Proof of concept\n\nA negative public exponent passed to RSA key generation never returns (also with the callback form and with `createKeyPairGenerationState()` / `stepKeyPairGenerationState()`):\n\n    var forge = require('node-forge');\n    forge.pki.rsa.generateKeyPair({bits: 256, e: -1});  // hangs at 100% CPU\n\nCalling `modInverse()` directly with a negative value or modulus hangs the same way:\n\n    var BigInteger = forge.jsbn.BigInteger;\n    new BigInteger('-1').modInverse(new BigInteger('7'));  // hangs\n    new BigInteger('3').modInverse(new BigInteger('-7'));  // hangs\n\nWith the fix, these calls return zero. The regression tests are in `tests/unit/jsbn.js`.\n\n### Impact\n\nApplications are affected only if they:\n- pass an untrusted value as the RSA public exponent `e` to `forge.pki.rsa.generateKeyPair()`, `forge.pki.rsa.createKeyPairGenerationState()` or `forge.pki.rsa.stepKeyPairGenerationState()`, or\n- call `forge.jsbn.BigInteger#modInverse()` directly with negative values derived from untrusted input.\n\nAn attacker who can supply such a value makes the call hang indefinitely at 100% CPU, which blocks the Node.js event loop (denial of service). Keys and other data parsed by node-forge (DER, PEM, JWK, PKCS#12, X.509, TLS) cannot trigger this issue, and the documented usage of key generation passes a constant exponent (65537). There is no effect on confidentiality or integrity.",
+      "reported_by": null,
+      "title": "Forge: Denial of Service via infinite loop in BigInteger.modInverse() with negative input (incomplete fix of CVE-2026-33891)",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-118781"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "node-forge",
+      "vulnerable_versions": "<=1.4.0",
+      "github_advisory_id": "GHSA-h6cr-wjv9-3cpp",
+      "recommendation": "Upgrade to version 1.4.1 or later",
+      "patched_versions": ">=1.4.1",
+      "updated": "2026-10-30T23:02:24.000Z",
+      "cvss": {
+        "score": 2.9,
+        "vectorString": "CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
+      },
+      "cwe": [
+        "CWE-835"
+      ],
+      "url": "https://github.com/advisories/GHSA-h6cr-wjv9-3cpp"
+    },
+    "1244019": {
+      "findings": [
+        {
+          "version": "1.4.0",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>node-forge"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/digitalbazaar/forge/security/advisories/GHSA-4487-j8r4-4g2f\n- https://nvd.nist.gov/vuln/detail/CVE-2026-118780\n- https://github.com/digitalbazaar/forge/commit/f6555609bd30f442fbfacd543155928ceccf98d0\n- https://github.com/digitalbazaar/forge/releases/tag/v1.4.1\n- https://github.com/advisories/GHSA-4487-j8r4-4g2f",
+      "created": "2026-10-30T23:02:14.000Z",
+      "id": 1244019,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nWhen a CA store created by `pki.createCaStore()` holds two or more certificates with the same subject name, `pki.verifyCertificateChain()` permanently removes those certificates from the store while trying each one as the issuer. A peer can send any certificate that names that subject as its issuer to make all later verifications against those CA certificates fail. Fixed in node-forge 1.4.1.\n\n### Details\n\n`pki.verifyCertificateChain()` (`lib/x509.js`) asks the CA store for the issuer of each certificate with `caStore.getIssuer()`. When the store holds several certificates with the same subject, `caStore.getIssuer()` returns the store's own internal array of those certificates (`caStore.certs[hash]`, built by `addCertificate()`). `verifyCertificateChain()` used that array directly as its list of candidate parents and called `parents.shift()` on it while trying each candidate. Every candidate it tried, including the one that finally verified the certificate, was removed from the store.\n\nOnce the array is empty, `getIssuer()` returns an empty list, no candidate is tried, and verification fails with \"Certificate signature is invalid.\" `hasCertificate()` and `listAllCertificates()` no longer see the removed certificates. The store stays in this state for as long as the object is used.\n\nThe attacker's certificate only needs an issuer name equal to the shared subject name, which is public. Its signature and key can be arbitrary: every candidate is tried and shifted out because none verifies, and errors from `parent.verify()` are caught by the loop. Verification of the attacker's chain fails as expected. Verifying valid chains has a similar effect: the CA certificate that verified the chain and any tried before it are removed.\n\nNo chain is accepted that should be rejected. Removing candidates can only turn a success into a failure.\n\nRFC 5280, Section 6.1.1(d) treats trust anchor information as an input to path validation. Validation should not consume it.\n\nThe fix copies the array returned by `getIssuer()` before iterating over it, so the CA store is no longer modified. `getIssuer()` itself is unchanged.\n\n### Patches\nFixed in node-forge 1.4.1. `pki.verifyCertificateChain()` now works on a copy of the candidate issuer list instead of shifting entries out of the CA store.\n\n### Workarounds\n- Pass a fresh CA store to each `pki.verifyCertificateChain()` call (for example `pki.createCaStore(trustedCerts)`), or pass `caStore` to `forge.tls.createConnection()` as an array of certificates instead of a store object, so that forge creates a new store per connection.\n- Or wrap the store so that `getIssuer()` returns a copy:\n\n      var getIssuer = caStore.getIssuer;\n      caStore.getIssuer = function(cert) {\n        var r = getIssuer(cert);\n        return Array.isArray(r) ? r.slice() : r;\n      };\n\n### Proof of concept\n\nTwo trusted self-signed CA certificates, `rootA` and `rootB`, share the subject `CN=Root`. `bogus` is any certificate whose issuer is `CN=Root`, signed with an unrelated key. `leafA` is a valid certificate issued by `rootA`.\n\n    var caStore = forge.pki.createCaStore([rootA, rootB]);\n    caStore.listAllCertificates().length;  // 2\n    try { forge.pki.verifyCertificateChain(caStore, [bogus]); } catch(e) {}\n    // rejected as expected (\"Certificate signature is invalid.\")\n    caStore.listAllCertificates().length;  // 0: both CA certificates are gone\n    forge.pki.verifyCertificateChain(caStore, [leafA]);\n    // throws \"Certificate signature is invalid.\" (valid chain now rejected)\n\nWithout the attacker certificate, verifying `leafA` twice against a fresh store gives the same result: the first call succeeds and removes `rootA`, the second fails. With the fix, the store keeps both certificates and every valid chain verifies. The regression tests are in `tests/unit/x509.js` (\"CA store\" section).\n\n### Impact\n\nApplications that keep a long-lived CA store holding several trusted certificates with the same subject name, and that verify certificate chains received from other parties with `pki.verifyCertificateChain()`. This includes `forge.tls` clients that pass the same `caStore` object to several connections. Duplicate subject names occur with re-keyed or renewed CAs that kept their name, or a CA next to a cross-signed version of itself, mostly in private PKIs.\n\nA remote, unauthenticated peer (for example a malicious TLS server or a party submitting a signed document) can send a certificate naming the shared subject as its issuer. This removes every certificate with that subject from the store, so later verifications of valid chains issued by those CA certificates fail until the store is recreated. This is a persistent denial of service for certificate verification against those CA certificates. Verification against other trusted CAs keeps working, no invalid chain is accepted, and stores without duplicate subject names are not affected.",
+      "reported_by": null,
+      "title": "Forge: verifyCertificateChain() removes trusted CA certificates with the same subject from the CA store",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-118780"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "node-forge",
+      "vulnerable_versions": "<=1.4.0",
+      "github_advisory_id": "GHSA-4487-j8r4-4g2f",
+      "recommendation": "Upgrade to version 1.4.1 or later",
+      "patched_versions": ">=1.4.1",
+      "updated": "2026-10-30T23:02:15.000Z",
+      "cvss": {
+        "score": 3.7,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:L"
+      },
+      "cwe": [
+        "CWE-295",
+        "CWE-471"
+      ],
+      "url": "https://github.com/advisories/GHSA-4487-j8r4-4g2f"
+    },
+    "1244020": {
+      "findings": [
+        {
+          "version": "1.4.0",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>node-forge"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/digitalbazaar/forge/security/advisories/GHSA-5cwg-6vw7-rj6p\n- https://nvd.nist.gov/vuln/detail/CVE-2026-119186\n- https://github.com/digitalbazaar/forge/commit/236845d96c71207259f91638d0138bba8e2fd624\n- https://github.com/digitalbazaar/forge/releases/tag/v1.4.1\n- https://github.com/advisories/GHSA-5cwg-6vw7-rj6p",
+      "created": "2026-10-30T23:02:09.000Z",
+      "id": 1244020,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nThe AES-GCM mode in forge.cipher does not validate the tagLength option passed to start(). With a tagLength of 0 or a value that converts to 0 (such as null, false, '' or '0'), the authentication tag is empty, and decipher.finish() returns true for any ciphertext and additional data when the supplied tag is empty or missing. Fixed in node-forge 1.4.1.\n\n### Details\n\n`modes.gcm.prototype.start()` in `lib/cipherModes.js` stored the `tagLength` option without validation, and `lib/cipher.js` documented it as accepting \"0-128\". After processing the data, `afterFinish()` truncates the 16-byte tag with `truncate(16 % (tagLength / 8))`. For a `tagLength` that converts to 0, this is `16 % 0 = NaN`, and truncating by `NaN` empties the tag. On decryption, the start-time check that the supplied `tag` has `tagLength / 8` bytes passes for an empty tag, and the final tag comparison compares two empty strings, so `decipher.finish()` returns `true` for any ciphertext and additional data.\n\nNIST SP 800-38D section 5.2.1.2 allows only tag lengths of 128, 120, 112, 104 and 96 bits, plus 64 and 32 bits for certain applications.\n\nThe fix validates `tagLength` in `start()`, for both encryption and decryption. A missing, `null` or `undefined` `tagLength` uses the default of 128 bits. Any other value is converted with `Number()` and must be one of 128, 120, 112, 104, 96, 64 or 32; otherwise `start()` throws \"Invalid tag length.\". Numeric strings such as `'128'` are still accepted. With a validated `tagLength`, an empty tag no longer matches the expected tag length and is rejected.\n\n### Patches\nFixed in node-forge 1.4.1. `cipher.start()` now throws an error unless `tagLength` is one of the tag lengths allowed by NIST SP 800-38D (128, 120, 112, 104, 96, 64 or 32 bits); a `null` or `undefined` `tagLength` means the default of 128 bits.\n\n### Workarounds\nDo not derive `tagLength` from received data. Pass a fixed `tagLength` (or omit it to use the default of 128 bits), and check that the received tag has the expected length before calling `start()`, for example `if(tag.length !== 16) { throw new Error('Invalid tag.'); }` before `decipher.start({iv: iv, tag: tag});`.\n\n### Proof of concept\n\nStart an AES-GCM decipher with `tagLength: 0` and an empty tag, as an application does when it derives the tag length from a received empty tag, and feed it arbitrary bytes that were never encrypted under the key:\n\n```js\nvar decipher = forge.cipher.createDecipher('AES-GCM', key);\ndecipher.start({iv: iv, tag: '', tagLength: 0});\ndecipher.update(forge.util.createBuffer('any attacker-chosen bytes'));\ndecipher.finish();\n// <= 1.4.0: true\n// 1.4.1: start() throws \"Invalid tag length.\"\n```\n\n`tagLength` values `null`, `false` and `'0'` (with an empty tag), and `tagLength: 0` with no `tag` option, give the same result on <= 1.4.0. The fix adds regression tests in `tests/unit/aes.js`.\n\n### Impact\n\nApplications that decrypt AES-GCM data with `forge.cipher.createDecipher()` (`'AES-GCM'`) and pass a zero-like `tagLength` are affected. Typical cases are a tag length derived from the received tag, or an unset configuration value:\n\n```js\nvar decipher = forge.cipher.createDecipher('AES-GCM', key);\ndecipher.start({iv: iv, tag: receivedTag, tagLength: receivedTag.length * 8});\ndecipher.update(forge.util.createBuffer(receivedCiphertext));\nif(decipher.finish()) { /* attacker-supplied data accepted */ }\n```\n\nAn attacker who can send a ciphertext with an empty tag to such an application can make it accept attacker-chosen ciphertext as authentic. Because GCM encryption is a stream cipher, an attacker who knows (part of) a captured message's plaintext can also change that plaintext to chosen values. The default (no `tagLength` option, 128 bits) and any fixed valid `tagLength` are not affected.",
+      "reported_by": null,
+      "title": "Forge: AES-GCM authentication bypass via unvalidated tagLength option",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-119186"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "node-forge",
+      "vulnerable_versions": "<=1.4.0",
+      "github_advisory_id": "GHSA-5cwg-6vw7-rj6p",
+      "recommendation": "Upgrade to version 1.4.1 or later",
+      "patched_versions": ">=1.4.1",
+      "updated": "2026-10-30T23:02:10.000Z",
+      "cvss": {
+        "score": 5.9,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N"
+      },
+      "cwe": [
+        "CWE-354",
+        "CWE-1284"
+      ],
+      "url": "https://github.com/advisories/GHSA-5cwg-6vw7-rj6p"
+    },
+    "1244021": {
+      "findings": [
+        {
+          "version": "1.4.0",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>node-forge"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/digitalbazaar/forge/security/advisories/GHSA-jc66-7q78-782g\n- https://nvd.nist.gov/vuln/detail/CVE-2026-118782\n- https://github.com/digitalbazaar/forge/commit/d9584aa56824972858366d5187b3d29e46bf3656\n- https://github.com/digitalbazaar/forge/releases/tag/v1.4.1\n- https://github.com/advisories/GHSA-jc66-7q78-782g",
+      "created": "2026-10-30T23:02:05.000Z",
+      "id": 1244021,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nforge.pkcs12.pkcs12FromAsn1() accepts a PKCS#12 MAC iteration count of zero (or less) from the input, and the PKCS#12 key derivation function then returns a constant key that does not depend on the password or salt. An attacker who does not know the password can modify a PKCS#12/PFX file and compute a MAC that verifies with any password; PKCS#12 PBE-encrypted private keys prepared the same way decrypt with any password. Fixed in node-forge 1.4.1.\n\n### Details\n\n`p12.pkcs12FromAsn1()` in `lib/pkcs12.js` reads the MAC iteration count (`MacData.iterations`) from the input and passes it to the PKCS#12 key derivation function `pki.pbe.generatePkcs12Key()` in `lib/pbe.js` (also exposed as `forge.pkcs12.generateKey()`) without checking that it is at least 1. The key derivation function (RFC 7292 Appendix B.2) runs its hash loop `iter` times. With an iteration count of 0 (or an empty or negative INTEGER), no hashing is done and the function returns the PKCS#12 diversifier ID byte repeated, for example `0x03` repeated 20 times for an HMAC-SHA1 MAC key. The result does not depend on the password or the salt, so anyone can compute a valid MAC over arbitrary PFX contents.\n\nThe same key derivation function is used by `pki.pbe.getCipherForPKCS12PBE()` for the PKCS#12 password-based encryption schemes `pbeWithSHAAnd3-KeyTripleDES-CBC` and `pbewithSHAAnd40BitRC2-CBC`, whose `pkcs-12PbeParams` iteration count is also read from the input. With an iteration count of 0 or less, the encryption key and IV are constants (`0x01` and `0x02` repeated). This is reached from shrouded key bags and encrypted SafeContents in `pkcs12FromAsn1()`, and from `forge.pki.decryptPrivateKeyInfo()` (for example for `ENCRYPTED PRIVATE KEY` PEM input).\n\nRFC 7292 defines `MacData` with `iterations INTEGER DEFAULT 1`; an iteration count only makes sense as 1 or more (RFC 8018 uses `INTEGER (1..MAX)` for the same concept). PBES2 (PBKDF2) encrypted content is not affected.\n\nThe fix rejects iteration counts less than 1 when verifying a PKCS#12 MAC in `pkcs12FromAsn1()` (\"PKCS#12 MAC iteration count must be >= 1.\") and at the entry of `pki.pbe.generatePkcs12Key()` (\"PKCS#12 key derivation iteration count must be >= 1.\"), which covers the MAC, both PKCS#12 PBE schemes and direct `forge.pkcs12.generateKey()` callers.\n\n### Patches\nFixed in node-forge 1.4.1. Iteration counts less than 1 are now rejected when verifying a PKCS#12 MAC and in the PKCS#12 key derivation function.\n\n### Workarounds\nBefore calling `forge.pkcs12.pkcs12FromAsn1()`, reject inputs whose `MacData.iterations` is present and less than 1. For encrypted private keys using the PKCS#12 PBE schemes, there is no simple workaround other than checking the `pkcs-12PbeParams` iteration count before decryption, or upgrading.\n\n### Credits\nReported by Thai, Calif.io in collaboration with Claude and Anthropic Research.\n\n### Proof of concept\n\nTake any PKCS#12/PFX file, replace its AuthenticatedSafe with attacker-chosen content (for example the attacker's certificate and an unencrypted private key), set `MacData.iterations` to 0 (DER `02 01 00`), and compute the HMAC-SHA1 over the new content with the key `0x03` repeated 20 times. On node-forge <= 1.4.0, `forge.pkcs12.pkcs12FromAsn1(asn1, password)` reports successful MAC verification for whatever password the application supplies and returns the attacker's certificate and key. An empty or negative iteration count behaves the same way. Likewise, a shrouded key bag or `ENCRYPTED PRIVATE KEY` using `pbeWithSHAAnd3-KeyTripleDES-CBC` with iteration count 0 decrypts with any password.\n\nThe constant key is visible directly:\n\n```js\nvar salt = new forge.util.ByteBuffer('anysalt');\nforge.pkcs12.generateKey('any password', salt, 3, 0, 20).toHex();\n// <= 1.4.0: '0303030303030303030303030303030303030303'\n// 1.4.1: throws \"PKCS#12 key derivation iteration count must be >= 1.\"\n```\n\nThe fix adds regression tests in `tests/unit/pkcs12.js` and the reporter's PoC in `tests/pocs/`.\n\n### Impact\n\nApplications that import PKCS#12/PFX files or PKCS#8 encrypted private keys from untrusted sources with `forge.pkcs12.pkcs12FromAsn1()` or `forge.pki.decryptPrivateKeyInfo()`, and rely on the password-based MAC or on successful decryption to establish that the file was produced by someone who knows the password. The default API and call pattern are affected; no password, oracle or user interaction is needed, only one offline HMAC.\n\nAn attacker can supply a PKCS#12 file with certificates and private keys of their choice (for example, replaced certificates or an unencrypted private key) that node-forge reports as verified under the application's password. The attacker does not learn the password or the original private key. PBES2 (PBKDF2) encrypted content is not affected.",
+      "reported_by": null,
+      "title": "Forge: PKCS#12 MAC forgery and constant-key PBE via zero iteration count",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-118782"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "node-forge",
+      "vulnerable_versions": "<=1.4.0",
+      "github_advisory_id": "GHSA-jc66-7q78-782g",
+      "recommendation": "Upgrade to version 1.4.1 or later",
+      "patched_versions": ">=1.4.1",
+      "updated": "2026-10-30T23:02:09.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+      },
+      "cwe": [
+        "CWE-354",
+        "CWE-1284"
+      ],
+      "url": "https://github.com/advisories/GHSA-jc66-7q78-782g"
+    },
+    "1244022": {
+      "findings": [
+        {
+          "version": "1.4.0",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>node-forge"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/digitalbazaar/forge/security/advisories/GHSA-8hrf-8g6f-7xwp\n- https://nvd.nist.gov/vuln/detail/CVE-2026-119188\n- https://github.com/digitalbazaar/forge/commit/700d977d39f9f8f896c55b0763eebb940a2c087e\n- https://github.com/digitalbazaar/forge/releases/tag/v1.4.1\n- https://github.com/advisories/GHSA-8hrf-8g6f-7xwp",
+      "created": "2026-10-30T23:02:00.000Z",
+      "id": 1244022,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nA connection created with `forge.tls.createConnection()` throws an uncaught `TypeError` from `process()` when it receives a record of another content type while waiting for the rest of a handshake message that was split across records. A peer can trigger this with 18 bytes before the handshake, without authentication, which terminates Node.js processes that use the documented socket wiring. Fixed in node-forge 1.4.1.\n\n### Details\n\nIn `lib/tls.js`, `_readRecord()` handles a record that arrives while a handshake message split across records is incomplete. If the record has any other content type (change_cipher_spec, alert, application_data or heartbeat), forge correctly reports \"Invalid fragmented record.\" through `c.error()` with a fatal `unexpected_message` alert. That fatal error closes and resets the connection, which sets `c.record` to `null`. `_readRecord()` then continues with `c.record.ready = true` and throws `TypeError: Cannot set properties of null (setting 'ready')` out of `process()`. The code is unchanged since the first release.\n\nRFC 5246 section 6.2.1 allows a handshake message to be fragmented across records, and RFC 8446 section 5.1 forbids interleaving handshake messages with other record types. Failing the connection with `unexpected_message` is the intended behavior; the bug is the crash after the error.\n\nnode-forge reports TLS protocol errors through the `error` callback, so applications do not normally wrap `process()` in `try`/`catch`. When `process()` is called from a Node.js socket `data` handler, as in the documented usage, the exception is uncaught and terminates the process.\n\nThe fix returns from `_readRecord()` right after the fatal error. The connection is failed, the alert is sent and the `error` callback is called as before, and `process()` no longer throws.\n\n### Patches\nFixed in node-forge 1.4.1. The connection still fails with a fatal `unexpected_message` alert and the `error` callback, but `process()` no longer throws.\n\n### Workarounds\nWrap every call to `connection.process()` in `try`/`catch`. The connection has already been failed and closed when the exception is thrown, so the exception can be ignored or the socket destroyed.\n\n### Proof of concept\n\nInput (server mode), two records, 18 bytes:\n\n  16 03 01 00 06 01 00 00 10 03 01   handshake record: ClientHello header announcing 16 bytes, 2 present\n  15 03 01 00 02 02 28               alert record\n\n  // c = forge.tls.createConnection({server: true, ...})\n  c.process(forge.util.hexToBytes('1603010006010000100301' + '15030100020228'));\n\nOn 1.4.0 the `error` callback receives \"Invalid fragmented record.\", then `process()` throws `TypeError: Cannot set properties of null (setting 'ready')`. A change_cipher_spec, application_data or heartbeat record in place of the alert has the same effect, and a client connection behaves the same with a fragment of a ServerHello. In a Node.js server that calls `c.process(data.toString('binary'))` from `socket.on('data', ...)`, a client sending these 18 bytes terminates the server process. On 1.4.1 the connection fails with a fatal `unexpected_message` alert and `process()` returns normally.\n\nRegression tests in tests/unit/tls.js, \"fragmented handshake messages\": each of the four other record types after a handshake fragment, in server and client mode, plus same-type continuation records that are still accepted.\n\n### Impact\n\nApplications that use node-forge's TLS implementation: connections from `forge.tls.createConnection()`, including those created by `forge.tls.wrapSocket()` and the `forge.http` / `forge.xhr` TLS connections. Any peer that can connect to a forge TLS server, or any server a forge TLS client connects to, can send 18 bytes before the handshake, without authentication. In Node.js applications using the documented usage, the uncaught exception terminates the process, which drops every connection it serves, and the attacker can repeat it on every restart. There is no confidentiality or integrity impact.",
+      "reported_by": null,
+      "title": "Forge: Denial of service in TLS record processing via a record interleaved with a fragmented handshake message",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-119188"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "node-forge",
+      "vulnerable_versions": "<=1.4.0",
+      "github_advisory_id": "GHSA-8hrf-8g6f-7xwp",
+      "recommendation": "Upgrade to version 1.4.1 or later",
+      "patched_versions": ">=1.4.1",
+      "updated": "2026-10-30T23:02:04.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-248",
+        "CWE-476"
+      ],
+      "url": "https://github.com/advisories/GHSA-8hrf-8g6f-7xwp"
+    },
+    "1244023": {
+      "findings": [
+        {
+          "version": "1.4.0",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>node-forge"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/digitalbazaar/forge/security/advisories/GHSA-hqq3-7jhf-c5jx\n- https://nvd.nist.gov/vuln/detail/CVE-2026-119187\n- https://github.com/digitalbazaar/forge/commit/817e2ce0d0f6d8a25bc9c2670615c38a9ffdc51c\n- https://github.com/digitalbazaar/forge/releases/tag/v1.4.1\n- https://github.com/advisories/GHSA-hqq3-7jhf-c5jx",
+      "created": "2026-10-30T23:01:54.000Z",
+      "id": 1244023,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nConnections created with `forge.tls.createConnection()` processed received TLS records recursively, one stack level per record. A peer can send one chunk of thousands of small records, such as heartbeat records, which are accepted before the handshake, and `process()` throws `RangeError: Maximum call stack size exceeded`, which terminates Node.js processes that use the documented socket wiring. Fixed in node-forge 1.4.1.\n\n### Details\n\nIn `lib/tls.js`, `c.process()` reads one record and passes it to `_update()`, which calls the handler for the record type from `ctTable`. Every handler (`tls.handleHeartbeat`, `tls.handleApplicationData`, `tls.handleHandshake` for fragmented messages, `tls.handleHelloRequest` and the other handshake handlers) ends by calling `c.process()` again to continue with the next buffered record, or the next message in the same record. Each record therefore adds `process` → `_update` → handler to the call stack. In Node.js 24, about 2,300 eight-byte records (under 20 KB) in one chunk are enough for `process()` to throw `RangeError: Maximum call stack size exceeded`.\n\n`ctTable` maps heartbeat records to `tls.handleHeartbeat` in every client and server state, so heartbeat records are processed before the handshake without any extension negotiation. The attack needs no authentication and no valid handshake messages. Both server connections (attacked by a client) and client connections (attacked by the server they connect to) are affected. Other record types recurse the same way: a handshake message fragmented over many records, many HelloRequest messages in one record, or many application data records after the handshake.\n\nnode-forge reports TLS protocol errors through the `error` callback, so applications do not normally wrap `process()` in `try`/`catch`. When `process()` is called from a Node.js socket `data` handler, as in the documented usage, the exception is uncaught and terminates the process. If the exception is caught, the connection is left partially processed and should be discarded.\n\nNo specification is violated; this is an implementation flaw (uncontrolled recursion).\n\nThe fix makes `c.process()` iterative. The record-reading code moves into `_processRecord()`, and `c.process()` runs it in a loop. A handler's call to `c.process()` without new data, made while records are being processed, now only flags that the loop should continue. Calls with new data are processed right away as before, so callback order and return values are unchanged.\n\n### Patches\nFixed in node-forge 1.4.1. Records are now processed in a loop, so the stack depth no longer depends on the number of records.\n\n### Workarounds\nWrap every call to `connection.process()` in `try`/`catch`, and on an exception close the connection (`connection.close()`) and destroy the underlying socket. This prevents the process crash but not the loss of the attacked connection.\n\n### Credits\nReported jointly by Ziyue Wang, Chenchen, Strick Sheng, Liyi Zhou, and Maurice Ng.\n\n### Proof of concept\n\nInput: one chunk of N identical heartbeat records, each 8 bytes:\n\n  18 03 01 00 03 01 00 00\n  (content type 24 = heartbeat, TLS 1.0, length 3, heartbeat_request with a 0-byte payload)\n\n  // c = forge.tls.createConnection({server: true, ...})\n  var rec = forge.util.hexToBytes('1803010003010000');\n  c.process(new Array(5001).join(rec)); // 5,000 records, 40,000 bytes\n\nOn 1.4.0 (Node.js 24), `process()` throws `RangeError: Maximum call stack size exceeded` after about 2,300 records, before any handshake. The same happens for a client connection. In a Node.js server that calls `c.process(data.toString('binary'))` from `socket.on('data', ...)`, a client sending these 40,000 bytes terminates the server process. On 1.4.1 all records are processed and the server keeps running.\n\nRegression tests in tests/unit/tls.js, \"record processing\": 50,000 heartbeat records in one call in server and client mode, a handshake message fragmented over 50,000 records, many HelloRequest messages per record, and checks that byte-by-byte input and exceptions from callbacks behave as before.\n\n### Impact\n\nApplications that use node-forge's TLS implementation: connections from `forge.tls.createConnection()`, including those created by `forge.tls.wrapSocket()` and the `forge.http` / `forge.xhr` TLS connections, which call `process()` on received data. Any peer that can connect to a forge TLS server, or any server a forge TLS client connects to, can send a small chunk of records (under 20 KB) without authentication. In Node.js applications using the documented usage, the uncaught exception terminates the process, which drops every connection it serves; repeated chunks keep it down. In browsers the impact is limited to the attacked connection. There is no confidentiality or integrity impact.",
+      "reported_by": null,
+      "title": "Forge: Denial of service in TLS record processing via call stack exhaustion",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-119187"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "node-forge",
+      "vulnerable_versions": "<=1.4.0",
+      "github_advisory_id": "GHSA-hqq3-7jhf-c5jx",
+      "recommendation": "Upgrade to version 1.4.1 or later",
+      "patched_versions": ">=1.4.1",
+      "updated": "2026-10-30T23:01:54.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+      },
+      "cwe": [
+        "CWE-674"
+      ],
+      "url": "https://github.com/advisories/GHSA-hqq3-7jhf-c5jx"
+    },
+    "1244024": {
+      "findings": [
+        {
+          "version": "1.4.0",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>node-forge"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/digitalbazaar/forge/security/advisories/GHSA-5x38-2vff-x55p\n- https://nvd.nist.gov/vuln/detail/CVE-2026-119190\n- https://github.com/digitalbazaar/forge/commit/58c06bc251856b409c30ecb35a93f5f6c9bbc84a\n- https://github.com/digitalbazaar/forge/releases/tag/v1.4.1\n- https://github.com/advisories/GHSA-5x38-2vff-x55p",
+      "created": "2026-10-30T23:01:46.000Z",
+      "id": 1244024,
+      "npm_advisory_id": null,
+      "overview": "### Summary\nnode-forge parses certificate extensions with the deprecated OIDs `2.5.29.10` and `2.5.29.13` as `basicConstraints`, and `forge.pki.verifyCertificateChain()` used the first extension with that name. A certificate with a forged deprecated-OID extension (`cA` TRUE) before its genuine `basicConstraints` extension (`cA` FALSE) is accepted as a CA certificate, and the same technique can hide a `pathLenConstraint`. Fixed in node-forge 1.4.1.\n\n### Details\n`lib/oids.js` maps the deprecated certificate extension OIDs `2.5.29.10` and `2.5.29.13` to the name `basicConstraints`, the same name as the RFC 5280 extension `2.5.29.19`. `certificateExtensionFromAsn1()` in `lib/x509.js` decodes extensions by name, so these extensions are decoded into the same `cA` and `pathLenConstraint` fields. `cert.getExtension()` returns the first extension with a matching name, and `pki.verifyCertificateChain()` looked up `basicConstraints` by name.\n\nAs a result, a certificate that contains a `2.5.29.10` (or `2.5.29.13`) extension with `cA` TRUE before its genuine `basicConstraints` extension with `cA` FALSE is accepted as a CA certificate. The same technique can hide a CA certificate's `pathLenConstraint`. A deprecated-OID extension on its own also satisfies the check added for GHSA-2328-f5f3-gj25 (CVE-2026-33896) that `basicConstraints` is present. RFC 5280 section 4.2.1.9 defines basicConstraints only as `id-ce 19` (`2.5.29.19`), and the path validation checks in section 6.1.4 apply to that extension.\n\nThe fix makes chain verification look up basicConstraints by OID (`cert.getExtension({id: '2.5.29.19'})`). This covers both the `cA` and the `pathLenConstraint` checks. Certificate parsing, the OID table and `cert.getExtension('basicConstraints')` are unchanged.\n\n#### Patches\nFixed in node-forge 1.4.1. Chain verification now uses only the `basicConstraints` extension with OID `2.5.29.19`.\n\n#### Workarounds\nNone in node-forge itself. Applications that pass an `options.verify` callback to `pki.verifyCertificateChain()` (or `verify` to `forge.tls.createConnection()`) can reject chains in which a non-leaf certificate has no `2.5.29.19` extension with `cA` TRUE, for example with `cert.getExtension({id: '2.5.29.19'})`. CA operators can avoid copying unrecognized extensions from certificate requests.\n\n#### Credits\n\nWorkOS Security Team· [security@workos.com](mailto:security@workos.com) (@nickcollisson-workos)\n\n### Proof of concept\nHave a trusted CA issue an end-entity certificate whose extensions are, in this order: a `2.5.29.10` (or `2.5.29.13`) extension with the value of a basicConstraints `cA` TRUE (DER `30 03 01 01 FF`), then the CA's own `2.5.29.19` basicConstraints with `cA` FALSE, and no `keyUsage`. For example, `openssl x509 -req -copy_extensions copy` with an extensions file that sets `basicConstraints = CA:FALSE` copies the extension from the CSR and produces this order. Use that certificate's key to sign a leaf certificate for any name.\n\nOn node-forge <= 1.4.0, `forge.pki.verifyCertificateChain(caStore, [leaf, eeCert])` accepts the chain, and `eeCert.getExtension('basicConstraints')` returns the `2.5.29.10` extension with `cA` true. The same certificate without the deprecated-OID extension is rejected (\"Certificate basicConstraints indicates the certificate is not a CA.\"). A certificate with only the deprecated-OID extension is also accepted.\n\nThe fix adds regression tests in `tests/unit/x509.js` and the reporter's PoC as `tests/pocs/ghsa-5x38-2vff-x55p.js`.\n\n### Impact\nApplications that verify certificate chains with `forge.pki.verifyCertificateChain()`, including TLS peer certificate verification in `forge.tls`, are affected.\n\nExploitation requires a CA trusted by the application to issue a certificate that contains the attacker-supplied deprecated-OID extension, typically a CA that copies extensions from certificate signing requests. For example, `openssl x509 -req -copy_extensions copy` (or `copyall`) with an extensions file that sets `basicConstraints = CA:FALSE` and no `keyUsage` produces such a certificate. If the issuing CA adds a `keyUsage` extension without `keyCertSign`, node-forge rejects the chain.\n\nThe holder of such a certificate can then issue certificates for any name that `pki.verifyCertificateChain()` accepts. In forge's own TLS stack this allows impersonating servers (or clients, where client certificates are verified) and intercepting traffic.",
+      "reported_by": null,
+      "title": "Forge: X.509 basicConstraints bypass in verifyCertificateChain() via deprecated extension OIDs 2.5.29.10 and 2.5.29.13",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-119190"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "node-forge",
+      "vulnerable_versions": "<=1.4.0",
+      "github_advisory_id": "GHSA-5x38-2vff-x55p",
+      "recommendation": "Upgrade to version 1.4.1 or later",
+      "patched_versions": ">=1.4.1",
+      "updated": "2026-10-30T23:01:48.000Z",
+      "cvss": {
+        "score": 7.4,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N"
+      },
+      "cwe": [
+        "CWE-295",
+        "CWE-436"
+      ],
+      "url": "https://github.com/advisories/GHSA-5x38-2vff-x55p"
+    },
+    "1244623": {
+      "findings": [
+        {
+          "version": "10.2.6",
+          "paths": [
+            ".>eslint>minimatch"
+          ]
+        },
+        {
+          "version": "9.0.9",
+          "paths": [
+            "apps__mobile>jest>@jest/core>@jest/transform>babel-plugin-istanbul>test-exclude>glob>minimatch"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/isaacs/minimatch/security/advisories/GHSA-g3hv-75wg-m249\n- https://nvd.nist.gov/vuln/detail/CVE-2026-118764\n- https://github.com/isaacs/minimatch/commit/77a0f5c4b80bdc641c3c930a1d9edf5ad2db57f8\n- https://github.com/isaacs/minimatch/releases/tag/v11.0.1\n- https://github.com/isaacs/minimatch/commit/297b6c1a01f2410b3ba1ebed14ba222d0c3c1033\n- https://github.com/isaacs/minimatch/commit/fd0b3ab9cbc5bf1aff1c99f1f46e413c2b3340da\n- https://github.com/advisories/GHSA-g3hv-75wg-m249",
+      "created": "2026-10-30T23:09:55.000Z",
+      "id": 1244623,
+      "npm_advisory_id": null,
+      "overview": "minimatch 10.2.6 contains an attacker-controlled pattern amplification in firstPhasePreProcess() when optimizationLevel >= 2.\n\nresearcher: Reid Downing (b1nv0id)\nfiles: \n\n- src/index.ts: 690-770\n- src/index.ts: 780-796\n\nissue:\ninput-controlled growth of globParts during first-phase preprocessing, followed by quadratic second-phase processing.\n\nthe **/../ transformation clones a globparts entry and appends the clone to the same globparts array:\n```\nparts.splice(gs, 1)\nconst other = parts.slice(0)\nother[gs] = '**'\nglobParts.push(other)\n```\nthis occurs inside a do...while (didSomething) fixpoint loop, allowing generated entries to be processed again.\n\nthe expanded globparts array is subsequently processed by secondPhasePreProcess(), which performs pairwise comparisons:\n```\nfor (let i = 0; i < globParts.length - 1; i++) {\n  for (let j = i + 1; j < globParts.length; j++) {\n    this.partsMatch(...)\n  }\n}\n```\nan attacker who can supply a glob pattern can therefore cause additional pattern entries to be generated during preprocessing, followed by quadratic pairwise processing, resulting in excessive cpu and memory consumption.",
+      "reported_by": null,
+      "title": "minimatch has potential denial of service via globparts amplification",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-118764"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "minimatch",
+      "vulnerable_versions": ">=7.0.0 <11.0.1",
+      "github_advisory_id": "GHSA-g3hv-75wg-m249",
+      "recommendation": "Upgrade to version 11.0.1 or later",
+      "patched_versions": ">=11.0.1",
+      "updated": "2026-11-04T16:50:04.000Z",
+      "cvss": {
+        "score": 0,
+        "vectorString": null
+      },
+      "cwe": [
+        "CWE-405"
+      ],
+      "url": "https://github.com/advisories/GHSA-g3hv-75wg-m249"
+    }
+  },
+  "muted": [],
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 4,
+      "moderate": 7,
+      "high": 6,
+      "critical": 0
+    },
+    "dependencies": 1301,
+    "devDependencies": 0,
+    "optionalDependencies": 0,
+    "totalDependencies": 1301
+  }
+}

@@ -49,3 +49,34 @@ Use the dedicated Redis port (here 6385), not another project's Redis6379.
 Browser test origins are configurable with E2E_WEB_PORT/E2E_PLATFORM_PORT/
 E2E_API_PORT; build NEXT_PUBLIC_API_URL with the same API origin before testing.
 Do not point test runners at production or reset a customer's development DB.
+
+
+## 2026-11-06 fresh baseline hardening
+
+| Check | Result | Evidence / boundaries |
+|---|---|---|
+| AI pack | PASS | python scripts/validate_ai_pack.py; inventory only |
+| Frozen install / Prisma generate | PASS | pnpm10.34.7 / Prisma6.19.3 |
+| Lint / complete typecheck / formatting | PASS | Repeated after Expo patch alignment; tools tsc included |
+| Unit |49 passed,0 failed/skipped | Redis defaults/ACL/TLS/db/invalid/offline, actual Expo forge valid/invalid RSA |
+| PostgreSQL/Redis/Mailpit integration |42 passed,0 failed/skipped | integration-2026-11-06-isolated.json; dedicated synthetic Docker PostgreSQL55435, Redis6385 |
+| Mobile Jest |15 passed,0 failed/skipped |4 suites after official Expo/RN patches |
+| Mobile API |PASS | Actual Teacher20/finalize/report, Student publication, Guardian2/partial finance/revocation/context switch; no device UI |
+| Complete build |PASS |8 tasks,5 cached; Next optimized outputs, Expo Android/iOS/Web exports; not signed apps |
+| OpenAPI/client |PASS / no drift | Regenerated both; git diff --exit-code for generated artifacts exit0 |
+| Expo compatibility |PASS | expo install --check: Dependencies are up to date |
+| Dependency audit |PASS at high threshold |0HIGH/0CRITICAL;1LOW/4MODERATE remain; dependency-audit-2026-11-06-final.json |
+| First E2E |19/20 | e2e-2026-11-06.json; real shared-IP rate-limit exhaustion, production limit unchanged |
+| Rate isolation follow-up |20/21 | e2e-2026-11-06-rate-limit-fixed.json; onboarding and real11th-request429 pass; one script-fetch500 caused by an overlapping build |
+| Runner failure propagation |PASS | Deliberate no-matching-scenario CLI probe exits1; embedded-postgres beforeExit hook no longer hides failed Playwright status |
+| Final sequential E2E |21 passed,0 failed/skipped | e2e-2026-11-06-final.json; builds finished before launching; runner exits0 |
+| Remote CI on changes |NOT_VERIFIED | Baseline SHA bec1a06 run42156495368 failed at integration; new commit not yet pushed |
+
+All prior failure reports are retained. An initial readiness implementation used
+a removed BullMQ API; fixed to waitUntilReady and offline closure tested. Local
+.env test DB was unavailable; replaced only the test command connection with a
+new disposable synthetic database. No customer/development data was reset.
+
+These checks do not complete all33FR or all30 full business scenarios. Staging
+restore, signed physical devices, push receipts, legal and business UAT remain
+BLOCKED_EXTERNAL/NOT_VERIFIED. Production release remains BLOCKED.

@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test } from "./fixtures";
 import { createRequire } from "node:module";
 import { mkdirSync } from "node:fs";
 import path from "node:path";

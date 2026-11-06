@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-06",
+  "baseline": "bec1a06bfbacceb3b295e2ea5705b31225538d59",
+  "scope": "P0-A baseline hardening only",
+  "checks": {
+    "frozen_install": "PASS",
+    "prisma_generate": "PASS",
+    "ai_pack": "PASS",
+    "lint": "PASS",
+    "format": "PASS",
+    "typecheck": "PASS",
+    "unit": {
+      "passed": 49,
+      "failed": 0,
+      "skipped": 0
+    },
+    "integration": {
+      "passed": 42,
+      "failed": 0,
+      "skipped": 0
+    },
+    "e2e": {
+      "passed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "mobile_jest": {
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0
+    },
+    "mobile_api": "PASS",
+    "build": "PASS: 8 tasks, includes Hermes exports only",
+    "openapi_client_drift": "NONE",
+    "expo_compatibility": "PASS",
+    "audit": {
+      "high": 0,
+      "critical": 0,
+      "moderate": 4,
+      "low": 1
+    },
+    "e2e_failure_exit_probe": 1
+  },
+  "remote_ci": "NOT_VERIFIED_BEFORE_PUSH",
+  "release": "BLOCKED: other P0 implementation and external gates remain"
+}

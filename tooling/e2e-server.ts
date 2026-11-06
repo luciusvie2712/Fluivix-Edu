@@ -1,31 +1,13 @@
-import EmbeddedPostgres from "./test-postgres";
 import { PrismaClient } from "@prisma/client";
 import { execFileSync, spawn } from "node:child_process";
 import { randomBytes, randomUUID } from "node:crypto";
-import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import { seed } from "./seed";
 import { seedTeachingForE2E } from "./e2e-teaching-fixture";
 import { testOrigins, testPorts } from "./test-origins";
-import { createServer } from "node:net";
-async function databasePort() {
-  const server = createServer();
-  await new Promise<void>((resolve, reject) => {
-    server.once("error", reject);
-    server.listen(
-      process.env.E2E_DATABASE_PORT ? testPorts.database : 0,
-      "127.0.0.1",
-      resolve,
-    );
-  });
-  const address = server.address();
-  if (!address || typeof address === "string")
-    throw new Error("No local PostgreSQL test port");
-  const port = address.port;
-  await new Promise<void>((resolve) => server.close(() => resolve()));
-  return port;
-}
+import { requireTestRedis, testRedisUrl } from "./test-redis";
 async function run() {
+  await requireTestRedis();
   process.env.NODE_ENV = "test";
   process.env.JWT_SECRET = randomBytes(48).toString("base64url");
   process.env.PLATFORM_JWT_SECRET = randomBytes(48).toString("base64url");
@@ -33,39 +15,9 @@ async function run() {
   process.env.OUTBOX_TOKEN_KEY = randomBytes(32).toString("hex");
   process.env.WEB_ORIGIN = testOrigins.web;
   process.env.PLATFORM_ORIGIN = testOrigins.platform;
-  let postgres: EmbeddedPostgres | undefined;
-  if (process.env.E2E_DATABASE_URL) {
-    const supplied = new URL(process.env.E2E_DATABASE_URL);
-    if (
-      !["localhost", "127.0.0.1"].includes(supplied.hostname) ||
-      !supplied.pathname.endsWith("_test")
-    )
-      throw new Error(
-        "E2E requires an explicitly disposable local database ending _test",
-      );
-    process.env.DATABASE_URL = process.env.E2E_DATABASE_URL;
-  } else {
-    const port = await databasePort();
-    const databasePassword = randomBytes(32).toString("hex");
-    const directory = path.resolve(".cache/e2e-" + randomUUID());
-    await mkdir(directory, { recursive: true });
-    postgres = new EmbeddedPostgres({
-      databaseDir: directory,
-      user: "fluivix_test",
-      password: databasePassword,
-      port,
-      persistent: true,
-      authMethod: "scram-sha-256",
-      initdbFlags: ["--encoding=UTF8", "--locale=C"],
-      postgresFlags: ["-h", "127.0.0.1"],
-      onLog: () => {},
-      onError: console.error,
-    });
-    await postgres.initialise();
-    await postgres.start();
-    await postgres.createDatabase("fluivixedu_test");
-    process.env.DATABASE_URL = `postgresql://fluivix_test:${databasePassword}@127.0.0.1:${port}/fluivixedu_test`;
-  }
+  if (!process.env.E2E_DATABASE_URL)
+    throw new Error("Use pnpm test:e2e to provision an isolated database");
+  process.env.DATABASE_URL = process.env.E2E_DATABASE_URL;
   execFileSync(
     process.execPath,
     [
@@ -91,7 +43,7 @@ async function run() {
       // This suite tests manual preview/commit deterministically; rolling jobs
       // have their own real Redis/PostgreSQL integration case.
       SCHEDULE_GENERATION_ENABLED: "false",
-      REDIS_URL: process.env.TEST_REDIS_URL ?? "redis://127.0.0.1:6379",
+      REDIS_URL: testRedisUrl(),
       QUEUE_PREFIX: "fluivixedu-e2e-" + randomUUID(),
     },
     stdio: "inherit",
@@ -132,7 +84,6 @@ async function run() {
     next.kill();
     platform.kill();
     await app.close();
-    await postgres?.stop();
     process.exit(0);
   }
   process.on("SIGINT", () => void stop());

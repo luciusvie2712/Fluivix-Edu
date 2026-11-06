@@ -191,3 +191,23 @@ Selected tenant/role persists only in the server session and is revalidated on r
 A context switch rejects access tokens carrying the old context. Revoked membership
 cannot be restored by refresh; the user returns to explicit context selection.
 No access token or personal data is stored in localStorage/sessionStorage.
+
+
+## Verification environment and Redis
+
+Worker deployments must set REDIS_URL explicitly. Integration and browser suites
+use TEST_REDIS_URL, default redis://127.0.0.1:6379, matching CI. For a dedicated
+local Redis6385 set TEST_REDIS_URL=redis://127.0.0.1:6385; no test silently falls
+back to another port. The shared parser preserves Redis ACL credentials, TLS and
+database selection. A bounded BullMQ readiness check runs before fixture setup.
+
+Run browser tests with pnpm.cmd test:e2e (the database-owning runner), not a direct
+Playwright CLI invocation. Without E2E_DATABASE_URL it creates and shuts down a
+fresh isolated PostgreSQL cluster; an explicit URL must identify a disposable
+loopback database ending _test. Each case resets only synthetic login IP counters
+in that database; production limits remain unchanged and request11=429 is tested.
+Never run builds while E2E servers are serving the same .next output directory.
+
+Integration TEST_DATABASE_URL also must identify a fresh disposable test database.
+Prisma may load the local .env, so set this variable explicitly if that file has
+a stale test connection. Do not reset the development database to run tests.

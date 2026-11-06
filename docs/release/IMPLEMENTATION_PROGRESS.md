@@ -148,3 +148,30 @@ describe the repository as production-ready.
 - Secret screening: 47 changed/untracked files checked; no matches to local .env secret values or private-key/GitHub-token/JWT patterns. .env remains ignored and untracked.
 - Existing vendor source HEADs match lock: design-taste-frontend 6010f91a9935f1c167dfc500fb1a475681892e6b; ui-ux-pro-max d14efff8ed1faa4187f004f79926f428c8074ec7; accessible-animation/micro-interaction/60fps-animation b6dba3eb759726845a44163ff0bad70dd9e7fbb6. Installed SKILL.md files verified against vendor sources; instructions inspected for applicability. Applied UI skills: none (Git handoff, no UI implementation or design acceptance).
 - PowerShell execution policy required pnpm.cmd; python3 executable inaccessible, equivalent validator executed with python. Git metadata writes/network require elevated sandbox execution.
+
+
+## 2026-11-06 ? P0-A verification baseline (in progress)
+
+Baseline: main/origin main bec1a06; clean tree before work. Latest observed remote CI run 42156495368 failed at pnpm test:integration.
+
+Implemented, awaiting final regression and remote CI:
+- CI integration/E2E explicitly use TEST_REDIS_URL6379 with Redis container healthcheck; local default consistently6379, opt-in6385 documented. Shared worker/test Redis parser preserves ACL, TLS and selected DB and sanitizes invalid configuration. Bounded test readiness fails before creating fixtures; no timeout increase.
+- Official node-forge1.4.3 pinned via pnpm override (Expo CLI supports ^1.4.0); official Expo58 patch alignment plus RN0.88.1 Metro/Jest peers. Fresh npm audit went from6HIGH/0CRITICAL to0HIGH/0CRITICAL (1LOW/4MODERATE remain). Positive Node RSA interoperability and malformed nested DigestAlgorithm rejection executed against the actual Expo CLI dependency.
+- Full baseline browser run19/20 exposed real shared-IP rate-limit state between test cases. Production limit remains10 per15minutes. Added isolated test-runner DB propagation, per-case cleanup restricted to local *_test fixtures, and a browser/API case asserting request11 returns429. Final full rerun pending.
+
+Fresh observed commands: frozen install PASS; Prisma generation PASS; AI pack PASS; lint PASS; typecheck PASS; format PASS after normalizing baseline formatting;49 unit tests PASS;42 integration PASS against new disposable PostgreSQL container55435 plus Redis6385/Mailpit;15 mobile Jest PASS; mobile API smoke PASS; first full build PASS (Hermes exports, not APK/IPA); final patch build ongoing. OpenAPI/client regeneration PASS; final no-drift check pending. Failed readiness/migration/browser reports retained in evidence, not overwritten as successes.
+
+Environment: Windows/Node24.15.0/pnpm10.34.7/Python3.13/Docker29.4.1. PowerShell requires pnpm.cmd; python3 inaccessible, python equivalent used. Existing .env unchanged. Local TEST_DATABASE_URL from .env pointed at unavailable5432; explicit disposable Docker test database was used instead.
+
+Skill verification: installed SKILL.md files match audited MIT vendor copies. design-taste-frontend SHA6010f91a9935f1c167dfc500fb1a475681892e6b; ui-ux-pro-max SHAd14efff8ed1faa4187f004f79926f428c8074ec7; accessible-animation/micro-interaction/60fps-animation SHAb6dba3eb759726845a44163ff0bad70dd9e7fbb6. Instructions inspected. Existing Taste browser checks ran as part of regression; no new UI design accepted in P0-A.
+
+Other requested P0 modules remain incomplete; staging/device/push/legal/business UAT gates remain BLOCKED_EXTERNAL/NOT_VERIFIED. No production approval. No new commit/push until automated gates pass.
+
+
+### P0-A local verification checkpoint (2026-11-06)
+- Final sequential E2E21/21 PASS, including real request11=429 and full onboarding. All local gates listed in TEST_RESULTS.md now pass; JSON summary in evidence/p0a-local-verification-2026-11-06.json.
+- Full patch build8/8 PASS; OpenAPI/client no drift. Frozen installation and audit high threshold repeated successfully.
+- Added an owning E2E runner so test DB configuration is available to both servers and browser fixtures. Counter cleanup is restricted to disposable loopback *_test DBs. Production rate limits unchanged.
+- Verified failure propagation: a deliberate no-matching-scenario probe returns1. Fixed embedded-postgres beforeExit overriding process.exitCode; resource cleanup precedes explicit child-status propagation.
+- Preserved failed reports and historical tracked visual artifacts; new visual snapshots archived under evidence/visual/2026-11-06. One intermediate browser failure was caused by an overlapping local build replacing served chunks; final run executed sequentially.
+- CI/security/mobile patch changes form one atomic baseline repair: either the old Redis CI failure or vulnerable dependency would fail mandatory gates independently. Remaining functional slices are not included in this checkpoint. Remote CI still pending push. Overall release BLOCKED.

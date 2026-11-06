@@ -12,6 +12,7 @@ import { platformCases } from "./platform-cases";
 import { migrationCases } from "./migration-cases";
 import { nativeCases } from "./native-cases";
 import { teachingCases } from "./teaching-cases";
+import { requireTestRedis, testRedisUrl } from "../../tooling/test-redis";
 
 let database: EmbeddedPostgres | undefined;
 let db: PrismaClient;
@@ -105,6 +106,7 @@ async function context(email: string, tenantId: string, role: string) {
   return selected.body.data.accessToken as string;
 }
 beforeAll(async () => {
+  await requireTestRedis();
   process.env.NODE_ENV = "test";
   process.env.JWT_SECRET = randomBytes(48).toString("base64url");
   process.env.PLATFORM_JWT_SECRET = randomBytes(48).toString("base64url");
@@ -821,8 +823,7 @@ describe("identity and tenant boundary against real PostgreSQL", () => {
   });
   it("real Redis/BullMQ/Mailpit: invitation outbox delivers once and repeat delivery is idempotent", async () => {
     process.env.MAIL_PROVIDER = "mailpit";
-    process.env.REDIS_URL =
-      process.env.TEST_REDIS_URL ?? "redis://127.0.0.1:6379";
+    process.env.REDIS_URL = testRedisUrl();
     process.env.QUEUE_PREFIX = "fluivixedu-test-" + randomUUID();
     const token = await context("owner@example.test", tenantA, "owner");
     const recipient = `mail-${randomUUID()}@example.test`;
