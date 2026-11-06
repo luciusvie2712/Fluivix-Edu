@@ -168,6 +168,359 @@ export function feePlanCases(
         },
       });
     });
+    it("invoice administration previews exact intersected eligibility without billing writes and rejects a changed preview atomically", async () => {
+      const db = getDb(),
+        scopedClass = await db.educationClass.create({
+          data: {
+            tenantId: tenant,
+            code: "PREVIEW",
+            name: "Invoice preview class",
+            capacity: 20,
+            status: "ACTIVE",
+            startDate: new Date(jan + "-01Z"),
+            endDate: new Date(`${year}-12-31Z`),
+          },
+        });
+      const students = [];
+      for (const [code, joined, left] of [
+        ["LEFT", "01", "09"],
+        ["VALID", "10", "20"],
+        ["AFTER", "21", null],
+      ] as const) {
+        const s = await db.student.create({
+          data: {
+            tenantId: tenant,
+            studentCode: code,
+            fullName: "Preview " + code,
+          },
+        });
+        students.push(s);
+        await db.enrollment.create({
+          data: {
+            tenantId: tenant,
+            classId: scopedClass.id,
+            studentId: s.id,
+            joinedAt: new Date(jan + "-" + joined + "Z"),
+            ...(left
+              ? {
+                  leftAt: new Date(jan + "-" + left + "Z"),
+                  status: "WITHDRAWN",
+                }
+              : {}),
+          },
+        });
+      }
+      const fee = await api("/fee-plans", "POST", {
+        ...baseInput("Intersected invoice fee"),
+        classId: scopedClass.id,
+        amountVnd: "9007199254740993",
+        validFrom: jan + "-10",
+        validTo: jan + "-20",
+      });
+      expect(fee.status).toBe(201);
+      const input = runInput(fee.body.data.id);
+      const count = async () => ({
+        runs: await db.invoiceRun.count({ where: { tenantId: tenant } }),
+        invoices: await db.invoice.count({ where: { tenantId: tenant } }),
+        items: await db.invoiceItem.count({ where: { tenantId: tenant } }),
+        outbox: await db.outboxEvent.count({ where: { tenantId: tenant } }),
+        audit: await db.auditLog.count({ where: { tenantId: tenant } }),
+        keys: await db.idempotencyRecord.count({ where: { tenantId: tenant } }),
+      });
+      const before = await count();
+      const preview = await api(
+        "/invoices/preview-run?limit=1",
+        "POST",
+        input,
+        tokens.accountant,
+      );
+      expect(preview.status).toBe(201);
+      expect(preview.body.data).toMatchObject({
+        eligibleCount: 1,
+        totalAmountVnd: "9007199254740993",
+        existingRunId: null,
+      });
+      expect(
+        preview.body.data.students.map(
+          (s: { studentId: string }) => s.studentId,
+        ),
+      ).toEqual([students[1]!.id]);
+      expect(await count()).toEqual(before);
+      const added = await db.student.create({
+        data: {
+          tenantId: tenant,
+          studentCode: "ADDED",
+          fullName: "Added after preview",
+        },
+      });
+      await db.enrollment.create({
+        data: {
+          tenantId: tenant,
+          classId: scopedClass.id,
+          studentId: added.id,
+          joinedAt: new Date(jan + "-15Z"),
+        },
+      });
+      const stale = await api(
+        "/invoices/generate-run",
+        "POST",
+        { ...input, previewFingerprint: preview.body.data.fingerprint },
+        tokens.accountant,
+        "invoice-stale-preview",
+      );
+      expect(stale.status).toBe(409);
+      expect(await count()).toEqual(before);
+      const fresh = await api(
+        "/invoices/preview-run?limit=1&page=2",
+        "POST",
+        input,
+      );
+      expect(fresh.body.data).toMatchObject({
+        eligibleCount: 2,
+        totalAmountVnd: "18014398509481986",
+      });
+      expect(fresh.body.data.students).toHaveLength(1);
+      const body = {
+        ...input,
+        previewFingerprint: fresh.body.data.fingerprint,
+      };
+      const generated = await api(
+        "/invoices/generate-run",
+        "POST",
+        body,
+        tokens.owner,
+        "invoice-confirmed-preview",
+      );
+      expect(generated.status).toBe(201);
+      expect(generated.body.data.invoices).toHaveLength(2);
+      expect(
+        generated.body.data.invoices.every(
+          (i: { totalAmountVnd: string }) =>
+            i.totalAmountVnd === "9007199254740993",
+        ),
+      ).toBe(true);
+      expect(
+        (
+          await api(
+            "/invoices/generate-run",
+            "POST",
+            body,
+            tokens.owner,
+            "invoice-confirmed-preview",
+          )
+        ).body.data,
+      ).toEqual(generated.body.data);
+      const duplicate = await api(
+        "/invoices/generate-run",
+        "POST",
+        input,
+        tokens.owner,
+        "invoice-business-retry",
+      );
+      expect(duplicate.status).toBe(201);
+      expect(duplicate.body.data.runId).toBe(generated.body.data.runId);
+      expect(
+        (await api("/invoices/preview-run", "POST", input)).body.data
+          .existingRunId,
+      ).toBe(generated.body.data.runId);
+      const invoice = generated.body.data.invoices[0];
+      const filtered = await api(
+        `/invoices?classId=${scopedClass.id}&periodKey=${jan}&paymentStatus=UNPAID&limit=1`,
+      );
+      expect(filtered.status).toBe(200);
+      expect(filtered.body.page.total).toBe(2);
+      expect(filtered.body.data).toHaveLength(1);
+      expect(filtered.body.data[0]).toMatchObject({
+        classId: scopedClass.id,
+        feePlanId: fee.body.data.id,
+        totalAmountVnd: "9007199254740993",
+        periodKey: jan,
+      });
+      expect((await api(`/invoices/${invoice.id}`)).body.data).toMatchObject({
+        itemsCount: 1,
+        voidReason: null,
+      });
+      expect(
+        (await api(`/invoices/${invoice.id}/items`)).body.data[0],
+      ).toMatchObject({
+        description: "Intersected invoice fee · " + jan,
+        totalAmountVnd: "9007199254740993",
+      });
+      expect(
+        (await api(`/invoices/${invoice.id}/history`)).body.data[0],
+      ).toMatchObject({
+        action: "invoice.run.generated",
+        actorUserId: ids.owner,
+        actorDisplayName: "Synthetic fee owner",
+      });
+      expect(
+        (
+          await api(`/invoices/${invoice.id}/void`, "POST", {
+            reason: "             ",
+          })
+        ).status,
+      ).toBe(422);
+      expect(
+        (
+          await api(`/invoices/${invoice.id}/void`, "POST", {
+            reason: "Invoice cancelled after checked correction",
+          })
+        ).status,
+      ).toBe(201);
+      expect(
+        (await api(`/invoices?classId=${scopedClass.id}&paymentStatus=VOID`))
+          .body.page.total,
+      ).toBe(1);
+      // End-of-day Vietnam boundary: 16:59:59.999Z belongs to the15th,
+      // 17:00:00Z belongs to the16th. The original test dueAt is17:00Z.
+      expect(
+        (
+          await api(
+            `/invoices?classId=${scopedClass.id}&from=${jan}-15&to=${jan}-15`,
+          )
+        ).body.page.total,
+      ).toBe(0);
+      expect(
+        (
+          await api(
+            `/invoices?classId=${scopedClass.id}&from=${jan}-16&to=${jan}-16`,
+          )
+        ).body.page.total,
+      ).toBe(2);
+      expect(
+        (await api(`/invoices?classId=${foreignClass}`)).body.page.total,
+      ).toBe(0);
+      expect(
+        (
+          await api("/invoices/preview-run", "POST", {
+            ...input,
+            feePlanId: randomUUID(),
+          })
+        ).status,
+      ).toBe(404);
+      for (const route of ["items", "history"]) {
+        expect((await api(`/invoices/${randomUUID()}/${route}`)).status).toBe(
+          404,
+        );
+      }
+      expect(
+        (await api(`/invoices/${invoice.id}/history`)).body.data.some(
+          (h: { action: string }) => h.action === "invoice.voided",
+        ),
+      ).toBe(true);
+      expect(
+        (await api("/invoices?from=2027-12-01&to=2027-11-01")).status,
+      ).toBe(422);
+      for (const role of [
+        "teacher",
+        "student",
+        "guardian",
+        "academic_staff",
+      ] as const) {
+        expect(
+          (await api("/invoices/preview-run", "POST", input, tokens[role]))
+            .status,
+        ).toBe(403);
+        expect(
+          (
+            await api(
+              `/invoices/${invoice.id}/items`,
+              "GET",
+              undefined,
+              tokens[role],
+            )
+          ).status,
+        ).toBe(403);
+      }
+    });
+    it("invoice preview rate limits fresh operations without blocking an idempotent committed replay", async () => {
+      const fee = await create("Rate limited invoice plan"),
+        input = runInput(fee.id);
+      await getDb().financeOperationLimit.upsert({
+        where: {
+          tenantId_userId_operation: {
+            tenantId: tenant,
+            userId: ids.owner,
+            operation: "INVOICE_PREVIEW",
+          },
+        },
+        create: {
+          tenantId: tenant,
+          userId: ids.owner,
+          operation: "INVOICE_PREVIEW",
+          attempts: 30,
+          windowStart: new Date(),
+        },
+        update: { attempts: 30, windowStart: new Date() },
+      });
+      try {
+        expect((await api("/invoices/preview-run", "POST", input)).status).toBe(
+          429,
+        );
+      } finally {
+        await getDb().financeOperationLimit.delete({
+          where: {
+            tenantId_userId_operation: {
+              tenantId: tenant,
+              userId: ids.owner,
+              operation: "INVOICE_PREVIEW",
+            },
+          },
+        });
+      }
+      const generated = await api(
+        "/invoices/generate-run",
+        "POST",
+        input,
+        tokens.owner,
+        "invoice-rate-replay",
+      );
+      expect(generated.status).toBe(201);
+      await getDb().financeOperationLimit.update({
+        where: {
+          tenantId_userId_operation: {
+            tenantId: tenant,
+            userId: ids.owner,
+            operation: "INVOICE_GENERATE",
+          },
+        },
+        data: { attempts: 30, windowStart: new Date() },
+      });
+      try {
+        expect(
+          (
+            await api(
+              "/invoices/generate-run",
+              "POST",
+              input,
+              tokens.owner,
+              "invoice-rate-replay",
+            )
+          ).body.data,
+        ).toEqual(generated.body.data);
+        expect(
+          (
+            await api(
+              "/invoices/generate-run",
+              "POST",
+              runInput(fee.id, feb),
+              tokens.owner,
+              "invoice-rate-denied",
+            )
+          ).status,
+        ).toBe(429);
+      } finally {
+        await getDb().financeOperationLimit.delete({
+          where: {
+            tenantId_userId_operation: {
+              tenantId: tenant,
+              userId: ids.owner,
+              operation: "INVOICE_GENERATE",
+            },
+          },
+        });
+      }
+    });
     it("lists minimal financial class options, validates exact money and enforces owner/accountant configuration scope", async () => {
       const options = await api(
         "/fee-plans/classes?search=Synthetic&limit=1",
@@ -534,6 +887,7 @@ export function feePlanCases(
       for (const [route, method, body, key] of [
         ["/fee-plans", "POST", baseInput("Denied waiting fee"), undefined],
         [`/fee-plans/${fee.id}`, "PATCH", term(1), undefined],
+        ["/invoices/preview-run", "POST", runInput(fee.id, feb), undefined],
         [
           "/invoices/generate-run",
           "POST",

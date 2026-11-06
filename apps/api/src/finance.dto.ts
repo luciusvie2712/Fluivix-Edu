@@ -119,6 +119,13 @@ export class InvoiceRunInput {
   @ApiProperty({ format: "date-time" })
   @IsISO8601({ strict: true })
   dueAt!: string;
+  @ApiPropertyOptional({
+    description:
+      "Exact server preview fingerprint; Web commits include this to detect changed terms or eligibility",
+  })
+  @IsOptional()
+  @Matches(/^[a-f0-9]{64}$/)
+  previewFingerprint?: string;
 }
 export class InvoiceView {
   @ApiProperty() id!: string;
@@ -204,7 +211,7 @@ export class PaymentsResponse {
   @ApiProperty({ type: MetaDto }) meta!: MetaDto;
 }
 export class FinanceReason {
-  @ApiProperty() @IsString() @Length(10, 500) reason!: string;
+  @ApiProperty() @IsString() @Matches(/\S/) @Length(10, 500) reason!: string;
 }
 export class FinanceQuery extends ListDto {
   @ApiPropertyOptional({ format: "uuid" })

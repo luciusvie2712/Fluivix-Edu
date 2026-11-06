@@ -2,12 +2,15 @@
 
 ## Latest checkpoint — 2026-11-06
 
-Remote main7215008 has verified successful CI42227073662. Staff/W17,
-Guardian/W06, Teacher/W07 and Assessment/W12 are technically verified locally
-and on exact-SHA CI. Fee plans/W13 local gate passes on Node24.22.2:71 integration,
-40 browser,49 unit,15 mobile, uncached builds/types, lint/format, native API smoke
-and stable152-operation contract. See evidence/fee-plans/verification.json;
-Fee-plan commit/exact-SHA CI pending. Remaining Invoice/Payment/Receivables,
+Remote main ea8fb17 has verified successful CI42232459218. Staff/W17,
+Guardian/W06, Teacher/W07, Assessment/W12 and Fee plans/W13 are technically
+verified locally and on exact-SHA CI. Fee-plan evidence uses Node24.22.2:
+71 integration,40 browser,49 unit,15 mobile, uncached builds/types and stable
+152-operation contract. Invoice/W14 has a verified local gate:74 integration,
+44 browser cases with no skips/flakiness,49 unit,15 mobile Jest and stable156-operation
+contract. Full build/types/lint/format, mobile API and Expo checks pass. Its
+module commit and exact-SHA remote CI remain pending.
+Remaining Payment/Receivables,
 Dashboard/Reports/Audit, Privacy/Notifications and
 M4 work are incomplete. Overall release BLOCKED. Older dated sections below retain
 historical findings and failed attempts; they are not current acceptance verdicts.
@@ -317,3 +320,12 @@ Owner availability clarification (2026-11-06): both service and SQL count only o
 - Node24.15.0 workers silently exited3221226505 in full integration/browser runs. Matching upstream nodejs/node#63620 confirms a Windows TCP/libuv fix from24.16; no local dump attribution claimed. Official latest24 LTS24.22.2 ZIP checksum verified, used through process-only.cache tools; global runtime/PATH unchanged. Root.node-version/engines and CI pin the same patch. Failed30-test/39-browser reports remain FAIL regardless of a partial Vitest JSON success field. A subsequent70/71 run under simultaneous builds/Metro/Jest hit an existing Staff lock-poll deadline; unchanged isolated case and final serial full suite pass. No assertion/timeout/retry relaxation.
 - Three skill sources/five IDs verified; Pro Max confirmation/outcome guidance, existing framed-sheet direction and shared reduced-motion-safe focus/press feedback applied. Real360/768/1024/1440 axe/Taste/keyboard checks pass and eight final images viewed. Any43px section gap WARN is retained with rationale, no waiver. Earlier-module regression screenshots archived then restored to historical commit evidence.
 - Fee-plan remote commit/exact-SHA CI NOT_VERIFIED until observed. W14/W15 invoice preview/list/detail/payment/receivables/print receipts and dashboard/reports/audit/privacy/notifications remain executable work. Overall release BLOCKED; no external staging/legal/signed-device/push/store approval inferred.
+
+
+### Invoice/W14 local acceptance gate PASS (2026-11-06)
+- Operational invoice list/search/status/fee-class/period/due-date filters and detail, immutable item snapshots and paged actual publication/void history. SQL derives exact balances/status from confirmed allocations under a repeatable snapshot; Vietnam inclusive day boundaries, full tenant scope and Guardian verified-child/redacted internal reason retained. Archived fee plans remain available to historical filters, not new issuance.
+- Paged preview and issue share fee-validity/period/enrollment intersection without prorating. Preview creates no billing/audit/outbox/idempotency rows; only its operation counter changes. Web confirms an exact server fingerprint; changed terms/roster409 requires re-preview/reconfirmation. Existing clients may omit fingerprint while retaining guarded eligibility, versioned fees and stable fee/period business key. Same-request retry after a genuinely committed201 lost at transport reuses the same key and creates no duplicate. Uncertain outcome locks input/re-preview until retry resolves it. Thirty fresh operations per actor/tenant/15minutes, committed replay before generation counter; no separate async-job acceptance claim.
+- Confirmed issue and meaningful-reason void show actual server outcomes and focus. Existing active-payment guard, immutable prices/items and no-hard-delete remain. Forward024 adds same-tenant invoice/run/reversal actor FKs, trimmed reasons and counter scope; actual legacy rehearsal preserves original >2^53 values/time and rejects orphan/blank records without fabricating data. Applied001..023 unchanged. New audit names are snapshots, legacy names remain unknown.
+- Local matrix PASS on Node24.22.2:74 PostgreSQL/Redis integration,44 browser E2E with0skip/flaky,49 unit,15 mobile Jest,8 build tasks and final Web rebuild, lint/typecheck/tools/format, actual mobile API smoke, Expo alignment, stable156-operation contract, frozen offline install, audit0HIGH/0CRITICAL (1LOW/4MODERATE tracked), secret screen with values withheld. Reports/source hashes: evidence/invoices/verification.json. Initial diagnostic failures retained separately, no timeout/retry/assertion relaxation.
+- Three skill sources/five IDs verified; existing framed-sheet design and accessible reduced-motion-safe form feedback applied. Four viewport axe/Taste, keyboard/focus and eight final images inspected. Any43px section gap WARN retained without waiver. Earlier-module visual output archived and original commit evidence restored.
+- Invoice remote commit/exact-SHA CI NOT_VERIFIED until observed. Payment/Receivables/print receipts, dashboard/reports/audit/privacy/notifications, broader class/schedule/auth and external M4 staging/legal/device/push/store evidence remain. Overall release BLOCKED.

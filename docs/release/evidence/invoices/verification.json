@@ -1,0 +1,148 @@
+{
+  "date": "2026-11-06",
+  "module": "Invoice/W14",
+  "localVerdict": "PASS",
+  "remoteVerdict": "NOT_VERIFIED",
+  "releaseVerdict": "BLOCKED",
+  "baseCommit": "ea8fb1769cc911f07e2202c594c592805687e8da",
+  "checks": {
+    "node": "24.22.2/libuv1.52.1",
+    "pnpm": "10.34.7",
+    "lint": "PASS",
+    "format": "PASS",
+    "typecheckIncludingTools": "PASS",
+    "unit": 49,
+    "mobileJest": 15,
+    "build": "8 tasks PASS plus final Web rebuild for confirmed-outcome focus",
+    "integration": {
+      "passed": 74,
+      "skipped": 0,
+      "report": "docs/release/evidence/integration-2026-11-06-invoice-full.json"
+    },
+    "browser": {
+      "passed": 44,
+      "skipped": 0,
+      "flaky": 0,
+      "report": "docs/release/evidence/e2e-2026-11-06-invoice-full.json"
+    },
+    "mobileApiSmoke": "actual generated/native client and API PASS, no device UI claim",
+    "expoAlignment": "PASS",
+    "contractGeneration": {
+      "sha256": {
+        "apps/api/openapi.json": "5F8A610A9C97BEDBEB16EFB386C13303EDFDA8429607C8FBA2A58E1213E68C2A",
+        "packages/api-client/src/schema.d.ts": "C384430F11C7A6EFE89ADDEA912D99B3A16856332BAC1C5FB907FA86DEEFEC58"
+      },
+      "stable": true,
+      "operations": 156
+    },
+    "frozenOfflineInstall": "PASS",
+    "dependencyAudit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    },
+    "localSecretScreen": "PASS; values withheld"
+  },
+  "implementation": [
+    "real paged invoice list/search/status/student/class/fee/period/Vietnam due-date filters and scoped detail",
+    "parameterized SQL derives exact confirmed-allocation balance/status inside repeatable snapshot",
+    "immutable issued item and actual publication/void audit history with honest legacy unknown names",
+    "shared preview/generation intersects effective fee interval and enrollment dates without automatic prorating",
+    "paged exact preview creates no billing/audit/outbox/idempotency rows; only operation counter writes",
+    "optional backward-compatible preview fingerprint; Web confirmed commits require matching terms/eligibility",
+    "same request retry and stable fee/period obligation prevent duplicated issue",
+    "thirty fresh operations per actor/tenant/15minutes; committed idempotent replay precedes generation counter",
+    "real committed201 lost on network, locked intent and same-key retry proven through browser route transport",
+    "explicit confirmed issue/void and focused server outcome; no hard deletion or retroactive price edits",
+    "Guardian active verified-child reads and internal-reason redaction; staff items/history deny teaching/learner roles",
+    "024 same-tenant actor FKs/meaningful trimmed reasons, legacy rejection without rewriting financial records",
+    "case-only duplicate idempotency OpenAPI headers merged at source; real header requirement preserved"
+  ],
+  "visual": {
+    "widths": [
+      360,
+      768,
+      1024,
+      1440
+    ],
+    "axe": "no violations on exercised directory/detail",
+    "keyboard": "reason to explicit confirmation traversal",
+    "reducedMotion": "forms exercised",
+    "manualReview": "all eight final images viewed",
+    "style": "existing framed-sheet seed1920114305/blue/Arial Vietnamese",
+    "tasteFindings": [
+      {
+        "level": "WARN",
+        "id": "panel-void",
+        "message": "1 card(s) hold a blank band inside: 43px in \"Ch\u1ee9ng t\u1eeb h\u1ecdc ph\u00ed\".",
+        "fix": "A card stretches to its neighbour only when it has content to fill. Keep a legend or a note directly under its chart (only an action or a total may sit at a stretched card's foot), let a short card keep its own height (align-items: start), and let a filtered block shrink to its rows.",
+        "width": 1440
+      }
+    ],
+    "warningDisposition": "43px semantic section separation when reported; finding retained, no waiver/artificial filler.",
+    "skills": [
+      {
+        "source": "taste-skill",
+        "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+        "installed": "design-taste-frontend",
+        "verifiedFiles": 38,
+        "status": "PASS"
+      },
+      {
+        "source": "ui-ux-pro-max-skill",
+        "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+        "installed": "ui-ux-pro-max",
+        "verifiedFiles": 73,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "accessible-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "micro-interaction",
+        "verifiedFiles": 4,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "60fps-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      }
+    ]
+  },
+  "sourceHashes": {
+    "normalization": "CRLF to LF",
+    "sha256": {
+      "apps/api/src/invoice-query.ts": "aea55ae771275e443900b6c0e4b27ecf0ec8f3c3a4782354eb3b2a0f9080554f",
+      "apps/api/src/invoice.dto.ts": "9014eb3d6b9dac6a997c3a8948704584118c584c184c40f187888c402b6d553f",
+      "apps/web/app/app/finance/invoices/[id]/page.tsx": "d4199cdb215682d1c677351ed6ed3bcd7259fe12820ad7f508b1522d346ba832",
+      "apps/web/app/app/finance/invoices/page.tsx": "7c7059eb76f0449d7522f835a7481462687424cc88a2601144ba82f407b89bc1",
+      "apps/web/components/invoice-workspace.tsx": "fc7dfda5175ad07cf6afff9d1a0bc7aef35c710ce012a7267e641fd160de5db7",
+      "infra/prisma/migrations/202611060024_invoice_administration/migration.sql": "8f18bdcd98268a2c58703316bb775955d78e2f90d5fd335ab2d8092f3277e970",
+      "tests/e2e/invoices.spec.ts": "3f45709226b49f1c9aac97f654b026a41ff799d584466b13a1d7f99790df1c0f",
+      "apps/api/openapi.json": "5f8a610a9c97bedbeb16efb386c13303edfda8429607c8fba2a58e1213e68c2a",
+      "apps/api/src/finance.controller.ts": "6e9f3251b0bb07bd81b4accaa2f447a9f0cf7fb2c7d6dc83e452457cc89a3bd2",
+      "apps/api/src/finance.dto.ts": "962916dd5e355416689ce93fc73f2040c351473153b4c3b2a4988089388d4855",
+      "apps/api/src/finance.service.ts": "d76501e0a0ffd35dc94857ec967cd63fe7460611e90622e468a7df6afe033c36",
+      "apps/web/app/app/layout.tsx": "03334b2420610fb2baeb6f0aa8e67a5caeff4235e5343af19cb0237de97e8858",
+      "apps/web/lib/api.ts": "22b8221b7659f0e35166b67ef1910f9dd6b47c31481ff17db264ca29a10438ce",
+      "infra/prisma/schema.prisma": "841b6f14d10b8747a01c8920e8b6b0d482e30b95dd1b81a5cdf1c3f4427ebfe8",
+      "packages/api-client/src/schema.d.ts": "c384430f11c7a6efe89addea912d99b3a16856332bac1c5fb907fa86deefec58",
+      "tests/integration/fee-plan-cases.ts": "d05f8ff607bdd71651cddb7b734c9d13d89c5f2f6a9a428039cfd339b3f1c369",
+      "tests/integration/migration-cases.ts": "b5c1708212044f8713d9f008a0f980b317377bb942ce19367b188773e497c154",
+      "tooling/release-inventory.ts": "18a0d4618cb7d7d933284b6f53698538df25a5f2aab59629f27708f80c9b185f"
+    }
+  },
+  "priorFailures": "Initial3/4 focused E2E expected raw PREVIEW_CHANGED marker, while shared API deliberately sanitizes409. Product feedback improved to explicit re-preview/confirm instruction; assertion checks that user recovery flow and absence of issued records. Strict typecheck exposed duplicate case-only Swagger header metadata and lint caught NBSP literal; corrected at source/explicit escape, no suppression. Failed initial report retained.",
+  "limits": "Existing bounded transactional generate-run API with rate limits; no separate asynchronous job acceptance or production performance claim. Preview fingerprint remains optional for pre-existing API clients; Web always supplies it. Payment/Receivables/print receipt, dashboard/reports/audit/privacy/notifications, broader class/schedule/auth and external M4 gates remain."
+}

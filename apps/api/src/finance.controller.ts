@@ -44,6 +44,16 @@ import {
 } from "./finance.dto";
 import { FinanceService } from "./finance.service";
 import { ListDto } from "./auth.dto";
+import {
+  InvoiceQuery,
+  InvoiceListResponse,
+  InvoiceDetailResponse,
+  InvoiceItemsResponse,
+  InvoicePreviewResponse,
+  InvoiceFeeOptionsResponse,
+  FinancialHistoryResponse,
+  InvoiceFeeQuery,
+} from "./invoice.dto";
 @ApiTags("finance")
 @ApiBearerAuth()
 @UseGuards(AccessGuard)
@@ -53,6 +63,7 @@ import { ListDto } from "./auth.dto";
 @ApiResponse({ status: 404, type: ErrorResponse })
 @ApiResponse({ status: 409, type: ErrorResponse })
 @ApiResponse({ status: 422, type: ErrorResponse })
+@ApiResponse({ status: 429, type: ErrorResponse })
 export class FinanceController {
   constructor(private service: FinanceService) {}
   @Post("fee-plans")
@@ -101,7 +112,7 @@ export class FinanceController {
   }
   @Post("invoices/generate-run")
   @TenantPermission("finance.invoice.write")
-  @ApiHeader({ name: "Idempotency-Key", required: true })
+  @ApiHeader({ name: "idempotency-key", required: true })
   @ApiCreatedResponse({ type: InvoiceRunResponse })
   generate(
     @Req() r: ApiRequest,
@@ -110,17 +121,53 @@ export class FinanceController {
   ) {
     return this.service.generate(requestClaims(r), dto, key, r.traceId);
   }
+  @Post("invoices/preview-run")
+  @TenantPermission("finance.invoice.write")
+  @ApiCreatedResponse({ type: InvoicePreviewResponse })
+  preview(
+    @Req() r: ApiRequest,
+    @Body() dto: InvoiceRunInput,
+    @Query() q: ListDto,
+  ) {
+    return this.service.preview(requestClaims(r), dto, q);
+  }
+  @Get("invoices/fee-options")
+  @TenantPermission("finance.invoice.write")
+  @ApiOkResponse({ type: InvoiceFeeOptionsResponse })
+  invoiceFees(@Req() r: ApiRequest, @Query() q: InvoiceFeeQuery) {
+    return this.service.invoiceFees(requestClaims(r), q);
+  }
   @Get("invoices")
   @TenantPermission("finance.read")
-  @ApiOkResponse({ type: InvoicesResponse })
-  invoices(@Req() r: ApiRequest, @Query() q: FinanceQuery) {
+  @ApiOkResponse({ type: InvoiceListResponse })
+  invoices(@Req() r: ApiRequest, @Query() q: InvoiceQuery) {
     return this.service.invoices(requestClaims(r), q);
   }
   @Get("invoices/:id")
   @TenantPermission("finance.read", "finance.read.linked")
-  @ApiOkResponse({ type: InvoiceResponse })
+  @ApiOkResponse({ type: InvoiceDetailResponse })
   invoice(@Req() r: ApiRequest, @Param("id", ParseUUIDPipe) id: string) {
     return this.service.invoice(requestClaims(r), id);
+  }
+  @Get("invoices/:id/items")
+  @TenantPermission("finance.read")
+  @ApiOkResponse({ type: InvoiceItemsResponse })
+  invoiceItems(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Query() q: ListDto,
+  ) {
+    return this.service.invoiceItems(requestClaims(r), id, q);
+  }
+  @Get("invoices/:id/history")
+  @TenantPermission("finance.read")
+  @ApiOkResponse({ type: FinancialHistoryResponse })
+  invoiceHistory(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Query() q: ListDto,
+  ) {
+    return this.service.invoiceHistory(requestClaims(r), id, q);
   }
   @Get("mobile/guardian/students/:id/invoices")
   @TenantPermission("finance.read.linked")
@@ -149,7 +196,7 @@ export class FinanceController {
   }
   @Post("payments")
   @TenantPermission("finance.payment.write")
-  @ApiHeader({ name: "Idempotency-Key", required: true })
+  @ApiHeader({ name: "idempotency-key", required: true })
   @ApiCreatedResponse({ type: PaymentResponse })
   pay(
     @Req() r: ApiRequest,

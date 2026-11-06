@@ -3,6 +3,122 @@ import { Client } from "pg";
 import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 export function migrationCases() {
+  it("upgrades invoice actors and meaningful reasons without rewriting legacy financial rows or accepting orphan actors", async () => {
+    const connectionString = process.env.DATABASE_URL;
+    if (
+      !connectionString ||
+      !new URL(connectionString).pathname.endsWith("_test")
+    )
+      throw new Error("Disposable database required");
+    const client = new Client({ connectionString });
+    await client.connect();
+    try {
+      for (const mode of ["valid", "orphan", "blank-reason"]) {
+        await client.query("BEGIN");
+        const schema = "invoice_upgrade_" + randomUUID().replaceAll("-", "");
+        await client.query(`CREATE SCHEMA "${schema}"`);
+        await client.query(`SET LOCAL search_path TO "${schema}"`);
+        await client.query(
+          "CREATE TABLE tenant_memberships(tenant_id uuid,user_id uuid,PRIMARY KEY(tenant_id,user_id)); CREATE TABLE invoice_runs(id uuid PRIMARY KEY,tenant_id uuid,created_by uuid); CREATE TABLE invoices(id uuid PRIMARY KEY,tenant_id uuid,created_by uuid,billing_state text,void_reason text,due_at timestamptz,total_amount_vnd bigint); CREATE TABLE payment_reversals(id uuid PRIMARY KEY,tenant_id uuid,approved_by uuid,reason text); CREATE TABLE invoice_items(id uuid PRIMARY KEY,tenant_id uuid,invoice_id uuid);",
+        );
+        const tenant = randomUUID(),
+          actor = randomUUID(),
+          outsider = randomUUID(),
+          run = randomUUID(),
+          invoice = randomUUID(),
+          reversal = randomUUID();
+        await client.query("INSERT INTO tenant_memberships VALUES($1,$2)", [
+          tenant,
+          actor,
+        ]);
+        await client.query("INSERT INTO invoice_runs VALUES($1,$2,$3)", [
+          run,
+          tenant,
+          mode === "orphan" ? outsider : actor,
+        ]);
+        await client.query(
+          "INSERT INTO invoices VALUES($1,$2,$3,'VOID',$4,'2026-10-31T17:00:00Z',9007199254740993)",
+          [
+            invoice,
+            tenant,
+            actor,
+            mode === "blank-reason"
+              ? "           "
+              : "Legacy checked invoice cancellation",
+          ],
+        );
+        await client.query(
+          "INSERT INTO payment_reversals VALUES($1,$2,$3,'Legacy checked reversal reason')",
+          [reversal, tenant, actor],
+        );
+        const sql = readFileSync(
+          "infra/prisma/migrations/202611060024_invoice_administration/migration.sql",
+          "utf8",
+        );
+        if (mode !== "valid") {
+          await expect(client.query(sql)).rejects.toThrow();
+          await client.query("ROLLBACK");
+          continue;
+        }
+        await client.query(sql);
+        expect(
+          (
+            await client.query(
+              "SELECT total_amount_vnd::text,void_reason,due_at FROM invoices WHERE id=$1",
+              [invoice],
+            )
+          ).rows,
+        ).toEqual([
+          {
+            total_amount_vnd: "9007199254740993",
+            void_reason: "Legacy checked invoice cancellation",
+            due_at: new Date("2026-10-31T17:00:00Z"),
+          },
+        ]);
+        const reject = async (statement: string, values: unknown[]) => {
+          await client.query("SAVEPOINT invalid_actor");
+          await expect(client.query(statement, values)).rejects.toThrow();
+          await client.query("ROLLBACK TO SAVEPOINT invalid_actor");
+          await client.query("RELEASE SAVEPOINT invalid_actor");
+        };
+        await reject("UPDATE invoice_runs SET created_by=$1 WHERE id=$2", [
+          outsider,
+          run,
+        ]);
+        await reject("UPDATE invoices SET created_by=$1 WHERE id=$2", [
+          outsider,
+          invoice,
+        ]);
+        await reject(
+          "UPDATE invoices SET void_reason='           ' WHERE id=$1",
+          [invoice],
+        );
+        await reject(
+          "UPDATE payment_reversals SET approved_by=$1 WHERE id=$2",
+          [outsider, reversal],
+        );
+        await reject(
+          "UPDATE payment_reversals SET reason='           ' WHERE id=$1",
+          [reversal],
+        );
+        await reject(
+          "INSERT INTO finance_operation_limits VALUES($1,$2,'INVOICE_GENERATE',1,now())",
+          [tenant, outsider],
+        );
+        expect(
+          (
+            await client.query(
+              "SELECT count(*)::int AS n FROM finance_operation_limits",
+            )
+          ).rows[0].n,
+        ).toBe(0);
+        await client.query("ROLLBACK");
+      }
+    } finally {
+      await client.query("ROLLBACK");
+      await client.end();
+    }
+  });
   it("upgrades legacy fee plans without invented terms and retains immutable issued prices with append-only tenant-bound future terms", async () => {
     const connectionString = process.env.DATABASE_URL;
     if (

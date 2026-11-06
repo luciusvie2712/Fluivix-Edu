@@ -1,5 +1,18 @@
 # Security report — current assessment
 
+Invoice/W14 local gate PASS (2026-11-06): preview and issue share effective
+terms/period/enrollment intersection; confirmed preview fingerprints detect
+stale eligibility without billing writes. Per-tenant actor counters bound fresh
+operations, preserving committed same-key replay. Same-snapshot SQL derives
+balances/status; due-date filters use Vietnam calendar boundaries and parameterized
+queries. Guardian details retain active verified-child authorization and redact
+internal void reasons; staff-only item/history routes reject teaching/learner
+roles. Forward024 binds invoice/run/reversal actors to tenant membership and
+requires trimmed meaningful reasons, retaining original financial values.
+Local legacy migration rehearsal,74 integration and44 browser cases pass;
+exact-SHA remote acceptance is pending. No external release approval is implied.
+Fee-plan ea8fb17 exact CI42232459218 SUCCESS is verified separately.
+
 Fee plans/W13 security delta (2026-11-06): owner/accountant configuration uses
 finance.fee.write, independent of manager invoice permission. Class options are
 minimal and tenant-scoped; no teaching administration access is granted. SQL023

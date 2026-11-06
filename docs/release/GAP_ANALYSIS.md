@@ -1,5 +1,14 @@
 # Baseline P0 gap analysis
 
+Latest checkpoint (2026-11-06): Fee-plan ea8fb17 exact CI42232459218 SUCCESS
+is observed. Invoice/W14 now implements paged exact previews, confirmed/stale-safe
+issuance, list/detail/items/history and void administration. Forward024 legacy
+rehearsal and full74 integration/44 browser cases pass with no skips/flakiness;
+49 unit,15 mobile Jest and the complete local verification matrix pass. Exact
+invoice commit/remote CI remain pending. W15 payments/receivables/internal print
+receipts, remaining business modules and external M4 gates remain incomplete;
+overall release BLOCKED. Older checkpoint paragraphs below are historical.
+
 Fee plans/W13 current delta (2026-11-06): real operational list/detail/create,
 minimal class picker, future price/name terms/history, exact VND, confirmation,
 optimistic conflicts and readonly/role states implemented. Forward023 keeps

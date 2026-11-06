@@ -1220,6 +1220,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/invoices/preview-run": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["FinanceController_preview"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/invoices/fee-options": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["FinanceController_invoiceFees"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/invoices": {
     parameters: {
       query?: never;
@@ -1244,6 +1276,38 @@ export interface paths {
       cookie?: never;
     };
     get: operations["FinanceController_invoice"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/invoices/{id}/items": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["FinanceController_invoiceItems"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/invoices/{id}/history": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["FinanceController_invoiceHistory"];
     put?: never;
     post?: never;
     delete?: never;
@@ -2978,6 +3042,8 @@ export interface components {
       periodKey: string;
       /** Format: date-time */
       dueAt: string;
+      /** @description Exact server preview fingerprint; Web commits include this to detect changed terms or eligibility */
+      previewFingerprint?: string;
     };
     InvoiceView: {
       id: string;
@@ -3002,17 +3068,141 @@ export interface components {
       data: components["schemas"]["InvoiceRunView"];
       meta: components["schemas"]["MetaDto"];
     };
+    InvoicePreviewStudent: {
+      studentId: string;
+      studentCode: string;
+      fullName: string;
+    };
+    InvoicePreviewView: {
+      feePlanId: string;
+      planVersion: number;
+      classCode: string;
+      className: string;
+      periodKey: string;
+      appliedName: string;
+      amountVnd: string;
+      eligibleCount: number;
+      totalAmountVnd: string;
+      dueAt: string;
+      fingerprint: string;
+      existingRunId: string | null;
+      students: components["schemas"]["InvoicePreviewStudent"][];
+      page: components["schemas"]["PageView"];
+    };
+    InvoicePreviewResponse: {
+      data: components["schemas"]["InvoicePreviewView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    InvoiceFeeOptionView: {
+      id: string;
+      name: string;
+      classCode: string;
+      className: string;
+      billingModel: string;
+      /** Format: date */
+      validFrom: string;
+      /** Format: date */
+      validTo: string | null;
+      version: number;
+    };
+    InvoiceFeeOptionsResponse: {
+      data: components["schemas"]["InvoiceFeeOptionView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    InvoiceListView: {
+      id: string;
+      studentId: string;
+      invoiceNo: string;
+      /** @example 1200000 */
+      totalAmountVnd: string;
+      paidAmountVnd: string;
+      balanceVnd: string;
+      billingState: string;
+      paymentStatus: string;
+      /** Format: date-time */
+      dueAt: string;
+      /** Format: date-time */
+      issuedAt: string;
+      studentCode: string;
+      fullName: string;
+      classId: string;
+      classCode: string;
+      className: string;
+      feePlanId: string;
+      periodKey: string;
+      billingModel: string;
+    };
+    InvoiceListResponse: {
+      data: components["schemas"]["InvoiceListView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    InvoiceDetailView: {
+      id: string;
+      studentId: string;
+      invoiceNo: string;
+      /** @example 1200000 */
+      totalAmountVnd: string;
+      paidAmountVnd: string;
+      balanceVnd: string;
+      billingState: string;
+      paymentStatus: string;
+      /** Format: date-time */
+      dueAt: string;
+      /** Format: date-time */
+      issuedAt: string;
+      studentCode: string;
+      fullName: string;
+      classId: string;
+      classCode: string;
+      className: string;
+      feePlanId: string;
+      periodKey: string;
+      billingModel: string;
+      /** @description Internal reason is redacted for Guardian */
+      voidReason: string | null;
+      itemsCount: number;
+    };
+    InvoiceDetailResponse: {
+      data: components["schemas"]["InvoiceDetailView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    InvoiceItemView: {
+      id: string;
+      description: string;
+      totalAmountVnd: string;
+    };
+    InvoiceItemsResponse: {
+      data: components["schemas"]["InvoiceItemView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    FinancialHistoryView: {
+      id: string;
+      action: string;
+      actorUserId: string | null;
+      actorDisplayName: string | null;
+      reason: string | null;
+      traceId: string;
+      recordedAt: string;
+    };
+    FinancialHistoryResponse: {
+      data: components["schemas"]["FinancialHistoryView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
+    };
     InvoicesResponse: {
       data: components["schemas"]["InvoiceView"][];
       page: components["schemas"]["PageView"];
       meta: components["schemas"]["MetaDto"];
     };
+    FinanceReason: {
+      reason: string;
+    };
     InvoiceResponse: {
       data: components["schemas"]["InvoiceView"];
       meta: components["schemas"]["MetaDto"];
-    };
-    FinanceReason: {
-      reason: string;
     };
     AllocationInput: {
       /** Format: uuid */
@@ -8568,6 +8758,14 @@ export interface operations {
           "application/json": components["schemas"]["ErrorResponse"];
         };
       };
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
   FinanceController_fee: {
@@ -8624,6 +8822,14 @@ export interface operations {
         };
       };
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      429: {
         headers: {
           [name: string]: unknown;
         };
@@ -8695,6 +8901,14 @@ export interface operations {
           "application/json": components["schemas"]["ErrorResponse"];
         };
       };
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
   FinanceController_feeDetail: {
@@ -8749,6 +8963,14 @@ export interface operations {
         };
       };
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      429: {
         headers: {
           [name: string]: unknown;
         };
@@ -8821,6 +9043,14 @@ export interface operations {
           "application/json": components["schemas"]["ErrorResponse"];
         };
       };
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
   FinanceController_feeTerms: {
@@ -8886,6 +9116,14 @@ export interface operations {
           "application/json": components["schemas"]["ErrorResponse"];
         };
       };
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
   FinanceController_generate: {
@@ -8893,7 +9131,6 @@ export interface operations {
       query?: never;
       header: {
         "idempotency-key": string;
-        "Idempotency-Key": string;
       };
       path?: never;
       cookie?: never;
@@ -8952,28 +9189,39 @@ export interface operations {
           "application/json": components["schemas"]["ErrorResponse"];
         };
       };
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
-  FinanceController_invoices: {
+  FinanceController_preview: {
     parameters: {
       query?: {
         page?: number;
         limit?: number;
         search?: string;
-        studentId?: string;
       };
       header?: never;
       path?: never;
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["InvoiceRunInput"];
+      };
+    };
     responses: {
-      200: {
+      201: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["InvoicesResponse"];
+          "application/json": components["schemas"]["InvoicePreviewResponse"];
         };
       };
       401: {
@@ -9009,6 +9257,167 @@ export interface operations {
         };
       };
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  FinanceController_invoiceFees: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        includeArchived?: "true" | "false";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["InvoiceFeeOptionsResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  FinanceController_invoices: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        studentId?: string;
+        classId?: string;
+        feePlanId?: string;
+        paymentStatus?: "UNPAID" | "PARTIAL" | "PAID" | "OVERDUE" | "VOID";
+        /** @description YYYY-MM or COURSE */
+        periodKey?: string;
+        /** @description Inclusive due-date boundary in Asia/Ho_Chi_Minh */
+        from?: string;
+        /** @description Inclusive due-date boundary in Asia/Ho_Chi_Minh */
+        to?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["InvoiceListResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      429: {
         headers: {
           [name: string]: unknown;
         };
@@ -9034,7 +9443,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["InvoiceResponse"];
+          "application/json": components["schemas"]["InvoiceDetailResponse"];
         };
       };
       401: {
@@ -9070,6 +9479,160 @@ export interface operations {
         };
       };
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  FinanceController_invoiceItems: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["InvoiceItemsResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  FinanceController_invoiceHistory: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FinancialHistoryResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      429: {
         headers: {
           [name: string]: unknown;
         };
@@ -9143,6 +9706,14 @@ export interface operations {
           "application/json": components["schemas"]["ErrorResponse"];
         };
       };
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
   FinanceController_voidInvoice: {
@@ -9201,6 +9772,14 @@ export interface operations {
         };
       };
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      429: {
         headers: {
           [name: string]: unknown;
         };
@@ -9272,6 +9851,14 @@ export interface operations {
           "application/json": components["schemas"]["ErrorResponse"];
         };
       };
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
   FinanceController_pay: {
@@ -9279,7 +9866,6 @@ export interface operations {
       query?: never;
       header: {
         "idempotency-key": string;
-        "Idempotency-Key": string;
       };
       path?: never;
       cookie?: never;
@@ -9331,6 +9917,14 @@ export interface operations {
         };
       };
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      429: {
         headers: {
           [name: string]: unknown;
         };
@@ -9404,6 +9998,14 @@ export interface operations {
           "application/json": components["schemas"]["ErrorResponse"];
         };
       };
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
   FinanceController_payment: {
@@ -9458,6 +10060,14 @@ export interface operations {
         };
       };
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      429: {
         headers: {
           [name: string]: unknown;
         };
@@ -9523,6 +10133,14 @@ export interface operations {
         };
       };
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      429: {
         headers: {
           [name: string]: unknown;
         };

@@ -1,0 +1,301 @@
+{
+  "config": {
+    "argv": [
+      "D:\\my-project\\fluivixedu\\.cache\\node-v24.22.2-win-x64\\node.exe",
+      "D:\\my-project\\fluivixedu\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "invoices.spec.ts"
+    ],
+    "configFile": "D:\\my-project\\fluivixedu\\playwright.config.ts",
+    "rootDir": "D:/my-project/fluivixedu/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/my-project/fluivixedu/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tenant-chromium",
+        "name": "tenant-chromium",
+        "testDir": "D:/my-project/fluivixedu/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\my-project\\fluivixedu\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "tenant-chromium",
+        "testDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "snapshotDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:3000",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "browserName": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "tenant-chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/release/evidence/e2e-2026-11-06-invoice-first.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm exec tsx tooling/e2e-server.ts",
+      "url": "http://localhost:3000/login",
+      "timeout": 60000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "invoices.spec.ts",
+      "file": "invoices.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "invoice Web previews eligible learners then issues once, shows real item history and voids with confirmation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5155,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T14:39:56.901Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "bf10ff72eb560ee5dde5-8118632628f74bafa234",
+          "file": "invoices.spec.ts",
+          "line": 103,
+          "column": 5
+        },
+        {
+          "title": "invoice Web handles a committed response lost on the network by retrying the same idempotency key",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3828,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T14:40:02.876Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "bf10ff72eb560ee5dde5-2445b7ede398e7d6dc79",
+          "file": "invoices.spec.ts",
+          "line": 177,
+          "column": 5
+        },
+        {
+          "title": "invoice Web rejects an eligibility change after preview and retains read-only/empty/missing states",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 8301,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('alert').filter({ hasText: 'PREVIEW_CHANGED' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('alert').filter({ hasText: 'PREVIEW_CHANGED' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('alert').filter({ hasText: 'PREVIEW_CHANGED' })\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('alert').filter({ hasText: 'PREVIEW_CHANGED' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('alert').filter({ hasText: 'PREVIEW_CHANGED' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('alert').filter({ hasText: 'PREVIEW_CHANGED' })\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\invoices.spec.ts:260:7",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\invoices.spec.ts",
+                      "column": 7,
+                      "line": 260
+                    },
+                    "snippet": "  258 |     await expect(\n  259 |       page.getByRole(\"alert\").filter({ hasText: \"PREVIEW_CHANGED\" }),\n> 260 |     ).toBeVisible();\n      |       ^\n  261 |     expect(await db.invoiceRun.count({ where: { feePlanId: f.fee.id } })).toBe(\n  262 |       0,\n  263 |     );"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\invoices.spec.ts",
+                        "column": 7,
+                        "line": 260
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('alert').filter({ hasText: 'PREVIEW_CHANGED' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('alert').filter({ hasText: 'PREVIEW_CHANGED' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('alert').filter({ hasText: 'PREVIEW_CHANGED' })\u001b[22m\n\n\n  258 |     await expect(\n  259 |       page.getByRole(\"alert\").filter({ hasText: \"PREVIEW_CHANGED\" }),\n> 260 |     ).toBeVisible();\n      |       ^\n  261 |     expect(await db.invoiceRun.count({ where: { feePlanId: f.fee.id } })).toBe(\n  262 |       0,\n  263 |     );\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\invoices.spec.ts:260:7"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T14:40:06.747Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\invoices-invoice-Web-rejec-1bc7f-d-only-empty-missing-states-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\invoices-invoice-Web-rejec-1bc7f-d-only-empty-missing-states-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\invoices-invoice-Web-rejec-1bc7f-d-only-empty-missing-states-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\invoices.spec.ts",
+                    "column": 7,
+                    "line": 260
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "bf10ff72eb560ee5dde5-1b40a9b811e764ab74ed",
+          "file": "invoices.spec.ts",
+          "line": 231,
+          "column": 5
+        },
+        {
+          "title": "invoice list and detail have accessible responsive forms and reduced-motion keyboard access",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 17442,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T14:40:17.507Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "bf10ff72eb560ee5dde5-929a4f2a2f3e45e7d59b",
+          "file": "invoices.spec.ts",
+          "line": 304,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-06T14:39:41.317Z",
+    "duration": 55445.142,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

@@ -488,6 +488,79 @@ export const feePlans = {
       api.PATCH("/api/v1/fee-plans/{id}", { params: { path: { id } }, body }),
     ),
 };
+export const invoices = {
+  list: (
+    query: NonNullable<paths["/api/v1/invoices"]["get"]["parameters"]["query"]>,
+    signal?: AbortSignal,
+  ) =>
+    unwrap(
+      api.GET("/api/v1/invoices", {
+        params: { query },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  detail: (id: string, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/invoices/{id}", {
+        params: { path: { id } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  items: (id: string, page: number, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/invoices/{id}/items", {
+        params: { path: { id }, query: { page, limit: 20 } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  history: (id: string, page: number, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/invoices/{id}/history", {
+        params: { path: { id }, query: { page, limit: 20 } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  feeOptions: (
+    page: number,
+    search: string,
+    signal?: AbortSignal,
+    includeArchived = false,
+  ) =>
+    unwrap(
+      api.GET("/api/v1/invoices/fee-options", {
+        params: {
+          query: {
+            page,
+            limit: 20,
+            search,
+            ...(includeArchived ? { includeArchived: "true" } : {}),
+          },
+        },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  preview: (body: components["schemas"]["InvoiceRunInput"], page: number) =>
+    unwrap(
+      api.POST("/api/v1/invoices/preview-run", {
+        body,
+        params: { query: { page, limit: 20 } },
+      }),
+    ),
+  generate: (body: components["schemas"]["InvoiceRunInput"], key: string) =>
+    unwrap(
+      api.POST("/api/v1/invoices/generate-run", {
+        body,
+        params: { header: { "idempotency-key": key } },
+      }),
+    ),
+  void: (id: string, body: components["schemas"]["FinanceReason"]) =>
+    unwrap(
+      api.POST("/api/v1/invoices/{id}/void", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+};
 export const assessments = {
   list: (
     id: string,

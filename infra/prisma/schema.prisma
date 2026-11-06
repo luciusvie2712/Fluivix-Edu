@@ -139,6 +139,10 @@ model Membership {
   gradedResults AssessmentResult[] @relation("AssessmentGrader")
   gradeActions GradeChange[] @relation("GradeActor")
   feeTerms FeePlanTerm[]
+  invoiceRuns InvoiceRun[] @relation("InvoiceRunActor")
+  issuedInvoices Invoice[] @relation("InvoiceCreator")
+  paymentReversals PaymentReversal[] @relation("PaymentReversalActor")
+  financeLimits FinanceOperationLimit[]
 
   @@unique([tenantId, userId])
   @@unique([tenantId, id])
@@ -570,6 +574,7 @@ model InvoiceRun {
   requestHash String   @map("request_hash") @db.Char(64)
   createdBy   String   @map("created_by") @db.Uuid
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
+  actor Membership @relation("InvoiceRunActor",fields:[tenantId,createdBy],references:[tenantId,userId],onDelete:Restrict,onUpdate:NoAction,map:"invoice_run_actor_member_fk")
 
   @@unique([tenantId, id])
   @@unique([tenantId, feePlanId, periodKey])
@@ -588,12 +593,14 @@ model Invoice {
   billingState   String   @default("ISSUED") @map("billing_state") @db.VarChar(10)
   voidReason     String?  @map("void_reason") @db.VarChar(500)
   createdBy      String   @map("created_by") @db.Uuid
+  creator Membership @relation("InvoiceCreator",fields:[tenantId,createdBy],references:[tenantId,userId],onDelete:Restrict,onUpdate:NoAction,map:"invoice_creator_member_fk")
 
   @@unique([tenantId, id])
   @@unique([tenantId, id, studentId])
   @@unique([tenantId, invoiceNo])
   @@unique([tenantId, runId, studentId])
   @@index([tenantId, studentId, dueAt])
+  @@index([tenantId,dueAt(sort: Desc),id],map:"invoice_due_page_idx")
   @@map("invoices")
 }
 
@@ -604,6 +611,8 @@ model InvoiceItem {
   feePlanId      String @map("fee_plan_id") @db.Uuid
   description    String @db.VarChar(300)
   totalAmountVnd BigInt @map("total_amount_vnd")
+
+  @@index([tenantId,invoiceId,id],map:"invoice_items_page_idx")
 
   @@map("invoice_items")
 }
@@ -647,9 +656,22 @@ model PaymentReversal {
   reason     String   @db.VarChar(500)
   approvedBy String   @map("approved_by") @db.Uuid
   createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+  actor Membership @relation("PaymentReversalActor",fields:[tenantId,approvedBy],references:[tenantId,userId],onDelete:Restrict,onUpdate:NoAction,map:"payment_reversal_actor_member_fk")
 
   @@unique([tenantId, paymentId])
   @@map("payment_reversals")
+}
+
+model FinanceOperationLimit {
+  tenantId String @map("tenant_id") @db.Uuid
+  userId String @map("user_id") @db.Uuid
+  operation String @db.VarChar(40)
+  attempts Int
+  windowStart DateTime @map("window_start") @db.Timestamptz
+  actor Membership @relation(fields:[tenantId,userId],references:[tenantId,userId],onDelete:Restrict,onUpdate:NoAction)
+
+  @@id([tenantId,userId,operation])
+  @@map("finance_operation_limits")
 }
 
 model IdempotencyRecord {

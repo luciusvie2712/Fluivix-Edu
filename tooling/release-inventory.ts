@@ -43,7 +43,7 @@ const evidence: Record<string, string> = {
   CL: "apps/api/src/teaching.*; infra/prisma/migrations/202610240016_schedule_rules; tests/integration/teaching-cases.ts",
   AT: "apps/api/src/teaching.*; apps/mobile/app; tests/integration/teaching-cases.ts",
   GR: "apps/api/src/grades.ts; grade-history.dto.ts; migration022; apps/web/components/assessment-workspace.tsx; apps/mobile/app; tests/integration/assessment-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/assessments.spec.ts",
-  FI: "apps/api/src/finance.*; migration023; apps/web/components/fee-plan-workspace.tsx; apps/mobile/app; tests/integration/fee-plan-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/fee-plans.spec.ts",
+  FI: "apps/api/src/finance.*; invoice.dto.ts; invoice-query.ts; migrations023/024; apps/web/components/fee-plan-workspace.tsx; invoice-workspace.tsx; apps/mobile/app; tests/integration/fee-plan-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/fee-plans.spec.ts; invoices.spec.ts",
   NT: "apps/api/src/notifications.ts; mobile-dashboard.ts; apps/worker/src/notifications.ts; tests/integration/teaching-cases.ts",
 };
 const acceptance: Record<string, [string, string]> = {
@@ -105,7 +105,7 @@ const acceptance: Record<string, [string, string]> = {
   ],
   "TC-015": [
     "PARTIAL",
-    "integration repeated invoice-run idempotency; Web generation/preview absent",
+    "real invoice Web preview/confirmed issue, lost committed response same-key retry, stale eligibility409 and unique run; physical business acceptance missing",
   ],
   "TC-016": [
     "PARTIAL",
@@ -219,6 +219,25 @@ ${desired.map(({ method, path }) => `| ${method} | \`${path}\` | ${implemented.h
 
 ## Explicit contract decisions
 
+- Invoice preview uses the shared effective-fee/period/enrollment intersection,
+  exact integers and paged actual students. POST /invoices/preview-run writes
+  only its bounded operation counter, never invoices/audit/outbox/idempotency.
+  New Web issue commits include its fingerprint; changed eligibility/terms409
+  requires preview/confirmation again. Existing API clients may omit it and
+  still receive the same guarded eligibility/idempotency/business-key checks.
+- Thirty fresh preview/generation operations per actor/tenant per15minutes;
+  a committed same-key replay precedes the generation counter. Failed or empty
+  runs roll back. Bulk processing is the existing bounded transactional run API;
+  no separate asynchronous job acceptance is claimed.
+- Invoice read lists use same-snapshot SQL balance/status with student/class/
+  fee/period/search and Vietnam inclusive due-date filters. Staff detail adds
+  paged immutable items and redacted lifecycle history; Guardian detail remains
+  active verified-child scoped and omits internal void reasons. New actor names
+  are actual snapshots; old unknown names stay NULL.
+- Forward024 adds same-tenant financial actor FKs and meaningful void/reversal
+  reasons without rewriting issued values. Orphan/blank legacy records reject
+  upgrade for review. Case-only duplicate OpenAPI idempotency headers are merged
+  at the decorator source, preserving the actual HTTP behavior.
 - Fee configuration is owner/accountant finance.fee.write; manager's invoice
   permission remains separate. GET /fee-plans/classes returns minimal class
   options without granting access to teaching administration. includeClosed=true

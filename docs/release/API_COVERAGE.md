@@ -1,6 +1,6 @@
 # API contract coverage
 
-Generated inventory: 152 actual OpenAPI operations; 134
+Generated inventory: 156 actual OpenAPI operations; 134
 method/path intents in the master specification (includes non-P0 design intent).
 Path parameter names are normalized when comparing. MATCH means route metadata
 exists; it does not verify DTOs, permission, object scope or runtime behavior.
@@ -102,7 +102,7 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
 | POST | `/fee-plans` | MATCH |
 | GET | `/fee-plans/{id}` | MATCH |
 | PATCH | `/fee-plans/{id}` | MATCH |
-| POST | `/invoices/preview-run` | ABSENT / REVIEW |
+| POST | `/invoices/preview-run` | MATCH |
 | POST | `/invoices/generate-run` | MATCH |
 | GET | `/invoices` | MATCH |
 | GET | `/invoices/{id}` | MATCH |
@@ -145,6 +145,25 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
 
 ## Explicit contract decisions
 
+- Invoice preview uses the shared effective-fee/period/enrollment intersection,
+  exact integers and paged actual students. POST /invoices/preview-run writes
+  only its bounded operation counter, never invoices/audit/outbox/idempotency.
+  New Web issue commits include its fingerprint; changed eligibility/terms409
+  requires preview/confirmation again. Existing API clients may omit it and
+  still receive the same guarded eligibility/idempotency/business-key checks.
+- Thirty fresh preview/generation operations per actor/tenant per15minutes;
+  a committed same-key replay precedes the generation counter. Failed or empty
+  runs roll back. Bulk processing is the existing bounded transactional run API;
+  no separate asynchronous job acceptance is claimed.
+- Invoice read lists use same-snapshot SQL balance/status with student/class/
+  fee/period/search and Vietnam inclusive due-date filters. Staff detail adds
+  paged immutable items and redacted lifecycle history; Guardian detail remains
+  active verified-child scoped and omits internal void reasons. New actor names
+  are actual snapshots; old unknown names stay NULL.
+- Forward024 adds same-tenant financial actor FKs and meaningful void/reversal
+  reasons without rewriting issued values. Orphan/blank legacy records reject
+  upgrade for review. Case-only duplicate OpenAPI idempotency headers are merged
+  at the decorator source, preserving the actual HTTP behavior.
 - Fee configuration is owner/accountant finance.fee.write; manager's invoice
   permission remains separate. GET /fee-plans/classes returns minimal class
   options without granting access to teaching administration. includeClosed=true

@@ -1,6 +1,7 @@
 import {
   ConflictException,
   ForbiddenException,
+  HttpException,
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
@@ -20,6 +21,8 @@ import { Paged } from "./http";
 import { requirePlanFeature } from "./subscription-policy";
 import { lockTenantActor } from "./tenant-actor";
 import { ListDto } from "./auth.dto";
+import { InvoiceQuery, InvoiceFeeQuery } from "./invoice.dto";
+import { invoiceRows } from "./invoice-query";
 import {
   FeePlanInput,
   FeeClassQuery,
@@ -123,6 +126,179 @@ export class FinanceService {
       orderBy: [{ effectiveFrom: "desc" }, { version: "desc" }],
     });
     return term ?? fee;
+  }
+  private runIntent(input: InvoiceRunInput) {
+    return {
+      feePlanId: input.feePlanId,
+      periodKey: input.periodKey,
+      dueAt: qualified(input.dueAt).toISOString(),
+    };
+  }
+  private async runScope(tx: Tx, c: Claims, input: InvoiceRunInput) {
+    const fee = await tx.feePlan.findFirst({
+      where: {
+        tenantId: this.tenant(c),
+        id: input.feePlanId,
+        status: "ACTIVE",
+      },
+    });
+    if (!fee) throw new NotFoundException("Không tìm thấy biểu phí.");
+    if ((fee.billingModel === "COURSE") !== (input.periodKey === "COURSE"))
+      throw new UnprocessableEntityException(
+        "Kỳ phát hành không phù hợp mô hình phí.",
+      );
+    let periodStart = fee.validFrom,
+      from = fee.validFrom,
+      to = fee.validTo ?? new Date("9999-12-31Z");
+    if (fee.billingModel === "MONTHLY") {
+      periodStart = new Date(input.periodKey + "-01T00:00:00Z");
+      const end = new Date(periodStart);
+      end.setUTCMonth(end.getUTCMonth() + 1);
+      end.setUTCDate(0);
+      if (end < fee.validFrom || (fee.validTo && periodStart > fee.validTo))
+        throw new UnprocessableEntityException(
+          "Kỳ nằm ngoài hiệu lực biểu phí.",
+        );
+      from = periodStart > fee.validFrom ? periodStart : fee.validFrom;
+      to = fee.validTo && fee.validTo < end ? fee.validTo : end;
+    }
+    const terms = await this.effectiveTerms(tx, fee, periodStart);
+    const enrolled = await tx.enrollment.findMany({
+      where: {
+        tenantId: c.tenantId!,
+        classId: fee.classId,
+        joinedAt: { lte: to },
+        OR: [{ leftAt: null }, { leftAt: { gte: from } }],
+      },
+      select: { studentId: true },
+      distinct: ["studentId"],
+    });
+    const students = await tx.student.findMany({
+      where: {
+        tenantId: c.tenantId!,
+        id: { in: enrolled.map((e) => e.studentId) },
+      },
+      select: { id: true, studentCode: true, fullName: true },
+      orderBy: [{ studentCode: "asc" }, { id: "asc" }],
+    });
+    const cls = await tx.educationClass.findFirst({
+      where: { tenantId: c.tenantId!, id: fee.classId },
+      select: { code: true, name: true },
+    });
+    if (!cls)
+      throw new ConflictException("Cần kiểm tra phạm vi lớp của biểu phí.");
+    const fingerprint = digest({
+      intent: this.runIntent(input),
+      planVersion: fee.version,
+      terms: { name: terms.name, amountVnd: terms.amountVnd.toString() },
+      from: from.toISOString(),
+      to: to.toISOString(),
+      students: students.map((s) => s.id).sort(),
+    });
+    return { fee, terms, students, cls, fingerprint };
+  }
+  private async operationLimit(
+    tx: Tx,
+    c: Claims,
+    operation: "INVOICE_PREVIEW" | "INVOICE_GENERATE",
+  ) {
+    const rows = await tx.$queryRaw<
+      { attempts: number }[]
+    >`INSERT INTO finance_operation_limits(tenant_id,user_id,operation,attempts,window_start) VALUES(${this.tenant(c)}::uuid,${c.sub}::uuid,${operation},1,now()) ON CONFLICT(tenant_id,user_id,operation) DO UPDATE SET attempts=CASE WHEN finance_operation_limits.window_start<now()-interval '15 minutes' THEN 1 ELSE finance_operation_limits.attempts+1 END,window_start=CASE WHEN finance_operation_limits.window_start<now()-interval '15 minutes' THEN now() ELSE finance_operation_limits.window_start END RETURNING attempts`;
+    if ((rows[0]?.attempts ?? 100) > 30)
+      throw new HttpException(
+        "Quá số lần xử lý hóa đơn. Vui lòng thử lại sau.",
+        429,
+      );
+  }
+  async preview(c: Claims, input: InvoiceRunInput, q: ListDto) {
+    // POST preview changes no billing records. Rate counters are the only write;
+    // keep them with the canonical actor lock and recheck all scopes.
+    return this.db.$transaction(async (tx) => {
+      await this.lock(tx, c);
+      await this.operationLimit(tx, c, "INVOICE_PREVIEW");
+      const scope = await this.runScope(tx, c, input);
+      const existing = await tx.invoiceRun.findUnique({
+        where: {
+          tenantId_feePlanId_periodKey: {
+            tenantId: c.tenantId!,
+            feePlanId: scope.fee.id,
+            periodKey: input.periodKey,
+          },
+        },
+        select: { id: true },
+      });
+      const total = scope.students.length;
+      return {
+        feePlanId: scope.fee.id,
+        planVersion: scope.fee.version,
+        classCode: scope.cls.code,
+        className: scope.cls.name,
+        periodKey: input.periodKey,
+        appliedName: scope.terms.name,
+        amountVnd: scope.terms.amountVnd.toString(),
+        eligibleCount: total,
+        totalAmountVnd: (scope.terms.amountVnd * BigInt(total)).toString(),
+        dueAt: qualified(input.dueAt).toISOString(),
+        fingerprint: scope.fingerprint,
+        existingRunId: existing?.id ?? null,
+        students: scope.students
+          .slice((q.page - 1) * q.limit, q.page * q.limit)
+          .map((s) => ({
+            studentId: s.id,
+            studentCode: s.studentCode,
+            fullName: s.fullName,
+          })),
+        page: {
+          page: q.page,
+          limit: q.limit,
+          total,
+          totalPages: Math.ceil(total / q.limit),
+        },
+      };
+    });
+  }
+  async invoiceFees(c: Claims, q: InvoiceFeeQuery) {
+    return this.db.$transaction(
+      async (tx) => {
+        const where = {
+          tenantId: this.tenant(c),
+          ...(q.includeArchived === "true" ? {} : { status: "ACTIVE" }),
+          ...(q.search
+            ? { name: { contains: q.search, mode: "insensitive" as const } }
+            : {}),
+        };
+        const [fees, total] = await Promise.all([
+          tx.feePlan.findMany({
+            where,
+            orderBy: [{ name: "asc" }, { id: "asc" }],
+            skip: (q.page - 1) * q.limit,
+            take: q.limit,
+          }),
+          tx.feePlan.count({ where }),
+        ]);
+        const rows = await this.feeViews(tx, c, fees);
+        return new Paged(
+          rows.map((f) => ({
+            id: f.id,
+            name: f.name,
+            classCode: f.classCode,
+            className: f.className,
+            billingModel: f.billingModel,
+            validFrom: f.validFrom,
+            validTo: f.validTo ?? null,
+            version: f.version,
+          })),
+          {
+            page: q.page,
+            limit: q.limit,
+            total,
+            totalPages: Math.ceil(total / q.limit),
+          },
+        );
+      },
+      { isolationLevel: "RepeatableRead" },
+    );
   }
   async feeClasses(c: Claims, q: FeeClassQuery) {
     return this.db.$transaction(
@@ -323,6 +499,10 @@ export class FinanceService {
     traceId: string,
     reason?: string,
   ) {
+    const actor = await tx.user.findUnique({
+      where: { id: c.sub },
+      select: { displayName: true },
+    });
     await tx.auditLog.create({
       data: {
         tenantId: c.tenantId!,
@@ -330,6 +510,7 @@ export class FinanceService {
         action,
         resourceId: id,
         traceId,
+        metadata: { actorDisplayName: actor?.displayName ?? null },
         ...(reason ? { reason } : {}),
       },
     });
@@ -453,31 +634,11 @@ export class FinanceService {
         await this.lock(tx, c);
         const prior = await this.prior(tx, c, "invoice-run", key, input);
         if (prior) return prior;
-        const fee = await tx.feePlan.findFirst({
-          where: {
-            tenantId: c.tenantId!,
-            id: input.feePlanId,
-            status: "ACTIVE",
-          },
-        });
-        if (!fee) throw new NotFoundException("Không tìm thấy biểu phí.");
-        if ((fee.billingModel === "COURSE") !== (input.periodKey === "COURSE"))
-          throw new UnprocessableEntityException(
-            "Kỳ phát hành không phù hợp mô hình phí.",
-          );
-        let from = fee.validFrom,
-          to = fee.validTo ?? new Date("9999-12-31Z");
-        if (fee.billingModel === "MONTHLY") {
-          from = new Date(input.periodKey + "-01T00:00:00Z");
-          to = new Date(from);
-          to.setUTCMonth(to.getUTCMonth() + 1);
-          to.setUTCDate(0);
-          if (to < fee.validFrom || (fee.validTo && from > fee.validTo))
-            throw new UnprocessableEntityException(
-              "Kỳ nằm ngoài hiệu lực biểu phí.",
-            );
-        }
-        const terms = await this.effectiveTerms(tx, fee, from);
+        const { fee, terms, students, fingerprint } = await this.runScope(
+          tx,
+          c,
+          input,
+        );
         let run = await tx.invoiceRun.findUnique({
           where: {
             tenantId_feePlanId_periodKey: {
@@ -487,35 +648,46 @@ export class FinanceService {
             },
           },
         });
-        if (run && run.requestHash !== digest(input))
+        if (
+          run &&
+          run.requestHash !== digest(this.runIntent(input)) &&
+          run.requestHash !==
+            digest({
+              feePlanId: input.feePlanId,
+              periodKey: input.periodKey,
+              dueAt: input.dueAt,
+            })
+        )
           throw new ConflictException(
             "Kỳ phát hành đã tồn tại với nội dung khác.",
           );
         if (!run) {
+          if (
+            input.previewFingerprint &&
+            input.previewFingerprint !== fingerprint
+          )
+            throw new ConflictException(
+              "PREVIEW_CHANGED: Biểu phí hoặc học viên đã thay đổi. Xem trước và xác nhận lại.",
+            );
+          if (!students.length)
+            throw new UnprocessableEntityException(
+              "Không có học viên đủ điều kiện để phát hành.",
+            );
+          await this.operationLimit(tx, c, "INVOICE_GENERATE");
           run = await tx.invoiceRun.create({
             data: {
               tenantId: c.tenantId!,
               feePlanId: fee.id,
               periodKey: input.periodKey,
-              requestHash: digest(input),
+              requestHash: digest(this.runIntent(input)),
               createdBy: c.sub,
             },
           });
-          const enrolled = await tx.enrollment.findMany({
-            where: {
-              tenantId: c.tenantId!,
-              classId: fee.classId,
-              joinedAt: { lte: to },
-              OR: [{ leftAt: null }, { leftAt: { gte: from } }],
-            },
-            select: { studentId: true },
-            distinct: ["studentId"],
-          });
-          for (const e of enrolled) {
+          for (const e of students) {
             const row = await tx.invoice.create({
               data: {
                 tenantId: c.tenantId!,
-                studentId: e.studentId,
+                studentId: e.id,
                 runId: run.id,
                 invoiceNo: "INV-" + randomUUID(),
                 totalAmountVnd: terms.amountVnd,
@@ -679,26 +851,90 @@ export class FinanceService {
       return response;
     });
   }
-  async invoices(c: Claims, q: FinanceQuery, childId?: string) {
+  async invoices(c: Claims, q: InvoiceQuery, childId?: string) {
     return this.db.$transaction(
       async (tx) => {
         const studentId =
           c.role === "guardian"
             ? await this.teaching.subject(tx, c, childId)
             : q.studentId;
-        const where = {
-          tenantId: c.tenantId!,
-          ...(studentId ? { studentId } : {}),
-        };
-        const rows = await tx.invoice.findMany({
-            where,
-            orderBy: [{ dueAt: "desc" }, { id: "asc" }],
-            take: q.limit,
-            skip: (q.page - 1) * q.limit,
+        return invoiceRows(tx, this.tenant(c), q, studentId);
+      },
+      { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead },
+    );
+  }
+  async invoice(c: Claims, id: string) {
+    return this.db.$transaction(
+      async (tx) => {
+        this.tenant(c);
+        // Guardian lookup is constrained to verified linked students before fetching money.
+        const linked =
+          c.role === "guardian"
+            ? await tx.guardianLink.findMany({
+                where: {
+                  tenantId: c.tenantId!,
+                  guardianUserId: c.sub,
+                  status: "ACTIVE",
+                  verifiedAt: { not: null },
+                  verifiedBy: { not: null },
+                },
+                select: { studentId: true },
+              })
+            : null;
+        const row = await tx.invoice.findFirst({
+          where: {
+            tenantId: c.tenantId!,
+            id,
+            ...(linked
+              ? { studentId: { in: linked.map((v) => v.studentId) } }
+              : {}),
+          },
+        });
+        if (!row) throw new NotFoundException("Không tìm thấy chứng từ.");
+        const result = await invoiceRows(
+          tx,
+          c.tenantId!,
+          { page: 1, limit: 1 },
+          undefined,
+          [id],
+        );
+        if (!result.items[0])
+          throw new NotFoundException("Không tìm thấy chứng từ.");
+        return {
+          ...result.items[0],
+          voidReason: c.role === "guardian" ? null : row.voidReason,
+          itemsCount: await tx.invoiceItem.count({
+            where: { tenantId: c.tenantId!, invoiceId: id },
           }),
-          total = await tx.invoice.count({ where });
+        };
+      },
+      { isolationLevel: "RepeatableRead" },
+    );
+  }
+  async invoiceItems(c: Claims, id: string, q: ListDto) {
+    return this.db.$transaction(
+      async (tx) => {
+        const row = await tx.invoice.findFirst({
+          where: { tenantId: this.tenant(c), id },
+          select: { id: true },
+        });
+        if (!row) throw new NotFoundException("Không tìm thấy chứng từ.");
+        const where = { tenantId: c.tenantId!, invoiceId: id };
+        const [rows, total] = await Promise.all([
+          tx.invoiceItem.findMany({
+            where,
+            orderBy: { id: "asc" },
+            skip: (q.page - 1) * q.limit,
+            take: q.limit,
+            select: { id: true, description: true, totalAmountVnd: true },
+          }),
+          tx.invoiceItem.count({ where }),
+        ]);
         return new Paged(
-          await Promise.all(rows.map((r) => this.invoiceView(tx, r))),
+          rows.map((r) => ({
+            ...r,
+            totalAmountVnd: r.totalAmountVnd.toString(),
+          })),
           {
             page: q.page,
             limit: q.limit,
@@ -707,39 +943,62 @@ export class FinanceService {
           },
         );
       },
-      { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead },
+      { isolationLevel: "RepeatableRead" },
     );
   }
-  async invoice(c: Claims, id: string) {
-    return this.db.$transaction(async (tx) => {
-      // Guardian lookup is constrained to verified linked students before fetching money.
-      const linked =
-        c.role === "guardian"
-          ? await tx.guardianLink.findMany({
-              where: {
-                tenantId: c.tenantId!,
-                guardianUserId: c.sub,
-                status: "ACTIVE",
-                verifiedAt: { not: null },
-                verifiedBy: { not: null },
-              },
-              select: { studentId: true },
-            })
-          : null;
-      const row = await tx.invoice.findFirst({
-        where: {
+  async invoiceHistory(c: Claims, id: string, q: ListDto) {
+    return this.db.$transaction(
+      async (tx) => {
+        const row = await tx.invoice.findFirst({
+          where: { tenantId: this.tenant(c), id },
+          select: { runId: true },
+        });
+        if (!row) throw new NotFoundException("Không tìm thấy chứng từ.");
+        const where = {
           tenantId: c.tenantId!,
-          id,
-          ...(linked
-            ? { studentId: { in: linked.map((v) => v.studentId) } }
-            : {}),
-        },
-      });
-      if (!row) throw new NotFoundException("Không tìm thấy chứng từ.");
-      return this.invoiceView(tx, row);
-    });
+          OR: [
+            { resourceId: id, action: "invoice.voided" },
+            { resourceId: row.runId, action: "invoice.run.generated" },
+          ],
+        };
+        const [rows, total] = await Promise.all([
+          tx.auditLog.findMany({
+            where,
+            orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+            skip: (q.page - 1) * q.limit,
+            take: q.limit,
+          }),
+          tx.auditLog.count({ where }),
+        ]);
+        return new Paged(
+          rows.map((r) => ({
+            id: r.id,
+            action: r.action,
+            actorUserId: r.actorUserId,
+            actorDisplayName:
+              r.metadata &&
+              typeof r.metadata === "object" &&
+              !Array.isArray(r.metadata) &&
+              typeof r.metadata.actorDisplayName === "string"
+                ? r.metadata.actorDisplayName
+                : null,
+            reason: r.reason,
+            traceId: r.traceId,
+            recordedAt: r.createdAt.toISOString(),
+          })),
+          {
+            page: q.page,
+            limit: q.limit,
+            total,
+            totalPages: Math.ceil(total / q.limit),
+          },
+        );
+      },
+      { isolationLevel: "RepeatableRead" },
+    );
   }
   async payments(c: Claims, q: FinanceQuery, childId?: string) {
+    this.tenant(c);
     return this.db.$transaction(
       async (tx) => {
         const studentId =
@@ -771,6 +1030,7 @@ export class FinanceService {
     );
   }
   async payment(c: Claims, id: string) {
+    this.tenant(c);
     return this.db.$transaction(async (tx) => {
       const linked =
         c.role === "guardian"
@@ -799,6 +1059,11 @@ export class FinanceService {
     });
   }
   async voidInvoice(c: Claims, id: string, reason: string, traceId: string) {
+    reason = reason.trim();
+    if (reason.length < 10)
+      throw new UnprocessableEntityException(
+        "Lý do cần ít nhất 10 ký tự sau khi bỏ khoảng trắng.",
+      );
     return this.db.$transaction(async (tx) => {
       await this.lock(tx, c);
       await tx.$queryRaw`SELECT id FROM invoices WHERE tenant_id=${c.tenantId!}::uuid AND id=${id}::uuid FOR UPDATE`;
@@ -819,6 +1084,11 @@ export class FinanceService {
     });
   }
   async reverse(c: Claims, id: string, reason: string, traceId: string) {
+    reason = reason.trim();
+    if (reason.length < 10)
+      throw new UnprocessableEntityException(
+        "Lý do cần ít nhất 10 ký tự sau khi bỏ khoảng trắng.",
+      );
     return this.db.$transaction(async (tx) => {
       await this.lock(tx, c, "finance.payment.write");
       await tx.$queryRaw`SELECT id FROM payments WHERE tenant_id=${c.tenantId!}::uuid AND id=${id}::uuid FOR UPDATE`;

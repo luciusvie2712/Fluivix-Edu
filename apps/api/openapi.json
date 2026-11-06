@@ -6127,6 +6127,14 @@
                 "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
         "security": [{ "bearer": [] }],
@@ -6213,6 +6221,14 @@
             }
           },
           "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "429": {
             "description": "",
             "content": {
               "application/json": {
@@ -6309,6 +6325,14 @@
                 "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
         "security": [{ "bearer": [] }],
@@ -6368,6 +6392,14 @@
             }
           },
           "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "429": {
             "description": "",
             "content": {
               "application/json": {
@@ -6439,6 +6471,14 @@
             }
           },
           "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "429": {
             "description": "",
             "content": {
               "application/json": {
@@ -6535,6 +6575,14 @@
                 "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
         "security": [{ "bearer": [] }],
@@ -6549,12 +6597,6 @@
             "name": "idempotency-key",
             "required": true,
             "in": "header",
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "Idempotency-Key",
-            "in": "header",
-            "required": true,
             "schema": { "type": "string" }
           }
         ],
@@ -6614,6 +6656,212 @@
                 "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance"]
+      }
+    },
+    "/api/v1/invoices/preview-run": {
+      "post": {
+        "operationId": "FinanceController_preview",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/InvoiceRunInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoicePreviewResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance"]
+      }
+    },
+    "/api/v1/invoices/fee-options": {
+      "get": {
+        "operationId": "FinanceController_invoiceFees",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "includeArchived",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string", "enum": ["true", "false"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceFeeOptionsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
         "security": [{ "bearer": [] }],
@@ -6652,6 +6900,48 @@
             "required": false,
             "in": "query",
             "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "feePlanId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "paymentStatus",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["UNPAID", "PARTIAL", "PAID", "OVERDUE", "VOID"]
+            }
+          },
+          {
+            "name": "periodKey",
+            "required": false,
+            "in": "query",
+            "description": "YYYY-MM or COURSE",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Inclusive due-date boundary in Asia/Ho_Chi_Minh",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Inclusive due-date boundary in Asia/Ho_Chi_Minh",
+            "schema": { "format": "date", "type": "string" }
           }
         ],
         "responses": {
@@ -6659,7 +6949,7 @@
             "description": "",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/InvoicesResponse" }
+                "schema": { "$ref": "#/components/schemas/InvoiceListResponse" }
               }
             }
           },
@@ -6696,6 +6986,14 @@
             }
           },
           "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "429": {
             "description": "",
             "content": {
               "application/json": {
@@ -6724,7 +7022,9 @@
             "description": "",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/InvoiceResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceDetailResponse"
+                }
               }
             }
           },
@@ -6761,6 +7061,210 @@
             }
           },
           "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance"]
+      }
+    },
+    "/api/v1/invoices/{id}/items": {
+      "get": {
+        "operationId": "FinanceController_invoiceItems",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceItemsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance"]
+      }
+    },
+    "/api/v1/invoices/{id}/history": {
+      "get": {
+        "operationId": "FinanceController_invoiceHistory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinancialHistoryResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "429": {
             "description": "",
             "content": {
               "application/json": {
@@ -6861,6 +7365,14 @@
                 "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
         "security": [{ "bearer": [] }],
@@ -6934,6 +7446,14 @@
                 "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
         "security": [{ "bearer": [] }],
@@ -6948,12 +7468,6 @@
             "name": "idempotency-key",
             "required": true,
             "in": "header",
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "Idempotency-Key",
-            "in": "header",
-            "required": true,
             "schema": { "type": "string" }
           }
         ],
@@ -7007,6 +7521,14 @@
             }
           },
           "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "429": {
             "description": "",
             "content": {
               "application/json": {
@@ -7093,6 +7615,14 @@
             }
           },
           "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "429": {
             "description": "",
             "content": {
               "application/json": {
@@ -7193,6 +7723,14 @@
                 "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
         "security": [{ "bearer": [] }],
@@ -7252,6 +7790,14 @@
             }
           },
           "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "429": {
             "description": "",
             "content": {
               "application/json": {
@@ -7325,6 +7871,14 @@
             }
           },
           "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "429": {
             "description": "",
             "content": {
               "application/json": {
@@ -12370,7 +12924,11 @@
             "type": "string",
             "description": "YYYY-MM for monthly, COURSE for whole course"
           },
-          "dueAt": { "type": "string", "format": "date-time" }
+          "dueAt": { "type": "string", "format": "date-time" },
+          "previewFingerprint": {
+            "type": "string",
+            "description": "Exact server preview fingerprint; Web commits include this to detect changed terms or eligibility"
+          }
         },
         "required": ["feePlanId", "periodKey", "dueAt"]
       },
@@ -12420,6 +12978,264 @@
         },
         "required": ["data", "meta"]
       },
+      "InvoicePreviewStudent": {
+        "type": "object",
+        "properties": {
+          "studentId": { "type": "string" },
+          "studentCode": { "type": "string" },
+          "fullName": { "type": "string" }
+        },
+        "required": ["studentId", "studentCode", "fullName"]
+      },
+      "InvoicePreviewView": {
+        "type": "object",
+        "properties": {
+          "feePlanId": { "type": "string" },
+          "planVersion": { "type": "number" },
+          "classCode": { "type": "string" },
+          "className": { "type": "string" },
+          "periodKey": { "type": "string" },
+          "appliedName": { "type": "string" },
+          "amountVnd": { "type": "string" },
+          "eligibleCount": { "type": "number" },
+          "totalAmountVnd": { "type": "string" },
+          "dueAt": { "type": "string" },
+          "fingerprint": { "type": "string" },
+          "existingRunId": { "type": "string", "nullable": true },
+          "students": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/InvoicePreviewStudent" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" }
+        },
+        "required": [
+          "feePlanId",
+          "planVersion",
+          "classCode",
+          "className",
+          "periodKey",
+          "appliedName",
+          "amountVnd",
+          "eligibleCount",
+          "totalAmountVnd",
+          "dueAt",
+          "fingerprint",
+          "existingRunId",
+          "students",
+          "page"
+        ]
+      },
+      "InvoicePreviewResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/InvoicePreviewView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "InvoiceFeeOptionView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "classCode": { "type": "string" },
+          "className": { "type": "string" },
+          "billingModel": { "type": "string" },
+          "validFrom": { "type": "string", "format": "date" },
+          "validTo": { "type": "string", "nullable": true, "format": "date" },
+          "version": { "type": "number" }
+        },
+        "required": [
+          "id",
+          "name",
+          "classCode",
+          "className",
+          "billingModel",
+          "validFrom",
+          "validTo",
+          "version"
+        ]
+      },
+      "InvoiceFeeOptionsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/InvoiceFeeOptionView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "InvoiceListView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "studentId": { "type": "string" },
+          "invoiceNo": { "type": "string" },
+          "totalAmountVnd": { "type": "string", "example": "1200000" },
+          "paidAmountVnd": { "type": "string" },
+          "balanceVnd": { "type": "string" },
+          "billingState": { "type": "string" },
+          "paymentStatus": { "type": "string" },
+          "dueAt": { "type": "string", "format": "date-time" },
+          "issuedAt": { "type": "string", "format": "date-time" },
+          "studentCode": { "type": "string" },
+          "fullName": { "type": "string" },
+          "classId": { "type": "string" },
+          "classCode": { "type": "string" },
+          "className": { "type": "string" },
+          "feePlanId": { "type": "string" },
+          "periodKey": { "type": "string" },
+          "billingModel": { "type": "string" }
+        },
+        "required": [
+          "id",
+          "studentId",
+          "invoiceNo",
+          "totalAmountVnd",
+          "paidAmountVnd",
+          "balanceVnd",
+          "billingState",
+          "paymentStatus",
+          "dueAt",
+          "issuedAt",
+          "studentCode",
+          "fullName",
+          "classId",
+          "classCode",
+          "className",
+          "feePlanId",
+          "periodKey",
+          "billingModel"
+        ]
+      },
+      "InvoiceListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/InvoiceListView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "InvoiceDetailView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "studentId": { "type": "string" },
+          "invoiceNo": { "type": "string" },
+          "totalAmountVnd": { "type": "string", "example": "1200000" },
+          "paidAmountVnd": { "type": "string" },
+          "balanceVnd": { "type": "string" },
+          "billingState": { "type": "string" },
+          "paymentStatus": { "type": "string" },
+          "dueAt": { "type": "string", "format": "date-time" },
+          "issuedAt": { "type": "string", "format": "date-time" },
+          "studentCode": { "type": "string" },
+          "fullName": { "type": "string" },
+          "classId": { "type": "string" },
+          "classCode": { "type": "string" },
+          "className": { "type": "string" },
+          "feePlanId": { "type": "string" },
+          "periodKey": { "type": "string" },
+          "billingModel": { "type": "string" },
+          "voidReason": {
+            "type": "string",
+            "nullable": true,
+            "description": "Internal reason is redacted for Guardian"
+          },
+          "itemsCount": { "type": "number" }
+        },
+        "required": [
+          "id",
+          "studentId",
+          "invoiceNo",
+          "totalAmountVnd",
+          "paidAmountVnd",
+          "balanceVnd",
+          "billingState",
+          "paymentStatus",
+          "dueAt",
+          "issuedAt",
+          "studentCode",
+          "fullName",
+          "classId",
+          "classCode",
+          "className",
+          "feePlanId",
+          "periodKey",
+          "billingModel",
+          "voidReason",
+          "itemsCount"
+        ]
+      },
+      "InvoiceDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/InvoiceDetailView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "InvoiceItemView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "description": { "type": "string" },
+          "totalAmountVnd": { "type": "string" }
+        },
+        "required": ["id", "description", "totalAmountVnd"]
+      },
+      "InvoiceItemsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/InvoiceItemView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "FinancialHistoryView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "action": { "type": "string" },
+          "actorUserId": { "type": "string", "nullable": true },
+          "actorDisplayName": { "type": "string", "nullable": true },
+          "reason": { "type": "string", "nullable": true },
+          "traceId": { "type": "string" },
+          "recordedAt": { "type": "string" }
+        },
+        "required": [
+          "id",
+          "action",
+          "actorUserId",
+          "actorDisplayName",
+          "reason",
+          "traceId",
+          "recordedAt"
+        ]
+      },
+      "FinancialHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FinancialHistoryView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
       "InvoicesResponse": {
         "type": "object",
         "properties": {
@@ -12432,6 +13248,11 @@
         },
         "required": ["data", "page", "meta"]
       },
+      "FinanceReason": {
+        "type": "object",
+        "properties": { "reason": { "type": "string" } },
+        "required": ["reason"]
+      },
       "InvoiceResponse": {
         "type": "object",
         "properties": {
@@ -12439,11 +13260,6 @@
           "meta": { "$ref": "#/components/schemas/MetaDto" }
         },
         "required": ["data", "meta"]
-      },
-      "FinanceReason": {
-        "type": "object",
-        "properties": { "reason": { "type": "string" } },
-        "required": ["reason"]
       },
       "AllocationInput": {
         "type": "object",
