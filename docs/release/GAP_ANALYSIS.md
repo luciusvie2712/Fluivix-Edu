@@ -44,3 +44,6 @@ Forward migrations only; no production data reseeding. The newly tracked
 `docs/release/` directory is deliberately exempted from the root documentation
 ignore rule so release findings can be reviewed in Git. Local AI packs, skill
 vendors, secrets and raw runtime artifacts remain excluded.
+
+
+2026-11-06 current delta: P0-A exact main1a86b2b CI42168349871SUCCESS; dependency audit0HIGH/0CRITICAL,1LOW/4MODERATE tracked. Staff/RBAC slice now implemented with51 local integration cases and generated135-operation inventory; final browser/remote Staff verification in progress. Teacher operational screens, Guardian administration, assessments, finance/report/dashboard/audit/privacy and external release gates remain executable or explicitly external gaps. Do not infer FR completion from operation/test counts.

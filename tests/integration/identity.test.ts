@@ -12,6 +12,7 @@ import { platformCases } from "./platform-cases";
 import { migrationCases } from "./migration-cases";
 import { nativeCases } from "./native-cases";
 import { teachingCases } from "./teaching-cases";
+import { staffCases } from "./staff-cases";
 import { requireTestRedis, testRedisUrl } from "../../tooling/test-redis";
 
 let database: EmbeddedPostgres | undefined;
@@ -36,6 +37,12 @@ nativeCases(
   password,
 );
 teachingCases(
+  () => base,
+  () => db,
+  password,
+  () => hashPassword(password),
+);
+staffCases(
   () => base,
   () => db,
   password,
@@ -252,6 +259,23 @@ beforeAll(async () => {
         graceUntil: new Date(Date.now() + 2 * 86400000),
       },
     });
+  // Revocation coverage below removes owner from B. Keep a second owner so the
+  // fixture respects the same last-owner invariant enforced in production SQL.
+  await db.membership.create({
+    data: {
+      tenant: { connect: { id: tenantB } },
+      status: "ACTIVE",
+      user: {
+        create: {
+          email: randomUUID() + "@example.test",
+          displayName: "Backup owner",
+          status: "ACTIVE",
+          passwordHash,
+        },
+      },
+      roles: { create: { role: "owner" } },
+    },
+  });
   await db.student.createMany({
     data: [
       {

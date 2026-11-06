@@ -1,0 +1,273 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "D:\\my-project\\fluivixedu\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "staff.spec.ts"
+    ],
+    "configFile": "D:\\my-project\\fluivixedu\\playwright.config.ts",
+    "rootDir": "D:/my-project/fluivixedu/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/my-project/fluivixedu/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tenant-chromium",
+        "name": "tenant-chromium",
+        "testDir": "D:/my-project/fluivixedu/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\my-project\\fluivixedu\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "tenant-chromium",
+        "testDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "snapshotDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:3000",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "browserName": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "tenant-chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/release/evidence/e2e-2026-11-06-staff-focused2.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm exec tsx tooling/e2e-server.ts",
+      "url": "http://localhost:3000/login",
+      "timeout": 60000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "staff.spec.ts",
+      "file": "staff.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "staff directory, real invitation resend, roles and suspension are accessible and server confirmed",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 19754,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Tạm ngưng · Phiên bản/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByText(/Tạm ngưng · Phiên bản/) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Tạm ngưng · Phiên bản/)\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Tạm ngưng · Phiên bản/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByText(/Tạm ngưng · Phiên bản/) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Tạm ngưng · Phiên bản/)\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\staff.spec.ts:196:57",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\staff.spec.ts",
+                      "column": 57,
+                      "line": 196
+                    },
+                    "snippet": "  194 |   ).toHaveCount(0);\n  195 |   await changeStatus(\"SUSPENDED\");\n> 196 |   await expect(page.getByText(/Tạm ngưng · Phiên bản/)).toBeVisible();\n      |                                                         ^\n  197 |   await page.emulateMedia({ reducedMotion: \"reduce\" });\n  198 |   await page.setViewportSize({ width: 360, height: 900 });\n  199 |   expect("
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\staff.spec.ts",
+                        "column": 57,
+                        "line": 196
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText(/Tạm ngưng · Phiên bản/)\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByText(/Tạm ngưng · Phiên bản/) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText(/Tạm ngưng · Phiên bản/)\u001b[22m\n\n\n  194 |   ).toHaveCount(0);\n  195 |   await changeStatus(\"SUSPENDED\");\n> 196 |   await expect(page.getByText(/Tạm ngưng · Phiên bản/)).toBeVisible();\n      |                                                         ^\n  197 |   await page.emulateMedia({ reducedMotion: \"reduce\" });\n  198 |   await page.setViewportSize({ width: 360, height: 900 });\n  199 |   expect(\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\staff.spec.ts:196:57"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T05:51:32.952Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\staff-staff-directory-real-746c7-ssible-and-server-confirmed-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\staff-staff-directory-real-746c7-ssible-and-server-confirmed-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\staff-staff-directory-real-746c7-ssible-and-server-confirmed-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\staff.spec.ts",
+                    "column": 57,
+                    "line": 196
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "2545a61da953aa54eb88-e73e7baf3e380bda7d8e",
+          "file": "staff.spec.ts",
+          "line": 11,
+          "column": 5
+        },
+        {
+          "title": "teacher cannot open staff administration via a direct browser link",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 2650,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('alert')\nExpected substring: \u001b[32m\"không có quyền xem nhân sự\"\u001b[39m\nError: strict mode violation: getByRole('alert') resolved to 2 elements:\n    1) <p role=\"alert\">Vai trò hiện tại không có quyền xem nhân sự.</p> aka getByText('Vai trò hiện tại không có quy')\n    2) <div role=\"alert\" aria-live=\"assertive\" id=\"__next-route-announcer__\"></div> aka locator('[id=\"__next-route-announcer__\"]')\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('alert') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('alert')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('alert')\nExpected substring: \u001b[32m\"không có quyền xem nhân sự\"\u001b[39m\nError: strict mode violation: getByRole('alert') resolved to 2 elements:\n    1) <p role=\"alert\">Vai trò hiện tại không có quyền xem nhân sự.</p> aka getByText('Vai trò hiện tại không có quy')\n    2) <div role=\"alert\" aria-live=\"assertive\" id=\"__next-route-announcer__\"></div> aka locator('[id=\"__next-route-announcer__\"]')\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('alert') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('alert')\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\staff.spec.ts:266:41",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\staff.spec.ts",
+                      "column": 41,
+                      "line": 266
+                    },
+                    "snippet": "  264 |   expect(selected.status()).toBe(200);\n  265 |   await page.goto(\"/app/staff\");\n> 266 |   await expect(page.getByRole(\"alert\")).toContainText(\n      |                                         ^\n  267 |     \"không có quyền xem nhân sự\",\n  268 |   );\n  269 |   await expect(page.getByLabel(\"Email người được mời\")).toHaveCount(0);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\staff.spec.ts",
+                        "column": 41,
+                        "line": 266
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('alert')\nExpected substring: \u001b[32m\"không có quyền xem nhân sự\"\u001b[39m\nError: strict mode violation: getByRole('alert') resolved to 2 elements:\n    1) <p role=\"alert\">Vai trò hiện tại không có quyền xem nhân sự.</p> aka getByText('Vai trò hiện tại không có quy')\n    2) <div role=\"alert\" aria-live=\"assertive\" id=\"__next-route-announcer__\"></div> aka locator('[id=\"__next-route-announcer__\"]')\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('alert') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('alert')\u001b[22m\n\n\n  264 |   expect(selected.status()).toBe(200);\n  265 |   await page.goto(\"/app/staff\");\n> 266 |   await expect(page.getByRole(\"alert\")).toContainText(\n      |                                         ^\n  267 |     \"không có quyền xem nhân sự\",\n  268 |   );\n  269 |   await expect(page.getByLabel(\"Email người được mời\")).toHaveCount(0);\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\staff.spec.ts:266:41"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T05:51:56.127Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\staff-teacher-cannot-open--b326c-n-via-a-direct-browser-link-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\staff-teacher-cannot-open--b326c-n-via-a-direct-browser-link-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\staff-teacher-cannot-open--b326c-n-via-a-direct-browser-link-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\staff.spec.ts",
+                    "column": 41,
+                    "line": 266
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "2545a61da953aa54eb88-0da4bf6668aecba4c44f",
+          "file": "staff.spec.ts",
+          "line": 230,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-06T05:51:20.012Z",
+    "duration": 40356.968,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

@@ -273,7 +273,14 @@ export class GuardianLinksController {
   @Post("guardians/invite")
   @ApiCreatedResponse({ type: InviteResponse })
   invite(@Req() r: ApiRequest, @Body() dto: ForgotDto) {
-    return this.auth.invite(requestClaims(r), dto.email, "guardian", r.traceId);
+    return this.auth.invite(
+      requestClaims(r),
+      dto.email,
+      "guardian",
+      r.traceId,
+      undefined,
+      true,
+    );
   }
   @Get("students/:id/guardians")
   @ApiOkResponse({ type: GuardianLinksResponse })

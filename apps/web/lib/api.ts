@@ -24,6 +24,64 @@ const api = createApiClient(
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/v1\/?$/, "") ??
     "http://localhost:4000",
 );
+export const staff = {
+  list: (
+    page: number,
+    search: string,
+    status?: components["schemas"]["StaffView"]["status"],
+    signal?: AbortSignal,
+  ) =>
+    unwrap(
+      api.GET("/api/v1/staff", {
+        params: {
+          query: { page, limit: 20, search, ...(status ? { status } : {}) },
+        },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  detail: (id: string, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/staff/{id}", {
+        params: { path: { id } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  invite: (body: components["schemas"]["InviteDto"]) =>
+    unwrap(api.POST("/api/v1/staff", { body })),
+  update: (id: string, body: components["schemas"]["StaffUpdate"]) =>
+    unwrap(api.PATCH("/api/v1/staff/{id}", { params: { path: { id } }, body })),
+  addRole: (id: string, body: components["schemas"]["StaffRoleChange"]) =>
+    unwrap(
+      api.POST("/api/v1/staff/{id}/roles", { params: { path: { id } }, body }),
+    ),
+  removeRole: (
+    id: string,
+    roleId: Role,
+    body: components["schemas"]["StaffChange"],
+  ) =>
+    unwrap(
+      api.DELETE("/api/v1/staff/{id}/roles/{roleId}", {
+        params: { path: { id, roleId } },
+        body,
+      }),
+    ),
+  invitations: (page: number, search: string, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/staff/invitations", {
+        params: { query: { page, limit: 10, search } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  resend: (id: string) =>
+    unwrap(
+      api.POST("/api/v1/staff/invitations/{id}/resend", {
+        params: { path: { id } },
+        headers: { "Content-Type": "application/json" },
+      }),
+    ),
+  permissions: (signal?: AbortSignal) =>
+    unwrap(api.GET("/api/v1/permissions", { ...(signal ? { signal } : {}) })),
+};
 export const previewStudentImport = (
   body: components["schemas"]["StudentCsvInput"],
 ) => unwrap(api.POST("/api/v1/students/imports", { body }));

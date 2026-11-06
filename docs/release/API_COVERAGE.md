@@ -1,6 +1,6 @@
 # API contract coverage
 
-Generated inventory: 127 actual OpenAPI operations; 134
+Generated inventory: 135 actual OpenAPI operations; 134
 method/path intents in the master specification (includes non-P0 design intent).
 Path parameter names are normalized when comparing. MATCH means route metadata
 exists; it does not verify DTOs, permission, object scope or runtime behavior.
@@ -35,13 +35,13 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
 | PATCH | `/tenant/settings` | ABSENT / REVIEW |
 | GET | `/tenant/subscription` | MATCH |
 | GET | `/tenant/usage` | ABSENT / REVIEW |
-| GET | `/staff` | ABSENT / REVIEW |
+| GET | `/staff` | MATCH |
 | POST | `/staff` | MATCH |
-| GET | `/staff/{membershipId}` | ABSENT / REVIEW |
-| PATCH | `/staff/{membershipId}` | ABSENT / REVIEW |
-| POST | `/staff/{membershipId}/roles` | ABSENT / REVIEW |
-| DELETE | `/staff/{membershipId}/roles/{roleId}` | ABSENT / REVIEW |
-| GET | `/permissions` | ABSENT / REVIEW |
+| GET | `/staff/{membershipId}` | MATCH |
+| PATCH | `/staff/{membershipId}` | MATCH |
+| POST | `/staff/{membershipId}/roles` | MATCH |
+| DELETE | `/staff/{membershipId}/roles/{roleId}` | MATCH |
+| GET | `/permissions` | MATCH |
 | GET | `/audit-logs` | ABSENT / REVIEW |
 | GET | `/students` | MATCH |
 | POST | `/students` | MATCH |
@@ -145,10 +145,22 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
 
 ## Explicit contract decisions
 
-- Recurring preview currently uses a persisted rule scoped to class: GET
-  /classes/{id}/schedule-rules/{ruleId}/preview?from=...&to=.... Generation is an
-  explicit POST to .../{ruleId}/generate; atomic and idempotent by rule/date.
-  The spec's unsaved POST preview is still a gap; do not silently treat it as MATCH.
+- Unsaved POST /classes/{id}/schedule-rules/preview now executes real constraints
+  and a deliberate transaction rollback; no rule/session/audit is retained.
+  It previews at most60days from validFrom. POST creation rechecks conflicts.
+  Persisted GET .../{ruleId}/preview and POST .../{ruleId}/generate remain available.
+- Forward migration019 retains actual rule/day uniqueness and adds immutable
+  occurrence origin so moving a session never resurrects its old occurrence.
+  Rule replacement is append-only history; only untouched future rows are replaced.
+  Manual, snapshotted, completed and prepared lessons survive. Conflicts roll back
+  the entire replacement/generation transaction.
+- Worker daily rule/version/local-date jobs reuse the API scheduling transaction,
+  with actorNULL system audit, real policy checks and no fabricated user token.
+  apps/worker declares its API workspace dependency so Turbo builds that domain
+  module first. Deployments must preserve the monorepo compiled package layout.
 - VND values remain canonical decimal strings backed by PostgreSQL BIGINT, avoiding
   JavaScript precision loss. Existing clients must not coerce them to Number.
 - Native auth remains separate from browser HttpOnly-cookie transport.
+
+
+Staff decision (2026-11-06): eight additional operations bring inventory to135. Existing POST staff is reused. Role IDs are named Role enums, scoped through a tenant membership. PATCH/role writes require version and reason; permission catalog/role writes owner-only. A boolean owner-controlled manager delegation grants lower-staff invite/status operations only. GET staff/invitations and POST .../{id}/resend expose lifecycle metadata, never invitation credentials. Effective permissions are empty for non-active members/accounts; object/subscription constraints still apply. API metadata coverage is not an acceptance verdict.

@@ -1,5 +1,15 @@
 # P0 implementation and release hardening
 
+## Latest checkpoint — 2026-11-06
+
+Remote main1a86b2b has verified successful CI42168349871. Staff/RBAC is now locally
+verified (51 integration,26 browser,49 unit,15 mobile), awaiting its module commit
+and exact-SHA remote CI. See evidence/staff/verification.json. Remaining Guardian,
+Teacher Web, Assessment, Finance, Dashboard/Reports/Audit, Privacy/Notifications and
+M4 work are incomplete. Overall release BLOCKED. Older dated sections below retain
+historical findings and failed attempts; they are not current acceptance verdicts.
+
+
 ## Mandate and baseline
 
 Continue all executable P0 work from `d43b3388bf89bb8db4228bda31428c69b2f7edfe` on
@@ -213,3 +223,45 @@ Other requested P0 modules remain incomplete; staging/device/push/legal/business
 - PASS: lint, typecheck (including tooling), format,49 unit,15 mobile Jest,8 build tasks,42 isolated PostgreSQL/Redis integration,22 browser E2E (0 skipped/flaky), mobile API smoke, Expo dependency alignment, OpenAPI/client no drift and audit0HIGH/0CRITICAL (1LOW/4MODERATE remain tracked). Reports: integration-2026-11-06-taste-driver.json and e2e-2026-11-06-taste-driver-full.json.
 - Audited general/layout/app finding parity at1440/768/390 verified against the previous standalone reports. Extra1024/360 coverage and three injected regression failures retained in evidence/taste-driver. Existing hero-void/unused-canvas warnings describe the deliberate bounded login form and are not suppressed. Historical tracked visual snapshots preserved.
 - Changes: tooling/taste-review.ts, tooling/e2e-runner.ts, identity/platform E2E, DEVELOPMENT.md and release evidence. Remote exact-commit CI remains NOT_VERIFIED until observed. Remaining business P0 slices and external release gates are incomplete/BLOCKED.
+
+
+### Exact baseline CI verified (2026-11-06)
+- Commit1a86b2b7352fa6e4c5ef5eeb86a0ac0f1250495b pushed to main; GitHub Actions run42168349871 SUCCESS, including42 integration, mobile API smoke,22 browser E2E, audit and generated-contract drift gates. URL:https://github.com/luciusvie2712/Fluivix-Edu/actions/runs/42168349871. P0-A technical baseline verified; native signed-device evidence and overall release remain BLOCKED.
+- Next slice: Staff/RBAC. Reconcile spec permission matrix (manager by delegation) with route inventory (role mutations owner only): owner delegates invitation/status administration of non-owner/non-manager memberships; role assignment/removal/catalog remain owner-only. No self elevation; explicit version/reason; tenant row lock and current actor recheck. Invitations are revoked atomically on resend or privilege removal.
+- UI decision: retain existing framed-sheet, blue brand, Vietnamese Arial and shared forms. Pro Max broad education query suggested glass/marketing hero; narrower internal-admin query confirmed minimal Swiss style but still a marketing layout. Reject incompatible marketing layout under spec precedence; apply readable tables, explicit labels and the existing single design direction. Reuse reduced-motion-safe opacity/press feedback; no decorative animation. Skill SHAs: Taste6010f91a9935f1c167dfc500fb1a475681892e6b, ProMaxd14efff8ed1faa4187f004f79926f428c8074ec7, animationb6dba3eb759726845a44163ff0bad70dd9e7fbb6.
+
+
+### Staff/RBAC vertical slice (2026-11-06; local final verification in progress)
+- Added real Staff directory/search/status filter/pagination and detail, invitation lifecycle/resend, status restore/suspend/revoke, role grant/revoke, effective-per-role permission visibility and owner catalog. Web routes /app/staff and /app/staff/[id] call generated typed clients; named backend permissions independently enforce access.
+- Migration202611060020 adds membership version/delegation, invitation revocation, audit metadata and SQL owner/identity invariants. All staff mutations lock the tenant and recheck active actor, selected live session, subscription and delegated scope inside the transaction. Owner-only role changes/catalog reconcile master route inventory; delegated managers only invite/manage lower staff. Self elevation and owner/manager target changes by managers denied. Last active owner protected in service and SQL.
+- Invitations reserve INVITED memberships under quota without access, require existing account password proof, remain single-use/24h and are revoked atomically on resend/status/role changes. Worker suppresses revoked invitation mail. Pending/revoked or globally inactive users have no effective permissions. Global identities and memberships in other tenants are preserved.
+- UI uses shared accessible forms, explicit confirmation/reason/version and server commit outcomes; related editors stay disabled until a write and refresh complete. A delayed genuine DELETE response regression proves interleaved edits cannot lose selection. Query keys include identity/tenant/role and AbortSignal; error renders hide stale list data. No production fixtures added.
+- Local integration51/51 PASS including real SQL owner guard/concurrent owners, guarded delegation revocation while waiting for a lock, invitation expiry/reuse/resend, cross-tenant/role/READ_ONLY negatives and actual legacy migration preserving existing data/history. Current reports: integration-2026-11-06-staff-final.json, staff-upgrade-full.json. Unit49/mobile15, builds/types/lint/format and mobile smoke/Expo/audit have passed; final repeated static/build/browser gate remains pending.
+- Failure evidence retained: initial test package import resolution and checked Prisma fixture relation fixed; pg_stat_activity snapshot replaced by live pg_locks observation. Browser selector matched status+date cell; teacher direct-link test now uses a genuine API-selected context while preserving Mobile-only Web chooser policy. Delayed role response exposed editor overlap; shared mutation lock and held-real-response assertion fixed it. One full browser run24/25 failed only a corrupted Vietnamese selector from Windows script input; corrected without timeout/retry changes. Visual multi-viewport checks split from business workflow (formerly24.6s; new workflow9.9s) rather than increasing timeout.
+- Taste source6010f91a9935f1c167dfc500fb1a475681892e6b executed on actual staff views at360/768/1024/1440 and reduced-motion detail, with axe WCAG2/2.1/2.2AA tags and screenshots under evidence/staff. Viewed360/1440 images; preserve existing framed-sheet direction, labels/quiet tables. Added narrow-screen scroll cue and removed duplicate provisional email/name. Final keyboard/browser rerun pending.
+- Remote Staff commit/CI NOT_VERIFIED. Overall release BLOCKED; this slice does not complete Guardian/Assessment/Finance/Reports/Privacy or external staging/legal/signed-device/push approvals.
+
+
+### Membership activation and context hardening (2026-11-06)
+- Found and closed a lifecycle bypass before release: a globally ACTIVE account invited to a new tenant could otherwise be suspended then reactivated without accepting that tenant invitation. Membership activation_pending is distinct from global User.status; SQL marks new/legacy INVITED rows, forbids ACTIVE+pending, and only credential-proven invitation acceptance clears the marker. Staff PATCH cannot set that marker. Restore pending membership to INVITED and send a new invitation; direct activation stays409.
+- The actual multi-tenant integration case now asserts pending/suspended name redaction and search isolation, status-bypass409, forged activation marker422, SQL constraint rejection, old-token401, explicit restore/re-invite and password-proven acceptance preserving the other tenant/password. Legacy migration also verifies pending backfill and activation constraint. Full51 integration PASS in integration-2026-11-06-staff-activation.json. Previous local full runs remain historical evidence of earlier snapshots.
+- Own membership/status/selected-role revocation now uses the existing server logout and clears the whole client session/cache after the committed change. A separate real-browser case bootstraps only synthetic test identity, self-suspends under a second active owner, then checks login redirect, committed status, old access401 and denied stale deep link. Browser verification pending.
+- Migration020 remains uncommitted/unreleased; all revised migration tests run against newly created disposable databases. No already-applied user/development migration was changed or rerun.
+
+
+### Delegated role boundary (2026-11-06)
+- Narrowed manager delegation to academic_staff/teacher. Accountant can write payments that manager cannot, so financial memberships are not lower-privilege staff; inviting/controlling accountant, manager or owner remains owner-only. This supersedes the earlier broader lower-staff description. Backend, invite/resend options, editable-target UI and real integration negatives agree. Guardian invitations retain the separate existing guardian.manage workflow; no unrequested financial privilege is granted through staff delegation.
+- The51-case suite now explicitly denies delegated-manager accountant invitation/status mutation. Final verification follows this boundary; no API, status or role is authorized solely by hidden buttons.
+
+
+SQL owner-count isolation contract (2026-11-06): production Staff mutations use PostgreSQL READ COMMITTED and the canonical tenant lock. The owner-removal trigger refuses snapshot-isolated SQL writers rather than count an old owner snapshot. A real REPEATABLE READ negative now asserts fail-closed behavior. No database-wide isolation setting is changed. Full51 integration passed on the final fresh database (integration-2026-11-06-staff-commit-gate.json). All subsequent tests and commit must retain this SQL migration.
+
+
+Owner availability clarification (2026-11-06): both service and SQL count only owners whose membership AND global account are ACTIVE. A disabled backup identity cannot justify removing the last usable owner. The existing owner invariant case now disables the synthetic backup account, asserts API409 and SQL rejection, restores that fixture, then exercises isolation/concurrent-owner cases. No global account-disable endpoint is added. Final verification uses a fresh database; prior26 browser run passed, and the final source check follows before commit.
+
+
+### Staff/RBAC local acceptance gate PASS (2026-11-06)
+- Final source: lint, typecheck/tooling, format,49 unit,15 mobile Jest,8 build tasks,51 real PostgreSQL/Redis integration,26 browser E2E (0 skipped/flaky), real mobile API smoke, Expo alignment, OpenAPI/client regeneration stability and audit0HIGH/0CRITICAL PASS.1LOW/4MODERATE remain tracked. Local secret screening passed without displaying local values.
+- Authoritative reports: integration-2026-11-06-staff-owner-account-final.json; e2e-2026-11-06-staff-verified.json; evidence/staff/verification.json includes normalized source hashes. Earlier failed/intermediate reports are preserved, never relabeled PASS. Historical teaching snapshots restored; final Staff screenshots/Taste/axe/keyboard and self-revocation regression retained.
+- Implemented W17 technical Staff/RBAC slice: scoped directory/detail/search/pagination, invitations/resend/expiry, activation proof independent of global account, status/role lifecycle, bounded delegation, permission visibility, audit/version/concurrency and last usable owner protection. Manager may manage academic_staff/teacher only; accountant/admin memberships remain owner-only. Service owner writes use READ COMMITTED; SQL rejects snapshot-isolated removal to prevent stale counts.
+- Remote Staff commit/CI NOT_VERIFIED until the exact pushed SHA is observed. Overall release BLOCKED; remaining P0 business modules and external gates remain open. No production deployment or native-device/legal/staging acceptance is inferred.

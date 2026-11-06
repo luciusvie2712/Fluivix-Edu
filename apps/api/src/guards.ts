@@ -70,7 +70,7 @@ export class AccessGuard implements CanActivate {
     if (
       membership?.status !== "ACTIVE" ||
       !membership.roles.some((r) => r.role === role) ||
-      !needed.some((p) => hasPermission(role, p))
+      !needed.some((p) => hasPermission(role, p, membership.staffDelegated))
     )
       throw new ForbiddenException("Không có quyền thực hiện thao tác.");
     const tenant = membership.tenant;

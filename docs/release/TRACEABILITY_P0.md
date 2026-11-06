@@ -10,11 +10,11 @@ gates are evidenced. File references identify code to review, not proof of PASS.
 | FR-PL-01 | Platform admin tạo/kích hoạt/tạm khóa tenant và owner đầu tiên | PARTIAL | apps/api/src/platform*; tests/integration/platform-cases.ts; tests/e2e/platform* |
 | FR-PL-02 | Thiết lập gói dịch vụ với giới hạn người dùng, lớp, dung lượng | PARTIAL | apps/api/src/platform*; tests/integration/platform-cases.ts; tests/e2e/platform* |
 | FR-PL-03 | Tenant xem trạng thái gói và ngày hết hạn | PARTIAL | apps/api/src/platform*; tests/integration/platform-cases.ts; tests/e2e/platform* |
-| FR-AU-01 | Đăng nhập email + mật khẩu; reset mật khẩu | PARTIAL | apps/api/src/auth*; mobile-auth.ts; tests/integration/identity.test.ts; native-cases.ts |
-| FR-AU-02 | Mời nhân sự, phụ huynh và kích hoạt học viên | PARTIAL | apps/api/src/auth*; mobile-auth.ts; tests/integration/identity.test.ts; native-cases.ts |
-| FR-AU-03 | Chọn tenant/ngữ cảnh vai trò khi một user có nhiều quyền | PARTIAL | apps/api/src/auth*; mobile-auth.ts; tests/integration/identity.test.ts; native-cases.ts |
-| FR-AU-04 | RBAC + object-level permission; quản lý phiên đăng nhập | PARTIAL | apps/api/src/auth*; mobile-auth.ts; tests/integration/identity.test.ts; native-cases.ts |
-| FR-AU-06 | Đăng xuất và thu hồi refresh token | PARTIAL | apps/api/src/auth*; mobile-auth.ts; tests/integration/identity.test.ts; native-cases.ts |
+| FR-AU-01 | Đăng nhập email + mật khẩu; reset mật khẩu | PARTIAL | apps/api/src/auth*; staff.ts; staff-policy.ts; mobile-auth.ts; tests/integration/identity.test.ts; staff-cases.ts; native-cases.ts; tests/e2e/staff.spec.ts |
+| FR-AU-02 | Mời nhân sự, phụ huynh và kích hoạt học viên | PARTIAL | apps/api/src/auth*; staff.ts; staff-policy.ts; mobile-auth.ts; tests/integration/identity.test.ts; staff-cases.ts; native-cases.ts; tests/e2e/staff.spec.ts |
+| FR-AU-03 | Chọn tenant/ngữ cảnh vai trò khi một user có nhiều quyền | PARTIAL | apps/api/src/auth*; staff.ts; staff-policy.ts; mobile-auth.ts; tests/integration/identity.test.ts; staff-cases.ts; native-cases.ts; tests/e2e/staff.spec.ts |
+| FR-AU-04 | RBAC + object-level permission; quản lý phiên đăng nhập | PARTIAL | apps/api/src/auth*; staff.ts; staff-policy.ts; mobile-auth.ts; tests/integration/identity.test.ts; staff-cases.ts; native-cases.ts; tests/e2e/staff.spec.ts |
+| FR-AU-06 | Đăng xuất và thu hồi refresh token | PARTIAL | apps/api/src/auth*; staff.ts; staff-policy.ts; mobile-auth.ts; tests/integration/identity.test.ts; staff-cases.ts; native-cases.ts; tests/e2e/staff.spec.ts |
 | FR-US-01 | Tạo/sửa/ngưng hoạt động hồ sơ học viên | PARTIAL | apps/api/src/students.ts; guardian-links.ts; teaching.service.ts; tests/integration/identity.test.ts; teaching-cases.ts |
 | FR-US-02 | Quản lý giáo viên và phân công lớp | PARTIAL | apps/api/src/students.ts; guardian-links.ts; teaching.service.ts; tests/integration/identity.test.ts; teaching-cases.ts |
 | FR-US-03 | Liên kết guardian ↔ student, nhiều-nhiều | PARTIAL | apps/api/src/students.ts; guardian-links.ts; teaching.service.ts; tests/integration/identity.test.ts; teaching-cases.ts |
@@ -76,7 +76,7 @@ the cross-surface scenario stays PARTIAL.
 | TC-024 | FR-US-06 | Học viên chưa kích hoạt account | Vẫn ghi danh/điểm danh/thu phí được | PARTIAL | integration accountless enrollment/roster/finance; complete staff Web journey pending |
 | TC-025 | FR-AU-04 | Teacher cố ghi điểm lớp không phân công | 403/404, audit suspicious access phù hợp | PARTIAL | integration unassigned teacher grade denial; suspicious-access audit review pending |
 | TC-026 | FR-FI-04 | Thanh toán hai đợt, kỳ quá hạn | Derived PARTIAL/OVERDUE/PAID và số dư đúng | PARTIAL | integration money/derived states; Web two-payment/overdue journey pending |
-| TC-027 | FR-CL-05 | Chỉnh schedule_rule giữa kỳ | Không ghi đè session đã có điểm danh/chỉnh tay | MISSING | Rule version editing/rolling jobs absent; repeated generation preserves existing rows only |
-| TC-028 | FR-AU-02 | Invitation token hết hạn hoặc dùng lại | Từ chối, có resend flow | PARTIAL | integration expired/reused invite + real mail activation; expired resend UI journey pending |
+| TC-027 | FR-CL-05 | Chỉnh schedule_rule giữa kỳ | Không ghi đè session đã có điểm danh/chỉnh tay | DONE_VERIFIED | integration TC027 preserves manual/roster/completed/prepared lessons and rollback; teaching-csv-final-e2e.json edits rule/history and retains published session |
+| TC-028 | FR-AU-02 | Invitation token hết hạn hoặc dùng lại | Từ chối, có resend flow | PARTIAL | staff integration expiry/resend/old-token/reuse; Web real mail resend/activation; remaining Student/Guardian flows and external UAT separate |
 | TC-029 | NFR-06 | Truy vấn `id` của tenant khác trên mọi resource | Không trả data cross-tenant | PARTIAL | Fresh negative student/nested FK/teaching/import/platform scopes; full inventory remaining |
 | TC-030 | NFR-05 | Restore backup staging | Có recovery evidence, integrity kiểm tra | BLOCKED | Approved staging backup/restore target, credentials and recovery evidence absent |

@@ -1,0 +1,101 @@
+{
+  "date": "2026-11-06",
+  "module": "Staff/RBAC",
+  "localVerdict": "PASS",
+  "remoteVerdict": "NOT_VERIFIED",
+  "releaseVerdict": "BLOCKED",
+  "baseCommit": "1a86b2b7352fa6e4c5ef5eeb86a0ac0f1250495b",
+  "checks": {
+    "lint": "PASS",
+    "typecheckIncludingTooling": "PASS",
+    "format": "PASS",
+    "unit": {
+      "passed": 49
+    },
+    "mobileJest": {
+      "passed": 15
+    },
+    "build": {
+      "tasks": 8,
+      "status": "PASS"
+    },
+    "integration": {
+      "passed": 51,
+      "skipped": 0,
+      "report": "docs/release/evidence/integration-2026-11-06-staff-owner-account-final.json"
+    },
+    "e2e": {
+      "passed": 26,
+      "skipped": 0,
+      "flaky": 0,
+      "report": "docs/release/evidence/e2e-2026-11-06-staff-verified.json"
+    },
+    "mobileApiSmoke": "PASS; real API, not device UI",
+    "expoAlignment": "PASS",
+    "contractGeneration": {
+      "status": "PASS",
+      "sha256": {
+        "apps/api/openapi.json": "f9d1a5b278b2bec5935cffc683fa62491dea24d302c8ebaea99254d17383a396",
+        "packages/api-client/src/schema.d.ts": "cfa227b2b36bc7bf43687086acb2f5c91de391cfb35dc7eb9437c447d6087954"
+      }
+    },
+    "dependencyAudit": {
+      "high": 0,
+      "critical": 0,
+      "moderate": 4,
+      "low": 1
+    },
+    "localSecretScreen": "PASS; local values/patterns never printed"
+  },
+  "securityBoundaries": [
+    "current actor/session rechecked under tenant lock",
+    "delegated manager limited to academic_staff/teacher; financial/admin memberships owner only",
+    "tenant invitation acceptance independent from global account activation",
+    "pending global names/permissions redacted, including after suspension",
+    "last usable owner protected in service and SQL; snapshot-isolated SQL removal fails closed",
+    "self revocation logs out, revokes selected session, clears cache/deep links"
+  ],
+  "visual": {
+    "widths": [
+      360,
+      768,
+      1024,
+      1440
+    ],
+    "axe": "no violations on exercised views",
+    "tasteSourceSha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+    "proMaxSourceSha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+    "animationSourceSha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+    "manualReview": "actual directory360/1440 and detail360 screenshots viewed"
+  },
+  "sourceHashes": {
+    "normalization": "CRLF to LF",
+    "sha256": {
+      "apps/api/src/staff-policy.ts": "9943e53451a1eaff5925b2bd336db300df1eb66cc9d1291ebe930b4397f6bffa",
+      "apps/api/src/staff.ts": "119c18851220bb2f0f62f4d978fe8000d92474c823e86538507964b122f987b0",
+      "apps/web/app/app/staff/[id]/page.tsx": "d29f8fc03243ad3890d0e065b82117ebc3b84c5dba1d353a169268c7f18f3b99",
+      "apps/web/app/app/staff/page.tsx": "8b5ecf877cc9d3e9c19c35557b45dbadec4ead5f37e77dc6df80bc9f359ce674",
+      "apps/web/components/staff-workspace.tsx": "b634181c9fb51b5d923ab64e6a4fef46b3910b247833aae62af98defcc2b18d4",
+      "infra/prisma/migrations/202611060020_staff_administration/migration.sql": "02d10aecf3ebf35f668d09630164a4ac76ba9b4962636f5b3a2888b0bbe84777",
+      "tests/e2e/staff.spec.ts": "70b4da3b3b26f091e24249f5d0218d3f6d2f3a5dfdb43bfc3af1034c64e462cc",
+      "tests/integration/staff-cases.ts": "f3ed9683ca6fe7856c420e9b22131cdebbe424a3fba5a41e7b48e62a3ed05c02",
+      "apps/api/openapi.json": "f9d1a5b278b2bec5935cffc683fa62491dea24d302c8ebaea99254d17383a396",
+      "apps/api/src/app.ts": "895d8a3e51c3377365de333e7d74376f64a9238993fe6ba3aa73caac3f542047",
+      "apps/api/src/auth.service.ts": "c766a9b8c7a8f0f8d4a8b83b9a004c8fa6cd1c2e31f89da3805f99a55c78c157",
+      "apps/api/src/guardian-links.ts": "7cdd984c5978c90538abc470c45218b9a5fd8ec494dc822c5267cec107311f5e",
+      "apps/api/src/guards.ts": "c95439598b2cae615fc9901f761e2db5a305b03ec9d2f2c9e64e68c2c82e1008",
+      "apps/api/src/response.dto.ts": "7dd4cf3e6cb746c37e35b348e365d3fb33a9a90459556295bb26e21419ddd72c",
+      "apps/api/src/security.ts": "e54e566077f8395fcfa7a080ee168bdef59383314f14dbaa1d2f91dbde16ad3b",
+      "apps/web/app/app/layout.tsx": "2f996cef239dd3edeaa79895ab29d57f3742c9e087722c8993227bcc808dfc55",
+      "apps/web/lib/api.ts": "0ccf42f4b86b72f4ad8b8f31f0e91b730fba1c44882b611c092fe8f71eb77562",
+      "apps/worker/src/delivery.ts": "368aebce5e52f9abc5fd351888e719404b547baa7919d0ba9568fb0434b3d8a3",
+      "infra/prisma/schema.prisma": "7d9f84e3bc3d228c680c8878e9d3195f389ca8bffce9cd08b08c67de264b7f68",
+      "packages/api-client/src/schema.d.ts": "cfa227b2b36bc7bf43687086acb2f5c91de391cfb35dc7eb9437c447d6087954",
+      "tests/integration/identity.test.ts": "dd9e6aaa2a880aa7da89945f91580a80ce5ab599c1ce3eee79fc1f1907457a7d",
+      "tests/integration/migration-cases.ts": "55c39fd1efbfc0dc8b1e55a7da32d62e051b987922de15f2a4b567de913705c9",
+      "tooling/release-inventory.ts": "a3f81cfd08907dd0a2bc44cc0bb5581a9a658657140842debf41ded7faecad8b"
+    }
+  },
+  "priorFailures": "Preserved dated focused/diagnostic/full reports are historical attempts, not current PASS evidence.",
+  "remaining": "Guardian/Teacher/Assessment/Finance/Reports/Privacy and M4 work remain; staging/legal/signed-device/real-push approvals absent."
+}

@@ -1,6 +1,650 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/api/v1/permissions": {
+      "get": {
+        "operationId": "StaffController_catalog",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PermissionCatalogResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["staff"]
+      }
+    },
+    "/api/v1/staff": {
+      "get": {
+        "operationId": "StaffController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["INVITED", "ACTIVE", "SUSPENDED", "REVOKED"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/StaffListResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["staff"]
+      },
+      "post": {
+        "operationId": "AuthController_invite",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/InviteDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/InviteResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["identity"]
+      }
+    },
+    "/api/v1/staff/invitations": {
+      "get": {
+        "operationId": "StaffController_invitations",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaffInvitationsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["staff"]
+      }
+    },
+    "/api/v1/staff/invitations/{id}/resend": {
+      "post": {
+        "operationId": "StaffController_resend",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/InviteResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["staff"]
+      }
+    },
+    "/api/v1/staff/{id}": {
+      "get": {
+        "operationId": "StaffController_detail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/StaffResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["staff"]
+      },
+      "patch": {
+        "operationId": "StaffController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/StaffUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/StaffResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["staff"]
+      }
+    },
+    "/api/v1/staff/{id}/roles": {
+      "post": {
+        "operationId": "StaffController_add",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/StaffRoleChange" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/StaffResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["staff"]
+      }
+    },
+    "/api/v1/staff/{id}/roles/{roleId}": {
+      "delete": {
+        "operationId": "StaffController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "roleId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/StaffChange" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/StaffResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["staff"]
+      }
+    },
     "/api/v1/students/imports": {
       "post": {
         "operationId": "StudentImportsController_preview",
@@ -684,64 +1328,6 @@
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/RevokeResponse" }
-              }
-            }
-          },
-          "401": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "403": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "422": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          },
-          "429": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
-              }
-            }
-          }
-        },
-        "security": [{ "bearer": [] }],
-        "tags": ["identity"]
-      }
-    },
-    "/api/v1/staff": {
-      "post": {
-        "operationId": "AuthController_invite",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/InviteDto" }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/InviteResponse" }
               }
             }
           },
@@ -8543,6 +9129,191 @@
       "bearer": { "scheme": "bearer", "bearerFormat": "JWT", "type": "http" }
     },
     "schemas": {
+      "ErrorView": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string" },
+          "message": { "type": "string" }
+        },
+        "required": ["code", "message"]
+      },
+      "MetaDto": {
+        "type": "object",
+        "properties": { "traceId": { "type": "string" } },
+        "required": ["traceId"]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": { "$ref": "#/components/schemas/ErrorView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["error", "meta"]
+      },
+      "Role": {
+        "type": "string",
+        "enum": [
+          "owner",
+          "manager",
+          "academic_staff",
+          "accountant",
+          "teacher",
+          "student",
+          "guardian"
+        ]
+      },
+      "EffectiveRole": {
+        "type": "object",
+        "properties": {
+          "role": { "allOf": [{ "$ref": "#/components/schemas/Role" }] },
+          "permissions": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": ["role", "permissions"]
+      },
+      "PermissionCatalogResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/EffectiveRole" }
+          },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "StaffView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "userId": { "type": "string", "format": "uuid" },
+          "displayName": { "type": "string" },
+          "email": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["INVITED", "ACTIVE", "SUSPENDED", "REVOKED"]
+          },
+          "version": { "type": "number" },
+          "staffDelegated": { "type": "boolean" },
+          "activationPending": { "type": "boolean" },
+          "roles": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/EffectiveRole" }
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "displayName",
+          "email",
+          "status",
+          "version",
+          "staffDelegated",
+          "activationPending",
+          "roles"
+        ]
+      },
+      "PageView": {
+        "type": "object",
+        "properties": {
+          "page": { "type": "number" },
+          "limit": { "type": "number" },
+          "total": { "type": "number" },
+          "totalPages": { "type": "number" }
+        },
+        "required": ["page", "limit", "total", "totalPages"]
+      },
+      "StaffListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/StaffView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "StaffInvitationView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "email": { "type": "string" },
+          "role": { "allOf": [{ "$ref": "#/components/schemas/Role" }] },
+          "expiresAt": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "EXPIRED", "ACCEPTED", "REVOKED"]
+          }
+        },
+        "required": ["id", "email", "role", "expiresAt", "status"]
+      },
+      "StaffInvitationsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/StaffInvitationView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "InviteView": {
+        "type": "object",
+        "properties": {
+          "invitationId": { "type": "string", "format": "uuid" },
+          "expiresAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["invitationId", "expiresAt"]
+      },
+      "InviteResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/InviteView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "StaffResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/StaffView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "StaffUpdate": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number", "minimum": 1 },
+          "reason": { "type": "string", "minLength": 10, "maxLength": 500 },
+          "status": {
+            "type": "string",
+            "enum": ["INVITED", "ACTIVE", "SUSPENDED", "REVOKED"]
+          },
+          "staffDelegated": { "type": "boolean" }
+        },
+        "required": ["version", "reason"]
+      },
+      "StaffRoleChange": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number", "minimum": 1 },
+          "reason": { "type": "string", "minLength": 10, "maxLength": 500 },
+          "role": { "allOf": [{ "$ref": "#/components/schemas/Role" }] }
+        },
+        "required": ["version", "reason", "role"]
+      },
+      "StaffChange": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number", "minimum": 1 },
+          "reason": { "type": "string", "minLength": 10, "maxLength": 500 }
+        },
+        "required": ["version", "reason"]
+      },
       "StudentCsvInput": {
         "type": "object",
         "properties": {
@@ -8585,11 +9356,6 @@
           "rows"
         ]
       },
-      "MetaDto": {
-        "type": "object",
-        "properties": { "traceId": { "type": "string" } },
-        "required": ["traceId"]
-      },
       "ImportResponse": {
         "type": "object",
         "properties": {
@@ -8597,22 +9363,6 @@
           "meta": { "$ref": "#/components/schemas/MetaDto" }
         },
         "required": ["data", "meta"]
-      },
-      "ErrorView": {
-        "type": "object",
-        "properties": {
-          "code": { "type": "string" },
-          "message": { "type": "string" }
-        },
-        "required": ["code", "message"]
-      },
-      "ErrorResponse": {
-        "type": "object",
-        "properties": {
-          "error": { "$ref": "#/components/schemas/ErrorView" },
-          "meta": { "$ref": "#/components/schemas/MetaDto" }
-        },
-        "required": ["error", "meta"]
       },
       "LoginDto": {
         "type": "object",
@@ -8753,18 +9503,6 @@
         },
         "required": ["id", "name", "status", "timezone"]
       },
-      "Role": {
-        "type": "string",
-        "enum": [
-          "owner",
-          "manager",
-          "academic_staff",
-          "accountant",
-          "teacher",
-          "student",
-          "guardian"
-        ]
-      },
       "RoleView": {
         "type": "object",
         "properties": {
@@ -8775,6 +9513,7 @@
       "MembershipView": {
         "type": "object",
         "properties": {
+          "staffDelegated": { "type": "boolean" },
           "tenant": { "$ref": "#/components/schemas/TenantView" },
           "roles": {
             "type": "array",
@@ -8868,22 +9607,6 @@
         },
         "required": ["email", "role"]
       },
-      "InviteView": {
-        "type": "object",
-        "properties": {
-          "invitationId": { "type": "string", "format": "uuid" },
-          "expiresAt": { "type": "string", "format": "date-time" }
-        },
-        "required": ["invitationId", "expiresAt"]
-      },
-      "InviteResponse": {
-        "type": "object",
-        "properties": {
-          "data": { "$ref": "#/components/schemas/InviteView" },
-          "meta": { "$ref": "#/components/schemas/MetaDto" }
-        },
-        "required": ["data", "meta"]
-      },
       "NativeTokens": {
         "type": "object",
         "properties": {
@@ -8922,16 +9645,6 @@
           }
         },
         "required": ["id", "studentCode", "fullName", "status"]
-      },
-      "PageView": {
-        "type": "object",
-        "properties": {
-          "page": { "type": "number" },
-          "limit": { "type": "number" },
-          "total": { "type": "number" },
-          "totalPages": { "type": "number" }
-        },
-        "required": ["page", "limit", "total", "totalPages"]
       },
       "StudentListResponse": {
         "type": "object",

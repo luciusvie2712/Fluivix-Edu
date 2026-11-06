@@ -38,6 +38,10 @@ export const permissions = {
     "student.read",
     "student.write",
     "staff.invite",
+    "staff.read",
+    "staff.manage",
+    "staff.roles",
+    "permissions.read",
     "tenant.read",
     "audit.read",
     "teaching.manage",
@@ -52,6 +56,7 @@ export const permissions = {
     "guardian.manage",
   ],
   manager: [
+    "staff.read",
     "student.read",
     "student.write",
     "tenant.read",
@@ -102,6 +107,15 @@ export const permissions = {
     "notification.read",
   ],
 } satisfies Record<Role, readonly string[]>;
-export function hasPermission(role: Role, permission: string): boolean {
-  return (permissions[role] as readonly string[]).includes(permission);
+export function hasPermission(
+  role: Role,
+  permission: string,
+  staffDelegated = false,
+): boolean {
+  return (
+    (permissions[role] as readonly string[]).includes(permission) ||
+    (role === "manager" &&
+      staffDelegated &&
+      ["staff.invite", "staff.manage"].includes(permission))
+  );
 }

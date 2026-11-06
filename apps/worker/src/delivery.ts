@@ -39,7 +39,11 @@ export async function deliver(
     const invitation = await db.invitation.findUniqueOrThrow({
       where: { id: event.aggregateId },
     });
-    if (invitation.usedAt || invitation.expiresAt <= new Date()) {
+    if (
+      invitation.usedAt ||
+      invitation.revokedAt ||
+      invitation.expiresAt <= new Date()
+    ) {
       await db.outboxEvent.update({
         where: { id: eventId },
         data: { processedAt: new Date() },

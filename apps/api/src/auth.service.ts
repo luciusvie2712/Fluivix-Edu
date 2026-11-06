@@ -14,6 +14,7 @@ import { Claims, hashToken, newToken, signAccess } from "./security";
 import { AcceptInvitationDto } from "./auth.dto";
 import { sealToken } from "@fluivix/server-crypto";
 import { assertQuota } from "./subscription-policy";
+import { managedStaffRoles, staffActor } from "./staff-policy";
 
 const normalize = (email: string) => email.trim().toLowerCase();
 const passwordOptions = {
@@ -153,6 +154,7 @@ export class AuthService {
     const memberships = await this.db.membership.findMany({
       where: { userId: claims.sub, status: "ACTIVE" },
       select: {
+        staffDelegated: true,
         tenant: {
           select: {
             id: true,
@@ -172,7 +174,7 @@ export class AuthService {
     });
     return {
       ...user,
-      memberships: memberships.map(({ tenant, roles }) => {
+      memberships: memberships.map(({ tenant, roles, staffDelegated }) => {
         const { subscriptions, ...view } = tenant,
           subscription = subscriptions[0];
         const status = ["ACTIVE", "PAST_DUE_GRACE"].includes(view.status)
@@ -182,7 +184,7 @@ export class AuthService {
               ? "PAST_DUE_GRACE"
               : "ACTIVE"
           : view.status;
-        return { tenant: { ...view, status }, roles };
+        return { tenant: { ...view, status }, roles, staffDelegated };
       }),
       activeTenantId: claims.tenantId ?? null,
       activeRole: claims.role ?? null,
@@ -263,6 +265,7 @@ export class AuthService {
       });
       if (
         current.usedAt ||
+        current.revokedAt ||
         current.expiresAt <= new Date() ||
         ["SUSPENDED", "TERMINATED"].includes(current.tenant.status)
       )
@@ -335,7 +338,11 @@ export class AuthService {
         throw new ForbiddenException("Liên hệ trung tâm để khôi phục quyền.");
       await tx.membership.update({
         where: { id: membership.id },
-        data: { status: "ACTIVE" },
+        data: {
+          status: "ACTIVE",
+          activationPending: false,
+          version: { increment: 1 },
+        },
       });
       await tx.membershipRole.upsert({
         where: {
@@ -451,12 +458,105 @@ export class AuthService {
       message: "Nếu tài khoản phù hợp, hướng dẫn sẽ được gửi qua email.",
     };
   }
-  async invite(claims: Claims, email: string, role: Role, traceId: string) {
+  async invite(
+    claims: Claims,
+    email: string,
+    role: Role,
+    traceId: string,
+    replacingId?: string,
+    guardianWorkflow = false,
+  ) {
     if (!claims.tenantId) throw new ForbiddenException();
     const tenantId = claims.tenantId;
     const token = newToken();
     const encryptedToken = sealToken(token);
     return this.db.$transaction(async (tx) => {
+      const actor = await staffActor(
+        tx,
+        claims,
+        guardianWorkflow && role === "guardian"
+          ? "guardian.manage"
+          : "staff.invite",
+      );
+      if (
+        claims.role === "manager" &&
+        ![...managedStaffRoles, "guardian"].includes(role)
+      )
+        throw new ForbiddenException(
+          "Không thể mời vai trò vượt phạm vi được ủy quyền.",
+        );
+      if (replacingId) {
+        const previous = await tx.invitation.findFirst({
+          where: {
+            id: replacingId,
+            tenantId,
+            email: normalize(email),
+            role,
+            usedAt: null,
+            revokedAt: null,
+          },
+        });
+        if (!previous)
+          throw new ConflictException("Lời mời đã thay đổi. Vui lòng tải lại.");
+      }
+      const user = await tx.user.upsert({
+        where: { email: normalize(email) },
+        create: {
+          email: normalize(email),
+          displayName: normalize(email),
+          status: "INVITED",
+        },
+        update: {},
+      });
+      if (user.id === actor.userId)
+        throw new ForbiddenException("Không tự mời để nâng quyền.");
+      const existing = await tx.membership.findUnique({
+        where: { tenantId_userId: { tenantId, userId: user.id } },
+        include: { roles: true },
+      });
+      if (existing && ["SUSPENDED", "REVOKED"].includes(existing.status))
+        throw new ConflictException(
+          "Khôi phục thành viên trước khi gửi lời mời.",
+        );
+      if (
+        existing?.status === "ACTIVE" &&
+        existing.roles.some((r) => r.role === role)
+      )
+        throw new ConflictException("Thành viên đã có vai trò này.");
+      if (
+        claims.role === "manager" &&
+        existing &&
+        (existing.staffDelegated ||
+          existing.roles.some((r) => ["owner", "manager"].includes(r.role)))
+      )
+        throw new ForbiddenException();
+      await assertQuota(tx, tenantId, "users", existing ? 0 : 1);
+      const membership =
+        existing ??
+        (await tx.membership.create({
+          data: {
+            tenantId,
+            userId: user.id,
+            status: "INVITED",
+            activationPending: true,
+          },
+        }));
+      if (membership.status === "INVITED")
+        await tx.membershipRole.upsert({
+          where: { membershipId_role: { membershipId: membership.id, role } },
+          create: { membershipId: membership.id, role },
+          update: {},
+        });
+      await tx.invitation.updateMany({
+        where: {
+          tenantId,
+          email: normalize(email),
+          role,
+          usedAt: null,
+          revokedAt: null,
+        },
+        data: { revokedAt: new Date() },
+      });
       const invitation = await tx.invitation.create({
         data: {
           tenantId,

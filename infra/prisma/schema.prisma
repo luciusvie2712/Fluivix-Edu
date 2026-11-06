@@ -118,13 +118,16 @@ model SubscriptionEvent {
 }
 
 model Membership {
-  id       String           @id @default(uuid()) @db.Uuid
-  tenantId String           @map("tenant_id") @db.Uuid
-  userId   String           @map("user_id") @db.Uuid
-  status   MembershipStatus @default(INVITED)
-  tenant   Tenant           @relation(fields: [tenantId], references: [id], onDelete: Restrict)
-  user     User             @relation(fields: [userId], references: [id], onDelete: Restrict)
-  roles    MembershipRole[]
+  activationPending Boolean @default(false) @map("activation_pending")
+  version        Int              @default(1)
+  staffDelegated Boolean          @default(false) @map("staff_delegated")
+  id             String           @id @default(uuid()) @db.Uuid
+  tenantId       String           @map("tenant_id") @db.Uuid
+  userId         String           @map("user_id") @db.Uuid
+  status         MembershipStatus @default(INVITED)
+  tenant         Tenant           @relation(fields: [tenantId], references: [id], onDelete: Restrict)
+  user           User             @relation(fields: [userId], references: [id], onDelete: Restrict)
+  roles          MembershipRole[]
 
   @@unique([tenantId, userId])
   @@unique([tenantId, id])
@@ -172,6 +175,7 @@ model PasswordResetToken {
 }
 
 model Invitation {
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz
   id        String    @id @default(uuid()) @db.Uuid
   tenantId  String    @map("tenant_id") @db.Uuid
   email     String    @db.VarChar(254)
@@ -695,6 +699,7 @@ model LessonRevision {
 }
 
 model AuditLog {
+  metadata    Json?
   id          String   @id @default(uuid()) @db.Uuid
   tenantId    String?  @map("tenant_id") @db.Uuid
   actorUserId String?  @map("actor_user_id") @db.Uuid

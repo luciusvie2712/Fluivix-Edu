@@ -49,6 +49,7 @@ export class RoleView {
   @ApiProperty({ enum: Role, enumName: "Role" }) role!: Role;
 }
 export class MembershipView {
+  @ApiPropertyOptional() staffDelegated?: boolean;
   @ApiProperty({ type: TenantView }) tenant!: TenantView;
   @ApiProperty({ type: [RoleView] }) roles!: RoleView[];
 }

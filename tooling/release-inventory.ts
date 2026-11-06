@@ -38,7 +38,7 @@ if (fr.length !== 33 || tc.length !== 30)
   throw new Error("Spec inventory drift: reconcile before releasing");
 const evidence: Record<string, string> = {
   PL: "apps/api/src/platform*; tests/integration/platform-cases.ts; tests/e2e/platform*",
-  AU: "apps/api/src/auth*; mobile-auth.ts; tests/integration/identity.test.ts; native-cases.ts",
+  AU: "apps/api/src/auth*; staff.ts; staff-policy.ts; mobile-auth.ts; tests/integration/identity.test.ts; staff-cases.ts; native-cases.ts; tests/e2e/staff.spec.ts",
   US: "apps/api/src/students.ts; guardian-links.ts; teaching.service.ts; tests/integration/identity.test.ts; teaching-cases.ts",
   CL: "apps/api/src/teaching.*; infra/prisma/migrations/202610240016_schedule_rules; tests/integration/teaching-cases.ts",
   AT: "apps/api/src/teaching.*; apps/mobile/app; tests/integration/teaching-cases.ts",
@@ -157,7 +157,7 @@ const acceptance: Record<string, [string, string]> = {
   ],
   "TC-028": [
     "PARTIAL",
-    "integration expired/reused invite + real mail activation; expired resend UI journey pending",
+    "staff integration expiry/resend/old-token/reuse; Web real mail resend/activation; remaining Student/Guardian flows and external UAT separate",
   ],
   "TC-029": [
     "PARTIAL",
