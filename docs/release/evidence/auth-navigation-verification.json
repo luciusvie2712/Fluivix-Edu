@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-07",
+  "baseCommit": "28d673fce6fb24225f1f311cfb83e68be5425050",
+  "localVerdict": "PASS",
+  "remoteVerdict": "NOT_VERIFIED",
+  "releaseVerdict": "BLOCKED",
+  "cause": "CI42293230154:74 browserPASS/1FAIL. The student cross-tenant test immediately called page.goto(oldDetailUrl) after clicking centreB selection. Actual artifact DOM still showed centreA and the legitimate centreA profile: asynchronous context POST/navigation had not completed.",
+  "repair": "Await actual switch-contextPOST200, /app/students URL and centreB topbar before requesting old centreA detail. Original404 error and private-field absence assertions retained. No first(), sleeps, retry/timeout increase, production or guard changes.",
+  "checks": {
+    "integration": 98,
+    "browser": 75,
+    "flaky": 0,
+    "skipped": 0,
+    "unit": 60,
+    "mobileJest": 15,
+    "actualMobileApiSmoke": "PASS",
+    "expoAlignment": "PASS",
+    "uncachedBuild": 8,
+    "uncachedTypesAndTools": "PASS",
+    "lintFormat": "PASS",
+    "prisma": "PASS;schema and applied001..027 unchanged",
+    "stableContract": {
+      "openapiSha256": "5D13A53AE7821FB858150F07FBAB36DF3D79118D8380B578107E00B8AD9B83D4",
+      "operations": 168,
+      "stable": true,
+      "clientSha256": "AEFE6D8A462ABE40DAD388F9763CBD8719F4322733EB67D9450CD768949EDD0E"
+    },
+    "offlineFrozenInstall": "PASS",
+    "audit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    },
+    "secretScreen": "PASS;values withheld;.env unchanged"
+  },
+  "frozenSourceProof": {
+    "baseCommit": "28d673fce6fb24225f1f311cfb83e68be5425050",
+    "rawSourceSha256": {
+      "tests/e2e/students.spec.ts": "5b8f80d417fe80a2e7f693e6250d098258d2b21e0e720bddcbbe9a8064fdaaae"
+    },
+    "stable": true,
+    "envUnchanged": true
+  },
+  "limitations": "Auth production source remains exactly28d673f. Repair exact-SHA CI pending; notifications/privacy/remaining operational/M4 and external staging/legal/UAT/signed-device/real-push gates remain. No production-ready claim."
+}

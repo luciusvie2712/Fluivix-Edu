@@ -299,6 +299,12 @@ test("staff creates and edits a real student, resolves version conflict, deactiv
   await page
     .getByRole("link", { name: "Đổi trung tâm / vai trò", exact: true })
     .click();
+  const centreSwitched = page.waitForResponse(
+    (response) =>
+      response.url().endsWith("/api/v1/auth/switch-context") &&
+      response.request().method() === "POST" &&
+      response.status() === 200,
+  );
   await page
     .locator("section")
     .filter({
@@ -309,6 +315,9 @@ test("staff creates and edits a real student, resolves version conflict, deactiv
     })
     .getByRole("button", { name: "Chủ trung tâm", exact: true })
     .click();
+  await centreSwitched;
+  await expect(page).toHaveURL("/app/students");
+  await expect(page.locator(".topbar")).toContainText("Trung tâm kiểm thử B");
   await page.goto(detailUrl);
   await expect(page.getByRole("main").getByRole("alert")).toContainText(
     "Không tìm thấy dữ liệu trong trung tâm đang chọn",

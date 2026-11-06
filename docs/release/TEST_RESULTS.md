@@ -2,6 +2,12 @@
 
 ## Current checkpoint — 2026-11-07
 
+Auth28d673f passed98 integration/75browser and all local gates, but exact CI42293230154 failed one old student test that interrupted centreB selection before it completed. A test-only navigation repair now passes the complete fresh98integration/75browser0skip/flaky and remaining local gate, preserving404/private-field assertions and all production guards. Repair exact-SHA CI pending. Latest successful remote reference remains Audit732de75/CI42281736732. Notifications/privacy/remaining operational/M4 and external staging/legal/UAT/signed-device/real-push gates remain; release BLOCKED.
+
+## Historical checkpoints and detailed evidence
+
+## Current checkpoint — 2026-11-07
+
 Remote main732de75 has exact successful Audit CI42281736732(all30 steps). Web-session hardening now passes the complete local gate:98 integration/75 browser0skip/flaky,60unit/15mobile and all automated checks, stable168-operation contract. Real cookie-bound validation, coordinated multi-tab refresh/context/logout, old-scope data removal and financialPOST no-replay are verified. Four revised responsive images inspected. Auth commit/exact-SHA CI pending. Notifications/privacy/remaining operational/M4 and external staging/legal/UAT/signed-device/real-push gates remain; release BLOCKED.
 
 ## Historical checkpoints and detailed evidence
@@ -289,3 +295,9 @@ Owner availability clarification (2026-11-06): both service and SQL count only o
 - Safe GET at most one same-scope retry; financial/mutation requests never auto-replayed. Actual paymentPOST401 creates no receipt until explicit user retry; truly lost committed context response verified without repeatingPOST. Accessible network retry/loading and honest logout-error handling.
 - Final frozen-source matrix PASS:98 integration/75 browser0skip/flaky,60unit/15mobileJest,actual mobileAPI smoke,Expo alignment,8 uncached builds/types/tools,lint/format,Prisma,stable168-operation contract,frozen offlineinstall,audit0HIGH/CRITICAL. Four revised responsive screenshots manually reviewed; axe/Taste/keyboard/reduced motion pass. Three source repos/five skill IDs verified/applied; same design direction. .env unchanged, secret values withheld.
 - Retained fixture failures: required financial allocation missing, then deferred invoice/item invariant rejected separate transactions. Corrected synthetic fixture with atomic real invoice/item creation and valid allocation; guards/assertions retained. Evidence:evidence/web-session/verification.json. Exact Auth commit CI pending; release BLOCKED, remaining P0/M4 work continues.
+
+
+### Auth CI cross-tenant navigation repair — local PASS (2026-11-07)
+- Auth commit28d673f CI42293230154:74browserPASS/1FAIL; all earlier CI gates passed. Actual artifact showed the student test still in centreA after it interrupted asynchronous centreB selection with immediate page.goto. This did not demonstrate cross-tenant access under a centreB session.
+- Await actual contextPOST200, student-list URL and centreB topbar before old-centre detail navigation. Original404 and private-field absence assertions retained. No retries/timeouts/assertion/guard waiver; production source unchanged.
+- Complete frozen-source local gate PASS:98 integration/75browser0skip/flaky,60unit/15mobileJest,actual mobileAPI smoke,Expo alignment,8uncachedbuilds/types/tools,lint/format,Prisma,stable168contract,frozen offlineinstall,audit0HIGH/CRITICAL. .env and applied001..027 unchanged. Evidence:evidence/auth-navigation-verification.json; exact repair commit/SHA CI pending. Remaining P0/M4 work continues; overall release BLOCKED.
