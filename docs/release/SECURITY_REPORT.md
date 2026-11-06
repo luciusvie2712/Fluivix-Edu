@@ -1,5 +1,16 @@
 # Security report — current assessment
 
+Receivables bounded local gate PASS: finance.report.read is granted only to owner/accountant;
+the core financial report follows the finance plan flag independently of optional
+analytics. Summary and positive issued-debt rows reuse the same tenant-scoped SQL
+and timestamp inside RepeatableRead. Confirmed allocations, zero/VOID exclusion,
+unallocated-money separation and sums beyond bigint are exercised in3 focused
+API cases. Shared financial date/offset validation now rejects unsupported extreme
+boundaries422 rather than500. Plan fixtures respect subscribed catalogue
+immutability; no constraint was relaxed. Full79 integration/54 browser and the
+remaining local matrix pass. Exact Receivables-SHA remote CI and configured IANA
+financial calendar alignment remain pending; overall release BLOCKED.
+
 Payment/W15 local gate PASS (2026-11-06): payment reads now use same-snapshot
 allocations/balances, tenant-scoped SQL filters and actual recorded actor names.
 Guardian receipt reads redact internal references, receiver IDs/names and reversal

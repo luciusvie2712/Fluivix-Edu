@@ -43,6 +43,7 @@ import {
   PaymentsResponse,
 } from "./finance.dto";
 import { FinanceService } from "./finance.service";
+import { ReceivablesResponse } from "./receivables.dto";
 import { ListDto } from "./auth.dto";
 import {
   PaymentQuery,
@@ -71,6 +72,12 @@ import {
 @ApiResponse({ status: 429, type: ErrorResponse })
 export class FinanceController {
   constructor(private service: FinanceService) {}
+  @Get("finance/reports/receivables")
+  @TenantPermission("finance.report.read")
+  @ApiOkResponse({ type: ReceivablesResponse })
+  receivables(@Req() r: ApiRequest, @Query() q: InvoiceQuery) {
+    return this.service.receivables(requestClaims(r), q);
+  }
   @Post("fee-plans")
   @TenantPermission("finance.fee.write")
   @ApiCreatedResponse({ type: FeePlanResponse })

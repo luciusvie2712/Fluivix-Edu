@@ -2,6 +2,18 @@
 
 ## Latest checkpoint — 2026-11-06
 
+Remote main08b18f1 has exact successful CI42247248730 (all30 steps) for
+Payment/W15. Receivables has a bounded local gate PASS: named owner/accountant finance read,
+shared valued-invoice SQL, one repeatable snapshot/asOf for totals and positive
+debt rows, exact numeric-string sums, filters and Web overview are implemented.
+Full79 integration/54 browser cases pass with no skips/flakiness, alongside49 unit,
+15 mobile Jest and the complete local matrix. Commit/exact-SHA CI remain pending.
+The explicit Vietnam calendar contract will next be aligned with configured IANA
+tenant zones before full P0 acceptance. No new migration
+is needed; applied001..025 are immutable. Current scope does not complete W16,
+dashboard/attendance/revenue/audit/privacy/notifications or external M4 gates.
+Overall release remains BLOCKED. Older checkpoints below are historical.
+
 Remote main43e68bd has verified successful CI42241955407 for Invoice/W14,
 including the navigation synchronization repair. Failure42238649247 is retained
 separately; the repair has fresh44 browser/74 integration and the full local gate.
@@ -357,3 +369,10 @@ Owner availability clarification (2026-11-06): both service and SQL count only o
 - Full local matrix PASS:76 PostgreSQL/Redis integration,49 browser E2E with0skip/flaky,49 unit,15 mobile Jest,8 uncached builds plus final Web rebuild, strict types/tools/lint/format, actual mobile API smoke, Expo alignment, stable157-operation contract, frozen offline install and0HIGH/0CRITICAL audit (1LOW/4MODERATE tracked). Source hashes and final reports: evidence/payments/verification.json. Earlier full browser output is retained as superseded because its bundle preceded the final feedback edit; clean rebuild/full rerun supplies acceptance evidence.
 - All three skill sources/five IDs verified/applied. Four viewport axe/Taste/keyboard/reduced motion, eight final screen images and internal794x1123 print image inspected. Print uses actual confirmed receipt data and hides navigation/mutations; no VAT, bank, physical printer, device or legal approval claim. Previous-module regression visuals archived locally and original commit evidence restored.
 - Payment commit/exact-SHA CI remains NOT_VERIFIED until observed. Invoice43e68bd exact CI42241955407 SUCCESS proof is recorded. Receivables, remaining reports/dashboard/audit/privacy/notifications/business/M4 work and external release gates remain; overall release BLOCKED.
+
+
+### Receivables bounded local acceptance gate PASS (2026-11-06)
+- Operational owner/accountant finance.report.read report with real class/search/due-day/overdue filters, exact totals/positive-debt rows and actual invoice navigation. One repeatable snapshot/asOf and shared parameterized valued-invoice scope prevent summary/list drift. Aggregate numeric strings exceed bigint safely; individual amounts/immutable history remain constrained. Zero/paid invoices contribute to matching issued totals, VOID/reversed allocations are excluded, and unallocated receipts are not silently netted.
+- Explicit current-state/denominator labels, readonly/empty/forbidden/error/retry and out-of-range page recovery. Actual browser reversal and void update the report; invoice/payment mutations invalidate report cache. Calendar extremes/unsafe offsets return422; first bad subscribed-plan fixture was corrected using independent immutable plans/tenants and real sessions, without relaxing any constraint/assertion.
+- Full local matrix PASS:79 PostgreSQL/Redis integration,54 browser with0skip/flaky,49 unit,15 mobile Jest,8 uncached builds plus final Web rebuild, strict types/tools/lint/format, actual mobile API smoke, Expo alignment, stable158-operation contract, frozen offline install and0HIGH/0CRITICAL audit (1LOW/4MODERATE tracked). Source hashes/reports: evidence/receivables/verification.json. Applied001..025/schema unchanged. All three skill sources/five IDs applied/verified, four viewport overview/overdue axe/Taste, keyboard/reduced motion and all8 final images inspected. Previous-module regression visuals archived locally and original commit evidence restored.
+- Payment08b18f1 exact CI42247248730 SUCCESS (all30 steps) recorded. Receivables commit/exact-SHA CI remains NOT_VERIFIED. This gate covers explicit Vietnam financial calendar semantics; arbitrary configured IANA tenant-zone alignment is next, before full P0 acceptance. W16 dashboard/attendance/revenue and audit/privacy/notifications/business/M4 gaps remain. Overall release BLOCKED; no external approval or device claim.

@@ -22,7 +22,8 @@ import { requirePlanFeature } from "./subscription-policy";
 import { lockTenantActor } from "./tenant-actor";
 import { ListDto } from "./auth.dto";
 import { InvoiceQuery, InvoiceFeeQuery } from "./invoice.dto";
-import { invoiceRows } from "./invoice-query";
+import { invoiceRows, invoiceValueScope } from "./invoice-query";
+import { financialOffset } from "./finance-query";
 import { PaymentQuery } from "./payment.dto";
 import { paymentIds } from "./payment-query";
 import {
@@ -862,6 +863,58 @@ export class FinanceService {
         return invoiceRows(tx, this.tenant(c), q, studentId);
       },
       { isolationLevel: Prisma.TransactionIsolationLevel.RepeatableRead },
+    );
+  }
+  async receivables(c: Claims, q: InvoiceQuery) {
+    const tenant = this.tenant(c);
+    financialOffset(q);
+    return this.db.$transaction(
+      async (tx) => {
+        await requirePlanFeature(tx, tenant, "finance");
+        const now = new Date(),
+          { scoped, status } = invoiceValueScope(
+            tenant,
+            q,
+            undefined,
+            undefined,
+            now,
+          );
+        const [totals, rows] = await Promise.all([
+          tx.$queryRaw<
+            {
+              issued_count: bigint;
+              outstanding_count: bigint;
+              total_amount: string;
+              paid_amount: string;
+              balance_amount: string;
+              overdue_amount: string;
+            }[]
+          >(Prisma.sql`${scoped}
+          SELECT count(*) AS issued_count,count(*) FILTER (WHERE balance>0) AS outstanding_count,
+            coalesce(sum(total_amount_vnd),0)::text AS total_amount,
+            coalesce(sum(paid_amount),0)::text AS paid_amount,
+            coalesce(sum(balance),0)::text AS balance_amount,
+            coalesce(sum(balance) FILTER (WHERE balance>0 AND due_at<${now}),0)::text AS overdue_amount
+          FROM valued WHERE billing_state='ISSUED' AND ${status}`),
+          invoiceRows(tx, tenant, q, undefined, undefined, now, true),
+        ]);
+        const total = totals[0]!;
+        return {
+          asOf: now.toISOString(),
+          timezone: "Asia/Ho_Chi_Minh",
+          summary: {
+            issuedCount: Number(total.issued_count),
+            outstandingCount: Number(total.outstanding_count),
+            totalAmountVnd: total.total_amount,
+            paidAmountVnd: total.paid_amount,
+            balanceVnd: total.balance_amount,
+            overdueAmountVnd: total.overdue_amount,
+          },
+          invoices: rows.items,
+          page: rows.page,
+        };
+      },
+      { isolationLevel: "RepeatableRead" },
     );
   }
   async invoice(c: Claims, id: string) {

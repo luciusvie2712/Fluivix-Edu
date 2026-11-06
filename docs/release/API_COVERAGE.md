@@ -1,6 +1,6 @@
 # API contract coverage
 
-Generated inventory: 157 actual OpenAPI operations; 134
+Generated inventory: 158 actual OpenAPI operations; 134
 method/path intents in the master specification (includes non-P0 design intent).
 Path parameter names are normalized when comparing. MATCH means route metadata
 exists; it does not verify DTOs, permission, object scope or runtime behavior.
@@ -111,7 +111,7 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
 | POST | `/payments` | MATCH |
 | GET | `/payments/{id}` | MATCH |
 | POST | `/payments/{id}/reverse` | MATCH |
-| GET | `/finance/reports/receivables` | ABSENT / REVIEW |
+| GET | `/finance/reports/receivables` | MATCH |
 | GET | `/mobile/dashboard` | MATCH |
 | GET | `/mobile/my/classes` | MATCH |
 | GET | `/mobile/my/schedule?from=&to=` | ABSENT / REVIEW |
@@ -145,6 +145,19 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
 
 ## Explicit contract decisions
 
+- GET /finance/reports/receivables is owner/accountant finance.report.read,
+  following the core finance flag independently of optional reports analytics.
+  Totals and positive issued rows reuse the same valued-invoice scope, filters,
+  asOf and RepeatableRead snapshot. Exact aggregate money is numeric::text and
+  can exceed bigint while individual invoice values remain bigint constrained.
+  All matching ISSUED documents contribute to billed/paid/remaining totals;
+  debt rows require positive balance. VOID/reversed allocations are excluded;
+  unallocated receipt money is not silently netted. asOf is the current read,
+  not historical ledger accounting. No new balance columns/migration required.
+- Shared financial read date/offset validation rejects unsupported extreme
+  calendar boundaries or unsafe offsets422 rather than leaking internal500.
+  Web report caches are invalidated after invoice/payment mutations; an empty
+  page after a concurrent ledger change offers an explicit return to page1.
 - Payment list filters method/status/receipt or student search and Vietnam received
   dates through parameterized SQL with stable paging. Detail/allocations/balances
   and actual paged audit history use repeatable snapshots. GET /payments/{id}/history

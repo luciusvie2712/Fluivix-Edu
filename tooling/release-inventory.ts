@@ -43,7 +43,7 @@ const evidence: Record<string, string> = {
   CL: "apps/api/src/teaching.*; infra/prisma/migrations/202610240016_schedule_rules; tests/integration/teaching-cases.ts",
   AT: "apps/api/src/teaching.*; apps/mobile/app; tests/integration/teaching-cases.ts",
   GR: "apps/api/src/grades.ts; grade-history.dto.ts; migration022; apps/web/components/assessment-workspace.tsx; apps/mobile/app; tests/integration/assessment-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/assessments.spec.ts",
-  FI: "apps/api/src/finance.*; invoice.dto.ts; invoice-query.ts; payment.dto.ts; payment-query.ts; migrations023/024/025; apps/web/components/fee-plan-workspace.tsx; invoice-workspace.tsx; payment-workspace.tsx; apps/mobile/app; tests/integration/fee-plan-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/fee-plans.spec.ts; invoices.spec.ts; payments.spec.ts",
+  FI: "apps/api/src/finance.*; finance-query.ts; invoice.dto.ts; invoice-query.ts; payment.dto.ts; payment-query.ts; receivables.dto.ts; migrations023/024/025; apps/web/components/fee-plan-workspace.tsx; invoice-workspace.tsx; payment-workspace.tsx; receivables-workspace.tsx; apps/mobile/app; tests/integration/fee-plan-cases.ts; receivable-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/fee-plans.spec.ts; invoices.spec.ts; payments.spec.ts; receivables.spec.ts",
   NT: "apps/api/src/notifications.ts; mobile-dashboard.ts; apps/worker/src/notifications.ts; tests/integration/teaching-cases.ts",
 };
 const acceptance: Record<string, [string, string]> = {
@@ -219,6 +219,19 @@ ${desired.map(({ method, path }) => `| ${method} | \`${path}\` | ${implemented.h
 
 ## Explicit contract decisions
 
+- GET /finance/reports/receivables is owner/accountant finance.report.read,
+  following the core finance flag independently of optional reports analytics.
+  Totals and positive issued rows reuse the same valued-invoice scope, filters,
+  asOf and RepeatableRead snapshot. Exact aggregate money is numeric::text and
+  can exceed bigint while individual invoice values remain bigint constrained.
+  All matching ISSUED documents contribute to billed/paid/remaining totals;
+  debt rows require positive balance. VOID/reversed allocations are excluded;
+  unallocated receipt money is not silently netted. asOf is the current read,
+  not historical ledger accounting. No new balance columns/migration required.
+- Shared financial read date/offset validation rejects unsupported extreme
+  calendar boundaries or unsafe offsets422 rather than leaking internal500.
+  Web report caches are invalidated after invoice/payment mutations; an empty
+  page after a concurrent ledger change offers an explicit return to page1.
 - Payment list filters method/status/receipt or student search and Vietnam received
   dates through parameterized SQL with stable paging. Detail/allocations/balances
   and actual paged audit history use repeatable snapshots. GET /payments/{id}/history

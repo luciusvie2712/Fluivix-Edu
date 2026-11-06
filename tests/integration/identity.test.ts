@@ -17,6 +17,7 @@ import { guardianCases } from "./guardian-cases";
 import { teacherCases } from "./teacher-cases";
 import { assessmentCases } from "./assessment-cases";
 import { feePlanCases } from "./fee-plan-cases";
+import { receivableCases } from "./receivable-cases";
 import { requireTestRedis, testRedisUrl } from "../../tooling/test-redis";
 
 let database: EmbeddedPostgres | undefined;
@@ -72,6 +73,12 @@ assessmentCases(
 );
 let hashPassword: typeof import("../../apps/api/dist/auth.service.js").hashPassword;
 feePlanCases(
+  () => base,
+  () => db,
+  password,
+  () => hashPassword(password),
+);
+receivableCases(
   () => base,
   () => db,
   password,

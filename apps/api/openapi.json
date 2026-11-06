@@ -6067,6 +6067,144 @@
         "tags": ["grades"]
       }
     },
+    "/api/v1/finance/reports/receivables": {
+      "get": {
+        "operationId": "FinanceController_receivables",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "studentId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "feePlanId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "paymentStatus",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["UNPAID", "PARTIAL", "PAID", "OVERDUE", "VOID"]
+            }
+          },
+          {
+            "name": "periodKey",
+            "required": false,
+            "in": "query",
+            "description": "YYYY-MM or COURSE",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Inclusive due-date boundary in Asia/Ho_Chi_Minh",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Inclusive due-date boundary in Asia/Ho_Chi_Minh",
+            "schema": { "format": "date", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ReceivablesResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance"]
+      }
+    },
     "/api/v1/fee-plans": {
       "post": {
         "operationId": "FinanceController_fee",
@@ -12899,6 +13037,90 @@
         },
         "required": ["version", "reason"]
       },
+      "ReceivablesSummaryView": {
+        "type": "object",
+        "properties": {
+          "issuedCount": { "type": "number" },
+          "outstandingCount": { "type": "number" },
+          "totalAmountVnd": { "type": "string" },
+          "paidAmountVnd": { "type": "string" },
+          "balanceVnd": { "type": "string" },
+          "overdueAmountVnd": { "type": "string" }
+        },
+        "required": [
+          "issuedCount",
+          "outstandingCount",
+          "totalAmountVnd",
+          "paidAmountVnd",
+          "balanceVnd",
+          "overdueAmountVnd"
+        ]
+      },
+      "InvoiceListView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "studentId": { "type": "string" },
+          "invoiceNo": { "type": "string" },
+          "totalAmountVnd": { "type": "string", "example": "1200000" },
+          "paidAmountVnd": { "type": "string" },
+          "balanceVnd": { "type": "string" },
+          "billingState": { "type": "string" },
+          "paymentStatus": { "type": "string" },
+          "dueAt": { "type": "string", "format": "date-time" },
+          "issuedAt": { "type": "string", "format": "date-time" },
+          "studentCode": { "type": "string" },
+          "fullName": { "type": "string" },
+          "classId": { "type": "string" },
+          "classCode": { "type": "string" },
+          "className": { "type": "string" },
+          "feePlanId": { "type": "string" },
+          "periodKey": { "type": "string" },
+          "billingModel": { "type": "string" }
+        },
+        "required": [
+          "id",
+          "studentId",
+          "invoiceNo",
+          "totalAmountVnd",
+          "paidAmountVnd",
+          "balanceVnd",
+          "billingState",
+          "paymentStatus",
+          "dueAt",
+          "issuedAt",
+          "studentCode",
+          "fullName",
+          "classId",
+          "classCode",
+          "className",
+          "feePlanId",
+          "periodKey",
+          "billingModel"
+        ]
+      },
+      "ReceivablesView": {
+        "type": "object",
+        "properties": {
+          "asOf": { "type": "string", "format": "date-time" },
+          "timezone": { "type": "string", "example": "Asia/Ho_Chi_Minh" },
+          "summary": { "$ref": "#/components/schemas/ReceivablesSummaryView" },
+          "invoices": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/InvoiceListView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" }
+        },
+        "required": ["asOf", "timezone", "summary", "invoices", "page"]
+      },
+      "ReceivablesResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/ReceivablesView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
       "FeePlanInput": {
         "type": "object",
         "properties": {
@@ -13193,49 +13415,6 @@
           "meta": { "$ref": "#/components/schemas/MetaDto" }
         },
         "required": ["data", "page", "meta"]
-      },
-      "InvoiceListView": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "string" },
-          "studentId": { "type": "string" },
-          "invoiceNo": { "type": "string" },
-          "totalAmountVnd": { "type": "string", "example": "1200000" },
-          "paidAmountVnd": { "type": "string" },
-          "balanceVnd": { "type": "string" },
-          "billingState": { "type": "string" },
-          "paymentStatus": { "type": "string" },
-          "dueAt": { "type": "string", "format": "date-time" },
-          "issuedAt": { "type": "string", "format": "date-time" },
-          "studentCode": { "type": "string" },
-          "fullName": { "type": "string" },
-          "classId": { "type": "string" },
-          "classCode": { "type": "string" },
-          "className": { "type": "string" },
-          "feePlanId": { "type": "string" },
-          "periodKey": { "type": "string" },
-          "billingModel": { "type": "string" }
-        },
-        "required": [
-          "id",
-          "studentId",
-          "invoiceNo",
-          "totalAmountVnd",
-          "paidAmountVnd",
-          "balanceVnd",
-          "billingState",
-          "paymentStatus",
-          "dueAt",
-          "issuedAt",
-          "studentCode",
-          "fullName",
-          "classId",
-          "classCode",
-          "className",
-          "feePlanId",
-          "periodKey",
-          "billingModel"
-        ]
       },
       "InvoiceListResponse": {
         "type": "object",

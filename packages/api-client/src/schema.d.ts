@@ -1140,6 +1140,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/finance/reports/receivables": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["FinanceController_receivables"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/fee-plans": {
     parameters: {
       query?: never;
@@ -2971,6 +2987,50 @@ export interface components {
       version: number;
       reason: string;
     };
+    ReceivablesSummaryView: {
+      issuedCount: number;
+      outstandingCount: number;
+      totalAmountVnd: string;
+      paidAmountVnd: string;
+      balanceVnd: string;
+      overdueAmountVnd: string;
+    };
+    InvoiceListView: {
+      id: string;
+      studentId: string;
+      invoiceNo: string;
+      /** @example 1200000 */
+      totalAmountVnd: string;
+      paidAmountVnd: string;
+      balanceVnd: string;
+      billingState: string;
+      paymentStatus: string;
+      /** Format: date-time */
+      dueAt: string;
+      /** Format: date-time */
+      issuedAt: string;
+      studentCode: string;
+      fullName: string;
+      classId: string;
+      classCode: string;
+      className: string;
+      feePlanId: string;
+      periodKey: string;
+      billingModel: string;
+    };
+    ReceivablesView: {
+      /** Format: date-time */
+      asOf: string;
+      /** @example Asia/Ho_Chi_Minh */
+      timezone: string;
+      summary: components["schemas"]["ReceivablesSummaryView"];
+      invoices: components["schemas"]["InvoiceListView"][];
+      page: components["schemas"]["PageView"];
+    };
+    ReceivablesResponse: {
+      data: components["schemas"]["ReceivablesView"];
+      meta: components["schemas"]["MetaDto"];
+    };
     FeePlanInput: {
       /** Format: uuid */
       classId: string;
@@ -3125,29 +3185,6 @@ export interface components {
       data: components["schemas"]["InvoiceFeeOptionView"][];
       page: components["schemas"]["PageView"];
       meta: components["schemas"]["MetaDto"];
-    };
-    InvoiceListView: {
-      id: string;
-      studentId: string;
-      invoiceNo: string;
-      /** @example 1200000 */
-      totalAmountVnd: string;
-      paidAmountVnd: string;
-      balanceVnd: string;
-      billingState: string;
-      paymentStatus: string;
-      /** Format: date-time */
-      dueAt: string;
-      /** Format: date-time */
-      issuedAt: string;
-      studentCode: string;
-      fullName: string;
-      classId: string;
-      classCode: string;
-      className: string;
-      feePlanId: string;
-      periodKey: string;
-      billingModel: string;
     };
     InvoiceListResponse: {
       data: components["schemas"]["InvoiceListView"][];
@@ -8737,6 +8774,87 @@ export interface operations {
         };
       };
       422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  FinanceController_receivables: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        studentId?: string;
+        classId?: string;
+        feePlanId?: string;
+        paymentStatus?: "UNPAID" | "PARTIAL" | "PAID" | "OVERDUE" | "VOID";
+        /** @description YYYY-MM or COURSE */
+        periodKey?: string;
+        /** @description Inclusive due-date boundary in Asia/Ho_Chi_Minh */
+        from?: string;
+        /** @description Inclusive due-date boundary in Asia/Ho_Chi_Minh */
+        to?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReceivablesResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      429: {
         headers: {
           [name: string]: unknown;
         };

@@ -1,0 +1,175 @@
+{
+  "date": "2026-11-06",
+  "module": "Receivables / bounded W16 finance subset",
+  "baseCommit": "08b18f1bbc80bbe150a1edccd8fd5abb5254cea0",
+  "localVerdict": "PASS",
+  "remoteVerdict": "NOT_VERIFIED",
+  "releaseVerdict": "BLOCKED",
+  "checks": {
+    "runtime": "Node24.22.2/libuv1.52.1;pnpm10.34.7",
+    "prisma": "validate/generate PASS; no migration/schema change",
+    "lint": "PASS",
+    "format": "PASS",
+    "typecheck": "8 uncached tasks and tools PASS",
+    "build": "8 uncached tasks and final Web rebuild PASS",
+    "unit": 49,
+    "mobileJest": 15,
+    "integration": {
+      "passed": 79,
+      "skipped": 0,
+      "report": "docs/release/evidence/integration-2026-11-06-receivable-full.json"
+    },
+    "browser": {
+      "passed": 54,
+      "skipped": 0,
+      "flaky": 0,
+      "report": "docs/release/evidence/e2e-2026-11-06-receivable-full.json"
+    },
+    "actualMobileApiSmoke": "PASS; no signed/physical device claim",
+    "expoAlignment": "PASS",
+    "contract": {
+      "stable": true,
+      "clientSha256": "E90DF06E270FBB9884E6CBEFD25AF025528C65EB8A9BC1D19722AB3765C64F34",
+      "openapiSha256": "B535B5DC8E1C5CCD0876C8BA5FF75AD8FA2025981B966475D5220A440CCED7A9",
+      "operations": 158
+    },
+    "frozenOfflineInstall": "PASS",
+    "audit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    },
+    "localSecretScreen": "PASS; values withheld"
+  },
+  "implementation": [
+    "GET finance/reports/receivables owner/accountant named finance.report.read; core finance flag independent of optional analytics",
+    "shared parameterized valued-invoice scope for list/detail/report filters and exact confirmed-allocation balance/status",
+    "one asOf and RepeatableRead snapshot for full-filter summary, positive issued-debt rows and stable pagination",
+    "numeric::text aggregates can exceed bigint; individual immutable amounts retain SQL bigint constraints",
+    "ISSUED matching documents include paid/zero in billed totals, debt rows require positive balance; VOID and reversed allocations excluded",
+    "unallocated payment money stays separate and does not silently reduce invoice debt",
+    "Web search/class/due-day/overdue filters, exact totals/rows, explicit denominator/current-state notes, actual invoice detail links",
+    "report caches invalidate after actual invoice/payment mutations; browser proves real reversal/void recalculation",
+    "server-backed empty/error/retry/readonly/forbidden and safe return to page1 when concurrent fixture changes shrink the current page",
+    "unsupported extreme calendar boundaries and unsafe financial offsets422 instead of leaking500; actual DTO/helper probe and three API-route negatives",
+    "no new migration; existing tenant/actor/immutable/append-only constraints preserved"
+  ],
+  "visual": {
+    "widths": [
+      360,
+      768,
+      1024,
+      1440
+    ],
+    "states": [
+      "overview",
+      "overdue"
+    ],
+    "axe": "no violations on exercised surfaces",
+    "keyboard": "overdue toggle and update control with reduced motion",
+    "manualReview": "all eight final images viewed",
+    "style": "existing framed-sheet seed1920114305/blue/Arial16 Vietnamese",
+    "tasteFindings": [
+      {
+        "level": "WARN",
+        "id": "panel-void",
+        "message": "1 card(s) hold a blank band inside: 42px in \"C\u00f4ng n\u1ee3 h\u1ecdc ph\u00ed\".",
+        "fix": "A card stretches to its neighbour only when it has content to fill. Keep a legend or a note directly under its chart (only an action or a total may sit at a stretched card's foot), let a short card keep its own height (align-items: start), and let a filtered block shrink to its rows.",
+        "width": 1440
+      },
+      {
+        "level": "WARN",
+        "id": "panel-void",
+        "message": "1 card(s) hold a blank band inside: 42px in \"C\u00f4ng n\u1ee3 h\u1ecdc ph\u00ed\".",
+        "fix": "A card stretches to its neighbour only when it has content to fill. Keep a legend or a note directly under its chart (only an action or a total may sit at a stretched card's foot), let a short card keep its own height (align-items: start), and let a filtered block shrink to its rows.",
+        "width": 1440
+      }
+    ],
+    "skills": [
+      {
+        "source": "taste-skill",
+        "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+        "installed": "design-taste-frontend",
+        "verifiedFiles": 38,
+        "status": "PASS"
+      },
+      {
+        "source": "ui-ux-pro-max-skill",
+        "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+        "installed": "ui-ux-pro-max",
+        "verifiedFiles": 73,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "accessible-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "micro-interaction",
+        "verifiedFiles": 4,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "60fps-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      }
+    ]
+  },
+  "compiledWebProof": {
+    "sourceStableDuringBuild": true,
+    "sourceSha256": "01C1A785CF7FD6521F613A4028A010E08E2999520F3DA79B20EE1E290BBBDBD3"
+  },
+  "priorFailure": "First focused integration2PASS/1fixture failure attempted to mutate an already subscribed plan; SQL correctly rejected it. Replaced with independent plan/tenant/actual-session feature fixtures, retaining constraints and assertions. Failed report retained as integration-2026-11-06-receivable-focused.json; second focused3PASS and final79PASS provide acceptance.",
+  "dateProbe": [
+    {
+      "day": "2026-11-06",
+      "dtoErrorCount": 0,
+      "helperError": null
+    },
+    {
+      "day": "0001-01-01",
+      "dtoErrorCount": 1,
+      "helperError": "Invalid time value"
+    },
+    {
+      "day": "9999-12-31",
+      "dtoErrorCount": 0,
+      "helperError": "Invalid time value"
+    }
+  ],
+  "sourceHashes": {
+    "normalization": "CRLF to LF",
+    "sha256": {
+      "apps/api/src/finance-query.ts": "9967c4c5da1017c3068df13bbc8ac5b752228960b4c001b2303d4b3b3c37604c",
+      "apps/api/src/receivables.dto.ts": "80e20012838572d443ace005050b2062efda336c68b30032b2ed21255fb19372",
+      "apps/web/app/app/finance/receivables/page.tsx": "f8fc1ebff6b4f24178050bc169c091ff30d43688c36c1cb22328c06bf41547b3",
+      "apps/web/components/receivables-workspace.tsx": "01c1a785cf7fd6521f613a4028a010e08e2999520f3da79b20ee1e290bbbdbd3",
+      "tests/e2e/receivables.spec.ts": "46cf3e9223f8b6a84cf35bed40865017ec1ead39694c79fd5fef95adec532679",
+      "tests/integration/receivable-cases.ts": "20d87638753e3527fe26b8654b63285c541ab0a45310ff4a147fbca9327edcd5",
+      "apps/api/openapi.json": "b535b5dc8e1c5ccd0876c8ba5ff75ad8fa2025981b966475d5220a440cced7a9",
+      "apps/api/src/finance.controller.ts": "67ed11b5f1170090f6737cc6b4218cc30d562eef428ef9846db12c7cd552a04a",
+      "apps/api/src/finance.service.ts": "5e3bb9bbc46afe1a8460fdc2d0bed9144f5839038d8c26f3a7f904d56261334f",
+      "apps/api/src/invoice-query.ts": "a620e31ac95b972b1ee3b270854b0a560b4c569db93b3b641da5b42395bc6682",
+      "apps/api/src/payment-query.ts": "2ca12376a9e2cc659693dd3c5cab8f30aaa39f863faa02350f9c4283d9a0adea",
+      "apps/api/src/security.ts": "a0946ca9f77dc6b0d6628d02cfc5bad1a7fb377a9819dfc7453fe84a9870801e",
+      "apps/web/app/app/layout.tsx": "5fa35a1e66614548a5cdf60edb8a659bc43b61022bbe0f00d708e6b5f70f1102",
+      "apps/web/components/invoice-workspace.tsx": "e9f98f05480cfff5532f6710d0beb1f780c130b9d86b1dc9769237e6029ad7c1",
+      "apps/web/components/payment-workspace.tsx": "c6c9c9aadd4bccdd2d5d96015300354eb8ea61e5ef7e18d75e5655eaaf10f034",
+      "apps/web/lib/api.ts": "92d3b37b51f19e838f8c4bcc11ff6e44aec17bd0e58cbd1d5c3be7381164b5d6",
+      "packages/api-client/src/schema.d.ts": "e90df06e270fbb9884e6cbefd25af025528c65eb8a9bc1d19722ab3765c64f34",
+      "tests/integration/identity.test.ts": "9bc1763678f976c85dd5f10f834275028267dd47ecbdcdfec1ad68111e84239e",
+      "tooling/release-inventory.ts": "c7953ae325d01c08aa8f8b0301738df3223c6cbfb538b329cc5e3d6e3adad6eb"
+    }
+  },
+  "limits": "This verifies the explicit Vietnam financial calendar contract. Platform supports other IANA tenant zones; aligning all financial filters/displays/entry with that configured zone is the next hardening slice before full P0 acceptance. W16 dashboard/attendance/revenue, audit/privacy/notifications and other business/M4 gaps remain. No historical-ledger, physical device, legal, bank or external release acceptance claim. Exact Receivables-SHA remote CI pending."
+}

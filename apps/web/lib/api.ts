@@ -528,6 +528,18 @@ export const payments = {
       }),
     ),
 };
+export const receivables = (
+  query: NonNullable<
+    paths["/api/v1/finance/reports/receivables"]["get"]["parameters"]["query"]
+  >,
+  signal?: AbortSignal,
+) =>
+  unwrap(
+    api.GET("/api/v1/finance/reports/receivables", {
+      params: { query },
+      ...(signal ? { signal } : {}),
+    }),
+  );
 export const invoices = {
   list: (
     query: NonNullable<paths["/api/v1/invoices"]["get"]["parameters"]["query"]>,

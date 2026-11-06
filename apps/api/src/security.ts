@@ -53,6 +53,7 @@ export const permissions = {
     "finance.read",
     "finance.invoice.write",
     "finance.payment.write",
+    "finance.report.read",
     "guardian.manage",
     "finance.fee.write",
   ],
@@ -85,6 +86,7 @@ export const permissions = {
     "finance.read",
     "finance.invoice.write",
     "finance.payment.write",
+    "finance.report.read",
     "finance.fee.write",
   ],
   teacher: [

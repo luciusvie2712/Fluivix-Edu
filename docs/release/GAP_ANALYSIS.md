@@ -1,5 +1,13 @@
 # Baseline P0 gap analysis
 
+Receivables current bounded delta: real exact summary/positive-debt rows with
+shared SQL/snapshot/asOf, filters, real reversal/void refresh and responsive Web
+pass full79 integration/54 browser plus remaining local checks. Its commit/CI
+is pending. Payment08b18f1 exact CI42247248730 SUCCESS is verified. The current
+financial date contract is explicit Vietnam; arbitrary configured IANA zone
+alignment is next, before full P0 acceptance. W16/dashboard/attendance/revenue,
+audit/privacy/notifications and broader business/M4 work remain. Release BLOCKED.
+
 Latest delta: Invoice/W14 at43e68bd has exact successful CI42241955407 after
 an asserted-navigation repair. Payment/W15 now implements operational payment
 entry/list/detail, internal print, recorded receiver names and reversal history;

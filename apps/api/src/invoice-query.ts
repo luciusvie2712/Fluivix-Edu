@@ -1,6 +1,6 @@
 import { UnprocessableEntityException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
-import { wallClockUtc } from "@fluivix/contracts";
+import { financialDay, financialOffset } from "./finance-query";
 import { Paged } from "./http";
 import type { InvoiceQuery, InvoiceListView } from "./invoice.dto";
 
@@ -24,13 +24,13 @@ type RawInvoice = {
   period_key: string;
   billing_model: string;
 };
-export async function invoiceRows(
-  tx: Prisma.TransactionClient,
+export function invoiceValueScope(
   tenantId: string,
   q: InvoiceQuery,
   subject?: string,
   onlyIds?: string[],
-): Promise<Paged<InvoiceListView>> {
+  now = new Date(),
+) {
   if (q.from && q.to && q.from > q.to)
     throw new UnprocessableEntityException("Khoảng ngày đến hạn không hợp lệ.");
   const conditions = [Prisma.sql`i.tenant_id=${tenantId}::uuid`];
@@ -40,27 +40,15 @@ export async function invoiceRows(
   if (q.feePlanId) conditions.push(Prisma.sql`f.id=${q.feePlanId}::uuid`);
   if (q.periodKey) conditions.push(Prisma.sql`r.period_key=${q.periodKey}`);
   if (onlyIds) {
-    if (!onlyIds.length)
-      return new Paged([], {
-        page: q.page,
-        limit: q.limit,
-        total: 0,
-        totalPages: 0,
-      });
-    conditions.push(
-      Prisma.sql`i.id IN (${Prisma.join(onlyIds.map((id) => Prisma.sql`${id}::uuid`))})`,
-    );
+    if (!onlyIds.length) conditions.push(Prisma.sql`FALSE`);
+    else
+      conditions.push(
+        Prisma.sql`i.id IN (${Prisma.join(onlyIds.map((id) => Prisma.sql`${id}::uuid`))})`,
+      );
   }
-  if (q.from)
-    conditions.push(
-      Prisma.sql`i.due_at>=${wallClockUtc(q.from, "00:00", "Asia/Ho_Chi_Minh")}`,
-    );
+  if (q.from) conditions.push(Prisma.sql`i.due_at>=${financialDay(q.from)}`);
   if (q.to) {
-    const next = new Date(q.to + "T00:00:00Z");
-    next.setUTCDate(next.getUTCDate() + 1);
-    conditions.push(
-      Prisma.sql`i.due_at<${wallClockUtc(next.toISOString().slice(0, 10), "00:00", "Asia/Ho_Chi_Minh")}`,
-    );
+    conditions.push(Prisma.sql`i.due_at<${financialDay(q.to, true)}`);
   }
   if (q.search) {
     const pattern = "%" + q.search.replace(/[\\%_]/g, "\\$&") + "%";
@@ -68,7 +56,6 @@ export async function invoiceRows(
       Prisma.sql`(i.invoice_no ILIKE ${pattern} OR s.student_code ILIKE ${pattern} OR s.full_name ILIKE ${pattern})`,
     );
   }
-  const now = new Date();
   const scoped = Prisma.sql`
     WITH scoped AS (
       SELECT i.*,s.student_code,s.full_name,f.class_id,c.code AS class_code,c.name AS class_name,
@@ -97,14 +84,36 @@ export async function invoiceRows(
   const status = q.paymentStatus
     ? Prisma.sql`payment_status=${q.paymentStatus}`
     : Prisma.sql`TRUE`;
+  return { scoped, status };
+}
+export async function invoiceRows(
+  tx: Prisma.TransactionClient,
+  tenantId: string,
+  q: InvoiceQuery,
+  subject?: string,
+  onlyIds?: string[],
+  now = new Date(),
+  outstandingOnly = false,
+): Promise<Paged<InvoiceListView>> {
+  const offset = financialOffset(q);
+  const { scoped, status } = invoiceValueScope(
+    tenantId,
+    q,
+    subject,
+    onlyIds,
+    now,
+  );
+  const included = outstandingOnly
+    ? Prisma.sql`${status} AND billing_state='ISSUED' AND balance>0`
+    : status;
   const [rows, counts] = await Promise.all([
     tx.$queryRaw<RawInvoice[]>(Prisma.sql`${scoped}
       SELECT id,student_id,invoice_no,total_amount_vnd::text,paid_amount::text AS paid_amount_vnd,
         balance::text AS balance_vnd,billing_state,payment_status,due_at,issued_at,student_code,
         full_name,class_id,class_code,class_name,fee_plan_id,period_key,billing_model
-      FROM valued WHERE ${status} ORDER BY due_at DESC,id ASC LIMIT ${q.limit} OFFSET ${(q.page - 1) * q.limit}`),
+      FROM valued WHERE ${included} ORDER BY due_at DESC,id ASC LIMIT ${q.limit} OFFSET ${offset}`),
     tx.$queryRaw<{ total: bigint }[]>(
-      Prisma.sql`${scoped} SELECT count(*) AS total FROM valued WHERE ${status}`,
+      Prisma.sql`${scoped} SELECT count(*) AS total FROM valued WHERE ${included}`,
     ),
   ]);
   const total = Number(counts[0]?.total ?? 0n);

@@ -556,6 +556,7 @@ function RecordPayment({ scope }: { scope: ReturnType<typeof useScope> }) {
             await Promise.all([
               cache.invalidateQueries({ queryKey: scope.key }),
               cache.invalidateQueries({ queryKey: ["invoices"] }),
+              cache.invalidateQueries({ queryKey: ["receivables"] }),
             ]);
             requestAnimationFrame(() => outcomeRef.current?.focus());
           } catch (cause) {
@@ -748,6 +749,7 @@ function ReceiptDetail({ id }: { id: string }) {
               await Promise.all([
                 cache.invalidateQueries({ queryKey: scope.key }),
                 cache.invalidateQueries({ queryKey: ["invoices"] }),
+                cache.invalidateQueries({ queryKey: ["receivables"] }),
               ]);
               requestAnimationFrame(() => outcomeRef.current?.focus());
             }}

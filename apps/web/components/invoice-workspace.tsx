@@ -496,7 +496,10 @@ function InvoiceRun() {
                 setUncertain(false);
                 setPreview(null);
                 intent.current = null;
-                await cache.invalidateQueries({ queryKey: scope.key });
+                await Promise.all([
+                  cache.invalidateQueries({ queryKey: scope.key }),
+                  cache.invalidateQueries({ queryKey: ["receivables"] }),
+                ]);
                 requestAnimationFrame(() => outcomeRef.current?.focus());
               } catch (cause) {
                 if (
@@ -646,7 +649,10 @@ export function InvoiceDetail({ id }: { id: string }) {
               setOutcome(
                 "Đã hủy chứng từ trên hệ thống; lịch sử và khoản phí gốc được giữ nguyên.",
               );
-              await cache.invalidateQueries({ queryKey: scope.key });
+              await Promise.all([
+                cache.invalidateQueries({ queryKey: scope.key }),
+                cache.invalidateQueries({ queryKey: ["receivables"] }),
+              ]);
               requestAnimationFrame(() => outcomeRef.current?.focus());
             }}
           >
