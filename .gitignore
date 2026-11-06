@@ -3,7 +3,8 @@
 /AGENTS.md
 /scripts/
 /prompts/
-/docs/
+/docs/*
+!/docs/release/
 /skills-lock.json
 /.ci-taste/
 

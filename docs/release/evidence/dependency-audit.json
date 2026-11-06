@@ -1,0 +1,59 @@
+{
+  "command": "pnpm.cmd audit --json",
+  "exitCode": 1,
+  "observedAt": "2026-10-24T07:24:33.303Z",
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 1,
+      "critical": 0
+    },
+    "dependencies": 1301,
+    "devDependencies": 0,
+    "optionalDependencies": 0,
+    "totalDependencies": 1301
+  },
+  "advisories": {
+    "1240912": {
+      "findings": [
+        {
+          "version": "1.4.0",
+          "paths": [
+            "apps__mobile>expo>@expo/cli>node-forge"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://nvd.nist.gov/vuln/detail/CVE-2026-85393\n- https://github.com/digitalbazaar/forge/issues/1149\n- https://github.com/advisories/GHSA-ppp5-5v6c-4jwp\n- https://github.com/digitalbazaar/forge/blob/v1.4.0/lib/asn1.js\n- https://github.com/digitalbazaar/forge/blob/v1.4.0/lib/rsa.js\n- https://www.vulncheck.com/advisories/node-forge-through-1.4.0-rsa-pkcs-1-1.5-signature-forgery-via-nested-digestalgorithm-padding\n- https://github.com/digitalbazaar/forge/pull/1152\n- https://github.com/advisories/GHSA-86w9-cpqp-85rv",
+      "created": "2026-09-03T21:31:15.000Z",
+      "id": 1240912,
+      "npm_advisory_id": null,
+      "overview": "node-forge through 1.4.0 fails to validate element count in nested DigestAlgorithm sequences during RSA PKCS#1 v1.5 signature verification. Attackers can embed garbage bytes inside the DigestAlgorithm sequence to forge valid signatures for arbitrary messages using low-exponent RSA keys. This is an incomplete fix for CVE-2026-33894.",
+      "reported_by": null,
+      "title": "node-forge RSA PKCS#1 v1.5 signature verification accepts extra nested DigestAlgorithm elements",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-85393"
+      ],
+      "access": "public",
+      "severity": "high",
+      "module_name": "node-forge",
+      "vulnerable_versions": "<=1.4.0",
+      "github_advisory_id": "GHSA-86w9-cpqp-85rv",
+      "recommendation": "None",
+      "patched_versions": "<0.0.0",
+      "updated": "2026-10-01T21:09:10.000Z",
+      "cvss": {
+        "score": 7.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:N"
+      },
+      "cwe": [
+        "CWE-347"
+      ],
+      "url": "https://github.com/advisories/GHSA-86w9-cpqp-85rv"
+    }
+  }
+}
