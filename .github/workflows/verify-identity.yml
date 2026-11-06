@@ -73,3 +73,4 @@ jobs:
             playwright-report/
             test-results/
             docs/ai/evidence/
+            docs/release/evidence/

@@ -28,6 +28,12 @@ export default defineConfig({
   reporter: [
     ["list"],
     ["html", { open: "never" }],
-    ["json", { outputFile: process.env.E2E_REPORT_PATH ?? "docs/release/evidence/e2e.json" }],
+    [
+      "json",
+      {
+        outputFile:
+          process.env.E2E_REPORT_PATH ?? "docs/release/evidence/e2e.json",
+      },
+    ],
   ],
 });
