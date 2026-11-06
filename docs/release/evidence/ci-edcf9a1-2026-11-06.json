@@ -1,0 +1,28 @@
+{
+  "sha": "edcf9a101e86720e4c5ef387f841a7fc6a618a61",
+  "runId": 42163108112,
+  "url": "https://github.com/luciusvie2712/Fluivix-Edu/actions/runs/42163108112",
+  "conclusion": "failure",
+  "passed": [
+    "frozen install",
+    "Prisma generation",
+    "lint",
+    "format",
+    "typecheck",
+    "49 unit",
+    "15 mobile Jest",
+    "monorepo build",
+    "OpenAPI client no drift",
+    "42 PostgreSQL/Redis integration"
+  ],
+  "failedStep": "pnpm test:e2e",
+  "e2e": {
+    "passed": 20,
+    "failed": 1,
+    "failedTest": "Taste app inspection of the live login page",
+    "error": "Chrome did not start within 20s"
+  },
+  "remediation": "Select Playwright-installed Chromium via CHROME_PATH on Linux, retaining audited Taste code, timeout and assertions",
+  "remediationStatus": "IMPLEMENTED_NOT_VERIFIED_ON_REMOTE",
+  "correctiveLocalGate": "PASS:49 unit,42 integration,21 E2E,15 mobile Jest,smoke,build,static checks,audit high threshold"
+}

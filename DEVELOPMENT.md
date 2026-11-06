@@ -211,3 +211,8 @@ Never run builds while E2E servers are serving the same .next output directory.
 Integration TEST_DATABASE_URL also must identify a fresh disposable test database.
 Prisma may load the local .env, so set this variable explicitly if that file has
 a stale test connection. Do not reset the development database to run tests.
+
+Linux browser verification requires pnpm exec playwright install --with-deps
+chromium. The E2E runner sets CHROME_PATH to that installed Chromium for the
+audited Taste inspector, so it uses the same pinned browser as Playwright.
+An explicitly configured CHROME_PATH is honored. Windows retains installed Edge.
