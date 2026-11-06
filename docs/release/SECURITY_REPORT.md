@@ -1,5 +1,11 @@
 # Security report — current assessment
 
+## Current checkpoint — 2026-11-07
+
+Remote main82cac35 has exact successful CI42276412806(all30 steps) for operational reporting plus navigation synchronization. Tenant audit W19 now passes the full local gate:93 integration/67 browser0skip/flaky,60unit/15mobile and all automated checks, stable167-operation contract. Real role-limited/redacted event history, exact filters/calendar/server pages and audited CSV are verified; four final responsive images inspected. Audit commit/exact-SHA CI pending. Notifications/privacy/remaining operational/auth/M4 and external staging/legal/UAT/signed-device/real-push gates remain; release BLOCKED.
+
+## Historical checkpoints and detailed evidence
+
 Operational reporting local gate PASS (2026-11-07):88 integration/63 browser0skip/flaky and complete matrix. Tenant-first repeatable snapshots, role-scoped null finance/attendance groups, safe exact sums and explicit date axes/denominators. Named bounded aggregate CSV checks current actor/session/role and audits actual filters/count/trace; READ_ONLY reads allowed, ledgers unchanged, private notes/search text omitted and formula cells neutralized.
 
 Raw numeric timezone offsets are rejected in runtime/Platform/API and forward027 database guard after actual opposite-sign interoperability probe. Existing invalid settings cause explicit migration review, never silent rewrites. Upgrade preserves UTC historical money/valid names;001..026 immutable. All fixture failures preserved and corrected without weakening guards/assertions, including real Prisma/BullMQ failed-connection redaction.16 final images and actual owner-to-manager data removal checked. Frozen .env/source and secret screen pass; dependency audit0HIGH/0CRITICAL,1LOW/4MODERATE tracked. Report exact-SHA CI pending; tenant audit/privacy/notifications/auth/M4 and external security approvals remain BLOCKED.
@@ -127,3 +133,12 @@ Expo install --check passes after official SDK58/RN0.88.1 patch alignment.
 Full build produces Web/Platform outputs and Android/iOS Hermes bundles only;
 signed device verification, deployed security review and legal approval remain
 BLOCKED_EXTERNAL. This dependency result does not approve a production release.
+
+
+### W19 tenant audit — local acceptance PASS (2026-11-07)
+- Real GET/audit-logs and /export, generated167-operation contract and /app/audit: exact actor/action/resource/trace and tenant calendar date filters, stable server pages and actual CSV. One repeatable snapshot/asOf, inclusive<=366-day range; actual NewYork25-hour-day boundaries tested. Tenant/global isolation and all7 roles covered.
+- Owner all events; manager explicit operations only (no finance/grades/staff/security), accountant explicit finance only; unknown events fail closed for restricted roles, current selected role not union. Named audit.read/export; owner/accountant export, manager denied. Core audit independent optional reports/finance flags. Decision follows master default limited/finance scopes.
+- Deliberate allowlist never fetches metadata/reasons/before-after payload: no tokens/scores/private notes/PII leaks. Recorded actor UUID/null, action/resource/trace/time only; UI clearly explains full masking. Existing historical payload and append-only protections unchanged, no new migration/schema edit.
+- Actual CSV <=5000/formula-safe; verifies current actor/session/member/role and mode under share lock, permits readonly audited GET, records actor/date/identifier filter/count/trace. Real Web downloaded-file and audit checks, same-person role narrowing, network retry/invalid/empty states and live revocation clearing.
+- Final frozen-source local matrix PASS:93 integration/67 browser0skip/flaky,60unit/15mobileJest,actual mobile API smoke/Expo alignment,8 uncached builds/types/tools,lint/format,Prisma,stable167 contract,frozen install,audit0HIGH/CRITICAL.4 final responsive images manually viewed, axe/Taste/keyboard/reduced motion pass. Three skill sources/five IDs verified and applied; same framed-sheet direction. .env unchanged/secret screen PASS. Failed setup report retained; strict fixture calendar fields corrected, no production guards/assertions weakened.
+- Evidence:evidence/tenant-audit/verification.json. Audit commit/exact CI pending; remaining notifications/privacy/operational/auth/M4 and external gates BLOCKED.

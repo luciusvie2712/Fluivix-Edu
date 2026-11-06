@@ -1,0 +1,203 @@
+{
+  "date": "2026-11-07",
+  "module": "W19 tenant audit history and authorized CSV",
+  "baseCommit": "82cac35b2fb5b94c503b346e84636fc37fbf7521",
+  "localVerdict": "PASS",
+  "remoteVerdict": "NOT_VERIFIED",
+  "releaseVerdict": "BLOCKED",
+  "checks": {
+    "runtime": "Node24.22.2/libuv1.52.1;pnpm10.34.7",
+    "prisma": "validate/generate PASS;schema/applied001..027 unchanged; no new migration needed",
+    "lintFormat": "PASS",
+    "uncachedBuild": 8,
+    "uncachedTypechecksAndTools": "PASS",
+    "unit": 60,
+    "mobileJest": 15,
+    "actualMobileApiSmoke": "PASS; physical device NOT_VERIFIED",
+    "expoAlignment": "PASS",
+    "integration": {
+      "passed": 93,
+      "skipped": 0,
+      "report": "docs/release/evidence/integration-2026-11-07-audit-full.json"
+    },
+    "browser": {
+      "passed": 67,
+      "flaky": 0,
+      "skipped": 0,
+      "report": "docs/release/evidence/e2e-2026-11-07-audit-full.json"
+    },
+    "stableContract": {
+      "stable": true,
+      "operations": 167,
+      "clientSha256": "8865460CD50FFC0A080E9424FF42C7D773CC32E480ACDDA72D628145EF899E9A",
+      "openapiSha256": "4946A796D5E30107DE2AB2D0001525CB46E696DAC647FA0A023B884A895DD6F5"
+    },
+    "frozenOfflineInstall": "PASS",
+    "audit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    },
+    "secretScreen": "PASS;values withheld;.env unchanged"
+  },
+  "implementation": [
+    "Two real REST operations167 total with generated client and Web/app/audit, actual exact actor/action/resource/trace and inclusive tenant-IANA date filters <=366 days, stable timestamp DESC/id ASC server paging, one RepeatableRead/asOf",
+    "Tenant-first Prisma selects never fetch arbitrary metadata/reasons/before-after payload. Only recorded event/actor/action/resource/trace/time fields leave API. No reconstructed historic actor names or current-name substitution; null actor explicitly system/not recorded",
+    "Owner all tenant events; manager exact operational allowlist excludes finance/grades/staff/security; accountant exact finance allowlist. New/unknown actions fail closed for restricted roles, selected role only. Explicit audit.read/audit.export; owner/accountant export, manager read only. Core historical audit independent of optional analytics/finance flags",
+    "Export capped5000 in same snapshot; safeCsvCell neutralizes spreadsheet formulas; real JSON CSV download with actual row count, actor/scope/date/identifier filters and correlation audit; no arbitrary payload, reason or learner data. READ_ONLY audited GET exports permitted, tenant/session/member/user/current-role rechecked with tenant share lock. Tenant-null/global and other-centre events excluded",
+    "Append-only historical records unchanged, no business writes/financial mutation; no new table/index without demonstrated need. Existing tenant/calendar and tenant/resource/calendar indexes retained",
+    "Web shows applied filters, default last30 tenant-calendar days, exact ID labels, loading/empty/invalid/range/networkretry/403/READ_ONLY-export outcomes, clears rows on live read error or role/tenant switch; unmounted export aborted and success only after actual server response"
+  ],
+  "testEvidence": [
+    "All7 role boundaries, multi-role same-user owner to manager narrowing, A/B/global isolation, exact literal filters, equal-timestamp paging, malicious reason/nested tokens/scores/private-note omission, unchanged stored payload, actual correlation actor export audit, CSV formula cell,5001-row denial without success audit, unsafe pagination/unknown tenant query, live membership revocation, suspended centre and NewYork25-hour day real DB/API",
+    "Real Web filters and downloaded CSV/audit; readonly export, same actor manager/accountant narrowing, suspended membership clears old rows and export button; actual network abort/retry, inline UUID/range validation; four final360/768/1024/1440 screenshots manually viewed with axe/Taste/keyboard/reduced-motion checks"
+  ],
+  "failuresAndRecovery": [
+    {
+      "report": "integration-2026-11-07-audit-focused.json",
+      "result": "Setup failed;0 tests executed, no PASS claim",
+      "diagnostic": "Strict tools found missing required fixture tenant subscription calendar fields; supplied synthetic valid dates, existing guards unchanged. Second focused4PASS, added DST/suspension test included final93PASS."
+    },
+    {
+      "report": "e2e-2026-11-07-audit-first.json",
+      "result": "65PASS/2FAIL",
+      "diagnostic": "Generic alert locator matched both the actual service error and Next route announcer. Narrowed to exact service-error message, retaining actual network retry, revoked membership and stale-row removal assertions. No first(), retry increase or production behavior change. Final complete67PASS."
+    },
+    {
+      "result": "Git patch recovery introduced CRLF format mismatches; normalized existing Prettier LF policy before frozen build; final format/lint pass. No behavior/assertion waiver."
+    }
+  ],
+  "visual": {
+    "widths": [
+      360,
+      768,
+      1024,
+      1440
+    ],
+    "manual": "All four final event images viewed",
+    "critiqueAndFix": "Initial actual images exposed vertically stacked desktop filters and orphan event fields. Added scoped3/2/1-column responsive filter grid and2/1-column event metadata; records now start higher, identifiers remain fully visible. Rechecked real browser/axe/Taste/keyboard/reduced motion before final frozen-source matrix.",
+    "axe": "No violations on exercised surfaces",
+    "tasteFindings": [],
+    "style": {
+      "direction": "Existing single FluivixEdu framed-sheet, blue data accent, Arial16 Vietnamese",
+      "seed": 1920114305,
+      "screenQuestion": "Which important centre changes occurred in the selected calendar range, who performed them and which trace identifies them?",
+      "objects": [
+        "Recorded immutable event UUID",
+        "Recorded actor UUID or system null",
+        "Action",
+        "Resource identifier",
+        "Trace/correlation identifier",
+        "Tenant-local display time and original UTC CSV time",
+        "Exact applied filters",
+        "Stable server pages",
+        "Role-limited scope",
+        "Actual audited CSV outcome"
+      ],
+      "proMax": {
+        "firstQuery": "audit log filter pagination --domain ux",
+        "firstResult": "Chip Collection Reflow; unrelated, not applied",
+        "retryQuery": "data table pagination --domain ux",
+        "appliedResult": "Responsive / Table Handling / Web; labelled record layout prevents wide identifier columns breaking mobile viewport",
+        "sourceSha": "d14efff8ed1faa4187f004f79926f428c8074ec7"
+      },
+      "taste": {
+        "skill": "design-taste-frontend",
+        "sourceSha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+        "applied": "App list-screen rules; one recorded action and timestamp leads each flat row, visible labels/identifiers wrap, no invented historical user names, quiet rules and actual filtering/export actions"
+      },
+      "motion": {
+        "sourceSha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "appliedSkills": [
+          "accessible-animation",
+          "micro-interaction",
+          "60fps-animation"
+        ],
+        "applied": "Native focus and immediate read/export status, existing reduced-motion rules; no additional movement or animation delay"
+      },
+      "verification": "Final actual browser/axe/Taste/keyboard/reduced motion/manual4-width review PASS"
+    },
+    "skills": [
+      {
+        "source": "taste-skill",
+        "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+        "installed": "design-taste-frontend",
+        "verifiedFiles": 38,
+        "status": "PASS"
+      },
+      {
+        "source": "ui-ux-pro-max-skill",
+        "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+        "installed": "ui-ux-pro-max",
+        "verifiedFiles": 73,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "accessible-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "micro-interaction",
+        "verifiedFiles": 4,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "60fps-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      }
+    ]
+  },
+  "frozenSourceProof": {
+    "baseCommit": "82cac35b2fb5b94c503b346e84636fc37fbf7521",
+    "rawSourceSha256": {
+      "apps/api/src/tenant-audit.dto.ts": "b35c0679ed47f313ff2c491dfd3f7efc6cac05086804670875e0fc9edbca3a6a",
+      "apps/api/src/tenant-audit.ts": "a71c1251c8ab6d15ca4a16f48d460541d93e60c8fc7fa79028477343f260d988",
+      "apps/web/app/app/audit/page.tsx": "38c5daa59a3c8a4985d71c6e0a5a8d7686d7577c5bdbb3b5ad773296df203889",
+      "apps/web/components/tenant-audit-workspace.tsx": "322983c7d7402b184bca26cd9a20ba2d1504c3875ff9d4d3876a6851d68d0f6d",
+      "tests/e2e/tenant-audit.spec.ts": "a75f24ae952e47e10e68d5b7ac4ee7a3836333c67bb10551918b51a8f9d3c1cc",
+      "tests/integration/tenant-audit-cases.ts": "599da51c2d601fad4643c8dee7a5abd44cc448a8f5c441dc123a321dbcaa0a14",
+      "apps/api/openapi.json": "4946a796d5e30107de2ab2d0001525cb46e696dac647fa0a023b884a895dd6f5",
+      "apps/api/src/app.ts": "79895d0dd343b814d369ba4c9a567bc11a183bb019174b9b50a3f874fbfc3630",
+      "apps/api/src/security.ts": "464e3a2babfd73642ecb3ae1625ae84ebf88a0a0bd6914da7ed428b0f4d8624b",
+      "apps/web/app/app/layout.tsx": "80fb66566cc655e35b5a078126185196a1a355a70b021fe3873471848fa67724",
+      "apps/web/app/globals.css": "0d194c549ed503d84e2f2a74362eb6b9b1918b1cb488a5fbb91e0f96a61ee82b",
+      "apps/web/lib/api.ts": "45309899320557b5d5cc614acb5d3aeebc86b76a1da4378fcec539b74026c4ad",
+      "packages/api-client/src/schema.d.ts": "8865460cd50ffc0a080e9424ff42c7d773cc32e480acdda72d628145ef899e9a",
+      "tests/integration/identity.test.ts": "e7c3f166f0ba563b459cf29a07994da2c6e8d74a79df811284bd1bef03028b5b",
+      "tooling/release-inventory.ts": "7cd02ce6efe17e100ac2faff95ad0b7c1bc1cb74452cc97ac568ff97c0e72cba"
+    },
+    "stable": true,
+    "envUnchanged": true
+  },
+  "sourceHashes": {
+    "normalization": "CRLF to LF",
+    "sha256": {
+      "apps/api/src/tenant-audit.dto.ts": "b35c0679ed47f313ff2c491dfd3f7efc6cac05086804670875e0fc9edbca3a6a",
+      "apps/api/src/tenant-audit.ts": "a71c1251c8ab6d15ca4a16f48d460541d93e60c8fc7fa79028477343f260d988",
+      "apps/web/app/app/audit/page.tsx": "38c5daa59a3c8a4985d71c6e0a5a8d7686d7577c5bdbb3b5ad773296df203889",
+      "apps/web/components/tenant-audit-workspace.tsx": "322983c7d7402b184bca26cd9a20ba2d1504c3875ff9d4d3876a6851d68d0f6d",
+      "tests/e2e/tenant-audit.spec.ts": "a75f24ae952e47e10e68d5b7ac4ee7a3836333c67bb10551918b51a8f9d3c1cc",
+      "tests/integration/tenant-audit-cases.ts": "599da51c2d601fad4643c8dee7a5abd44cc448a8f5c441dc123a321dbcaa0a14",
+      "apps/api/openapi.json": "4946a796d5e30107de2ab2d0001525cb46e696dac647fa0a023b884a895dd6f5",
+      "apps/api/src/app.ts": "79895d0dd343b814d369ba4c9a567bc11a183bb019174b9b50a3f874fbfc3630",
+      "apps/api/src/security.ts": "464e3a2babfd73642ecb3ae1625ae84ebf88a0a0bd6914da7ed428b0f4d8624b",
+      "apps/web/app/app/layout.tsx": "80fb66566cc655e35b5a078126185196a1a355a70b021fe3873471848fa67724",
+      "apps/web/app/globals.css": "0d194c549ed503d84e2f2a74362eb6b9b1918b1cb488a5fbb91e0f96a61ee82b",
+      "apps/web/lib/api.ts": "45309899320557b5d5cc614acb5d3aeebc86b76a1da4378fcec539b74026c4ad",
+      "packages/api-client/src/schema.d.ts": "8865460cd50ffc0a080e9424ff42c7d773cc32e480acdda72d628145ef899e9a",
+      "tests/integration/identity.test.ts": "e7c3f166f0ba563b459cf29a07994da2c6e8d74a79df811284bd1bef03028b5b",
+      "tooling/release-inventory.ts": "7cd02ce6efe17e100ac2faff95ad0b7c1bc1cb74452cc97ac568ff97c0e72cba"
+    }
+  },
+  "limitations": "Technical tenant audit slice only; no legal/compliance acceptance. Notifications/privacy/remaining operational/auth/M4 and external staging/legal/UAT/signed-device/real-push gates remain; full P0 not declared complete. Exact audit commit/SHA CI pending."
+}

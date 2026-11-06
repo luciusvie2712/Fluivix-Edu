@@ -71,6 +71,9 @@ export default function Layout({ children }: { children: ReactNode }) {
           <Link href="/app/account">Tài khoản và phiên</Link>
           {["owner", "manager", "accountant"].includes(
             session.me.activeRole ?? "",
+          ) && <Link href="/app/audit">Nhật ký hoạt động</Link>}
+          {["owner", "manager", "accountant"].includes(
+            session.me.activeRole ?? "",
           ) && <Link href="/app/finance/invoices">Chứng từ học phí</Link>}
           {["owner", "manager", "accountant"].includes(
             session.me.activeRole ?? "",

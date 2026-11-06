@@ -1,0 +1,39 @@
+{
+  "direction": "Existing single FluivixEdu framed-sheet, blue data accent, Arial16 Vietnamese",
+  "seed": 1920114305,
+  "screenQuestion": "Which important centre changes occurred in the selected calendar range, who performed them and which trace identifies them?",
+  "objects": [
+    "Recorded immutable event UUID",
+    "Recorded actor UUID or system null",
+    "Action",
+    "Resource identifier",
+    "Trace/correlation identifier",
+    "Tenant-local display time and original UTC CSV time",
+    "Exact applied filters",
+    "Stable server pages",
+    "Role-limited scope",
+    "Actual audited CSV outcome"
+  ],
+  "proMax": {
+    "firstQuery": "audit log filter pagination --domain ux",
+    "firstResult": "Chip Collection Reflow; unrelated, not applied",
+    "retryQuery": "data table pagination --domain ux",
+    "appliedResult": "Responsive / Table Handling / Web; labelled record layout prevents wide identifier columns breaking mobile viewport",
+    "sourceSha": "d14efff8ed1faa4187f004f79926f428c8074ec7"
+  },
+  "taste": {
+    "skill": "design-taste-frontend",
+    "sourceSha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+    "applied": "App list-screen rules; one recorded action and timestamp leads each flat row, visible labels/identifiers wrap, no invented historical user names, quiet rules and actual filtering/export actions"
+  },
+  "motion": {
+    "sourceSha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+    "appliedSkills": [
+      "accessible-animation",
+      "micro-interaction",
+      "60fps-animation"
+    ],
+    "applied": "Native focus and immediate read/export status, existing reduced-motion rules; no additional movement or animation delay"
+  },
+  "verification": "Final actual browser/axe/Taste/keyboard/reduced motion/manual4-width review PASS"
+}

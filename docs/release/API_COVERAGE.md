@@ -1,6 +1,6 @@
 # API contract coverage
 
-Generated inventory: 165 actual OpenAPI operations; 134
+Generated inventory: 167 actual OpenAPI operations; 134
 method/path intents in the master specification (includes non-P0 design intent).
 Path parameter names are normalized when comparing. MATCH means route metadata
 exists; it does not verify DTOs, permission, object scope or runtime behavior.
@@ -42,7 +42,7 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
 | POST | `/staff/{membershipId}/roles` | MATCH |
 | DELETE | `/staff/{membershipId}/roles/{roleId}` | MATCH |
 | GET | `/permissions` | MATCH |
-| GET | `/audit-logs` | ABSENT / REVIEW |
+| GET | `/audit-logs` | MATCH |
 | GET | `/students` | MATCH |
 | POST | `/students` | MATCH |
 | GET | `/students/{studentId}` | MATCH |

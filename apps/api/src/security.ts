@@ -49,6 +49,7 @@ export const permissions = {
     "permissions.read",
     "tenant.read",
     "audit.read",
+    "audit.export",
     "teaching.manage",
     "teaching.read",
     "attendance.write",
@@ -63,6 +64,7 @@ export const permissions = {
     "finance.fee.write",
   ],
   manager: [
+    "audit.read",
     "report.dashboard.read",
     "report.attendance.read",
     "report.attendance.export",
@@ -95,6 +97,8 @@ export const permissions = {
     "guardian.manage",
   ],
   accountant: [
+    "audit.read",
+    "audit.export",
     "report.dashboard.read",
     "report.enrollment.export",
     "finance.report.export",

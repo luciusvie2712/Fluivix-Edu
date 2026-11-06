@@ -1,5 +1,11 @@
 # Current-session test results
 
+## Current checkpoint — 2026-11-07
+
+Remote main82cac35 has exact successful CI42276412806(all30 steps) for operational reporting plus navigation synchronization. Tenant audit W19 now passes the full local gate:93 integration/67 browser0skip/flaky,60unit/15mobile and all automated checks, stable167-operation contract. Real role-limited/redacted event history, exact filters/calendar/server pages and audited CSV are verified; four final responsive images inspected. Audit commit/exact-SHA CI pending. Notifications/privacy/remaining operational/auth/M4 and external staging/legal/UAT/signed-device/real-push gates remain; release BLOCKED.
+
+## Historical checkpoints and detailed evidence
+
 Historical reports are separate from this 2026-10-24 continuation.
 
 | Check | Observed result | Evidence / limits |
@@ -260,3 +266,12 @@ Owner availability clarification (2026-11-06): both service and SQL count only o
 - Commit acb5aa8 CI42273235663:62 browser PASS/1FAIL. Old and new pages share due-date controls; an unawaited receivables transition left both list and issuance-status invoice links visible. Actual CI error retained in evidence/ci-acb5aa8-failure-2026-11-07.json.
 - Test now awaits the actual receivables URL and debt-list heading before filtering. Both invoice-number assertions target the actual record list. Exact identity/date/SQL expectations retained; no assertion removed, first(), sleeps, retry increase or production changes.
 - Frozen-source complete local gate PASS:88 integration/63 browser0skip/flaky,60unit/15mobile,actual API mobile smoke,Expo alignment,8 uncached builds/types/tools,lint/format,Prisma,stable165 contract,frozen install,audit0HIGH/CRITICAL. Prior migration bytes and.env unchanged. Evidence:report-ci-repair-verification.json; exact repair SHA/CI pending. Tenant audit work saved separately and remains IN_PROGRESS/UNVERIFIED; release BLOCKED.
+
+
+### W19 tenant audit — local acceptance PASS (2026-11-07)
+- Real GET/audit-logs and /export, generated167-operation contract and /app/audit: exact actor/action/resource/trace and tenant calendar date filters, stable server pages and actual CSV. One repeatable snapshot/asOf, inclusive<=366-day range; actual NewYork25-hour-day boundaries tested. Tenant/global isolation and all7 roles covered.
+- Owner all events; manager explicit operations only (no finance/grades/staff/security), accountant explicit finance only; unknown events fail closed for restricted roles, current selected role not union. Named audit.read/export; owner/accountant export, manager denied. Core audit independent optional reports/finance flags. Decision follows master default limited/finance scopes.
+- Deliberate allowlist never fetches metadata/reasons/before-after payload: no tokens/scores/private notes/PII leaks. Recorded actor UUID/null, action/resource/trace/time only; UI clearly explains full masking. Existing historical payload and append-only protections unchanged, no new migration/schema edit.
+- Actual CSV <=5000/formula-safe; verifies current actor/session/member/role and mode under share lock, permits readonly audited GET, records actor/date/identifier filter/count/trace. Real Web downloaded-file and audit checks, same-person role narrowing, network retry/invalid/empty states and live revocation clearing.
+- Final frozen-source local matrix PASS:93 integration/67 browser0skip/flaky,60unit/15mobileJest,actual mobile API smoke/Expo alignment,8 uncached builds/types/tools,lint/format,Prisma,stable167 contract,frozen install,audit0HIGH/CRITICAL.4 final responsive images manually viewed, axe/Taste/keyboard/reduced motion pass. Three skill sources/five IDs verified and applied; same framed-sheet direction. .env unchanged/secret screen PASS. Failed setup report retained; strict fixture calendar fields corrected, no production guards/assertions weakened.
+- Evidence:evidence/tenant-audit/verification.json. Audit commit/exact CI pending; remaining notifications/privacy/operational/auth/M4 and external gates BLOCKED.

@@ -46,6 +46,7 @@ import {
   GuardianLinksService,
 } from "./guardian-links";
 import { PlatformHealthController } from "./platform-health";
+import { TenantAuditController, TenantAuditService } from "./tenant-audit";
 import { StaffController, StaffService } from "./staff";
 import {
   PlatformAuditController,
@@ -53,6 +54,7 @@ import {
 } from "./platform-audit";
 @Module({
   controllers: [
+    TenantAuditController,
     ReportsController,
     CollectionReportsController,
     StaffController,
@@ -75,6 +77,7 @@ import {
     PlatformHealthController,
   ],
   providers: [
+    TenantAuditService,
     ReportsService,
     StaffService,
     StudentImportsService,

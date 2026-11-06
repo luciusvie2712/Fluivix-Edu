@@ -12,6 +12,25 @@ export type ReportQuery = NonNullable<
   paths["/api/v1/reports/dashboard"]["get"]["parameters"]["query"]
 >;
 export type ReportExport = "attendance" | "enrollments" | "collections";
+export type TenantAuditQuery = NonNullable<
+  paths["/api/v1/audit-logs"]["get"]["parameters"]["query"]
+>;
+export const tenantAudit = {
+  list: (query: TenantAuditQuery, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/audit-logs", {
+        params: { query },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  export: (query: TenantAuditQuery, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/audit-logs/export", {
+        params: { query },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+};
 export const reports = {
   dashboard: (query: ReportQuery, signal?: AbortSignal) =>
     unwrap(

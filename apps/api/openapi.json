@@ -1,6 +1,196 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/api/v1/audit-logs": {
+      "get": {
+        "operationId": "TenantAuditController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "actorId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "action",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 80, "type": "string" }
+          },
+          {
+            "name": "resourceId",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 80, "type": "string" }
+          },
+          {
+            "name": "traceId",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 80, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TenantAuditResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["tenant audit"]
+      }
+    },
+    "/api/v1/audit-logs/export": {
+      "get": {
+        "operationId": "TenantAuditController_export",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "actorId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "action",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 80, "type": "string" }
+          },
+          {
+            "name": "resourceId",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 80, "type": "string" }
+          },
+          {
+            "name": "traceId",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 80, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TenantAuditCsvResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["tenant audit"]
+      }
+    },
     "/api/v1/reports/dashboard": {
       "get": {
         "operationId": "ReportsController_dashboard",
@@ -11987,6 +12177,108 @@
         },
         "required": ["error", "meta"]
       },
+      "TenantAuditRow": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "actorId": { "type": "string", "format": "uuid", "nullable": true },
+          "action": { "type": "string" },
+          "resourceId": { "type": "string" },
+          "traceId": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        },
+        "required": [
+          "id",
+          "actorId",
+          "action",
+          "resourceId",
+          "traceId",
+          "createdAt"
+        ]
+      },
+      "PageView": {
+        "type": "object",
+        "properties": {
+          "page": { "type": "number" },
+          "limit": { "type": "number" },
+          "total": { "type": "number" },
+          "totalPages": { "type": "number" }
+        },
+        "required": ["page", "limit", "total", "totalPages"]
+      },
+      "TenantAuditView": {
+        "type": "object",
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "timezone": { "type": "string" },
+          "asOf": { "type": "string" },
+          "scope": {
+            "type": "string",
+            "enum": ["ALL", "OPERATIONS", "FINANCE"]
+          },
+          "exportAllowed": { "type": "boolean" },
+          "rows": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/TenantAuditRow" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" }
+        },
+        "required": [
+          "from",
+          "to",
+          "timezone",
+          "asOf",
+          "scope",
+          "exportAllowed",
+          "rows",
+          "page"
+        ]
+      },
+      "TenantAuditResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/TenantAuditView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "TenantAuditCsvView": {
+        "type": "object",
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "timezone": { "type": "string" },
+          "asOf": { "type": "string" },
+          "scope": {
+            "type": "string",
+            "enum": ["ALL", "OPERATIONS", "FINANCE"]
+          },
+          "exportAllowed": { "type": "boolean" },
+          "csv": { "type": "string" },
+          "filename": { "type": "string" },
+          "rowCount": { "type": "number" }
+        },
+        "required": [
+          "from",
+          "to",
+          "timezone",
+          "asOf",
+          "scope",
+          "exportAllowed",
+          "csv",
+          "filename",
+          "rowCount"
+        ]
+      },
+      "TenantAuditCsvResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/TenantAuditCsvView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
       "ReportSessionView": {
         "type": "object",
         "properties": {
@@ -12198,16 +12490,6 @@
           "classCode",
           "className"
         ]
-      },
-      "PageView": {
-        "type": "object",
-        "properties": {
-          "page": { "type": "number" },
-          "limit": { "type": "number" },
-          "total": { "type": "number" },
-          "totalPages": { "type": "number" }
-        },
-        "required": ["page", "limit", "total", "totalPages"]
       },
       "AttendanceReportView": {
         "type": "object",

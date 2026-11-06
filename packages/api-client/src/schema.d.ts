@@ -4,6 +4,38 @@
  */
 
 export interface paths {
+  "/api/v1/audit-logs": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TenantAuditController_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/audit-logs/export": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TenantAuditController_export"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/reports/dashboard": {
     parameters: {
       query?: never;
@@ -2243,6 +2275,54 @@ export interface components {
       error: components["schemas"]["ErrorView"];
       meta: components["schemas"]["MetaDto"];
     };
+    TenantAuditRow: {
+      /** Format: uuid */
+      id: string;
+      /** Format: uuid */
+      actorId: string | null;
+      action: string;
+      resourceId: string;
+      traceId: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    PageView: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+    TenantAuditView: {
+      from: string;
+      to: string;
+      timezone: string;
+      asOf: string;
+      /** @enum {string} */
+      scope: "ALL" | "OPERATIONS" | "FINANCE";
+      exportAllowed: boolean;
+      rows: components["schemas"]["TenantAuditRow"][];
+      page: components["schemas"]["PageView"];
+    };
+    TenantAuditResponse: {
+      data: components["schemas"]["TenantAuditView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    TenantAuditCsvView: {
+      from: string;
+      to: string;
+      timezone: string;
+      asOf: string;
+      /** @enum {string} */
+      scope: "ALL" | "OPERATIONS" | "FINANCE";
+      exportAllowed: boolean;
+      csv: string;
+      filename: string;
+      rowCount: number;
+    };
+    TenantAuditCsvResponse: {
+      data: components["schemas"]["TenantAuditCsvView"];
+      meta: components["schemas"]["MetaDto"];
+    };
     ReportSessionView: {
       expectedSessions: number;
       cancelledSessions: number;
@@ -2333,12 +2413,6 @@ export interface components {
       classId: string;
       classCode: string;
       className: string;
-    };
-    PageView: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
     };
     AttendanceReportView: {
       from: string;
@@ -4073,6 +4147,96 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  TenantAuditController_list: {
+    parameters: {
+      query: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        from: string;
+        to: string;
+        actorId?: string;
+        action?: string;
+        resourceId?: string;
+        traceId?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TenantAuditResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TenantAuditController_export: {
+    parameters: {
+      query: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        from: string;
+        to: string;
+        actorId?: string;
+        action?: string;
+        resourceId?: string;
+        traceId?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TenantAuditCsvResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
   ReportsController_dashboard: {
     parameters: {
       query: {
