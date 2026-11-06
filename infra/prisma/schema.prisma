@@ -134,6 +134,7 @@ model Membership {
   guardianVerifiedEvents GuardianLinkEvent[] @relation("GuardianEventVerifier")
   guardianProfile GuardianProfile? @relation("GuardianProfileMembership")
   createdGuardianProfiles GuardianProfile[] @relation("GuardianProfileCreator")
+  teacherProfile Teacher? @relation("TeacherMembership")
 
   @@unique([tenantId, userId])
   @@unique([tenantId, id])
@@ -288,6 +289,8 @@ model Teacher {
   fullName    String @map("full_name") @db.VarChar(150)
   status      String @default("ACTIVE") @db.VarChar(20)
   version Int @default(1)
+  membership Membership @relation("TeacherMembership", fields:[tenantId,userId], references:[tenantId,userId], onDelete:NoAction, onUpdate:NoAction, map:"teacher_profiles_tenant_id_user_id_fkey")
+  assignments ClassTeacher[]
 
   @@unique([tenantId, id])
   @@unique([tenantId, userId])
@@ -333,6 +336,7 @@ model ClassTeacher {
   teacherId     String    @map("teacher_id") @db.Uuid
   effectiveFrom DateTime  @map("effective_from") @db.Date
   effectiveTo   DateTime? @map("effective_to") @db.Date
+  teacher Teacher @relation(fields:[tenantId,teacherId], references:[tenantId,id], onDelete:NoAction, onUpdate:NoAction, map:"class_teachers_tenant_id_teacher_id_fkey")
 
   @@unique([tenantId, id])
   @@index([tenantId, classId, teacherId])

@@ -58,6 +58,9 @@ import {
   SchedulePreviewResponse,
   TeachersResponse,
   TeacherUpdate,
+  TeacherQuery,
+  TeacherAccountsResponse,
+  TeacherClassesResponse,
   ClassUpdate,
   LifecycleVersion,
   WithdrawInput,
@@ -151,8 +154,24 @@ export class TeachingController {
   @Get("teachers")
   @TenantPermission("teaching.manage")
   @ApiOkResponse({ type: TeachersResponse })
-  teachers(@Req() r: ApiRequest, @Query() q: ListDto) {
+  teachers(@Req() r: ApiRequest, @Query() q: TeacherQuery) {
     return this.service.teachers(requestClaims(r), q);
+  }
+  @Get("teachers/accounts")
+  @TenantPermission("teaching.manage")
+  @ApiOkResponse({ type: TeacherAccountsResponse })
+  teacherAccounts(@Req() r: ApiRequest, @Query() q: ListDto) {
+    return this.service.teacherAccounts(requestClaims(r), q);
+  }
+  @Get("teachers/:id/classes")
+  @TenantPermission("teaching.manage")
+  @ApiOkResponse({ type: TeacherClassesResponse })
+  teacherClasses(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Query() q: ListDto,
+  ) {
+    return this.service.teacherClasses(requestClaims(r), id, q);
   }
   @Get("teachers/:id")
   @TenantPermission("teaching.manage")

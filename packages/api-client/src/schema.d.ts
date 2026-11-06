@@ -548,6 +548,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/teachers/accounts": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TeachingController_teacherAccounts"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/teachers/{id}/classes": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TeachingController_teacherClasses"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/teachers/{id}": {
     parameters: {
       query?: never;
@@ -2342,9 +2374,37 @@ export interface components {
       id: string;
       status: string;
       version: number;
+      accountReady: boolean;
     };
     TeachersResponse: {
       data: components["schemas"]["TeacherView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    TeacherAccountView: {
+      /** Format: uuid */
+      userId: string;
+      displayName: string;
+      email: string;
+    };
+    TeacherAccountsResponse: {
+      data: components["schemas"]["TeacherAccountView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    TeacherClassView: {
+      id: string;
+      classId: string;
+      classCode: string;
+      className: string;
+      classStatus: string;
+      /** Format: date */
+      effectiveFrom: string;
+      /** Format: date */
+      effectiveTo: string | null;
+    };
+    TeacherClassesResponse: {
+      data: components["schemas"]["TeacherClassView"][];
       page: components["schemas"]["PageView"];
       meta: components["schemas"]["MetaDto"];
     };
@@ -5227,6 +5287,7 @@ export interface operations {
         page?: number;
         limit?: number;
         search?: string;
+        status?: "ACTIVE" | "INACTIVE";
       };
       header?: never;
       path?: never;
@@ -5303,6 +5364,134 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["TeacherResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_teacherAccounts: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TeacherAccountsResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_teacherClasses: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TeacherClassesResponse"];
         };
       };
       401: {

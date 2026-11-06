@@ -1,0 +1,140 @@
+{
+  "date": "2026-11-06",
+  "module": "Teacher/W07",
+  "localVerdict": "PASS",
+  "remoteVerdict": "NOT_VERIFIED",
+  "releaseVerdict": "BLOCKED",
+  "baseCommit": "d345764ae407e09df30b8586fdf4162f9e875c29",
+  "checks": {
+    "lint": "PASS",
+    "format": "PASS",
+    "typecheckIncludingTools": "PASS",
+    "unit": 49,
+    "mobileJest": 15,
+    "build": "8 tasks PASS",
+    "integration": {
+      "passed": 61,
+      "skipped": 0,
+      "report": "docs/release/evidence/integration-2026-11-06-teacher-full.json"
+    },
+    "e2e": {
+      "passed": 32,
+      "skipped": 0,
+      "flaky": 0,
+      "report": "docs/release/evidence/e2e-2026-11-06-teacher-verified.json"
+    },
+    "mobileApiSmoke": "PASS; actual client/API, not signed-device UI",
+    "expoAlignment": "PASS",
+    "contractGeneration": {
+      "stable": true,
+      "sha256": {
+        "apps/api/openapi.json": "1E116C48FEAC8D99DDC5F4008054207F732C752C94FE553AA87436F601AB4975",
+        "packages/api-client/src/schema.d.ts": "1967FD3BD3F9B6370C1504A0C32F32B8A8D303E6D0AB4892DABC35E5AD58871C"
+      }
+    },
+    "dependencyAudit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    },
+    "localSecretScreen": "PASS; values not printed"
+  },
+  "implementation": [
+    "scoped teacher directory/name/code/status search and pagination",
+    "minimal accepted active teacher-account picker",
+    "profile creation independent of global name and role grants",
+    "versioned profile/status update with reason and confirmation",
+    "same-tenant assigned-class history and real class assignment",
+    "post-lock live actor checks for create/update/assignment",
+    "serialized overlap rejection409 with existing SQL daterange exclusion",
+    "inactive profile/account cannot receive new assignments/sessions",
+    "actual account readiness exposed and honored by class/schedule pickers",
+    "existing composite SQL FKs represented in Prisma; no DDL migration"
+  ],
+  "visual": {
+    "widths": [
+      360,
+      768,
+      1024,
+      1440
+    ],
+    "axe": "no violations on exercised views",
+    "keyboard": "narrow table scroll verified",
+    "reducedMotion": "detail forms exercised",
+    "style": "existing framed-sheet, seed1920114305",
+    "manualReview": "all eight final images viewed",
+    "tasteFindings": [
+      {
+        "level": "WARN",
+        "id": "panel-void",
+        "message": "1 card(s) hold a blank band inside: 44px in \"H\u00e1\u00bb\u201c s\u00c6\u00a1 gi\u00c3\u00a1o vi\u00c3\u00aan\".",
+        "fix": "A card stretches to its neighbour only when it has content to fill. Keep a legend or a note directly under its chart (only an action or a total may sit at a stretched card's foot), let a short card keep its own height (align-items: start), and let a filtered block shrink to its rows.",
+        "width": 1440
+      }
+    ],
+    "warningDisposition": "Only 44px semantic separation before a section, when reported. No stretched panel or artificial filler; finding retained without waiver.",
+    "skills": [
+      {
+        "source": "taste-skill",
+        "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+        "installed": "design-taste-frontend",
+        "verifiedFiles": 38,
+        "status": "PASS"
+      },
+      {
+        "source": "ui-ux-pro-max-skill",
+        "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+        "installed": "ui-ux-pro-max",
+        "verifiedFiles": 73,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "accessible-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "micro-interaction",
+        "verifiedFiles": 4,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "60fps-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      }
+    ]
+  },
+  "sourceHashes": {
+    "normalization": "CRLF to LF",
+    "sha256": {
+      "apps/web/app/app/teachers/[id]/page.tsx": "2fc189f074a680b2f0ae9a59edb7cc49c0eeb1a869bca897566e464917962d0a",
+      "apps/web/app/app/teachers/page.tsx": "83f36594fd755714ee659b602a733a0b98af1a6883a65ba76cc4b97b9baa3a76",
+      "apps/web/components/teacher-workspace.tsx": "7f3f2433128b18291fc3e950339b9aaead986d0d51a50555c317e8c451fbbc19",
+      "tests/e2e/teachers.spec.ts": "e1553efb71287dd0afad815d7345ab70c7719a59c3b6f84f8344c8d2be382813",
+      "tests/integration/teacher-cases.ts": "987bc55b72f75ff465c97fceecdd05cbbaef42e4b3d4aea2f724ca74c19c2932",
+      "apps/api/openapi.json": "1e116c48feac8d99ddc5f4008054207f732c752c94fe553aa87436f601ab4975",
+      "apps/api/src/teaching.controller.ts": "71caa6b4dbd3b4a68f89aed7a8696f0b58d88f707ff0cff92522bb40130534cd",
+      "apps/api/src/teaching.dto.ts": "a242e55b8c8aabd66d599321f14b9b3b79026bb198a3ade660818371b9874d49",
+      "apps/api/src/teaching.service.ts": "ff1af4ab4c38bca78c08482dd0531dccf0fd3db650649098b868c2cec3548e83",
+      "apps/web/app/app/layout.tsx": "c6ecbdaa137b708a67da2b2bf208f02e6d296a2ff3fe8ac3843005ea696b515b",
+      "apps/web/app/globals.css": "59b5905cfaa12318d89737c509faecf81e9b6aa1b32d496b917f18b422e56fe4",
+      "apps/web/components/teaching-workspace.tsx": "de99d4935fd0179262bc62ed10f93e4c232f352e3470dcca5c7fd873dd6ac8e2",
+      "apps/web/lib/api.ts": "de8dc820163b189db98af91e4e226e72d6dca7310672b7d27a782892569cdc48",
+      "infra/prisma/schema.prisma": "ec6a33deb9795ad3ecd408a642f77471e0db7db3fcf5c43620dc5d0327a9c35d",
+      "packages/api-client/src/schema.d.ts": "1967fd3bd3f9b6370c1504a0c32f32b8a8d303e6d0ab4892dabc35e5ad58871c",
+      "tests/integration/identity.test.ts": "3422309be58974844ddf0c9b86921557eb6c7200388e40f2f6f451012777c8e3",
+      "tooling/release-inventory.ts": "68f573d5ffbcd52d80cd66b8a17ebb9fa6dee674fb5602b7462ae30bf4280529"
+    }
+  },
+  "priorFailures": "Real duplicate-assignment race exposed201/500; corrected to201/409 under tenant lock, SQL exclusion preserved. Initial failed report retained.",
+  "remaining": "Assessment/Finance/Reports/Dashboard/Audit/Privacy/Notifications, broader class/schedule details and M4 remain. External staging/legal/device/push/store approvals absent."
+}

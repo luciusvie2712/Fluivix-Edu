@@ -21,12 +21,45 @@ import { ListDto } from "./auth.dto";
 export class TeacherInput {
   @ApiProperty({ format: "uuid" }) @IsUUID() userId!: string;
   @ApiProperty() @Matches(/^[A-Za-z0-9_-]{1,40}$/) teacherCode!: string;
-  @ApiProperty() @IsString() @Length(1, 150) fullName!: string;
+  @ApiProperty() @IsString() @Matches(/\S/) @Length(1, 150) fullName!: string;
+}
+export class TeacherQuery extends ListDto {
+  @ApiPropertyOptional({ enum: ["ACTIVE", "INACTIVE"] })
+  @IsOptional()
+  @IsIn(["ACTIVE", "INACTIVE"])
+  status?: string;
 }
 export class TeacherView extends TeacherInput {
   @ApiProperty() id!: string;
   @ApiProperty() status!: string;
   @ApiProperty() version!: number;
+  @ApiProperty() accountReady!: boolean;
+}
+export class TeacherAccountView {
+  @ApiProperty({ format: "uuid" }) userId!: string;
+  @ApiProperty() displayName!: string;
+  @ApiProperty() email!: string;
+}
+export class TeacherAccountsResponse {
+  @ApiProperty({ type: [TeacherAccountView] }) data!: TeacherAccountView[];
+  @ApiProperty({ type: PageView }) page!: PageView;
+  @ApiProperty({ type: MetaDto }) meta!: MetaDto;
+}
+export class TeacherClassView {
+  @ApiProperty() id!: string;
+  @ApiProperty() classId!: string;
+  @ApiProperty() classCode!: string;
+  @ApiProperty() className!: string;
+  @ApiProperty() classStatus!: string;
+  @ApiProperty({ format: "date" }) effectiveFrom!: string;
+  @ApiProperty({ type: String, format: "date", nullable: true }) effectiveTo!:
+    | string
+    | null;
+}
+export class TeacherClassesResponse {
+  @ApiProperty({ type: [TeacherClassView] }) data!: TeacherClassView[];
+  @ApiProperty({ type: PageView }) page!: PageView;
+  @ApiProperty({ type: MetaDto }) meta!: MetaDto;
 }
 export class TeachersResponse {
   @ApiProperty({ type: [TeacherView] }) data!: TeacherView[];

@@ -1,6 +1,6 @@
 # API contract coverage
 
-Generated inventory: 142 actual OpenAPI operations; 134
+Generated inventory: 144 actual OpenAPI operations; 134
 method/path intents in the master specification (includes non-P0 design intent).
 Path parameter names are normalized when comparing. MATCH means route metadata
 exists; it does not verify DTOs, permission, object scope or runtime behavior.

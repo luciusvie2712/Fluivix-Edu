@@ -17,6 +17,7 @@ import { peakEnrollment } from "./enrollment-capacity";
 import { randomUUID } from "node:crypto";
 import { Db } from "./db";
 import type { Claims } from "./security";
+import { lockTenantActor } from "./tenant-actor";
 import { Paged } from "./http";
 import {
   assertQuota,
@@ -40,6 +41,7 @@ import {
   GenerationWindow,
   ScheduleCandidate,
   TeacherUpdate,
+  TeacherQuery,
   ClassUpdate,
   LifecycleVersion,
   WithdrawInput,
@@ -51,6 +53,31 @@ type TenantScope = Pick<Claims, "tenantId">;
 type ScheduleActor = TenantScope & { sub?: string };
 const day = (value: Date) => value.toISOString().slice(0, 10);
 const date = (value: string) => new Date(value + "T00:00:00Z");
+const teacherInclude = {
+  membership: { include: { roles: true, user: { select: { status: true } } } },
+} as const;
+type ListedTeacher = Prisma.TeacherGetPayload<{
+  include: typeof teacherInclude;
+}>;
+const teacherView = (t: ListedTeacher) => ({
+  id: t.id,
+  userId: t.userId,
+  teacherCode: t.teacherCode,
+  fullName: t.fullName,
+  status: t.status,
+  version: t.version,
+  accountReady:
+    t.membership.status === "ACTIVE" &&
+    !t.membership.activationPending &&
+    t.membership.user.status === "ACTIVE" &&
+    t.membership.roles.some((r) => r.role === "teacher"),
+});
+const teacherPage = (q: ListDto, total: number) => ({
+  page: q.page,
+  limit: q.limit,
+  total,
+  totalPages: Math.ceil(total / q.limit),
+});
 const staff = (c: Claims) =>
   ["owner", "manager", "academic_staff"].includes(c.role ?? "");
 const validOn = (value: Date) => ({
@@ -90,7 +117,7 @@ export class TeachingService {
   }
   async teacher(c: Claims, input: TeacherInput, traceId: string) {
     return this.db.$transaction(async (tx) => {
-      await this.lockTenant(tx, c);
+      await lockTenantActor(tx, c, "teaching.manage");
       const membership = await tx.membership.findFirst({
         where: {
           tenantId: c.tenantId!,
@@ -105,29 +132,49 @@ export class TeachingService {
           "Giáo viên cần tài khoản và vai trò đang hoạt động trong trung tâm.",
         );
       const result = await tx.teacher.create({
-        data: { tenantId: c.tenantId!, ...input },
+        data: {
+          tenantId: c.tenantId!,
+          ...input,
+          fullName: input.fullName.trim(),
+        },
+        include: teacherInclude,
       });
       await this.audit(tx, c, "teacher.created", result.id, traceId);
-      return result;
+      return teacherView(result);
     });
   }
-  async teachers(c: Claims, q: ListDto) {
+  async teachers(c: Claims, q: TeacherQuery) {
+    if (!c.tenantId) throw new ForbiddenException();
     const where = {
       tenantId: c.tenantId!,
+      ...(q.status ? { status: q.status } : {}),
       ...(q.search
-        ? { fullName: { contains: q.search, mode: "insensitive" as const } }
+        ? {
+            OR: [
+              {
+                fullName: { contains: q.search, mode: "insensitive" as const },
+              },
+              {
+                teacherCode: {
+                  contains: q.search,
+                  mode: "insensitive" as const,
+                },
+              },
+            ],
+          }
         : {}),
     };
     const [items, total] = await this.db.$transaction([
       this.db.teacher.findMany({
         where,
+        include: teacherInclude,
         orderBy: [{ fullName: "asc" }, { id: "asc" }],
         take: q.limit,
         skip: (q.page - 1) * q.limit,
       }),
       this.db.teacher.count({ where }),
     ]);
-    return new Paged(items, {
+    return new Paged(items.map(teacherView), {
       page: q.page,
       limit: q.limit,
       total,
@@ -135,11 +182,106 @@ export class TeachingService {
     });
   }
   async teacherDetail(c: Claims, id: string) {
+    if (!c.tenantId) throw new ForbiddenException();
     const item = await this.db.teacher.findFirst({
       where: { tenantId: c.tenantId!, id },
+      include: teacherInclude,
     });
     if (!item) throw new NotFoundException("Không tìm thấy giáo viên.");
-    return item;
+    return teacherView(item);
+  }
+  async teacherAccounts(c: Claims, q: ListDto) {
+    if (!c.tenantId) throw new ForbiddenException();
+    const where: Prisma.MembershipWhereInput = {
+      tenantId: c.tenantId,
+      status: "ACTIVE",
+      activationPending: false,
+      roles: { some: { role: "teacher" } },
+      teacherProfile: null,
+      user: {
+        status: "ACTIVE",
+        ...(q.search
+          ? {
+              OR: [
+                { displayName: { contains: q.search, mode: "insensitive" } },
+                { email: { contains: q.search, mode: "insensitive" } },
+              ],
+            }
+          : {}),
+      },
+    };
+    const [rows, total] = await this.db.$transaction(
+      [
+        this.db.membership.findMany({
+          where,
+          select: {
+            userId: true,
+            user: { select: { displayName: true, email: true } },
+          },
+          orderBy: { userId: "asc" },
+          skip: (q.page - 1) * q.limit,
+          take: q.limit,
+        }),
+        this.db.membership.count({ where }),
+      ],
+      { isolationLevel: "RepeatableRead" },
+    );
+    return new Paged(
+      rows.map((m) => ({ userId: m.userId, ...m.user })),
+      teacherPage(q, total),
+    );
+  }
+  async teacherClasses(c: Claims, id: string, q: ListDto) {
+    if (!c.tenantId) throw new ForbiddenException();
+    return this.db.$transaction(
+      async (tx) => {
+        if (
+          !(await tx.teacher.findFirst({
+            where: { tenantId: c.tenantId!, id },
+            select: { id: true },
+          }))
+        )
+          throw new NotFoundException("Không tìm thấy giáo viên.");
+        const where = { tenantId: c.tenantId!, teacherId: id };
+        const [rows, total] = await Promise.all([
+          tx.classTeacher.findMany({
+            where,
+            orderBy: [{ effectiveFrom: "desc" }, { id: "asc" }],
+            skip: (q.page - 1) * q.limit,
+            take: q.limit,
+          }),
+          tx.classTeacher.count({ where }),
+        ]);
+        const classes = await tx.educationClass.findMany({
+          where: {
+            tenantId: c.tenantId!,
+            id: { in: rows.map((r) => r.classId) },
+          },
+          select: { id: true, code: true, name: true, status: true },
+        });
+        const byId = new Map(classes.map((cls) => [cls.id, cls]));
+        return new Paged(
+          rows.map((row) => {
+            const cls = byId.get(row.classId);
+            if (!cls)
+              throw new NotFoundException(
+                "Không tìm thấy lớp trong phạm vi trung tâm.",
+              );
+            return {
+              id: row.id,
+              classId: cls.id,
+              classCode: cls.code,
+              className: cls.name,
+              classStatus: cls.status,
+              effectiveFrom: day(row.effectiveFrom),
+              effectiveTo: row.effectiveTo ? day(row.effectiveTo) : null,
+            };
+          }),
+          teacherPage(q, total),
+        );
+      },
+      { isolationLevel: "RepeatableRead" },
+    );
   }
   async updateTeacher(
     c: Claims,
@@ -148,7 +290,11 @@ export class TeachingService {
     traceId: string,
   ) {
     return this.db.$transaction(async (tx) => {
-      await this.lockTenant(tx, c);
+      await lockTenantActor(tx, c, "teaching.manage");
+      if (input.reason.trim().length < 10)
+        throw new UnprocessableEntityException(
+          "Cần ghi nhận lý do từ 10 ký tự.",
+        );
       const old = await tx.teacher.findFirst({
         where: { tenantId: c.tenantId!, id },
       });
@@ -169,9 +315,17 @@ export class TeachingService {
           status: input.status,
           version: { increment: 1 },
         },
+        include: teacherInclude,
       });
-      await this.audit(tx, c, "teacher.updated", id, traceId, input.reason);
-      return item;
+      await this.audit(
+        tx,
+        c,
+        "teacher.updated",
+        id,
+        traceId,
+        input.reason.trim(),
+      );
+      return teacherView(item);
     });
   }
   async updateClass(
@@ -554,7 +708,7 @@ export class TeachingService {
     traceId: string,
   ) {
     return this.db.$transaction(async (tx) => {
-      await this.lockTenant(tx, c);
+      await lockTenantActor(tx, c, "teaching.manage");
       const cls = await tx.educationClass.findFirst({
         where: { tenantId: c.tenantId!, id: classId, status: "ACTIVE" },
       });
@@ -575,13 +729,33 @@ export class TeachingService {
         throw new UnprocessableEntityException(
           "Ngày phân công ngoài thời gian lớp.",
         );
+      const effectiveFrom = date(input.effectiveFrom),
+        effectiveTo = date(input.effectiveTo ?? day(cls.endDate));
+      if (
+        await tx.classTeacher.findFirst({
+          where: {
+            tenantId: c.tenantId!,
+            classId,
+            teacherId: teacher.id,
+            effectiveFrom: { lte: effectiveTo },
+            OR: [
+              { effectiveTo: null },
+              { effectiveTo: { gte: effectiveFrom } },
+            ],
+          },
+          select: { id: true },
+        })
+      )
+        throw new ConflictException(
+          "Đã có phân công giáo viên trong khoảng ngày này.",
+        );
       const item = await tx.classTeacher.create({
         data: {
           tenantId: c.tenantId!,
           classId,
           teacherId: teacher.id,
-          effectiveFrom: date(input.effectiveFrom),
-          effectiveTo: date(input.effectiveTo ?? day(cls.endDate)),
+          effectiveFrom,
+          effectiveTo,
         },
       });
       await this.audit(tx, c, "class.teacher.assigned", item.id, traceId);

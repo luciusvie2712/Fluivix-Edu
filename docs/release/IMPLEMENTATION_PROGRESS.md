@@ -2,12 +2,12 @@
 
 ## Latest checkpoint — 2026-11-06
 
-Remote maindb88cbb has verified successful CI42182941288. Staff/RBAC is technically
-verified locally and on CI (51 integration,26 browser,49 unit,15 mobile). See
-evidence/staff/verification.json and evidence/ci-db88cbb-success-2026-11-06.json.
-Guardian/W06 is locally verified (58 integration,29 browser,49 unit,15 mobile),
-awaiting module commit and exact-SHA CI. See evidence/guardians/verification.json.
-Remaining Teacher Web, Assessment, Finance, Dashboard/Reports/Audit, Privacy/Notifications and
+Remote main d345764 has verified successful CI42194322533. Staff/W17 and
+Guardian/W06 are technically verified locally and on exact-SHA CI. See
+evidence/guardians/verification.json and evidence/ci-d345764-success-2026-11-06.json.
+Teacher/W07 is locally verified:61 integration,32 browser,49 unit,15 mobile;
+module commit and exact-SHA CI remain pending. See evidence/teachers/verification.json.
+Remaining Assessment, Finance, Dashboard/Reports/Audit, Privacy/Notifications and
 M4 work are incomplete. Overall release BLOCKED. Older dated sections below retain
 historical findings and failed attempts; they are not current acceptance verdicts.
 
@@ -280,3 +280,16 @@ Owner availability clarification (2026-11-06): both service and SQL count only o
 - Evidence:58 PostgreSQL/Redis integration (including actual migration021 legacy rehearsal, duplicate open pairs, cross-tenant nested FKs, verifier suspension while waiting on lock, and actual native delayed-response/cache revocation);29 browser E2E with0skip/flaky, real worker/Mailpit acceptance and revocation, read-only/empty/missing/forbidden states;49 unit;15 mobile Jest;8 build tasks; lint/typecheck/tools/format; native API smoke; Expo alignment; stable142-operation generated contract; audit0HIGH/0CRITICAL (1LOW/4MODERATE tracked); local secret screen PASS.
 - Three vendor SHAs and all five installed skill IDs reverified byte-for-byte against their canonical distributed files. Pro Max confirmation/submit feedback applied; existing framed-sheet seed1920114305 retained; shared accessible focus/press/reduced-motion behavior used. Guardian directory/detail360/768/1024/1440 axe/Taste and keyboard scroll passed, all eight final images inspected. Findings are saved without waiver. No native-device UI claim.
 - Source hashes and command/report scope: evidence/guardians/verification.json. Historical failed/intermediate reports remain separate. Broader FR-US/AU and overall P0/M4 remain incomplete; release BLOCKED. Guardian commit/exact-SHA CI remain NOT_VERIFIED until observed.
+
+
+### Guardian exact-commit CI and Teacher/W07 start (2026-11-06)
+- Guardian commit d345764ae407e09df30b8586fdf4162f9e875c29 pushed to main; exact GitHub Actions run42194322533 SUCCESS (58 integration,29 E2E, mobile API smoke, audit, generated-contract drift). Evidence: docs/release/evidence/ci-d345764-success-2026-11-06.json. W06 IMPLEMENTED_TECHNICAL_VERIFIED; overall P0/M4 remains BLOCKED.
+- Next vertical slice Teacher/W07 is IN_PROGRESS: scoped eligible teacher-account picker, code/status search, actual account readiness, assigned-class history, live actor checks after tenant lock for create/update/assignment. Existing SQL FKs are represented in Prisma; no applied migration or customer data is changed. New real PostgreSQL cases and Web screens pending verification.
+
+
+### Teacher/W07 local acceptance gate PASS (2026-11-06)
+- Implemented tenant-scoped directory/search/code/status/paging, profile/detail, minimal accepted active teacher-account picker, profile creation, optimistic edit/deactivation with reason and confirmation, assigned-class history and actual class assignment. Status/account readiness remain separate; inactive profile/account cannot receive new assignments/sessions. Existing assignments and history remain intact. Class/schedule selectors honor actual account readiness.
+- Canonical tenant lock rechecks current actor membership/selected role/session/subscription for teacher create/update/assignment. Three real suspended-while-waiting negatives commit no changes. Concurrent overlapping assignments now return201/409 instead of201/500; SQL daterange exclusion still rejects direct overlap. Existing composite FKs are represented in Prisma; no new DDL or applied migration change.
+- Local evidence:61 real PostgreSQL/Redis integration;32 browser E2E with0skip/flaky (including actual profile create/assignment/deactivate, read-only/empty/missing/forbidden states);49 unit;15 mobile Jest;8 build tasks; lint/typecheck/tools/format; mobile API smoke; Expo alignment; stable144-operation generated contract; audit0HIGH/0CRITICAL (1LOW/4MODERATE tracked); secret screen PASS.
+- Teacher directory/detail360/768/1024/1440 axe/Taste/keyboard/reduced-motion exercised and all eight final images viewed. Three skill sources/five IDs reverified; existing framed-sheet seed1920114305 and accessible shared confirmation/form/button feedback retained. Any44px semantic section-spacing WARN is retained with rationale, no waiver. No device/native UI approval is inferred.
+- Exact source hashes and reports: evidence/teachers/verification.json. Historical visuals preserved and failed diagnostic report retained. Teacher remote commit/CI NOT_VERIFIED until observed; Assessment/Finance/Reports/Dashboard/Audit/Privacy/Notifications/broader class-schedule/M4 remain. Overall release BLOCKED.

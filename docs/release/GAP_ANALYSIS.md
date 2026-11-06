@@ -1,5 +1,7 @@
 # Baseline P0 gap analysis
 
+Teacher/W07 current delta (2026-11-06): directory/code/status search, active teacher-account picker, profile create/edit/deactivate, assigned-class history and actual class assignment Web are implemented. Actor rechecks close post-lock revocation gaps in those writes; overlapping assignments now return409 instead of500, retaining the SQL exclusion. Local61 integration and full32-browser cases pass. Teacher module commit/exact-SHA CI remain pending. Guardian commitd345764 has exact-SHA CI42194322533 SUCCESS. Assessment/finance/report/dashboard/audit/privacy/notification and broader class/schedule details still require completion; release remains BLOCKED.
+
 Current delta 2026-11-06: Staff/W17 commitdb88cbb has exact-SHA successful CI42182941288. Guardian/W06 now has production contact/profile and relationship/history APIs, tenant-scoped Web list/detail/student panel, confirmation-based verification/revocation, and invitation activation through the real mail worker. Local58 integration,49 unit,15 mobile Jest, mobile API smoke, generated142-operation contract and full29-browser regression pass. Exact Guardian commit/CI remains NOT_VERIFIED until observed. This is scoped technical evidence, not full FR/P0 acceptance. Teacher/assessment/finance/report/dashboard/audit/privacy work and external release gates remain open.
 
 Base: `d43b338`, branch `feat/p0-release-hardening`, inspected 2026-10-24.

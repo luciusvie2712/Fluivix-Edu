@@ -39,7 +39,7 @@ if (fr.length !== 33 || tc.length !== 30)
 const evidence: Record<string, string> = {
   PL: "apps/api/src/platform*; tests/integration/platform-cases.ts; tests/e2e/platform*",
   AU: "apps/api/src/auth*; staff.ts; staff-policy.ts; mobile-auth.ts; tests/integration/identity.test.ts; staff-cases.ts; native-cases.ts; tests/e2e/staff.spec.ts",
-  US: "apps/api/src/students.ts; guardian-links.ts; guardian.service.ts; teaching.service.ts; apps/web/components/guardian-workspace.tsx; tests/integration/identity.test.ts; guardian-cases.ts; teaching-cases.ts; tests/e2e/guardians.spec.ts",
+  US: "apps/api/src/students.ts; guardian-links.ts; guardian.service.ts; teaching.service.ts; apps/web/components/guardian-workspace.tsx; teacher-workspace.tsx; tests/integration/identity.test.ts; guardian-cases.ts; teacher-cases.ts; teaching-cases.ts; tests/e2e/guardians.spec.ts; teachers.spec.ts",
   CL: "apps/api/src/teaching.*; infra/prisma/migrations/202610240016_schedule_rules; tests/integration/teaching-cases.ts",
   AT: "apps/api/src/teaching.*; apps/mobile/app; tests/integration/teaching-cases.ts",
   GR: "apps/api/src/grades.ts; apps/mobile/app; tests/integration/teaching-cases.ts",

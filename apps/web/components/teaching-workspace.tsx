@@ -209,7 +209,7 @@ function ClassDetail({ id }: { id: string }) {
   const teacherQuery = useQuery({
     queryKey: ["teaching", ...scope.key, "teachers"],
     enabled: scope.manage,
-    queryFn: () => teaching.teachers(),
+    queryFn: ({ signal }) => teaching.teachers(1, "", signal, "ACTIVE"),
   });
   const studentQuery = useQuery({
     queryKey: ["students", ...scope.key, "enrollment-search", studentSearch],
@@ -233,7 +233,9 @@ function ClassDetail({ id }: { id: string }) {
   const cls = detail.data.data,
     disabled = !scope.writable || cls.status !== "ACTIVE";
   const teachers =
-    teacherQuery.data?.data.filter((v) => v.status === "ACTIVE") ?? [];
+    teacherQuery.data?.data.filter(
+      (v) => v.status === "ACTIVE" && v.accountReady,
+    ) ?? [];
   return (
     <>
       <p>

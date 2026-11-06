@@ -284,10 +284,11 @@ export const teaching = {
         body,
       }),
     ),
-  classes: (page = 1, search = "") =>
+  classes: (page = 1, search = "", signal?: AbortSignal) =>
     unwrap(
       api.GET("/api/v1/classes", {
         params: { query: { page, limit: 20, search } },
+        ...(signal ? { signal } : {}),
       }),
     ),
   createClass: (body: components["schemas"]["ClassInput"]) =>
@@ -329,14 +330,43 @@ export const teaching = {
         body,
       }),
     ),
-  teachers: (page = 1, search = "") =>
+  teachers: (
+    page = 1,
+    search = "",
+    signal?: AbortSignal,
+    status?: "ACTIVE" | "INACTIVE",
+  ) =>
     unwrap(
       api.GET("/api/v1/teachers", {
-        params: { query: { page, limit: 20, search } },
+        params: {
+          query: { page, limit: 20, search, ...(status ? { status } : {}) },
+        },
+        ...(signal ? { signal } : {}),
       }),
     ),
-  teacherDetail: (id: string) =>
-    unwrap(api.GET("/api/v1/teachers/{id}", { params: { path: { id } } })),
+  teacherDetail: (id: string, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/teachers/{id}", {
+        params: { path: { id } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  createTeacher: (body: components["schemas"]["TeacherInput"]) =>
+    unwrap(api.POST("/api/v1/teachers", { body })),
+  teacherAccounts: (page: number, search: string, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/teachers/accounts", {
+        params: { query: { page, limit: 20, search } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  teacherClasses: (id: string, page: number, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/teachers/{id}/classes", {
+        params: { path: { id }, query: { page, limit: 20 } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
   updateTeacher: (id: string, body: components["schemas"]["TeacherUpdate"]) =>
     unwrap(
       api.PATCH("/api/v1/teachers/{id}", { params: { path: { id } }, body }),

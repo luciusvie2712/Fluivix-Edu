@@ -38,7 +38,8 @@
 .attendance-table {
   min-width: 680px;
 }
-.guardian-directory {
+.guardian-directory,
+.teacher-directory {
   min-width: 640px;
 }
 .record-list {
