@@ -349,11 +349,17 @@ test("financial Web previews and issues end-of-day in the selected IANA centre a
       .getByLabel("Đến hạn đến ngày", { exact: true })
       .fill("2026-11-01");
     await expect(
-      page.getByRole("link", { name: issued.invoiceNo, exact: true }),
+      page
+        .locator(".record-list")
+        .getByRole("link", { name: issued.invoiceNo, exact: true }),
     ).toBeVisible();
     await page
       .getByRole("link", { name: "Công nợ học phí", exact: true })
       .click();
+    await expect(page).toHaveURL(/\/app\/finance\/receivables$/);
+    await expect(
+      page.getByRole("heading", { name: "Chứng từ còn công nợ", exact: true }),
+    ).toBeVisible();
     await page
       .getByLabel("Đến hạn từ ngày", { exact: true })
       .fill("2026-11-01");
@@ -361,7 +367,9 @@ test("financial Web previews and issues end-of-day in the selected IANA centre a
       .getByLabel("Đến hạn đến ngày", { exact: true })
       .fill("2026-11-01");
     await expect(
-      page.getByRole("link", { name: issued.invoiceNo, exact: true }),
+      page
+        .locator(".record-list")
+        .getByRole("link", { name: issued.invoiceNo, exact: true }),
     ).toBeVisible();
     await expect(
       page.getByText(/múi giờ America\/New_York/).first(),

@@ -1,0 +1,49 @@
+{
+  "date": "2026-11-07",
+  "baseCommit": "acb5aa8ede2898f58613fe153dd0ecb40b7962ea",
+  "localVerdict": "PASS",
+  "remoteVerdict": "NOT_VERIFIED",
+  "releaseVerdict": "BLOCKED",
+  "cause": "CI42273235663 found invoice link ambiguity while the receivable navigation was incomplete. Both pages share date labels and the old invoice page includes a successful-issuance link.",
+  "repair": "Assert receivables URL and actual debt-list heading before changing its date filters. Both page assertions target the record-list invoice link; exact identity and actual tenant-calendar dueAt expectation retained. No first(), sleeps, retry change or production policy change.",
+  "checks": {
+    "integration": 88,
+    "browser": 63,
+    "skipped": 0,
+    "flaky": 0,
+    "unit": 60,
+    "mobileJest": 15,
+    "actualMobileApiSmoke": "PASS",
+    "expoAlignment": "PASS",
+    "uncachedBuild": 8,
+    "uncachedTypesAndTools": "PASS",
+    "lintFormat": "PASS",
+    "prisma": "PASS",
+    "stableContract": 165,
+    "offlineFrozenInstall": "PASS",
+    "audit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    }
+  },
+  "frozenSourceProof": {
+    "baseCommit": "acb5aa8ede2898f58613fe153dd0ecb40b7962ea",
+    "rawSourceSha256": {
+      "apps/api/openapi.json": "e989b7b8ec8619b0f853d19840c130b04c101970a3ef519d593b2febb72f5952",
+      "apps/api/src/app.ts": "2d293fa85ce9f6d7f42dcb705cfc27a734b1b643ae6860673e77431b805fe95d",
+      "apps/api/src/security.ts": "1da638712ad9af029eee31c2de3ca5bd5d268c531a8c8091ada6553679810440",
+      "apps/web/app/app/layout.tsx": "96368088d2c2f2fbb11213aa81d8b14d64e61f1bc6210c8a771d80241b17c7bb",
+      "apps/web/app/globals.css": "f5d7dcc2db5f482a129251bd8dd5232d63f1a2b7e8fd30c44884c4fed533153a",
+      "apps/web/lib/api.ts": "858e4c91fd5e27d3b6158369467f3813c3e9ac03f69403d90212c7c0fab556ea",
+      "packages/api-client/src/schema.d.ts": "b782f6d242e6d153e14c4ec489079fab0e5fe7b1b908150a65945a10157e5cf9",
+      "tests/e2e/financial-timezone.spec.ts": "21e3786643c34eeb2ce9c474bed1f087c38f2c8bf0bc71953ec7da4c12057b12",
+      "tests/integration/identity.test.ts": "95fe1c320e13f6f552ef92afef7e10cf944c2d50f985693f3710910ddfd004f3"
+    },
+    "stable": true,
+    "envUnchanged": true
+  },
+  "limitations": "Reporting operational acceptance only. External staging/legal/UAT/signed devices/real push remain blocked; full P0/M4 completion ongoing."
+}

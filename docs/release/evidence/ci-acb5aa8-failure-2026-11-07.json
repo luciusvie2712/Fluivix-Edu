@@ -1,0 +1,16 @@
+{
+  "headSha": "acb5aa8ede2898f58613fe153dd0ecb40b7962ea",
+  "runId": 42273235663,
+  "jobId": 128082907708,
+  "url": "https://github.com/luciusvie2712/Fluivix-Edu/actions/runs/42273235663",
+  "conclusion": "failure",
+  "failedStep": "Run pnpm test:e2e",
+  "browserPassed": 62,
+  "browserFailed": 1,
+  "failedTest": "financial Web previews and issues end-of-day in the selected IANA centre and shares due filters with receivables",
+  "observedError": "strict mode violation: invoice link resolved to two elements, including one inside the successful issuance status",
+  "location": "tests/e2e/financial-timezone.spec.ts:365",
+  "repair": "Require the actual receivables URL and its outstanding-invoice heading before filtering; scope both invoice and receivable assertions to the actual record list. Retain exact invoice-number visibility and actual PostgreSQL tenant-calendar dueAt assertion. No first(), assertion removal, retry increase or production policy change.",
+  "localRepairVerification": "PASS; full frozen-source matrix",
+  "repairEvidence": "report-ci-repair-verification.json"
+}
