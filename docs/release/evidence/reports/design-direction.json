@@ -1,0 +1,15 @@
+{
+  "direction": "existing framed-sheet/blue/Arial16 Vietnamese",
+  "seed": 1920114305,
+  "proMax": {
+    "query": "daily trends accessible table",
+    "domain": "chart",
+    "source": "charts.csv",
+    "topResult": "Trend Over Time",
+    "bestChartType": "Line Chart",
+    "applied": "bounded SVG line, direct series description, visible exact values table and keyboard day selector; fewer than4 points uses table only"
+  },
+  "animation": "no monetary counters or decorative motion; existing opacity/press/focus feedback and reduced motion rules retained",
+  "verification": "Final four viewport browser/axe/Taste/manual review PASS",
+  "claims": "No external device or release approval"
+}

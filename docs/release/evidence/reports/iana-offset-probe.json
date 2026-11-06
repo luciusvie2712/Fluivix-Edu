@@ -1,0 +1,12 @@
+{
+  "purpose": "Actual read-only runtime/PostgreSQL timezone interoperability probe",
+  "node": "24.22.2",
+  "postgres": "17.6 isolated local verification database",
+  "inputs": [
+    {"zone":"Asia/Ho_Chi_Minh","intlResolved":"Asia/Saigon","pgLocalMidnightUtc":"2026-10-31T17:00:00Z"},
+    {"zone":"+07:00","intlResolved":"+07:00","pgLocalMidnightUtc":"2026-11-01T07:00:00Z"},
+    {"zone":"Etc/GMT+12","intlResolved":"Etc/GMT+12","pgLocalMidnightUtc":"2026-11-01T12:00:00Z"}
+  ],
+  "finding": "Platform creation currently validates Intl only. Raw numeric offsets are not IANA names and PostgreSQL interprets their sign oppositely; reject them explicitly in API and forward tenant-zone guard before reporting SQL local-day buckets. Preserve accepted IANA spellings/aliases and all historical UTC ledger instants. Do not silently rewrite existing tenant timezone settings.",
+  "status": "CONFIRMED; fix planned in operational reports slice after f96f6f8 exact CI"
+}

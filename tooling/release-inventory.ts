@@ -44,7 +44,7 @@ const evidence: Record<string, string> = {
   AT: "apps/api/src/teaching.*; apps/mobile/app; tests/integration/teaching-cases.ts",
   GR: "apps/api/src/grades.ts; grade-history.dto.ts; migration022; apps/web/components/assessment-workspace.tsx; apps/mobile/app; tests/integration/assessment-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/assessments.spec.ts",
   FI: "apps/api/src/finance.*; finance-query.ts; invoice.dto.ts; invoice-query.ts; payment.dto.ts; payment-query.ts; receivables.dto.ts; migrations023/024/025/026; packages/contracts/src/calendar-time.ts; schedule-time.ts; apps/web/components/fee-plan-workspace.tsx; invoice-workspace.tsx; payment-workspace.tsx; receivables-workspace.tsx; apps/mobile/app; tests/integration/fee-plan-cases.ts; receivable-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/fee-plans.spec.ts; invoices.spec.ts; payments.spec.ts; receivables.spec.ts; financial-timezone.spec.ts; tests/unit/calendar-time.test.ts",
-  NT: "apps/api/src/notifications.ts; mobile-dashboard.ts; apps/worker/src/notifications.ts; tests/integration/teaching-cases.ts",
+  NT: "apps/api/src/reports.controller.ts; reports.service.ts; reports.dto.ts; report-queries.ts; migration027; apps/web/components/reports-workspace.tsx; apps/api/src/notifications.ts; mobile-dashboard.ts; apps/worker/src/notifications.ts; tests/integration/report-cases.ts; report-migration-case.ts; teaching-cases.ts; tests/e2e/reports.spec.ts",
 };
 const acceptance: Record<string, [string, string]> = {
   "TC-001": [
@@ -136,8 +136,8 @@ const acceptance: Record<string, [string, string]> = {
     "integration event materialization replay; multi-role/channel dedupe gap remains",
   ],
   "TC-023": [
-    "MISSING",
-    "Tenant Web reporting/dashboard timezone month aggregation not implemented",
+    "PARTIAL",
+    "real November Vietnam scoped API/Web and role/CSV focused cases pass; final full reporting gate and exact-SHA CI pending",
   ],
   "TC-024": [
     "PARTIAL",
@@ -219,6 +219,31 @@ ${desired.map(({ method, path }) => `| ${method} | \`${path}\` | ${implemented.h
 
 ## Explicit contract decisions
 
+- Operational dashboard/attendance/enrollment reports require the reports plan
+  flag and named role grants. Financial dashboard groups are owner/accountant-only;
+  unavailable groups are null, never invented0. Core collections/receivables remain
+  independent of optional analytics and follow the finance flag. Every report uses
+  explicit inclusive tenant-calendar dates, max366 days, one snapshot/asOf, actual
+  SQL joins and current-state headcounts labelled separately from period metrics.
+- Attendance completion uses ended noncancelled sessions; future sessions are
+  separate. Final records require COMPLETED and finalized_at. Reopened/draft rows
+  are excluded; zero denominator is null. Physical presence includes PRESENT+LATE
+  over finalized roster including excused absence, with numerator/denominator shown.
+- Collections use current valid issue dates, confirmed received dates and current
+  balances on due dates as distinct axes. Class filters attribute matched allocations
+  only (CLASS_ALLOCATED); centre receipts use RECEIVED and retain unallocated money.
+  Unallocated class amounts are null, never silently assigned or presented as0.
+  Aggregate sums remain exact numeric strings beyond bigint. Calendar trend series
+  is independent of DB session timezone. Receipt allocation work is range-bounded.
+- Named CSV exports return bounded aggregate files (5000 rows) using safeCsvCell,
+  current actor/session/role checks and actual filter/count/trace audit. READ_ONLY
+  may perform audited GET exports; business data/ledgers are unchanged. Free-text
+  search terms/private learner notes are not written into export audit metadata.
+- Forward027 checks existing tenant named zones without silently rewriting them,
+  then guards future SQL inserts/changes against unsupported names/raw offsets.
+  Shared runtime/Platform validation and database name checks reject raw numeric
+  offsets whose sign PostgreSQL interprets differently. Existing IANA spellings,
+  UTC ledger values and001..026 are preserved; report range indexes are additive.
 - All financial date filters resolve the active tenant IANA timezone within
   the same read snapshot. GET invoice/receipt/report metadata includes the current
   zone; UTC ledger instants and original POST/idempotency responses are unchanged.

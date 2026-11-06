@@ -106,6 +106,20 @@ test("platform creates plan and tenant, delivers owner invitation, activates and
   await page.getByLabel("Bắt đầu thuê bao", { exact: true }).fill(dates.start);
   await page.getByLabel("Kết thúc thuê bao", { exact: true }).fill(dates.end);
   await page.getByLabel("Kết thúc ân hạn", { exact: true }).fill(dates.grace);
+  await page.getByLabel("Múi giờ IANA", { exact: true }).fill("+07:00");
+  await page
+    .getByRole("button", { name: "Tạo trung tâm và mời owner", exact: true })
+    .click();
+  await expect(
+    page.getByText(
+      "Nhập tên múi giờ IANA, ví dụ Asia/Ho_Chi_Minh; không dùng độ lệch giờ dạng số.",
+      { exact: true },
+    ),
+  ).toBeVisible();
+  await expect(page.getByLabel("Múi giờ IANA", { exact: true })).toBeFocused();
+  await page
+    .getByLabel("Múi giờ IANA", { exact: true })
+    .fill("Asia/Ho_Chi_Minh");
   await capture(page, "tenants-create");
   await page
     .getByRole("button", { name: "Tạo trung tâm và mời owner", exact: true })

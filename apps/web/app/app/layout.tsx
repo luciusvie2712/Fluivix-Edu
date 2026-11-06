@@ -53,6 +53,14 @@ export default function Layout({ children }: { children: ReactNode }) {
           Fluivix<span>Edu</span>
         </Link>
         <nav aria-label="Điều hướng trung tâm">
+          {["owner", "manager", "academic_staff", "accountant"].includes(
+            session.me.activeRole ?? "",
+          ) && (
+            <>
+              <Link href="/app/dashboard">Tổng quan trung tâm</Link>
+              <Link href="/app/reports">Báo cáo trung tâm</Link>
+            </>
+          )}
           <Link href="/app/students">Học viên</Link>
           {["owner", "manager", "academic_staff", "teacher"].includes(
             session.me.activeRole ?? "",

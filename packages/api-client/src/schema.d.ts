@@ -4,6 +4,118 @@
  */
 
 export interface paths {
+  "/api/v1/reports/dashboard": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["ReportsController_dashboard"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/reports/attendance": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["ReportsController_attendance"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/reports/enrollments": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["ReportsController_enrollments"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/reports/attendance/export": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["ReportsController_attendanceExport"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/reports/enrollments/export": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["ReportsController_enrollmentExport"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/finance/reports/collections": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["CollectionReportsController_collections"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/finance/reports/collections/export": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["CollectionReportsController_export"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/permissions": {
     parameters: {
       query?: never;
@@ -2131,6 +2243,155 @@ export interface components {
       error: components["schemas"]["ErrorView"];
       meta: components["schemas"]["MetaDto"];
     };
+    ReportSessionView: {
+      expectedSessions: number;
+      cancelledSessions: number;
+      upcomingSessions: number;
+    };
+    ReportAttendanceView: {
+      finalizedSessions: number;
+      eligibleSessions: number;
+      completedEligibleSessions: number;
+      completionRateBps: number | null;
+      rosterCount: number;
+      presentCount: number;
+      lateCount: number;
+      excusedCount: number;
+      unexcusedCount: number;
+      presenceRateBps: number | null;
+    };
+    CollectionTotalsView: {
+      issuedCount: number;
+      issuedAmountVnd: string;
+      receiptCount: number;
+      collectedAmountVnd: string;
+      allocatedAmountVnd: string;
+      unallocatedAmountVnd: string | null;
+      balanceVnd: string;
+      overdueAmountVnd: string;
+    };
+    CollectionDayView: {
+      issuedCount: number;
+      issuedAmountVnd: string;
+      receiptCount: number;
+      collectedAmountVnd: string;
+      allocatedAmountVnd: string;
+      unallocatedAmountVnd: string | null;
+      balanceVnd: string;
+      overdueAmountVnd: string;
+      /** Format: date */
+      day: string;
+    };
+    CollectionReportView: {
+      from: string;
+      to: string;
+      timezone: string;
+      asOf: string;
+      /**
+       * @description Class filters attribute only allocations, never unallocated centre receipts
+       * @enum {string}
+       */
+      basis: "RECEIVED" | "CLASS_ALLOCATED";
+      summary: components["schemas"]["CollectionTotalsView"];
+      days: components["schemas"]["CollectionDayView"][];
+    };
+    ReportTrendView: {
+      expectedSessions: number;
+      cancelledSessions: number;
+      upcomingSessions: number;
+      /** Format: date */
+      day: string;
+    };
+    OperationalDashboardView: {
+      from: string;
+      to: string;
+      timezone: string;
+      asOf: string;
+      activeStudents: number;
+      activeTeachers: number;
+      activeClasses: number;
+      sessions: components["schemas"]["ReportSessionView"];
+      attendance: components["schemas"]["ReportAttendanceView"] | null;
+      finance: components["schemas"]["CollectionReportView"] | null;
+      days: components["schemas"]["ReportTrendView"][];
+    };
+    OperationalDashboardResponse: {
+      data: components["schemas"]["OperationalDashboardView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    AttendanceClassView: {
+      finalizedSessions: number;
+      eligibleSessions: number;
+      completedEligibleSessions: number;
+      completionRateBps: number | null;
+      rosterCount: number;
+      presentCount: number;
+      lateCount: number;
+      excusedCount: number;
+      unexcusedCount: number;
+      presenceRateBps: number | null;
+      classId: string;
+      classCode: string;
+      className: string;
+    };
+    PageView: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+    AttendanceReportView: {
+      from: string;
+      to: string;
+      timezone: string;
+      asOf: string;
+      summary: components["schemas"]["ReportAttendanceView"];
+      classes: components["schemas"]["AttendanceClassView"][];
+      page: components["schemas"]["PageView"];
+    };
+    AttendanceReportResponse: {
+      data: components["schemas"]["AttendanceReportView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    EnrollmentClassView: {
+      id: string;
+      code: string;
+      name: string;
+      status: string;
+      enrollmentCount: number;
+      studentCount: number;
+    };
+    EnrollmentReportView: {
+      from: string;
+      to: string;
+      timezone: string;
+      asOf: string;
+      enrollmentCount: number;
+      studentCount: number;
+      classes: components["schemas"]["EnrollmentClassView"][];
+      page: components["schemas"]["PageView"];
+    };
+    EnrollmentReportResponse: {
+      data: components["schemas"]["EnrollmentReportView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    ReportCsvView: {
+      from: string;
+      to: string;
+      timezone: string;
+      asOf: string;
+      filename: string;
+      csv: string;
+      rowCount: number;
+    };
+    ReportCsvResponse: {
+      data: components["schemas"]["ReportCsvView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    CollectionReportResponse: {
+      data: components["schemas"]["CollectionReportView"];
+      meta: components["schemas"]["MetaDto"];
+    };
     /** @enum {string} */
     Role:
       | "owner"
@@ -2161,12 +2422,6 @@ export interface components {
       staffDelegated: boolean;
       activationPending: boolean;
       roles: components["schemas"]["EffectiveRole"][];
-    };
-    PageView: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
     };
     StaffListResponse: {
       data: components["schemas"]["StaffView"][];
@@ -3689,6 +3944,10 @@ export interface components {
       slug: string;
       name: string;
       ownerEmail: string;
+      /**
+       * @description Named IANA timezone supported by both runtime and database; raw numeric offsets are rejected
+       * @example Asia/Ho_Chi_Minh
+       */
       timezone: string;
     };
     PlatformTenantResponse: {
@@ -3814,6 +4073,307 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  ReportsController_dashboard: {
+    parameters: {
+      query: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        /** @description Inclusive date in the active tenant IANA calendar; at most366 days */
+        from: string;
+        to: string;
+        classId?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OperationalDashboardResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  ReportsController_attendance: {
+    parameters: {
+      query: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        /** @description Inclusive date in the active tenant IANA calendar; at most366 days */
+        from: string;
+        to: string;
+        classId?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AttendanceReportResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  ReportsController_enrollments: {
+    parameters: {
+      query: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        /** @description Inclusive date in the active tenant IANA calendar; at most366 days */
+        from: string;
+        to: string;
+        classId?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EnrollmentReportResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  ReportsController_attendanceExport: {
+    parameters: {
+      query: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        /** @description Inclusive date in the active tenant IANA calendar; at most366 days */
+        from: string;
+        to: string;
+        classId?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReportCsvResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  ReportsController_enrollmentExport: {
+    parameters: {
+      query: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        /** @description Inclusive date in the active tenant IANA calendar; at most366 days */
+        from: string;
+        to: string;
+        classId?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReportCsvResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  CollectionReportsController_collections: {
+    parameters: {
+      query: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        /** @description Inclusive date in the active tenant IANA calendar; at most366 days */
+        from: string;
+        to: string;
+        classId?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CollectionReportResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  CollectionReportsController_export: {
+    parameters: {
+      query: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        /** @description Inclusive date in the active tenant IANA calendar; at most366 days */
+        from: string;
+        to: string;
+        classId?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReportCsvResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
   StaffController_catalog: {
     parameters: {
       query?: never;

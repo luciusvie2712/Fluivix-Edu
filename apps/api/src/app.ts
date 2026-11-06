@@ -11,6 +11,11 @@ import cookieParser from "cookie-parser";
 import { randomUUID } from "node:crypto";
 import { config } from "./config";
 import { Db } from "./db";
+import {
+  ReportsController,
+  CollectionReportsController,
+} from "./reports.controller";
+import { ReportsService } from "./reports.service";
 import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { AccessGuard } from "./guards";
@@ -48,6 +53,8 @@ import {
 } from "./platform-audit";
 @Module({
   controllers: [
+    ReportsController,
+    CollectionReportsController,
     StaffController,
     StudentImportsController,
     AuthController,
@@ -68,6 +75,7 @@ import {
     PlatformHealthController,
   ],
   providers: [
+    ReportsService,
     StaffService,
     StudentImportsService,
     Db,

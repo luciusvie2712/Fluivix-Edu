@@ -35,6 +35,11 @@ export async function verifyAccess(
 }
 export const permissions = {
   owner: [
+    "report.dashboard.read",
+    "report.attendance.read",
+    "report.attendance.export",
+    "report.enrollment.export",
+    "finance.report.export",
     "student.read",
     "student.write",
     "staff.invite",
@@ -58,6 +63,10 @@ export const permissions = {
     "finance.fee.write",
   ],
   manager: [
+    "report.dashboard.read",
+    "report.attendance.read",
+    "report.attendance.export",
+    "report.enrollment.export",
     "staff.read",
     "student.read",
     "student.write",
@@ -73,6 +82,10 @@ export const permissions = {
     "guardian.manage",
   ],
   academic_staff: [
+    "report.dashboard.read",
+    "report.attendance.read",
+    "report.attendance.export",
+    "report.enrollment.export",
     "student.read",
     "student.write",
     "teaching.manage",
@@ -82,6 +95,9 @@ export const permissions = {
     "guardian.manage",
   ],
   accountant: [
+    "report.dashboard.read",
+    "report.enrollment.export",
+    "finance.report.export",
     "student.read.limited",
     "finance.read",
     "finance.invoice.write",

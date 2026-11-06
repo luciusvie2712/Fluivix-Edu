@@ -364,6 +364,7 @@ model Enrollment {
   @@unique([tenantId, id])
   @@unique([tenantId, id, classId, studentId])
   @@index([tenantId, studentId, classId])
+  @@index([tenantId,classId,joinedAt,leftAt],map:"report_enrollment_period_idx")
   @@map("enrollments")
 }
 
@@ -390,6 +391,7 @@ model ClassSession {
   @@unique([tenantId, id])
   @@unique([tenantId, id, classId])
   @@index([tenantId, teacherId, startsAt])
+  @@index([tenantId,startsAt,classId],map:"report_session_range_idx")
   @@map("class_sessions")
 }
 model ScheduleRule {
@@ -601,6 +603,7 @@ model Invoice {
   @@unique([tenantId, runId, studentId])
   @@index([tenantId, studentId, dueAt])
   @@index([tenantId,dueAt(sort: Desc),id],map:"invoice_due_page_idx")
+  @@index([tenantId,issuedAt,id],map:"report_invoice_issue_idx")
   @@map("invoices")
 }
 

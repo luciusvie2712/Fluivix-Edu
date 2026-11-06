@@ -1,6 +1,6 @@
 # API contract coverage
 
-Generated inventory: 158 actual OpenAPI operations; 134
+Generated inventory: 165 actual OpenAPI operations; 134
 method/path intents in the master specification (includes non-P0 design intent).
 Path parameter names are normalized when comparing. MATCH means route metadata
 exists; it does not verify DTOs, permission, object scope or runtime behavior.
@@ -145,6 +145,31 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
 
 ## Explicit contract decisions
 
+- Operational dashboard/attendance/enrollment reports require the reports plan
+  flag and named role grants. Financial dashboard groups are owner/accountant-only;
+  unavailable groups are null, never invented0. Core collections/receivables remain
+  independent of optional analytics and follow the finance flag. Every report uses
+  explicit inclusive tenant-calendar dates, max366 days, one snapshot/asOf, actual
+  SQL joins and current-state headcounts labelled separately from period metrics.
+- Attendance completion uses ended noncancelled sessions; future sessions are
+  separate. Final records require COMPLETED and finalized_at. Reopened/draft rows
+  are excluded; zero denominator is null. Physical presence includes PRESENT+LATE
+  over finalized roster including excused absence, with numerator/denominator shown.
+- Collections use current valid issue dates, confirmed received dates and current
+  balances on due dates as distinct axes. Class filters attribute matched allocations
+  only (CLASS_ALLOCATED); centre receipts use RECEIVED and retain unallocated money.
+  Unallocated class amounts are null, never silently assigned or presented as0.
+  Aggregate sums remain exact numeric strings beyond bigint. Calendar trend series
+  is independent of DB session timezone. Receipt allocation work is range-bounded.
+- Named CSV exports return bounded aggregate files (5000 rows) using safeCsvCell,
+  current actor/session/role checks and actual filter/count/trace audit. READ_ONLY
+  may perform audited GET exports; business data/ledgers are unchanged. Free-text
+  search terms/private learner notes are not written into export audit metadata.
+- Forward027 checks existing tenant named zones without silently rewriting them,
+  then guards future SQL inserts/changes against unsupported names/raw offsets.
+  Shared runtime/Platform validation and database name checks reject raw numeric
+  offsets whose sign PostgreSQL interprets differently. Existing IANA spellings,
+  UTC ledger values and001..026 are preserved; report range indexes are additive.
 - All financial date filters resolve the active tenant IANA timezone within
   the same read snapshot. GET invoice/receipt/report metadata includes the current
   zone; UTC ledger instants and original POST/idempotency responses are unchanged.

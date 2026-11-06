@@ -219,6 +219,25 @@ export function platformCases(
         endsAt: new Date(Date.now() + 86400000).toISOString(),
         graceUntil: new Date(Date.now() + 2 * 86400000).toISOString(),
       };
+      for (const timezone of ["+07:00", "-05:00", "Not/A_Timezone"]) {
+        const badEmail = randomUUID() + "@example.test";
+        const rejected = await call("/tenants", {
+          method: "POST",
+          token,
+          body: {
+            ...period,
+            slug,
+            name: "Invalid timezone centre",
+            ownerEmail: badEmail,
+            timezone,
+          },
+        });
+        expect(rejected.status).toBe(422);
+        expect(await getDb().user.count({ where: { email: badEmail } })).toBe(
+          0,
+        );
+        expect(await getDb().tenant.count({ where: { slug } })).toBe(0);
+      }
       const created = await call("/tenants", {
         method: "POST",
         token,

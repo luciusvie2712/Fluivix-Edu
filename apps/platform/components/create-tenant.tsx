@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { isNamedIanaTimezone } from "@fluivix/contracts";
 import { api, usePlatform } from "./session";
 import { unwrap } from "./frame";
 import { Field } from "./field";
@@ -26,7 +27,14 @@ const schema = z
         "Dùng 3–80 chữ thường, số và dấu -.",
       ),
     ownerEmail: z.email("Email không hợp lệ.").max(254),
-    timezone: z.string().min(1).max(80),
+    timezone: z
+      .string()
+      .min(1)
+      .max(80)
+      .refine(
+        isNamedIanaTimezone,
+        "Nhập tên múi giờ IANA, ví dụ Asia/Ho_Chi_Minh; không dùng độ lệch giờ dạng số.",
+      ),
     planId: z.uuid("Chọn gói dịch vụ."),
     startsAt: date,
     endsAt: date,

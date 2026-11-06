@@ -65,7 +65,14 @@ export class CreateTenantDto extends SubscriptionDatesDto {
   @ApiProperty() @Matches(/^[a-z0-9][a-z0-9-]{1,78}[a-z0-9]$/) slug!: string;
   @ApiProperty() @IsString() @Length(1, 150) @Matches(/\S/) name!: string;
   @ApiProperty() @IsEmail() @Length(3, 254) ownerEmail!: string;
-  @ApiProperty() @IsString() @Length(1, 80) timezone!: string;
+  @ApiProperty({
+    example: "Asia/Ho_Chi_Minh",
+    description:
+      "Named IANA timezone supported by both runtime and database; raw numeric offsets are rejected",
+  })
+  @IsString()
+  @Length(1, 80)
+  timezone!: string;
 }
 export class LifecycleDto {
   @ApiProperty() @IsString() @Length(10, 500) @Matches(/\S/) reason!: string;

@@ -1,6 +1,553 @@
 {
   "openapi": "3.0.0",
   "paths": {
+    "/api/v1/reports/dashboard": {
+      "get": {
+        "operationId": "ReportsController_dashboard",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "description": "Inclusive date in the active tenant IANA calendar; at most366 days",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperationalDashboardResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["reports"]
+      }
+    },
+    "/api/v1/reports/attendance": {
+      "get": {
+        "operationId": "ReportsController_attendance",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "description": "Inclusive date in the active tenant IANA calendar; at most366 days",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttendanceReportResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["reports"]
+      }
+    },
+    "/api/v1/reports/enrollments": {
+      "get": {
+        "operationId": "ReportsController_enrollments",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "description": "Inclusive date in the active tenant IANA calendar; at most366 days",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollmentReportResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["reports"]
+      }
+    },
+    "/api/v1/reports/attendance/export": {
+      "get": {
+        "operationId": "ReportsController_attendanceExport",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "description": "Inclusive date in the active tenant IANA calendar; at most366 days",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ReportCsvResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["reports"]
+      }
+    },
+    "/api/v1/reports/enrollments/export": {
+      "get": {
+        "operationId": "ReportsController_enrollmentExport",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "description": "Inclusive date in the active tenant IANA calendar; at most366 days",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ReportCsvResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["reports"]
+      }
+    },
+    "/api/v1/finance/reports/collections": {
+      "get": {
+        "operationId": "CollectionReportsController_collections",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "description": "Inclusive date in the active tenant IANA calendar; at most366 days",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CollectionReportResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance reports"]
+      }
+    },
+    "/api/v1/finance/reports/collections/export": {
+      "get": {
+        "operationId": "CollectionReportsController_export",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "description": "Inclusive date in the active tenant IANA calendar; at most366 days",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ReportCsvResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance reports"]
+      }
+    },
     "/api/v1/permissions": {
       "get": {
         "operationId": "StaffController_catalog",
@@ -11440,6 +11987,350 @@
         },
         "required": ["error", "meta"]
       },
+      "ReportSessionView": {
+        "type": "object",
+        "properties": {
+          "expectedSessions": { "type": "number" },
+          "cancelledSessions": { "type": "number" },
+          "upcomingSessions": { "type": "number" }
+        },
+        "required": [
+          "expectedSessions",
+          "cancelledSessions",
+          "upcomingSessions"
+        ]
+      },
+      "ReportAttendanceView": {
+        "type": "object",
+        "properties": {
+          "finalizedSessions": { "type": "number" },
+          "eligibleSessions": { "type": "number" },
+          "completedEligibleSessions": { "type": "number" },
+          "completionRateBps": { "type": "number", "nullable": true },
+          "rosterCount": { "type": "number" },
+          "presentCount": { "type": "number" },
+          "lateCount": { "type": "number" },
+          "excusedCount": { "type": "number" },
+          "unexcusedCount": { "type": "number" },
+          "presenceRateBps": { "type": "number", "nullable": true }
+        },
+        "required": [
+          "finalizedSessions",
+          "eligibleSessions",
+          "completedEligibleSessions",
+          "completionRateBps",
+          "rosterCount",
+          "presentCount",
+          "lateCount",
+          "excusedCount",
+          "unexcusedCount",
+          "presenceRateBps"
+        ]
+      },
+      "CollectionTotalsView": {
+        "type": "object",
+        "properties": {
+          "issuedCount": { "type": "number" },
+          "issuedAmountVnd": { "type": "string" },
+          "receiptCount": { "type": "number" },
+          "collectedAmountVnd": { "type": "string" },
+          "allocatedAmountVnd": { "type": "string" },
+          "unallocatedAmountVnd": { "type": "string", "nullable": true },
+          "balanceVnd": { "type": "string" },
+          "overdueAmountVnd": { "type": "string" }
+        },
+        "required": [
+          "issuedCount",
+          "issuedAmountVnd",
+          "receiptCount",
+          "collectedAmountVnd",
+          "allocatedAmountVnd",
+          "unallocatedAmountVnd",
+          "balanceVnd",
+          "overdueAmountVnd"
+        ]
+      },
+      "CollectionDayView": {
+        "type": "object",
+        "properties": {
+          "issuedCount": { "type": "number" },
+          "issuedAmountVnd": { "type": "string" },
+          "receiptCount": { "type": "number" },
+          "collectedAmountVnd": { "type": "string" },
+          "allocatedAmountVnd": { "type": "string" },
+          "unallocatedAmountVnd": { "type": "string", "nullable": true },
+          "balanceVnd": { "type": "string" },
+          "overdueAmountVnd": { "type": "string" },
+          "day": { "type": "string", "format": "date" }
+        },
+        "required": [
+          "issuedCount",
+          "issuedAmountVnd",
+          "receiptCount",
+          "collectedAmountVnd",
+          "allocatedAmountVnd",
+          "unallocatedAmountVnd",
+          "balanceVnd",
+          "overdueAmountVnd",
+          "day"
+        ]
+      },
+      "CollectionReportView": {
+        "type": "object",
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "timezone": { "type": "string" },
+          "asOf": { "type": "string" },
+          "basis": {
+            "type": "string",
+            "enum": ["RECEIVED", "CLASS_ALLOCATED"],
+            "description": "Class filters attribute only allocations, never unallocated centre receipts"
+          },
+          "summary": { "$ref": "#/components/schemas/CollectionTotalsView" },
+          "days": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CollectionDayView" }
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "timezone",
+          "asOf",
+          "basis",
+          "summary",
+          "days"
+        ]
+      },
+      "ReportTrendView": {
+        "type": "object",
+        "properties": {
+          "expectedSessions": { "type": "number" },
+          "cancelledSessions": { "type": "number" },
+          "upcomingSessions": { "type": "number" },
+          "day": { "type": "string", "format": "date" }
+        },
+        "required": [
+          "expectedSessions",
+          "cancelledSessions",
+          "upcomingSessions",
+          "day"
+        ]
+      },
+      "OperationalDashboardView": {
+        "type": "object",
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "timezone": { "type": "string" },
+          "asOf": { "type": "string" },
+          "activeStudents": { "type": "number" },
+          "activeTeachers": { "type": "number" },
+          "activeClasses": { "type": "number" },
+          "sessions": { "$ref": "#/components/schemas/ReportSessionView" },
+          "attendance": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [{ "$ref": "#/components/schemas/ReportAttendanceView" }]
+          },
+          "finance": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [{ "$ref": "#/components/schemas/CollectionReportView" }]
+          },
+          "days": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReportTrendView" }
+          }
+        },
+        "required": [
+          "from",
+          "to",
+          "timezone",
+          "asOf",
+          "activeStudents",
+          "activeTeachers",
+          "activeClasses",
+          "sessions",
+          "attendance",
+          "finance",
+          "days"
+        ]
+      },
+      "OperationalDashboardResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/OperationalDashboardView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "AttendanceClassView": {
+        "type": "object",
+        "properties": {
+          "finalizedSessions": { "type": "number" },
+          "eligibleSessions": { "type": "number" },
+          "completedEligibleSessions": { "type": "number" },
+          "completionRateBps": { "type": "number", "nullable": true },
+          "rosterCount": { "type": "number" },
+          "presentCount": { "type": "number" },
+          "lateCount": { "type": "number" },
+          "excusedCount": { "type": "number" },
+          "unexcusedCount": { "type": "number" },
+          "presenceRateBps": { "type": "number", "nullable": true },
+          "classId": { "type": "string" },
+          "classCode": { "type": "string" },
+          "className": { "type": "string" }
+        },
+        "required": [
+          "finalizedSessions",
+          "eligibleSessions",
+          "completedEligibleSessions",
+          "completionRateBps",
+          "rosterCount",
+          "presentCount",
+          "lateCount",
+          "excusedCount",
+          "unexcusedCount",
+          "presenceRateBps",
+          "classId",
+          "classCode",
+          "className"
+        ]
+      },
+      "PageView": {
+        "type": "object",
+        "properties": {
+          "page": { "type": "number" },
+          "limit": { "type": "number" },
+          "total": { "type": "number" },
+          "totalPages": { "type": "number" }
+        },
+        "required": ["page", "limit", "total", "totalPages"]
+      },
+      "AttendanceReportView": {
+        "type": "object",
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "timezone": { "type": "string" },
+          "asOf": { "type": "string" },
+          "summary": { "$ref": "#/components/schemas/ReportAttendanceView" },
+          "classes": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AttendanceClassView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" }
+        },
+        "required": [
+          "from",
+          "to",
+          "timezone",
+          "asOf",
+          "summary",
+          "classes",
+          "page"
+        ]
+      },
+      "AttendanceReportResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/AttendanceReportView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "EnrollmentClassView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "code": { "type": "string" },
+          "name": { "type": "string" },
+          "status": { "type": "string" },
+          "enrollmentCount": { "type": "number" },
+          "studentCount": { "type": "number" }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "status",
+          "enrollmentCount",
+          "studentCount"
+        ]
+      },
+      "EnrollmentReportView": {
+        "type": "object",
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "timezone": { "type": "string" },
+          "asOf": { "type": "string" },
+          "enrollmentCount": { "type": "number" },
+          "studentCount": { "type": "number" },
+          "classes": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/EnrollmentClassView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" }
+        },
+        "required": [
+          "from",
+          "to",
+          "timezone",
+          "asOf",
+          "enrollmentCount",
+          "studentCount",
+          "classes",
+          "page"
+        ]
+      },
+      "EnrollmentReportResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/EnrollmentReportView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "ReportCsvView": {
+        "type": "object",
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "timezone": { "type": "string" },
+          "asOf": { "type": "string" },
+          "filename": { "type": "string" },
+          "csv": { "type": "string" },
+          "rowCount": { "type": "number" }
+        },
+        "required": [
+          "from",
+          "to",
+          "timezone",
+          "asOf",
+          "filename",
+          "csv",
+          "rowCount"
+        ]
+      },
+      "ReportCsvResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/ReportCsvView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "CollectionReportResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/CollectionReportView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
       "Role": {
         "type": "string",
         "enum": [
@@ -11501,16 +12392,6 @@
           "activationPending",
           "roles"
         ]
-      },
-      "PageView": {
-        "type": "object",
-        "properties": {
-          "page": { "type": "number" },
-          "limit": { "type": "number" },
-          "total": { "type": "number" },
-          "totalPages": { "type": "number" }
-        },
-        "required": ["page", "limit", "total", "totalPages"]
       },
       "StaffListResponse": {
         "type": "object",
@@ -14495,7 +15376,11 @@
           "slug": { "type": "string" },
           "name": { "type": "string" },
           "ownerEmail": { "type": "string" },
-          "timezone": { "type": "string" }
+          "timezone": {
+            "type": "string",
+            "example": "Asia/Ho_Chi_Minh",
+            "description": "Named IANA timezone supported by both runtime and database; raw numeric offsets are rejected"
+          }
         },
         "required": [
           "planId",

@@ -8,6 +8,50 @@ type CalendarQuery = NonNullable<
 >;
 export type Me = components["schemas"]["MeView"];
 export type Role = components["schemas"]["Role"];
+export type ReportQuery = NonNullable<
+  paths["/api/v1/reports/dashboard"]["get"]["parameters"]["query"]
+>;
+export type ReportExport = "attendance" | "enrollments" | "collections";
+export const reports = {
+  dashboard: (query: ReportQuery, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/reports/dashboard", {
+        params: { query },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  attendance: (query: ReportQuery, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/reports/attendance", {
+        params: { query },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  enrollments: (query: ReportQuery, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/reports/enrollments", {
+        params: { query },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  collections: (query: ReportQuery, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/finance/reports/collections", {
+        params: { query },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  export: (kind: ReportExport, query: ReportQuery, signal?: AbortSignal) => {
+    const path = {
+      attendance: "/api/v1/reports/attendance/export",
+      enrollments: "/api/v1/reports/enrollments/export",
+      collections: "/api/v1/finance/reports/collections/export",
+    } as const;
+    return unwrap(
+      api.GET(path[kind], { params: { query }, ...(signal ? { signal } : {}) }),
+    );
+  },
+};
 export class ApiError extends Error {
   constructor(
     readonly status: number,

@@ -384,6 +384,42 @@ input[aria-invalid="true"] {
 .table-scroll {
   overflow-x: auto;
 }
+.report-trend {
+  margin: 24px 0;
+}
+.report-trend svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 120px;
+}
+.report-trend figcaption {
+  margin-top: 12px;
+  color: var(--color-muted);
+}
+.report-workspace {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.report-metrics {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 16px 24px;
+}
+.report-money-metrics {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+}
+.report-metrics dt {
+  font-size: 14px;
+}
+.report-metrics dd {
+  margin: 4px 0 0;
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.report-money-metrics dd {
+  font-size: 18px;
+}
 table {
   border-collapse: collapse;
   width: 100%;

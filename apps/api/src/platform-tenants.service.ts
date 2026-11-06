@@ -9,6 +9,7 @@ import {
   planFlagsSchema,
   planLimitsSchema,
   vndSchema,
+  isNamedIanaTimezone,
 } from "@fluivix/contracts";
 import { sealToken } from "@fluivix/server-crypto";
 import { Db } from "./db";
@@ -240,11 +241,16 @@ export class PlatformTenantsService {
   ) {
     const actor = await this.platform.authorize(authorization),
       period = dates(dto);
-    try {
-      new Intl.DateTimeFormat("vi-VN", { timeZone: dto.timezone });
-    } catch {
+    if (!isNamedIanaTimezone(dto.timezone)) {
       throw new UnprocessableEntityException("Múi giờ IANA không hợp lệ.");
     }
+    const zones = await this.db.$queryRaw<
+      { supported: boolean }[]
+    >`SELECT EXISTS(SELECT 1 FROM pg_timezone_names WHERE lower(name)=lower(${dto.timezone}) AND name NOT LIKE 'posix/%' AND name NOT LIKE 'right/%') AS supported`;
+    if (!zones[0]?.supported)
+      throw new UnprocessableEntityException(
+        "Múi giờ IANA chưa được cơ sở dữ liệu hỗ trợ.",
+      );
     if (period.startsAt > new Date() || period.endsAt <= new Date())
       throw new UnprocessableEntityException(
         "Thuê bao mở trung tâm cần đang hiệu lực.",

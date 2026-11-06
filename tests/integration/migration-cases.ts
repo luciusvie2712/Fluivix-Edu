@@ -2,7 +2,9 @@ import { it, expect } from "vitest";
 import { Client } from "pg";
 import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
+import { reportMigrationCase } from "./report-migration-case";
 export function migrationCases() {
+  reportMigrationCase();
   it("upgrades invoice actors and meaningful reasons without rewriting legacy financial rows or accepting orphan actors", async () => {
     const connectionString = process.env.DATABASE_URL;
     if (

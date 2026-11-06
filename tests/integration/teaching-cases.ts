@@ -1,5 +1,5 @@
 import { beforeAll, describe, expect, it } from "vitest";
-import type { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { randomUUID } from "node:crypto";
 import { createRequire } from "node:module";
 import path from "node:path";
@@ -1008,9 +1008,17 @@ export function teachingCases(
         prefix,
       });
       let now = new Date("2026-11-01T00:00:00Z");
+      let failureDatabase: PrismaClient | null = null;
       const worker = new Worker<{ ruleId: string }>(
         "schedule-generation",
-        (job) => generateScheduledRule(db, job.data.ruleId, now),
+        (job) =>
+          generateScheduledRule(
+            job.name === "failure-database" && failureDatabase
+              ? failureDatabase
+              : db,
+            job.data.ruleId,
+            now,
+          ),
         { connection, prefix },
       );
       try {
@@ -1050,17 +1058,27 @@ export function teachingCases(
         });
         expect(audits).toHaveLength(2);
         expect(audits.every((v) => v.actorUserId === null)).toBe(true);
-        const timezone = (
-          await db.tenant.findUniqueOrThrow({ where: { id: tenantId } })
-        ).timezone;
-        const privateMarker = "Invalid/PRIVATE_FAILURE_SENTINEL";
-        await db.tenant.update({
-          where: { id: tenantId },
-          data: { timezone: privateMarker },
+        // Tenant named-zone constraints intentionally reject the old invalid-zone
+        // fixture. Use an actual PostgreSQL connection failure through the same
+        // worker sanitizer, without bypassing any production constraint.
+        const privateMarker = "PRIVATE_FAILURE_SENTINEL";
+        const failureUrl = new URL(process.env.DATABASE_URL ?? "");
+        if (
+          !["127.0.0.1", "localhost"].includes(failureUrl.hostname) ||
+          !failureUrl.pathname.endsWith("_test")
+        )
+          throw new Error("Isolated PostgreSQL failure fixture required");
+        failureUrl.pathname =
+          "/" + privateMarker + "_" + randomUUID().slice(0, 8) + "_test";
+        failureDatabase = new PrismaClient({
+          datasourceUrl: failureUrl.toString(),
         });
         try {
+          await expect(
+            failureDatabase.scheduleRule.findFirst(),
+          ).rejects.toThrow(privateMarker);
           const failure = await queue.add(
-            "generate",
+            "failure-database",
             { ruleId: rule.id },
             { jobId: "sanitized-failure-" + randomUUID() },
           );
@@ -1077,10 +1095,8 @@ export function teachingCases(
             privateMarker,
           );
         } finally {
-          await db.tenant.update({
-            where: { id: tenantId },
-            data: { timezone },
-          });
+          await failureDatabase.$disconnect();
+          failureDatabase = null;
         }
         await db.tenant.update({
           where: { id: tenantId },

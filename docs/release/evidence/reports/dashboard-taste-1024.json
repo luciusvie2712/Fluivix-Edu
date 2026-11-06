@@ -1,0 +1,12 @@
+{
+  "sourceSha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+  "findings": [
+    {
+      "level": "WARN",
+      "id": "numeric-align",
+      "message": "10 of 10 numeric table cells are left-aligned.",
+      "fix": "Right-align numbers, amounts and percentages (and their column headers) so the digits line up.",
+      "width": 1024
+    }
+  ]
+}

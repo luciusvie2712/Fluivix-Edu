@@ -1,0 +1,264 @@
+{
+  "date": "2026-11-07",
+  "module": "W03 operational dashboard / W16 scoped reports and named IANA validation",
+  "baseCommit": "f96f6f8056c9751dac1f371633c592680be42c1d",
+  "localVerdict": "PASS",
+  "remoteVerdict": "NOT_VERIFIED",
+  "releaseVerdict": "BLOCKED",
+  "checks": {
+    "runtime": "Node24.22.2/libuv1.52.1;pnpm10.34.7",
+    "prisma": "validate/generate PASS; forward027 on fresh local test DB;001..026 unchanged",
+    "lint": "PASS",
+    "format": "PASS",
+    "typecheck": "8 uncached tasks/tools PASS",
+    "build": "8 uncached tasks PASS; source frozen for complete final matrix",
+    "unit": 60,
+    "mobileJest": 15,
+    "actualMobileApiSmoke": "PASS; no signed/physical device claim",
+    "expoAlignment": "PASS",
+    "integration": {
+      "passed": 88,
+      "skipped": 0,
+      "report": "docs/release/evidence/integration-2026-11-07-report-full.json"
+    },
+    "browser": {
+      "passed": 63,
+      "skipped": 0,
+      "flaky": 0,
+      "report": "docs/release/evidence/e2e-2026-11-07-report-full.json"
+    },
+    "contract": {
+      "clientSha256": "B782F6D242E6D153E14C4EC489079FAB0E5FE7B1B908150A65945A10157E5CF9",
+      "stable": true,
+      "openapiSha256": "E989B7B8EC8619B0F853D19840C130B04C101970A3EF519D593B2FEBB72F5952",
+      "operations": 165
+    },
+    "frozenOfflineInstall": "PASS",
+    "audit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    },
+    "changedFileSecretScreen": "PASS; values withheld; .env unchanged"
+  },
+  "implementation": [
+    "Seven actual REST operations165 total; generated typed client and Web dashboard/report routes with real date/class filters, trends/exact tables and CSV downloads",
+    "RepeatableRead/oneasOf, tenant-first SQL, inclusive actual IANA calendar<=366 days, stable paging; headcounts are explicitly current snapshots with active teacher account/membership/role checks and learners without login counted",
+    "Attendance finalized COMPLETED/non-null timestamp only; drafts/reopened/cancelled/unfinalized legacy records excluded. Completion numerator/denominator both ended and noncancelled; future sessions separate, zero denominator null. Presence=PRESENT+LATE over finalized roster including excused absence",
+    "Financial issue/received/due axes explicitly separated; confirmed receipts/reversal semantics, immutable BigInt/numeric-string sums, current due balances include effective allocations received outside period",
+    "Centre RECEIVED differs from CLASS_ALLOCATED: matched class allocations only; unallocated class amount null rather than incorrectly assigning or displaying0; live role restricts finance to owner/accountant even when one user also owns another role",
+    "Operational analytics flag independent of core-finance collections/receivables. Unavailable groups null. CSV cap5000, safe formula quoting, no learner notes, actual actor/filter/count/trace audit; READ_ONLY audited GET exports allowed with live scope checks",
+    "Actual Intl/PostgreSQL numeric-offset sign mismatch reproduced. Shared named-IANA validator used by API/Platform field; PG name support checked before creating tenant/user/invitation. Forward027 preflight/trigger rejects invalid existing/new values without silent timezone/ledger rewrites; additive range indexes",
+    "Daily calendar generation independent of DB session timezone; selected receipt allocations constrained to received range. EXPLAIN baseline is query-shape evidence, not a production load benchmark"
+  ],
+  "failuresAndRecovery": [
+    {
+      "report": "integration-2026-11-07-report-focused.json",
+      "result": "4PASS/3FAIL",
+      "cause": "Reserved SQL OVERLAPS CTE identifier; renamed enrollment_overlap. Assertions/constraints retained. Second7 focused PASS."
+    },
+    {
+      "report": "e2e-2026-11-07-report-focused.json",
+      "result": "7PASS/1FAIL",
+      "cause": "Revocation fixture attempted to suspend the final active owner; SQL correctly rejected it. Added independent active fixture owner. All8 second focused browser PASS; guard unchanged."
+    },
+    {
+      "report": "integration-2026-11-07-report-full-first.json",
+      "result": "87PASS/1FAIL",
+      "cause": "Existing worker fault fixture used an invalid tenant timezone newly blocked by named-zone guard. Replaced with real loopback nonexistent-test-database failure via real Prisma/BullMQ, verifying source error contains sentinel then stored failure remains generic and omits sentinel. Original assertions preserved and source-error assertion added. Worker/upgrade2 focused PASS and final88 PASS."
+    }
+  ],
+  "visual": {
+    "widths": [
+      360,
+      768,
+      1024,
+      1440
+    ],
+    "states": [
+      "dashboard",
+      "attendance",
+      "enrollments with long unbroken labels",
+      "collections with exact large VND"
+    ],
+    "manualReview": "all16 final images viewed",
+    "axe": "no violations on exercised surfaces",
+    "tasteFindings": [
+      {
+        "level": "WARN",
+        "id": "panel-void",
+        "message": "1 card(s) hold a blank band inside: 44px in \"B\u00e1o c\u00e1o trung t\u00e2m\".",
+        "fix": "A card stretches to its neighbour only when it has content to fill. Keep a legend or a note directly under its chart (only an action or a total may sit at a stretched card's foot), let a short card keep its own height (align-items: start), and let a filtered block shrink to its rows.",
+        "width": 1440
+      },
+      {
+        "level": "WARN",
+        "id": "numeric-align",
+        "message": "10 of 10 numeric table cells are left-aligned.",
+        "fix": "Right-align numbers, amounts and percentages (and their column headers) so the digits line up.",
+        "width": 1024
+      },
+      {
+        "level": "WARN",
+        "id": "numeric-align",
+        "message": "10 of 10 numeric table cells are left-aligned.",
+        "fix": "Right-align numbers, amounts and percentages (and their column headers) so the digits line up.",
+        "width": 1440
+      },
+      {
+        "level": "WARN",
+        "id": "panel-void",
+        "message": "1 card(s) hold a blank band inside: 48px in \"T\u1ed5ng quan trung t\u00e2m\".",
+        "fix": "A card stretches to its neighbour only when it has content to fill. Keep a legend or a note directly under its chart (only an action or a total may sit at a stretched card's foot), let a short card keep its own height (align-items: start), and let a filtered block shrink to its rows.",
+        "width": 1440
+      },
+      {
+        "level": "WARN",
+        "id": "numeric-align",
+        "message": "10 of 10 numeric table cells are left-aligned.",
+        "fix": "Right-align numbers, amounts and percentages (and their column headers) so the digits line up.",
+        "width": 360
+      },
+      {
+        "level": "WARN",
+        "id": "numeric-align",
+        "message": "10 of 10 numeric table cells are left-aligned.",
+        "fix": "Right-align numbers, amounts and percentages (and their column headers) so the digits line up.",
+        "width": 768
+      }
+    ],
+    "keyboard": "native date/class controls and chart day selector; explicit export/status/focus",
+    "motion": "reduced motion respected, no animated monetary counters",
+    "style": {
+      "direction": "existing framed-sheet/blue/Arial16 Vietnamese",
+      "seed": 1920114305,
+      "proMax": {
+        "query": "daily trends accessible table",
+        "domain": "chart",
+        "source": "charts.csv",
+        "topResult": "Trend Over Time",
+        "bestChartType": "Line Chart",
+        "applied": "bounded SVG line, direct series description, visible exact values table and keyboard day selector; fewer than4 points uses table only"
+      },
+      "animation": "no monetary counters or decorative motion; existing opacity/press/focus feedback and reduced motion rules retained",
+      "verification": "Final four viewport browser/axe/Taste/manual review PASS",
+      "claims": "No external device or release approval"
+    },
+    "skills": [
+      {
+        "source": "taste-skill",
+        "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+        "installed": "design-taste-frontend",
+        "verifiedFiles": 38,
+        "status": "PASS"
+      },
+      {
+        "source": "ui-ux-pro-max-skill",
+        "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+        "installed": "ui-ux-pro-max",
+        "verifiedFiles": 73,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "accessible-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "micro-interaction",
+        "verifiedFiles": 4,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "60fps-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      }
+    ]
+  },
+  "frozenSourceProof": {
+    "baseCommit": "f96f6f8056c9751dac1f371633c592680be42c1d",
+    "rawSourceSha256": {
+      "apps/api/src/report-queries.ts": "9406cc241a246d41d0351e7dde602cb64d516f781b98782e68270af476c40765",
+      "apps/api/src/reports.controller.ts": "813434c17d83ffb3e3d887d4f6a5be8262458ea13281d1eab923d723608a91eb",
+      "apps/api/src/reports.dto.ts": "6a1309cf78321d482026f9120d0ed41d2f1376b203eaf45f347ba2c3ecb88188",
+      "apps/api/src/reports.service.ts": "5a43477285182bad92ba586aef97d487fa5029fc7b0034a4b08405c6ea18f191",
+      "apps/web/app/app/dashboard/page.tsx": "a90e578cfd72ceb4003a4cfcef25d550802a761467b121503dae50cd2769173f",
+      "apps/web/app/app/reports/page.tsx": "83cc7c30579b4412bc19b2ccb40c7cc73cc37b5a782b1a6a56b8b9c601f997a4",
+      "apps/web/components/reports-workspace.tsx": "0c81a5ebcc729ee3e95d07327d6eed8bd331e279cc50910b3004204b16ffd834",
+      "infra/prisma/migrations/202611070027_operational_reports/migration.sql": "aee56d9181af02b33f7e3e01c72c44268749fda9d916f09a5e3258167dfe942d",
+      "packages/contracts/src/iana-timezone.ts": "f7f1fb89aa5a21299bbda76d320f1d30cfb0d5bf7ef83140b677abb3ed4326c2",
+      "tests/e2e/reports.spec.ts": "fdbead9f99b93f2d1875e8e6055f48ed52b9d991e474159b15c5a58bbefc54b4",
+      "tests/integration/report-cases.ts": "bab97b7db46de1b200f846c204060c61fc1f8dceb654e4bfcfaa33cec517504a",
+      "tests/integration/report-migration-case.ts": "1e4d54b0bdee5c97aae597c5d6e2613748bcf4e724b8fe49c0582fc6b7b649fb",
+      "apps/api/openapi.json": "e989b7b8ec8619b0f853d19840c130b04c101970a3ef519d593b2febb72f5952",
+      "apps/api/src/app.ts": "2d293fa85ce9f6d7f42dcb705cfc27a734b1b643ae6860673e77431b805fe95d",
+      "apps/api/src/platform-tenants.dto.ts": "51ecbca9b3da9efa34ca54c2cb811ec3f0b5966e43edffb3ac23e4ec3ad1b022",
+      "apps/api/src/platform-tenants.service.ts": "4e5b5bae6644f803968f92e9fc281942b8d834864370e4f510c12bf4b7684179",
+      "apps/api/src/security.ts": "1da638712ad9af029eee31c2de3ca5bd5d268c531a8c8091ada6553679810440",
+      "apps/platform/components/create-tenant.tsx": "838820dde8c5a314ce5b86cc82718b4ed96f2b00095288a2f680170a63d2b48a",
+      "apps/platform/package.json": "cab77c91f34c4003be4995e9e8d9c0f9b03bfdc6435b73f1c04446bc938cc354",
+      "apps/web/app/app/layout.tsx": "96368088d2c2f2fbb11213aa81d8b14d64e61f1bc6210c8a771d80241b17c7bb",
+      "apps/web/app/globals.css": "f5d7dcc2db5f482a129251bd8dd5232d63f1a2b7e8fd30c44884c4fed533153a",
+      "apps/web/lib/api.ts": "858e4c91fd5e27d3b6158369467f3813c3e9ac03f69403d90212c7c0fab556ea",
+      "infra/prisma/schema.prisma": "7f8fa38f5c360865e493cc2c586f2d9208d29ad31336119b8cde653fbbc280e5",
+      "packages/api-client/src/schema.d.ts": "b782f6d242e6d153e14c4ec489079fab0e5fe7b1b908150a65945a10157e5cf9",
+      "packages/contracts/src/index.ts": "a51cc875f147be3b15ea599ae14cd5aa867bb6a841d9694d1e0b06d26c0fed61",
+      "pnpm-lock.yaml": "507e43dbbb334c33dcd67688e019fae91ab73244f8b76917c7345c1a29915deb",
+      "tests/e2e/tenancy.spec.ts": "f95ad1da0f7af910dc68cf3350bfc34004a29f6dfae27fd445d68fc7f2368634",
+      "tests/integration/identity.test.ts": "95fe1c320e13f6f552ef92afef7e10cf944c2d50f985693f3710910ddfd004f3",
+      "tests/integration/migration-cases.ts": "2df5e0ee0e1f22b0fe64afa3087b002f8ed5e9c07293d4870b4557a8380624a8",
+      "tests/integration/platform-cases.ts": "27f3eec73eba14b63fe4ee85a9ba2dbecc2596ecaa7b20cc04c37d7560a1b3d8",
+      "tests/integration/teaching-cases.ts": "342d3187b1fdc07aba030df5df9ce8a79e9b6db15ba03f5710d12e95c8620539",
+      "tooling/release-inventory.ts": "b77d81b5b1987099884fbc3fc18de6b13700a9f85765042ff7ad3950b3145dca"
+    },
+    "stable": true,
+    "envUnchanged": true
+  },
+  "sourceHashes": {
+    "normalization": "CRLF to LF",
+    "sha256": {
+      "apps/api/src/report-queries.ts": "9406cc241a246d41d0351e7dde602cb64d516f781b98782e68270af476c40765",
+      "apps/api/src/reports.controller.ts": "813434c17d83ffb3e3d887d4f6a5be8262458ea13281d1eab923d723608a91eb",
+      "apps/api/src/reports.dto.ts": "6a1309cf78321d482026f9120d0ed41d2f1376b203eaf45f347ba2c3ecb88188",
+      "apps/api/src/reports.service.ts": "5a43477285182bad92ba586aef97d487fa5029fc7b0034a4b08405c6ea18f191",
+      "apps/web/app/app/dashboard/page.tsx": "a90e578cfd72ceb4003a4cfcef25d550802a761467b121503dae50cd2769173f",
+      "apps/web/app/app/reports/page.tsx": "83cc7c30579b4412bc19b2ccb40c7cc73cc37b5a782b1a6a56b8b9c601f997a4",
+      "apps/web/components/reports-workspace.tsx": "0c81a5ebcc729ee3e95d07327d6eed8bd331e279cc50910b3004204b16ffd834",
+      "infra/prisma/migrations/202611070027_operational_reports/migration.sql": "aee56d9181af02b33f7e3e01c72c44268749fda9d916f09a5e3258167dfe942d",
+      "packages/contracts/src/iana-timezone.ts": "f7f1fb89aa5a21299bbda76d320f1d30cfb0d5bf7ef83140b677abb3ed4326c2",
+      "tests/e2e/reports.spec.ts": "fdbead9f99b93f2d1875e8e6055f48ed52b9d991e474159b15c5a58bbefc54b4",
+      "tests/integration/report-cases.ts": "bab97b7db46de1b200f846c204060c61fc1f8dceb654e4bfcfaa33cec517504a",
+      "tests/integration/report-migration-case.ts": "1e4d54b0bdee5c97aae597c5d6e2613748bcf4e724b8fe49c0582fc6b7b649fb",
+      "apps/api/openapi.json": "e989b7b8ec8619b0f853d19840c130b04c101970a3ef519d593b2febb72f5952",
+      "apps/api/src/app.ts": "2d293fa85ce9f6d7f42dcb705cfc27a734b1b643ae6860673e77431b805fe95d",
+      "apps/api/src/platform-tenants.dto.ts": "51ecbca9b3da9efa34ca54c2cb811ec3f0b5966e43edffb3ac23e4ec3ad1b022",
+      "apps/api/src/platform-tenants.service.ts": "4e5b5bae6644f803968f92e9fc281942b8d834864370e4f510c12bf4b7684179",
+      "apps/api/src/security.ts": "1da638712ad9af029eee31c2de3ca5bd5d268c531a8c8091ada6553679810440",
+      "apps/platform/components/create-tenant.tsx": "838820dde8c5a314ce5b86cc82718b4ed96f2b00095288a2f680170a63d2b48a",
+      "apps/platform/package.json": "cab77c91f34c4003be4995e9e8d9c0f9b03bfdc6435b73f1c04446bc938cc354",
+      "apps/web/app/app/layout.tsx": "96368088d2c2f2fbb11213aa81d8b14d64e61f1bc6210c8a771d80241b17c7bb",
+      "apps/web/app/globals.css": "f5d7dcc2db5f482a129251bd8dd5232d63f1a2b7e8fd30c44884c4fed533153a",
+      "apps/web/lib/api.ts": "858e4c91fd5e27d3b6158369467f3813c3e9ac03f69403d90212c7c0fab556ea",
+      "infra/prisma/schema.prisma": "4f57459795edb187797a797019cd18ec13c3bb91e7cae58b07be2cac2efc51c9",
+      "packages/api-client/src/schema.d.ts": "b782f6d242e6d153e14c4ec489079fab0e5fe7b1b908150a65945a10157e5cf9",
+      "packages/contracts/src/index.ts": "a51cc875f147be3b15ea599ae14cd5aa867bb6a841d9694d1e0b06d26c0fed61",
+      "pnpm-lock.yaml": "507e43dbbb334c33dcd67688e019fae91ab73244f8b76917c7345c1a29915deb",
+      "tests/e2e/tenancy.spec.ts": "f95ad1da0f7af910dc68cf3350bfc34004a29f6dfae27fd445d68fc7f2368634",
+      "tests/integration/identity.test.ts": "95fe1c320e13f6f552ef92afef7e10cf944c2d50f985693f3710910ddfd004f3",
+      "tests/integration/migration-cases.ts": "2df5e0ee0e1f22b0fe64afa3087b002f8ed5e9c07293d4870b4557a8380624a8",
+      "tests/integration/platform-cases.ts": "27f3eec73eba14b63fe4ee85a9ba2dbecc2596ecaa7b20cc04c37d7560a1b3d8",
+      "tests/integration/teaching-cases.ts": "342d3187b1fdc07aba030df5df9ce8a79e9b6db15ba03f5710d12e95c8620539",
+      "tooling/release-inventory.ts": "b77d81b5b1987099884fbc3fc18de6b13700a9f85765042ff7ad3950b3145dca"
+    }
+  },
+  "limits": "Local operational reporting only. TC023 has actual November Vietnam API/Web evidence; all33 FR are not globally DONE. Tenant audit/privacy/notifications/remaining operational and auth/M4 work remain. No historical balance-sheet, real bank, deployed staging/load, legal/UAT, signed physical device or real push acceptance claim. Exact reporting commit/SHA CI pending; release BLOCKED."
+}
