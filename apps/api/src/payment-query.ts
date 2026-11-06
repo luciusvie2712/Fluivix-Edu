@@ -1,6 +1,10 @@
 import { UnprocessableEntityException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
-import { financialDay, financialOffset } from "./finance-query";
+import {
+  financialDay,
+  financialOffset,
+  financialTimezone,
+} from "./finance-query";
 import type { PaymentQuery } from "./payment.dto";
 
 export async function paymentIds(
@@ -10,6 +14,7 @@ export async function paymentIds(
   subject?: string,
 ) {
   const offset = financialOffset(q);
+  const timezone = await financialTimezone(tx, tenant);
   if (q.from && q.to && q.from > q.to)
     throw new UnprocessableEntityException(
       "Khoảng ngày nhận tiền không hợp lệ.",
@@ -19,9 +24,10 @@ export async function paymentIds(
     where.push(Prisma.sql`p.student_id=${subject ?? q.studentId}::uuid`);
   if (q.status) where.push(Prisma.sql`p.status=${q.status}`);
   if (q.method) where.push(Prisma.sql`p.method=${q.method}`);
-  if (q.from) where.push(Prisma.sql`p.received_at>=${financialDay(q.from)}`);
+  if (q.from)
+    where.push(Prisma.sql`p.received_at>=${financialDay(q.from, timezone)}`);
   if (q.to) {
-    where.push(Prisma.sql`p.received_at<${financialDay(q.to, true)}`);
+    where.push(Prisma.sql`p.received_at<${financialDay(q.to, timezone, true)}`);
   }
   if (q.search) {
     const pattern = "%" + q.search.replace(/[\\%_]/g, "\\$&") + "%";

@@ -23,7 +23,7 @@ import { lockTenantActor } from "./tenant-actor";
 import { ListDto } from "./auth.dto";
 import { InvoiceQuery, InvoiceFeeQuery } from "./invoice.dto";
 import { invoiceRows, invoiceValueScope } from "./invoice-query";
-import { financialOffset } from "./finance-query";
+import { financialOffset, financialTimezone } from "./finance-query";
 import { PaymentQuery } from "./payment.dto";
 import { paymentIds } from "./payment-query";
 import {
@@ -73,13 +73,13 @@ export class FinanceService {
     await requirePlanFeature(tx, c.tenantId!, "finance");
     return actor;
   }
-  private today() {
+  private async today(tx: Tx, c: Claims) {
     return new Intl.DateTimeFormat("sv-SE", {
-      timeZone: "Asia/Ho_Chi_Minh",
+      timeZone: await financialTimezone(tx, this.tenant(c)),
     }).format(new Date());
   }
   private async feeViews(tx: Tx, c: Claims, rows: FeePlan[]) {
-    const today = this.today();
+    const today = await this.today(tx, c);
     const classes = await tx.educationClass.findMany({
       where: {
         tenantId: this.tenant(c),
@@ -447,7 +447,7 @@ export class FinanceService {
       const from = row.validFrom.toISOString().slice(0, 10),
         to = row.validTo?.toISOString().slice(0, 10);
       if (
-        input.effectiveFrom <= this.today() ||
+        input.effectiveFrom <= (await this.today(tx, c)) ||
         input.effectiveFrom < from ||
         (to && input.effectiveFrom > to)
       )
@@ -871,10 +871,17 @@ export class FinanceService {
     return this.db.$transaction(
       async (tx) => {
         await requirePlanFeature(tx, tenant, "finance");
+        const timezone = (
+          await tx.tenant.findUniqueOrThrow({
+            where: { id: tenant },
+            select: { timezone: true },
+          })
+        ).timezone;
         const now = new Date(),
           { scoped, status } = invoiceValueScope(
             tenant,
             q,
+            timezone,
             undefined,
             undefined,
             now,
@@ -901,7 +908,7 @@ export class FinanceService {
         const total = totals[0]!;
         return {
           asOf: now.toISOString(),
-          timezone: "Asia/Ho_Chi_Minh",
+          timezone,
           summary: {
             issuedCount: Number(total.issued_count),
             outstandingCount: Number(total.outstanding_count),
@@ -1061,7 +1068,7 @@ export class FinanceService {
         }),
         tx.tenant.findUniqueOrThrow({
           where: { id: p.tenantId },
-          select: { name: true },
+          select: { name: true, timezone: true },
         }),
         tx.auditLog.findFirst({
           where: {
@@ -1098,6 +1105,7 @@ export class FinanceService {
       ...base,
       ...student,
       centreName: centre.name,
+      timezone: centre.timezone,
       externalReference: guardian ? null : p.externalReference,
       receivedBy: guardian ? null : p.receivedBy,
       receiverDisplayName: guardian ? null : name(recorded),

@@ -5,6 +5,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { components } from "@fluivix/api-client";
 import { payments, invoices, students, ApiError } from "../lib/api";
 import { useSession } from "./providers";
+import { useFinancialTime } from "../lib/financial-time";
+import { wallClockCandidates } from "@fluivix/contracts";
 import { Button } from "./ui/button";
 import {
   Field,
@@ -24,13 +26,13 @@ const money = (value: string) =>
     currency: "VND",
     maximumFractionDigits: 0,
   }).format(BigInt(value));
-const datetime = (value: string) =>
-  new Date(value).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
+
 const validMoney = (value: string) =>
   /^(0|[1-9]\d{0,18})$/.test(value) && BigInt(value) <= 9223372036854775807n;
 const stateName = (status: string) =>
   status === "REVERSED" ? "Đã đảo giao dịch" : "Có hiệu lực";
 function useScope() {
+  const financialTime = useFinancialTime();
   const { me } = useSession();
   const allowed = ["owner", "manager", "accountant"].includes(
     me?.activeRole ?? "",
@@ -42,6 +44,7 @@ function useScope() {
         .status ?? "",
     );
   return {
+    ...financialTime,
     allowed,
     write,
     key: ["payments", me?.id, me?.activeTenantId, me?.activeRole],
@@ -256,7 +259,7 @@ function PaymentDirectory() {
             }}
           />
         </div>
-        <p>Khoảng ngày theo giờ Việt Nam.</p>
+        <p>Khoảng ngày theo {scope.label}.</p>
         {invalid ? (
           <p role="alert">Ngày bắt đầu không được sau ngày kết thúc.</p>
         ) : query.isPending ? (
@@ -275,7 +278,8 @@ function PaymentDirectory() {
                       {p.receiptNo}
                     </Link>
                     <p>
-                      {p.studentCode} · {p.fullName} · {datetime(p.receivedAt)}
+                      {p.studentCode} · {p.fullName} ·{" "}
+                      {scope.datetime(p.receivedAt, p.timezone)}
                     </p>
                     <p>
                       {stateName(p.status)} ·{" "}
@@ -312,6 +316,7 @@ function RecordPayment({ scope }: { scope: ReturnType<typeof useScope> }) {
     [amount, setAmount] = useState(""),
     [method, setMethod] = useState<"CASH" | "BANK_TRANSFER">("CASH"),
     [date, setDate] = useState(""),
+    [chosenInstant, setChosenInstant] = useState(""),
     [reference, setReference] = useState(""),
     [allocations, setAllocations] = useState<
       Record<string, { amount: string; balance: string; number: string }>
@@ -339,9 +344,24 @@ function RecordPayment({ scope }: { scope: ReturnType<typeof useScope> }) {
   const total = invalidAllocation
     ? 0n
     : entries.reduce((sum, [, v]) => sum + BigInt(v.amount), 0n);
-  const validDate =
-    /^(?!0000)\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2})?$/.test(date) &&
-    Number.isFinite(Date.parse(date + "+07:00"));
+  let candidates: Date[] = [];
+  try {
+    if (scope.timezone && date)
+      candidates = wallClockCandidates(
+        date.slice(0, 10),
+        date.slice(11),
+        scope.timezone,
+      );
+  } catch {
+    /* Invalid or incomplete local input stays editable. */
+  }
+  const receivedAt =
+    candidates.length === 1
+      ? candidates[0]!.toISOString()
+      : candidates
+          .find((d) => d.toISOString() === chosenInstant)
+          ?.toISOString();
+  const validDate = !!receivedAt;
   const valid =
     !!student &&
     validMoney(amount) &&
@@ -356,6 +376,8 @@ function RecordPayment({ scope }: { scope: ReturnType<typeof useScope> }) {
     amount,
     method,
     date,
+    receivedAt,
+    scope.timezone,
     reference,
     allocations,
   ]);
@@ -394,11 +416,36 @@ function RecordPayment({ scope }: { scope: ReturnType<typeof useScope> }) {
             <option value="BANK_TRANSFER">Chuyển khoản</option>
           </SelectField>
           <Field
-            label="Thời điểm nhận tiền (giờ Việt Nam)"
+            label={`Thời điểm nhận tiền (${scope.label})`}
             type="datetime-local"
             value={date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => {
+              setDate(e.target.value);
+              setChosenInstant("");
+            }}
           />
+          {candidates.length > 1 && (
+            <SelectField
+              label="Chọn lần xuất hiện của giờ nhận tiền"
+              value={chosenInstant}
+              onChange={(e) => setChosenInstant(e.target.value)}
+            >
+              <option value="">
+                Giờ này xuất hiện hai lần; chọn thời điểm thực nhận
+              </option>
+              {candidates.map((d) => (
+                <option key={d.toISOString()} value={d.toISOString()}>
+                  {new Intl.DateTimeFormat("vi-VN", {
+                    timeZone: scope.timezone,
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    timeZoneName: "longOffset",
+                  }).format(d)}{" "}
+                  · {d.toISOString()}
+                </option>
+              ))}
+            </SelectField>
+          )}
           <Field
             label="Tham chiếu giao dịch (nếu có)"
             value={reference}
@@ -406,6 +453,12 @@ function RecordPayment({ scope }: { scope: ReturnType<typeof useScope> }) {
             onChange={(e) => setReference(e.target.value)}
           />
         </div>
+        {date && candidates.length === 0 && (
+          <p role="alert">
+            Thời điểm không hợp lệ hoặc không tồn tại trong múi giờ trung tâm.
+            Chọn lại thời gian nhận tiền.
+          </p>
+        )}
         {amount && !validMoney(amount) && (
           <p role="alert">
             Nhập số nguyên VND trong giới hạn lưu trữ, không có dấu phân cách.
@@ -523,6 +576,10 @@ function RecordPayment({ scope }: { scope: ReturnType<typeof useScope> }) {
         confirm="Tôi đã nhận tiền và kiểm tra đúng học viên, số tiền, thời điểm, phương thức và từng khoản phân bổ."
         action={async () => {
           if (lock.current) throw new Error("Đang xử lý yêu cầu trước đó.");
+          if (!intent.current && (!valid || !receivedAt))
+            throw new Error(
+              "Kiểm tra thời điểm nhận tiền và thông tin phân bổ.",
+            );
           lock.current = true;
           setBusy(true);
           if (!intent.current)
@@ -532,7 +589,7 @@ function RecordPayment({ scope }: { scope: ReturnType<typeof useScope> }) {
                 studentId: student!.id,
                 method,
                 receivedAmountVnd: amount,
-                receivedAt: new Date(date + "+07:00").toISOString(),
+                receivedAt: receivedAt!,
                 ...(reference ? { externalReference: reference } : {}),
                 allocations: entries.map(([invoiceId, v]) => ({
                   invoiceId,
@@ -669,7 +726,9 @@ function ReceiptDetail({ id }: { id: string }) {
               : ""}
           </dd>
           <dt>Nhận lúc</dt>
-          <dd>{datetime(p.receivedAt)}</dd>
+          <dd>{scope.datetime(p.receivedAt, p.timezone)}</dd>
+          <dt>Múi giờ trung tâm</dt>
+          <dd>{p.timezone}</dd>
           <dt>Phương thức</dt>
           <dd>{p.method === "CASH" ? "Tiền mặt" : "Chuyển khoản"}</dd>
           <dt>Tham chiếu</dt>
@@ -698,8 +757,10 @@ function ReceiptDetail({ id }: { id: string }) {
         {p.status === "REVERSED" && (
           <p>
             Đã đảo lúc{" "}
-            {p.reversedAt ? datetime(p.reversedAt) : "không có thông tin"} ·{" "}
-            {p.reversalActorName ?? "Không lưu tên người thao tác"} · Lý do:{" "}
+            {p.reversedAt
+              ? scope.datetime(p.reversedAt, p.timezone)
+              : "không có thông tin"}{" "}
+            · {p.reversalActorName ?? "Không lưu tên người thao tác"} · Lý do:{" "}
             {p.reversalReason ?? "Không có thông tin"}
           </p>
         )}
@@ -778,7 +839,7 @@ function ReceiptDetail({ id }: { id: string }) {
                       {h.action === "payment.recorded"
                         ? "Ghi nhận tiền"
                         : "Đảo giao dịch"}{" "}
-                      · {datetime(h.recordedAt)}
+                      · {scope.datetime(h.recordedAt, p.timezone)}
                     </p>
                     <p>
                       {h.actorDisplayName ??

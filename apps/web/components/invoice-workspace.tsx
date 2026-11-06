@@ -5,6 +5,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { components } from "@fluivix/api-client";
 import { invoices, ApiError } from "../lib/api";
 import { useSession } from "./providers";
+import { useFinancialTime } from "../lib/financial-time";
+import { calendarDayRange } from "@fluivix/contracts";
 import {
   Field,
   SelectField,
@@ -29,14 +31,15 @@ const money = (v: string) =>
     currency: "VND",
     maximumFractionDigits: 0,
   }).format(BigInt(v));
-const datetime = (v: string) =>
-  new Date(v).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" });
+
 function useScope() {
+  const financialTime = useFinancialTime();
   const { me } = useSession();
   const allowed = ["owner", "manager", "accountant"].includes(
     me?.activeRole ?? "",
   );
   return {
+    ...financialTime,
     allowed,
     writable:
       allowed &&
@@ -135,7 +138,7 @@ export function InvoicesWorkspace() {
       <h1>Chứng từ học phí</h1>
       <p className="muted">
         Chứng từ nội bộ, không phải hóa đơn VAT. Số dư được tính từ các khoản
-        thu có hiệu lực; ngày đến hạn theo giờ Việt Nam.
+        thu có hiệu lực; ngày đến hạn theo {scope.label}.
       </p>
       <section className="operation-panel">
         <h2>Danh sách chứng từ</h2>
@@ -224,7 +227,7 @@ export function InvoicesWorkspace() {
                     </p>
                     <p>
                       {statusNames[i.paymentStatus] ?? i.paymentStatus} · Đến
-                      hạn {datetime(i.dueAt)}
+                      hạn {scope.datetime(i.dueAt, i.timezone)}
                     </p>
                     <p>
                       Tổng {money(i.totalAmountVnd)} · Đã thu{" "}
@@ -353,7 +356,9 @@ function InvoiceRun() {
     return {
       feePlanId: fee.id,
       periodKey: fee.billingModel === "COURSE" ? "COURSE" : period,
-      dueAt: due + "T16:59:59.999Z",
+      dueAt: new Date(
+        calendarDayRange(due, scope.timezone!).end.getTime() - 1,
+      ).toISOString(),
     };
   };
   async function loadPreview(page = 1) {
@@ -445,7 +450,8 @@ function InvoiceRun() {
           </p>
           <p>
             {preview.eligibleCount} học viên · Tổng dự kiến{" "}
-            {money(preview.totalAmountVnd)} · Đến hạn {datetime(preview.dueAt)}
+            {money(preview.totalAmountVnd)} · Đến hạn{" "}
+            {scope.datetime(preview.dueAt)}
           </p>
           {preview.existingRunId && (
             <p role="status">
@@ -592,9 +598,11 @@ export function InvoiceDetail({ id }: { id: string }) {
         <dt>Trạng thái</dt>
         <dd>{statusNames[i.paymentStatus] ?? i.paymentStatus}</dd>
         <dt>Ngày phát hành</dt>
-        <dd>{datetime(i.issuedAt)}</dd>
+        <dd>{scope.datetime(i.issuedAt, i.timezone)}</dd>
         <dt>Đến hạn</dt>
-        <dd>{datetime(i.dueAt)}</dd>
+        <dd>{scope.datetime(i.dueAt, i.timezone)}</dd>
+        <dt>Múi giờ trung tâm</dt>
+        <dd>{i.timezone}</dd>
         <dt>Tổng học phí</dt>
         <dd>{money(i.totalAmountVnd)}</dd>
         <dt>Đã thu</dt>
@@ -678,7 +686,7 @@ export function InvoiceDetail({ id }: { id: string }) {
                       {h.action === "invoice.run.generated"
                         ? "Phát hành kỳ thu"
                         : "Hủy chứng từ"}{" "}
-                      · {datetime(h.recordedAt)}
+                      · {scope.datetime(h.recordedAt, i.timezone)}
                     </p>
                     <p>
                       {h.actorDisplayName ??

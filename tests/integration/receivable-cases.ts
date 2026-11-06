@@ -395,6 +395,215 @@ export function receivableCases(
         }
       }
     });
+    it("financial reads use the actual tenant IANA calendar across DST, midnight gaps and fractional offsets", async () => {
+      const db = getDb();
+      try {
+        for (const [timezone, day, start, end] of [
+          [
+            "America/New_York",
+            "2026-03-08",
+            "2026-03-08T05:00:00Z",
+            "2026-03-09T04:00:00Z",
+          ],
+          [
+            "America/New_York",
+            "2026-11-01",
+            "2026-11-01T04:00:00Z",
+            "2026-11-02T05:00:00Z",
+          ],
+          [
+            "Asia/Kathmandu",
+            "2031-01-07",
+            "2031-01-06T18:15:00Z",
+            "2031-01-07T18:15:00Z",
+          ],
+          [
+            "America/Sao_Paulo",
+            "2018-11-04",
+            "2018-11-04T03:00:00Z",
+            "2018-11-05T02:00:00Z",
+          ],
+        ] as const) {
+          await db.tenant.update({ where: { id: tenant }, data: { timezone } });
+          const testClass = await db.educationClass.create({
+            data: {
+              tenantId: tenant,
+              code: "TZ-" + randomUUID().slice(0, 8),
+              name: "Isolated IANA calendar class",
+              capacity: 10,
+              status: "ACTIVE",
+              startDate: new Date("2010-01-01Z"),
+              endDate: new Date("2040-01-01Z"),
+            },
+          });
+          const instants = [
+            new Date(Date.parse(start!) - 1),
+            new Date(start!),
+            new Date(Date.parse(end!) - 1),
+            new Date(end!),
+          ];
+          const invoices = [];
+          const payments: string[] = [];
+          for (const instant of instants) {
+            const row = await invoice(100000n, instant, {
+              classId: testClass.id,
+            });
+            invoices.push(row);
+            const payment = await api(
+              "/payments",
+              "POST",
+              {
+                studentId: student,
+                method: "CASH",
+                receivedAmountVnd: "100",
+                receivedAt: instant.toISOString(),
+                allocations: [{ invoiceId: row.id, amountVnd: "100" }],
+              },
+              "accountant",
+              randomUUID(),
+            );
+            expect(payment.status).toBe(201);
+            payments.push(payment.body.data.id);
+          }
+          const params = `classId=${testClass.id}&from=${day}&to=${day}`;
+          const report = await api("/finance/reports/receivables?" + params);
+          expect(report.status).toBe(200);
+          expect(report.body.data.timezone).toBe(timezone);
+          expect(report.body.data.summary).toMatchObject({
+            issuedCount: 2,
+            totalAmountVnd: "200000",
+            paidAmountVnd: "200",
+            balanceVnd: "199800",
+          });
+          const expected = [invoices[1]!.id, invoices[2]!.id].sort();
+          expect(
+            report.body.data.invoices.map((i: { id: string }) => i.id).sort(),
+          ).toEqual(expected);
+          const list = await api("/invoices?" + params);
+          expect(
+            list.body.data.map((i: { id: string }) => i.id).sort(),
+          ).toEqual(expected);
+          expect(
+            (await api("/invoices/" + invoices[1]!.id)).body.data.timezone,
+          ).toBe(timezone);
+          const receipts = await api(
+            `/payments?studentId=${student}&from=${day}&to=${day}`,
+          );
+          expect(receipts.status).toBe(200);
+          expect(
+            receipts.body.data.map((p: { id: string }) => p.id).sort(),
+          ).toEqual([payments[1], payments[2]].sort());
+          expect(
+            (await api("/payments/" + payments[1])).body.data.timezone,
+          ).toBe(timezone);
+          expect(
+            (
+              await api(
+                "/finance/reports/receivables?" + params,
+                "GET",
+                undefined,
+                "foreignOwner",
+              )
+            ).body.data.summary.issuedCount,
+          ).toBe(0);
+        }
+        await db.tenant.update({
+          where: { id: tenant },
+          data: { timezone: "Pacific/Apia" },
+        });
+        for (const route of [
+          "/invoices",
+          "/payments",
+          "/finance/reports/receivables",
+        ])
+          expect(
+            (await api(route + "?from=2011-12-30&to=2011-12-30")).status,
+          ).toBe(422);
+      } finally {
+        await db.tenant.update({
+          where: { id: tenant },
+          data: { timezone: "Asia/Ho_Chi_Minh" },
+        });
+      }
+    });
+    it("future fee terms and effective snapshots use the same scoped tenant calendar in API and SQL", async () => {
+      const db = getDb();
+      try {
+        for (const timezone of ["Pacific/Kiritimati", "Etc/GMT+12"]) {
+          await db.tenant.update({ where: { id: tenant }, data: { timezone } });
+          const today = new Intl.DateTimeFormat("sv-SE", {
+            timeZone: timezone,
+          }).format(new Date());
+          const tomorrow = new Date(Date.parse(today + "T00:00:00Z") + 86400000)
+            .toISOString()
+            .slice(0, 10);
+          const fee = await db.feePlan.create({
+            data: {
+              tenantId: tenant,
+              classId: cls,
+              name: "IANA future course",
+              billingModel: "COURSE",
+              amountVnd: 100000n,
+              validFrom: new Date(tomorrow + "T00:00:00Z"),
+            },
+          });
+          const changed = await api("/fee-plans/" + fee.id, "PATCH", {
+            version: 1,
+            effectiveFrom: tomorrow,
+            name: "IANA future course revised",
+            amountVnd: "200000",
+            reason: "Confirmed future course terms in actual centre calendar",
+          });
+          expect(changed.status).toBe(200);
+          const current = await api("/fee-plans/" + fee.id);
+          expect(current.body.data).toMatchObject({
+            termsAsOf: today,
+            effectiveAmountVnd: "100000",
+            version: 2,
+          });
+          expect(
+            await db.feePlanTerm.count({
+              where: { tenantId: tenant, feePlanId: fee.id },
+            }),
+          ).toBe(1);
+          const sameDay = await db.feePlan.create({
+            data: {
+              tenantId: tenant,
+              classId: cls,
+              name: "SQL local today rejection",
+              billingModel: "COURSE",
+              amountVnd: 100000n,
+              version: 2,
+              validFrom: new Date(today + "T00:00:00Z"),
+            },
+          });
+          await expect(
+            db.feePlanTerm.create({
+              data: {
+                tenantId: tenant,
+                feePlanId: sameDay.id,
+                version: 2,
+                effectiveFrom: new Date(today + "T00:00:00Z"),
+                name: "Forbidden current-day term",
+                amountVnd: 200000n,
+                reason:
+                  "Current-day term must fail SQL guard independently of API",
+                createdBy: users.owner,
+                actorDisplayName: "Synthetic owner",
+                traceId: randomUUID(),
+              },
+            }),
+          ).rejects.toThrow(
+            "fee terms must take effect in the future valid interval",
+          );
+        }
+      } finally {
+        await db.tenant.update({
+          where: { id: tenant },
+          data: { timezone: "Asia/Ho_Chi_Minh" },
+        });
+      }
+    });
     it("receivables enforce named owner/accountant and finance-plan scopes, tenant isolation, readonly reads and revocation", async () => {
       const foreignInvoice = await invoice(1000000n, new Date("2030-01-01Z"), {
         tenantId: foreign,

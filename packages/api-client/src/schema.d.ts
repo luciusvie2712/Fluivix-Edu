@@ -3009,6 +3009,8 @@ export interface components {
       dueAt: string;
       /** Format: date-time */
       issuedAt: string;
+      /** @description Current tenant IANA timezone */
+      timezone: string;
       studentCode: string;
       fullName: string;
       classId: string;
@@ -3205,6 +3207,8 @@ export interface components {
       dueAt: string;
       /** Format: date-time */
       issuedAt: string;
+      /** @description Current tenant IANA timezone */
+      timezone: string;
       studentCode: string;
       fullName: string;
       classId: string;
@@ -3306,6 +3310,8 @@ export interface components {
       invoiceBalances: components["schemas"]["InvoiceView"][];
       /** @description Internal receipt, not a VAT invoice or bank verification */
       receiptNotice: string;
+      /** @description Current tenant IANA timezone */
+      timezone: string;
       studentCode: string;
       fullName: string;
       /** @description Current centre name, not an issue-time snapshot */
@@ -8795,9 +8801,9 @@ export interface operations {
         paymentStatus?: "UNPAID" | "PARTIAL" | "PAID" | "OVERDUE" | "VOID";
         /** @description YYYY-MM or COURSE */
         periodKey?: string;
-        /** @description Inclusive due-date boundary in Asia/Ho_Chi_Minh */
+        /** @description Inclusive due-date boundary in the active tenant IANA timezone */
         from?: string;
-        /** @description Inclusive due-date boundary in Asia/Ho_Chi_Minh */
+        /** @description Inclusive due-date boundary in the active tenant IANA timezone */
         to?: string;
       };
       header?: never;
@@ -9527,9 +9533,9 @@ export interface operations {
         paymentStatus?: "UNPAID" | "PARTIAL" | "PAID" | "OVERDUE" | "VOID";
         /** @description YYYY-MM or COURSE */
         periodKey?: string;
-        /** @description Inclusive due-date boundary in Asia/Ho_Chi_Minh */
+        /** @description Inclusive due-date boundary in the active tenant IANA timezone */
         from?: string;
-        /** @description Inclusive due-date boundary in Asia/Ho_Chi_Minh */
+        /** @description Inclusive due-date boundary in the active tenant IANA timezone */
         to?: string;
       };
       header?: never;
@@ -9967,7 +9973,9 @@ export interface operations {
         studentId?: string;
         method?: "CASH" | "BANK_TRANSFER";
         status?: "CONFIRMED" | "REVERSED";
+        /** @description Inclusive received-day boundary in the active tenant IANA timezone */
         from?: string;
+        /** @description Inclusive received-day boundary in the active tenant IANA timezone */
         to?: string;
       };
       header?: never;

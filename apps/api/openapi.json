@@ -6132,14 +6132,14 @@
             "name": "from",
             "required": false,
             "in": "query",
-            "description": "Inclusive due-date boundary in Asia/Ho_Chi_Minh",
+            "description": "Inclusive due-date boundary in the active tenant IANA timezone",
             "schema": { "format": "date", "type": "string" }
           },
           {
             "name": "to",
             "required": false,
             "in": "query",
-            "description": "Inclusive due-date boundary in Asia/Ho_Chi_Minh",
+            "description": "Inclusive due-date boundary in the active tenant IANA timezone",
             "schema": { "format": "date", "type": "string" }
           }
         ],
@@ -7071,14 +7071,14 @@
             "name": "from",
             "required": false,
             "in": "query",
-            "description": "Inclusive due-date boundary in Asia/Ho_Chi_Minh",
+            "description": "Inclusive due-date boundary in the active tenant IANA timezone",
             "schema": { "format": "date", "type": "string" }
           },
           {
             "name": "to",
             "required": false,
             "in": "query",
-            "description": "Inclusive due-date boundary in Asia/Ho_Chi_Minh",
+            "description": "Inclusive due-date boundary in the active tenant IANA timezone",
             "schema": { "format": "date", "type": "string" }
           }
         ],
@@ -7726,12 +7726,14 @@
             "name": "from",
             "required": false,
             "in": "query",
+            "description": "Inclusive received-day boundary in the active tenant IANA timezone",
             "schema": { "format": "date", "type": "string" }
           },
           {
             "name": "to",
             "required": false,
             "in": "query",
+            "description": "Inclusive received-day boundary in the active tenant IANA timezone",
             "schema": { "format": "date", "type": "string" }
           }
         ],
@@ -13069,6 +13071,10 @@
           "paymentStatus": { "type": "string" },
           "dueAt": { "type": "string", "format": "date-time" },
           "issuedAt": { "type": "string", "format": "date-time" },
+          "timezone": {
+            "type": "string",
+            "description": "Current tenant IANA timezone"
+          },
           "studentCode": { "type": "string" },
           "fullName": { "type": "string" },
           "classId": { "type": "string" },
@@ -13089,6 +13095,7 @@
           "paymentStatus",
           "dueAt",
           "issuedAt",
+          "timezone",
           "studentCode",
           "fullName",
           "classId",
@@ -13441,6 +13448,10 @@
           "paymentStatus": { "type": "string" },
           "dueAt": { "type": "string", "format": "date-time" },
           "issuedAt": { "type": "string", "format": "date-time" },
+          "timezone": {
+            "type": "string",
+            "description": "Current tenant IANA timezone"
+          },
           "studentCode": { "type": "string" },
           "fullName": { "type": "string" },
           "classId": { "type": "string" },
@@ -13467,6 +13478,7 @@
           "paymentStatus",
           "dueAt",
           "issuedAt",
+          "timezone",
           "studentCode",
           "fullName",
           "classId",
@@ -13664,6 +13676,10 @@
             "type": "string",
             "description": "Internal receipt, not a VAT invoice or bank verification"
           },
+          "timezone": {
+            "type": "string",
+            "description": "Current tenant IANA timezone"
+          },
           "studentCode": { "type": "string" },
           "fullName": { "type": "string" },
           "centreName": {
@@ -13693,6 +13709,7 @@
           "allocations",
           "invoiceBalances",
           "receiptNotice",
+          "timezone",
           "studentCode",
           "fullName",
           "centreName",

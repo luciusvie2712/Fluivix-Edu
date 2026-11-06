@@ -119,7 +119,7 @@ export function migrationCases() {
       await client.end();
     }
   });
-  it("upgrades legacy fee plans without invented terms and retains immutable issued prices with append-only tenant-bound future terms", async () => {
+  it("upgrades legacy fee plans through tenant-zone guard026 without rewriting immutable issued prices or append-only terms", async () => {
     const connectionString = process.env.DATABASE_URL;
     if (
       !connectionString ||
@@ -211,6 +211,39 @@ export function migrationCases() {
         2,
         `${year}-02-01`,
         actor,
+      ]);
+      const beforeTimezoneUpgrade = (
+        await client.query("SELECT * FROM fee_plan_terms ORDER BY id")
+      ).rows;
+      await client.query(
+        "CREATE TABLE tenants(id uuid PRIMARY KEY,timezone text NOT NULL)",
+      );
+      await client.query(
+        "INSERT INTO tenants VALUES($1,'Pacific/Kiritimati')",
+        [tenant],
+      );
+      await client.query(
+        readFileSync(
+          "infra/prisma/migrations/202611070026_financial_timezone/migration.sql",
+          "utf8",
+        ),
+      );
+      expect(
+        (await client.query("SELECT * FROM fee_plan_terms ORDER BY id")).rows,
+      ).toEqual(beforeTimezoneUpgrade);
+      expect(
+        (
+          await client.query(
+            "SELECT name,amount_vnd::text,valid_from::text FROM fee_plans WHERE id=$1",
+            [fee],
+          )
+        ).rows,
+      ).toEqual([
+        {
+          name: "Legacy issued fee",
+          amount_vnd: "9007199254740993",
+          valid_from: `${year}-01-01`,
+        },
       ]);
       expect(
         (

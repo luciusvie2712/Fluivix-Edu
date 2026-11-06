@@ -32,7 +32,8 @@ export class InvoiceQuery extends FinanceQuery {
   periodKey?: string;
   @ApiPropertyOptional({
     format: "date",
-    description: "Inclusive due-date boundary in Asia/Ho_Chi_Minh",
+    description:
+      "Inclusive due-date boundary in the active tenant IANA timezone",
   })
   @IsOptional()
   @Matches(/^\d{4}-\d{2}-\d{2}$/)
@@ -40,7 +41,8 @@ export class InvoiceQuery extends FinanceQuery {
   from?: string;
   @ApiPropertyOptional({
     format: "date",
-    description: "Inclusive due-date boundary in Asia/Ho_Chi_Minh",
+    description:
+      "Inclusive due-date boundary in the active tenant IANA timezone",
   })
   @IsOptional()
   @Matches(/^\d{4}-\d{2}-\d{2}$/)
@@ -48,6 +50,8 @@ export class InvoiceQuery extends FinanceQuery {
   to?: string;
 }
 export class InvoiceListView extends InvoiceView {
+  @ApiProperty({ description: "Current tenant IANA timezone" })
+  timezone!: string;
   @ApiProperty() studentCode!: string;
   @ApiProperty() fullName!: string;
   @ApiProperty() classId!: string;

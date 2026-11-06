@@ -6,6 +6,7 @@ import { receivables, feePlans } from "../lib/api";
 import { useSession } from "./providers";
 import { Field, SelectField } from "./operation-form";
 import { Button } from "./ui/button";
+import { useFinancialTime, zoneLabel } from "../lib/financial-time";
 type ClassOption = { id: string; code: string; name: string };
 const money = (value: string) =>
   new Intl.NumberFormat("vi-VN", {
@@ -60,6 +61,7 @@ export function ReceivablesWorkspace() {
   );
 }
 function Receivables() {
+  const financialTime = useFinancialTime();
   const { me } = useSession(),
     allowed = ["owner", "accountant"].includes(me?.activeRole ?? "");
   const scope = ["receivables", me?.id, me?.activeTenantId, me?.activeRole];
@@ -105,7 +107,7 @@ function Receivables() {
       <h1>Công nợ học phí</h1>
       <p className="muted">
         Số dư hiện tại từ chứng từ và khoản thu có hiệu lực. Bộ lọc ngày áp dụng
-        cho hạn đóng theo giờ Việt Nam, không phải thời điểm nhận tiền.
+        cho hạn đóng theo {financialTime.label}, không phải thời điểm nhận tiền.
       </p>
       <section className="operation-panel">
         <h2>Phạm vi công nợ</h2>
@@ -236,7 +238,7 @@ function Receivables() {
                 {new Date(data.asOf).toLocaleString("vi-VN", {
                   timeZone: data.timezone,
                 })}{" "}
-                · Giờ Việt Nam
+                · {zoneLabel(data.timezone)}
               </p>
               <Button
                 variant="outline"

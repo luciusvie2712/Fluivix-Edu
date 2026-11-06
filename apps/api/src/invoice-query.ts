@@ -1,6 +1,10 @@
 import { UnprocessableEntityException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
-import { financialDay, financialOffset } from "./finance-query";
+import {
+  financialDay,
+  financialOffset,
+  financialTimezone,
+} from "./finance-query";
 import { Paged } from "./http";
 import type { InvoiceQuery, InvoiceListView } from "./invoice.dto";
 
@@ -27,6 +31,7 @@ type RawInvoice = {
 export function invoiceValueScope(
   tenantId: string,
   q: InvoiceQuery,
+  timezone: string,
   subject?: string,
   onlyIds?: string[],
   now = new Date(),
@@ -46,9 +51,10 @@ export function invoiceValueScope(
         Prisma.sql`i.id IN (${Prisma.join(onlyIds.map((id) => Prisma.sql`${id}::uuid`))})`,
       );
   }
-  if (q.from) conditions.push(Prisma.sql`i.due_at>=${financialDay(q.from)}`);
+  if (q.from)
+    conditions.push(Prisma.sql`i.due_at>=${financialDay(q.from, timezone)}`);
   if (q.to) {
-    conditions.push(Prisma.sql`i.due_at<${financialDay(q.to, true)}`);
+    conditions.push(Prisma.sql`i.due_at<${financialDay(q.to, timezone, true)}`);
   }
   if (q.search) {
     const pattern = "%" + q.search.replace(/[\\%_]/g, "\\$&") + "%";
@@ -96,9 +102,11 @@ export async function invoiceRows(
   outstandingOnly = false,
 ): Promise<Paged<InvoiceListView>> {
   const offset = financialOffset(q);
+  const timezone = await financialTimezone(tx, tenantId);
   const { scoped, status } = invoiceValueScope(
     tenantId,
     q,
+    timezone,
     subject,
     onlyIds,
     now,
@@ -120,6 +128,7 @@ export async function invoiceRows(
   return new Paged(
     rows.map((r) => ({
       id: r.id,
+      timezone,
       studentId: r.student_id,
       invoiceNo: r.invoice_no,
       totalAmountVnd: r.total_amount_vnd,

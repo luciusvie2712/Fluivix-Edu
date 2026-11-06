@@ -1,0 +1,152 @@
+{
+  "date": "2026-11-07",
+  "module": "Financial tenant IANA timezone hardening",
+  "baseCommit": "15f4034d6d6f966404aa791391a28651d5c91e39",
+  "localVerdict": "PASS",
+  "remoteVerdict": "NOT_VERIFIED",
+  "releaseVerdict": "BLOCKED",
+  "checks": {
+    "runtime": "Node24.22.2/libuv1.52.1;pnpm10.34.7",
+    "prisma": "validate/generate PASS; forward026 applied in fresh test DB; schema and001..025 unchanged",
+    "lint": "PASS; final changed tooling/E2E checked again",
+    "format": "PASS",
+    "typecheck": "8 uncached tasks and final tools PASS",
+    "build": "8 uncached tasks and final source-frozen Web rebuild PASS",
+    "unit": 60,
+    "mobileJest": 15,
+    "integration": {
+      "passed": 81,
+      "skipped": 0,
+      "report": "docs/release/evidence/integration-2026-11-07-timezone-full.json"
+    },
+    "browser": {
+      "passed": 56,
+      "skipped": 0,
+      "flaky": 0,
+      "report": "docs/release/evidence/e2e-2026-11-07-timezone-full.json"
+    },
+    "actualMobileApiSmoke": "PASS; no signed/physical device claim",
+    "expoAlignment": "PASS",
+    "contract": {
+      "openapiSha256": "FE6C191D7F8DDFF9644765A595EDC0B80352334984ECDDC4533DF60E39DA3D15",
+      "operations": 158,
+      "clientSha256": "716D1D188A5616E3BFD892965B77DD2D45FB95996935B1C549ED4C67178B92E6",
+      "stable": true
+    },
+    "frozenOfflineInstall": "PASS",
+    "audit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    },
+    "localSecretScreen": "PASS; values withheld"
+  },
+  "implementation": [
+    "Invoice/payment/receivable day filters resolve actual tenant IANA calendar within repeatable snapshot; no user-supplied tenant zone override",
+    "GET metadata exposes current zone; Web uses actual centre clock plus UTC offset; original POST/idempotency response contracts and UTC ledger instants preserved",
+    "Due date becomes final actual instant of selected local day; payment skipped clock rejected before write lock/intent, repeated DST clock requires explicit occurrence and resets confirmation when changed",
+    "Calendar boundaries tested for Vietnam, NY23/25h, Kathmandu fractional offset, Lord Howe half-hour DST, Sao Paulo midnight gap, Apia skipped day, supported/extreme ISO boundaries",
+    "Scheduling wallClockUtc keeps strict gap/fold rejection while financial wallClockCandidates enumerates actual instants including seconds",
+    "Fee current terms/future validation use actual tenant date; forward026 SQL function resolves NEW.tenant_id timezone and retains every active/version/interval/monthly/course/actor/append-only guard",
+    "Migration upgrade test preserves existing fee-term rows and original issued-price values; real API/SQL tests in Pacific/Kiritimati and Etc/GMT+12",
+    "API negatives and actual browser tenant/context selection, DST payment confirmation, persisted actual receipt instant and invoice preview/issue/day filters"
+  ],
+  "visual": {
+    "widths": [
+      360,
+      768,
+      1024,
+      1440
+    ],
+    "states": [
+      "explicit payment fold selection",
+      "actual centre-zone receipt"
+    ],
+    "axe": "no violations on exercised surfaces",
+    "keyboard": "focused occurrence select and financial confirmation; reduced motion",
+    "manualReview": "all eight final images viewed",
+    "style": "existing framed-sheet seed1920114305/blue/Arial16 Vietnamese",
+    "tasteFindings": [],
+    "skills": [
+      {
+        "source": "taste-skill",
+        "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+        "installed": "design-taste-frontend",
+        "verifiedFiles": 38,
+        "status": "PASS"
+      },
+      {
+        "source": "ui-ux-pro-max-skill",
+        "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+        "installed": "ui-ux-pro-max",
+        "verifiedFiles": 73,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "accessible-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "micro-interaction",
+        "verifiedFiles": 4,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "60fps-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      }
+    ]
+  },
+  "compiledWebProof": {
+    "sourceSha256": {
+      "apps/web/components/receivables-workspace.tsx": "E60524D36CA8E5F7132EF2EA4A0D7DDF16C30943D4EB522EECCF975B163513AB",
+      "packages/contracts/src/calendar-time.ts": "D26B8DA3CC6E273C6848B09FC55718284511FB47F386C4F578F4AF8964199118",
+      "apps/web/components/payment-workspace.tsx": "5232C9B4B0035B5550D694758A1C4FDB0BC15DAFF364BACDC50D121614F2DF4E",
+      "apps/web/components/invoice-workspace.tsx": "2EA9A342F311E4D8B39103B3D5319B0F4AEDC9193B419E79668B10ACEE7E87F8",
+      "packages/contracts/src/schedule-time.ts": "298E2FE3B0EE5ABF7B90C2B3DCC76A051ADED5F61F354C280B972975FE063D2B",
+      "apps/web/lib/financial-time.ts": "508C59ACD0E56C72ADCFA80A553B3E46317EAB8DADD82565B9CE4311FD8852A2"
+    },
+    "sourceStableDuringBuild": true
+  },
+  "sourceHashes": {
+    "normalization": "CRLF to LF",
+    "sha256": {
+      "apps/web/lib/financial-time.ts": "508c59acd0e56c72adcfa80a553b3e46317eab8dadd82565b9ce4311fd8852a2",
+      "infra/prisma/migrations/202611070026_financial_timezone/migration.sql": "31f2dec2f0a5932d4754f9a1ed8bbb8649bcb937e78fff3888db3501c17feb30",
+      "packages/contracts/src/calendar-time.ts": "d26b8da3cc6e273c6848b09fc55718284511fb47f386c4f578f4af8964199118",
+      "tests/e2e/financial-timezone.spec.ts": "38beeb567feca4249d4a6a185695a138ea8eff40d51cd38ce6e5c09be06e699f",
+      "tests/unit/calendar-time.test.ts": "264f8c6ce8a6b6bdeeeb39c08b0044dc822bf120a5658bcc9f85c859a156404e",
+      "apps/api/openapi.json": "fe6c191d7f8ddff9644765a595edc0b80352334984ecddc4533df60e39da3d15",
+      "apps/api/src/finance-query.ts": "0c5a6dc5a376e333788fa44844a46bdc05bc1a7813e24bba05fc5a28f578d628",
+      "apps/api/src/finance.service.ts": "67e33890a5458b7bf7769729d38ae0096962c3b8f62f9193a2624e15b02ad9e6",
+      "apps/api/src/invoice-query.ts": "167ead06f1f1cec895856c705e5cd63e903f100e827213004065d4f2efa3d0f3",
+      "apps/api/src/invoice.dto.ts": "e6580fdfcf7a0d4457807517ca6824cf52dc948a6dd754f4f7ac24b7515ffbe7",
+      "apps/api/src/payment-query.ts": "4a03985602ecb2ce862ca86ba67f868320a03e725a700914f8f39584e6f2ff47",
+      "apps/api/src/payment.dto.ts": "0242ea66e3d02035b4f029b2985e7eeab2a0fbe24e4a5da0c68ea84111dc1b84",
+      "apps/web/components/invoice-workspace.tsx": "2ea9a342f311e4d8b39103b3d5319b0f4aedc9193b419e79668b10acee7e87f8",
+      "apps/web/components/payment-workspace.tsx": "5232c9b4b0035b5550d694758a1c4fdb0bc15daff364bacdc50d121614f2df4e",
+      "apps/web/components/receivables-workspace.tsx": "e60524d36ca8e5f7132ef2ea4a0d7ddf16c30943d4eb522eeccf975b163513ab",
+      "packages/api-client/src/schema.d.ts": "716d1d188a5616e3bfd892965b77dd2d45fb95996935b1c549ed4c67178b92e6",
+      "packages/contracts/src/index.ts": "1894ef0e851ed32b6b8bc27c8ac628f1c5a4940f6979e0386436b59761912cc6",
+      "packages/contracts/src/schedule-time.ts": "298e2fe3b0ee5abf7b90c2b3dcc76a051aded5f61f354c280b972975fe063d2b",
+      "tests/integration/migration-cases.ts": "39313a71b2a09c46991e27362f5808c5084c0ee4c31639092d1439009f9b3463",
+      "tests/integration/receivable-cases.ts": "050cf7761a42a5f98ffc5ad88aa9b300528713b18bf65e6edfc3788d26d5b77c",
+      "tooling/release-inventory.ts": "13ce61c66738c506c780d5c92b16aa527330cf0896e00a720bcda0b7ae0cf061"
+    }
+  },
+  "developmentDiagnostics": [
+    "Initial typecheck consumers had stale compiled contracts after new exports; built package before consumer checks. No type suppression.",
+    "Tools found missing required fixture graceUntil, nonexistent Prisma relation and tuple exactOptional typing; corrected fixtures to real schema/const tuple. No assertion or schema weakening."
+  ],
+  "limits": "Core finance calendar alignment only. W03/W16 dashboard/attendance/revenue, audit/privacy/notifications and remaining operational/M4 code still required. No historical-ledger balance sheet, actual bank, deployed staging, legal/UAT, signed physical devices or real push acceptance claim. Exact timezone-SHA CI pending."
+}

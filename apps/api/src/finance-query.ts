@@ -1,24 +1,33 @@
 import { UnprocessableEntityException } from "@nestjs/common";
-import { wallClockUtc } from "@fluivix/contracts";
+import { calendarDayRange } from "@fluivix/contracts";
+import type { Prisma } from "@prisma/client";
 
-// Financial day filters use the same Vietnam calendar boundaries on all reads.
+// Financial reads use the actual scoped tenant calendar in their transaction.
 // Unsupported extreme calendar boundaries are validation errors, never HTTP500.
-export function financialDay(day: string, nextDay = false): Date {
+export function financialDay(
+  day: string,
+  timezone: string,
+  nextDay = false,
+): Date {
   try {
-    if (nextDay) {
-      const next = new Date(day + "T00:00:00Z");
-      next.setUTCDate(next.getUTCDate() + 1);
-      day = next.toISOString().slice(0, 10);
-    }
-    if (!/^(?!0000)\d{4}-\d{2}-\d{2}$/.test(day))
-      throw new Error("UNSUPPORTED_CALENDAR_BOUNDARY");
-    return wallClockUtc(day, "00:00", "Asia/Ho_Chi_Minh");
+    const range = calendarDayRange(day, timezone);
+    return nextDay ? range.end : range.start;
   } catch (cause) {
     throw new UnprocessableEntityException(
       "Ngày lọc vượt phạm vi lịch được hỗ trợ.",
       { cause },
     );
   }
+}
+export async function financialTimezone(
+  tx: Prisma.TransactionClient,
+  tenantId: string,
+) {
+  const tenant = await tx.tenant.findUniqueOrThrow({
+    where: { id: tenantId },
+    select: { timezone: true },
+  });
+  return tenant.timezone;
 }
 export function financialOffset(q: { page: number; limit: number }): number {
   const offset = (q.page - 1) * q.limit;

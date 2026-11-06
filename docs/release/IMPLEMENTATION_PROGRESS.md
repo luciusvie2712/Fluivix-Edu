@@ -2,17 +2,7 @@
 
 ## Latest checkpoint — 2026-11-06
 
-Remote main08b18f1 has exact successful CI42247248730 (all30 steps) for
-Payment/W15. Receivables has a bounded local gate PASS: named owner/accountant finance read,
-shared valued-invoice SQL, one repeatable snapshot/asOf for totals and positive
-debt rows, exact numeric-string sums, filters and Web overview are implemented.
-Full79 integration/54 browser cases pass with no skips/flakiness, alongside49 unit,
-15 mobile Jest and the complete local matrix. Commit/exact-SHA CI remain pending.
-The explicit Vietnam calendar contract will next be aligned with configured IANA
-tenant zones before full P0 acceptance. No new migration
-is needed; applied001..025 are immutable. Current scope does not complete W16,
-dashboard/attendance/revenue/audit/privacy/notifications or external M4 gates.
-Overall release remains BLOCKED. Older checkpoints below are historical.
+Remote main15f4034 has exact successful CI42256020437 (all30 steps) for Receivables. Financial tenant IANA hardening has a fresh complete local gate PASS:81 integration/56 browser with0skip/flaky,60 unit,15 mobile, uncached builds/types and all remaining automated checks. Actual tenant calendars drive financial filters, current/future fee terms and Web entry/display. Forward026 updates only the SQL fee-term calendar guard; applied001..025 and historical values remain unchanged. Eight final fold/receipt images were inspected across four widths; axe/Taste/keyboard/reduced motion passed. Exact timezone-module commit/CI remains pending. W03/W16 dashboard/attendance/revenue, other operational P0/M4 work and external gates remain. Overall release BLOCKED. Older checkpoints below are historical.
 
 Remote main43e68bd has verified successful CI42241955407 for Invoice/W14,
 including the navigation synchronization repair. Failure42238649247 is retained
@@ -376,3 +366,10 @@ Owner availability clarification (2026-11-06): both service and SQL count only o
 - Explicit current-state/denominator labels, readonly/empty/forbidden/error/retry and out-of-range page recovery. Actual browser reversal and void update the report; invoice/payment mutations invalidate report cache. Calendar extremes/unsafe offsets return422; first bad subscribed-plan fixture was corrected using independent immutable plans/tenants and real sessions, without relaxing any constraint/assertion.
 - Full local matrix PASS:79 PostgreSQL/Redis integration,54 browser with0skip/flaky,49 unit,15 mobile Jest,8 uncached builds plus final Web rebuild, strict types/tools/lint/format, actual mobile API smoke, Expo alignment, stable158-operation contract, frozen offline install and0HIGH/0CRITICAL audit (1LOW/4MODERATE tracked). Source hashes/reports: evidence/receivables/verification.json. Applied001..025/schema unchanged. All three skill sources/five IDs applied/verified, four viewport overview/overdue axe/Taste, keyboard/reduced motion and all8 final images inspected. Previous-module regression visuals archived locally and original commit evidence restored.
 - Payment08b18f1 exact CI42247248730 SUCCESS (all30 steps) recorded. Receivables commit/exact-SHA CI remains NOT_VERIFIED. This gate covers explicit Vietnam financial calendar semantics; arbitrary configured IANA tenant-zone alignment is next, before full P0 acceptance. W16 dashboard/attendance/revenue and audit/privacy/notifications/business/M4 gaps remain. Overall release BLOCKED; no external approval or device claim.
+
+
+### Financial tenant IANA timezone local acceptance PASS (2026-11-07)
+- All financial date reads use actual scoped tenant zone within repeatable snapshots. GET metadata and Web centre clock/UTC offset agree; original POST/idempotency responses and UTC ledger values preserved. Due dates use actual last instant; skipped payment clocks rejected before intent, DST fold requires explicit actual occurrence and resets confirmation. Scheduling remains strict.
+- Calendar boundary evidence: Vietnam, NY23/25h, Kathmandu fractional offset, Lord Howe half-hour DST, Sao Paulo midnight gap, Apia skipped day and supported/extreme ISO limits. Fee current/future terms use tenant date in API and forward026 SQL guard. Applied001..025 unchanged; upgrade preserves previous fee terms/issued prices, with actor/append-only/monthly/course/interval guards retained.
+- Full local gate PASS:81 integration,56 browser0skip/flaky,60 unit,15 mobile Jest, actual mobile API smoke, Expo alignment,8 uncached builds/types and final frozen-source Web rebuild, tools/lint/format, stable158-operation contract, frozen offline install, audit0HIGH/0CRITICAL (1LOW/4MODERATE tracked). Additional final tooling/E2E lint/types pass. Reports/source hashes: evidence/financial-timezone/verification.json. All three skill sources/five IDs applied/verified; four viewport fold/receipt axe/Taste, reduced motion/focus and all8 images manually inspected. Prior regression screenshots archived locally and historical commit artifacts restored.
+- Receivables15f4034 exact CI42256020437 SUCCESS (all30 steps), proof committed with this slice. Timezone commit/exact-SHA CI pending; overall release BLOCKED. Dashboard/report/audit/privacy/notifications/operational/M4 work and external staging/legal/UAT/signed-device/real-push gates remain.

@@ -1,15 +1,10 @@
 # Security report — current assessment
 
-Receivables bounded local gate PASS: finance.report.read is granted only to owner/accountant;
-the core financial report follows the finance plan flag independently of optional
-analytics. Summary and positive issued-debt rows reuse the same tenant-scoped SQL
-and timestamp inside RepeatableRead. Confirmed allocations, zero/VOID exclusion,
-unallocated-money separation and sums beyond bigint are exercised in3 focused
-API cases. Shared financial date/offset validation now rejects unsupported extreme
-boundaries422 rather than500. Plan fixtures respect subscribed catalogue
-immutability; no constraint was relaxed. Full79 integration/54 browser and the
-remaining local matrix pass. Exact Receivables-SHA remote CI and configured IANA
-financial calendar alignment remain pending; overall release BLOCKED.
+Financial tenant IANA timezone local gate PASS (2026-11-07): invoice/payment/receivable reads resolve the scoped tenant zone in repeatable snapshots; UTC ledger values and original idempotency response contracts remain unchanged. Date input cannot choose another tenant calendar. DST fold payment clocks require explicit actual occurrence and renewed confirmation; skipped clocks fail before a write intent. Read displays include centre zone/UTC offset.
+
+Forward026 replaces only the fee-term calendar guard using NEW.tenant_id timezone. Existing active/version/interval/monthly/course/FK/actor/append-only constraints remain. Actual upgrade test preserves prior term and issued-price values. API/SQL tests exercise centre dates at both UTC extremes. Shared strict scheduling keeps gap/fold rejection. Applied001..025 are immutable.
+
+Full81 integration/56 browser0skip/flaky,60 unit,15 mobile and complete local gates pass. Four viewport axe/Taste/focus/reduced-motion and all8 final images inspected. Secret screen passes with values withheld; .env stays ignored/untracked. Audit0HIGH/0CRITICAL;1LOW/4MODERATE tracked. Receivables15f4034 exact CI42256020437 SUCCESS. Timezone exact-SHA CI pending; dashboard/report/audit/privacy/notifications and M4 work remain. Overall release BLOCKED; no external security, legal, staging, signed-device or real-push sign-off is claimed.
 
 Payment/W15 local gate PASS (2026-11-06): payment reads now use same-snapshot
 allocations/balances, tenant-scoped SQL filters and actual recorded actor names.

@@ -145,6 +145,15 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
 
 ## Explicit contract decisions
 
+- All financial date filters resolve the active tenant IANA timezone within
+  the same read snapshot. GET invoice/receipt/report metadata includes the current
+  zone; UTC ledger instants and original POST/idempotency responses are unchanged.
+  Calendar boundaries handle DST23/25h, fractional offsets, midnight gaps and
+  skipped days. Web payment folds require explicit occurrence selection; skipped
+  clocks are blocked before write intent. Centre clock displays include UTC offset.
+  Due-day entry uses the last actual instant of that local date. Forward026 changes
+  only the fee-term future guard to the scoped tenant zone, retaining immutable
+  existing terms/prices and all actor/interval/monthly/course constraints.
 - GET /finance/reports/receivables is owner/accountant finance.report.read,
   following the core finance flag independently of optional reports analytics.
   Totals and positive issued rows reuse the same valued-invoice scope, filters,
@@ -158,7 +167,7 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
   calendar boundaries or unsafe offsets422 rather than leaking internal500.
   Web report caches are invalidated after invoice/payment mutations; an empty
   page after a concurrent ledger change offers an explicit return to page1.
-- Payment list filters method/status/receipt or student search and Vietnam received
+- Payment list filters method/status/receipt or student search and tenant-calendar received
   dates through parameterized SQL with stable paging. Detail/allocations/balances
   and actual paged audit history use repeatable snapshots. GET /payments/{id}/history
   is staff finance.read only; verified Guardian reads redact internal references,
@@ -186,7 +195,7 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
   runs roll back. Bulk processing is the existing bounded transactional run API;
   no separate asynchronous job acceptance is claimed.
 - Invoice read lists use same-snapshot SQL balance/status with student/class/
-  fee/period/search and Vietnam inclusive due-date filters. Staff detail adds
+  fee/period/search and tenant-calendar inclusive due-date filters. Staff detail adds
   paged immutable items and redacted lifecycle history; Guardian detail remains
   active verified-child scoped and omits internal void reasons. New actor names
   are actual snapshots; old unknown names stay NULL.

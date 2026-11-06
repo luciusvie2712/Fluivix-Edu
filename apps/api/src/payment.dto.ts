@@ -12,18 +12,28 @@ export class PaymentQuery extends FinanceQuery {
   @IsOptional()
   @IsIn(["CONFIRMED", "REVERSED"])
   status?: string;
-  @ApiPropertyOptional({ format: "date" })
+  @ApiPropertyOptional({
+    format: "date",
+    description:
+      "Inclusive received-day boundary in the active tenant IANA timezone",
+  })
   @IsOptional()
   @Matches(/^(?!0000)\d{4}-\d{2}-\d{2}$/)
   @IsISO8601({ strict: true })
   from?: string;
-  @ApiPropertyOptional({ format: "date" })
+  @ApiPropertyOptional({
+    format: "date",
+    description:
+      "Inclusive received-day boundary in the active tenant IANA timezone",
+  })
   @IsOptional()
   @Matches(/^(?!0000)\d{4}-\d{2}-\d{2}$/)
   @IsISO8601({ strict: true })
   to?: string;
 }
 export class PaymentReceiptView extends PaymentView {
+  @ApiProperty({ description: "Current tenant IANA timezone" })
+  timezone!: string;
   @ApiProperty() studentCode!: string;
   @ApiProperty() fullName!: string;
   @ApiProperty({

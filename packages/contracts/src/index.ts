@@ -1,5 +1,6 @@
 import { z } from "zod";
-export { wallClockUtc } from "./schedule-time";
+export { wallClockUtc, wallClockCandidates } from "./schedule-time";
+export { calendarDayRange } from "./calendar-time";
 export { safeCsvCell } from "./csv";
 export { gradeError } from "./grade-validation";
 // JSON decimal strings preserve all PostgreSQL bigint VND values without IEEE754 rounding.

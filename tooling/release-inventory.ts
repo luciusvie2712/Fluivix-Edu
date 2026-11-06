@@ -43,7 +43,7 @@ const evidence: Record<string, string> = {
   CL: "apps/api/src/teaching.*; infra/prisma/migrations/202610240016_schedule_rules; tests/integration/teaching-cases.ts",
   AT: "apps/api/src/teaching.*; apps/mobile/app; tests/integration/teaching-cases.ts",
   GR: "apps/api/src/grades.ts; grade-history.dto.ts; migration022; apps/web/components/assessment-workspace.tsx; apps/mobile/app; tests/integration/assessment-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/assessments.spec.ts",
-  FI: "apps/api/src/finance.*; finance-query.ts; invoice.dto.ts; invoice-query.ts; payment.dto.ts; payment-query.ts; receivables.dto.ts; migrations023/024/025; apps/web/components/fee-plan-workspace.tsx; invoice-workspace.tsx; payment-workspace.tsx; receivables-workspace.tsx; apps/mobile/app; tests/integration/fee-plan-cases.ts; receivable-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/fee-plans.spec.ts; invoices.spec.ts; payments.spec.ts; receivables.spec.ts",
+  FI: "apps/api/src/finance.*; finance-query.ts; invoice.dto.ts; invoice-query.ts; payment.dto.ts; payment-query.ts; receivables.dto.ts; migrations023/024/025/026; packages/contracts/src/calendar-time.ts; schedule-time.ts; apps/web/components/fee-plan-workspace.tsx; invoice-workspace.tsx; payment-workspace.tsx; receivables-workspace.tsx; apps/mobile/app; tests/integration/fee-plan-cases.ts; receivable-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/fee-plans.spec.ts; invoices.spec.ts; payments.spec.ts; receivables.spec.ts; financial-timezone.spec.ts; tests/unit/calendar-time.test.ts",
   NT: "apps/api/src/notifications.ts; mobile-dashboard.ts; apps/worker/src/notifications.ts; tests/integration/teaching-cases.ts",
 };
 const acceptance: Record<string, [string, string]> = {
@@ -219,6 +219,15 @@ ${desired.map(({ method, path }) => `| ${method} | \`${path}\` | ${implemented.h
 
 ## Explicit contract decisions
 
+- All financial date filters resolve the active tenant IANA timezone within
+  the same read snapshot. GET invoice/receipt/report metadata includes the current
+  zone; UTC ledger instants and original POST/idempotency responses are unchanged.
+  Calendar boundaries handle DST23/25h, fractional offsets, midnight gaps and
+  skipped days. Web payment folds require explicit occurrence selection; skipped
+  clocks are blocked before write intent. Centre clock displays include UTC offset.
+  Due-day entry uses the last actual instant of that local date. Forward026 changes
+  only the fee-term future guard to the scoped tenant zone, retaining immutable
+  existing terms/prices and all actor/interval/monthly/course constraints.
 - GET /finance/reports/receivables is owner/accountant finance.report.read,
   following the core finance flag independently of optional reports analytics.
   Totals and positive issued rows reuse the same valued-invoice scope, filters,
@@ -232,7 +241,7 @@ ${desired.map(({ method, path }) => `| ${method} | \`${path}\` | ${implemented.h
   calendar boundaries or unsafe offsets422 rather than leaking internal500.
   Web report caches are invalidated after invoice/payment mutations; an empty
   page after a concurrent ledger change offers an explicit return to page1.
-- Payment list filters method/status/receipt or student search and Vietnam received
+- Payment list filters method/status/receipt or student search and tenant-calendar received
   dates through parameterized SQL with stable paging. Detail/allocations/balances
   and actual paged audit history use repeatable snapshots. GET /payments/{id}/history
   is staff finance.read only; verified Guardian reads redact internal references,
@@ -260,7 +269,7 @@ ${desired.map(({ method, path }) => `| ${method} | \`${path}\` | ${implemented.h
   runs roll back. Bulk processing is the existing bounded transactional run API;
   no separate asynchronous job acceptance is claimed.
 - Invoice read lists use same-snapshot SQL balance/status with student/class/
-  fee/period/search and Vietnam inclusive due-date filters. Staff detail adds
+  fee/period/search and tenant-calendar inclusive due-date filters. Staff detail adds
   paged immutable items and redacted lifecycle history; Guardian detail remains
   active verified-child scoped and omits internal void reasons. New actor names
   are actual snapshots; old unknown names stay NULL.
