@@ -2,7 +2,7 @@
   "name": "@fluivix/api",
   "private": true,
   "scripts": {
-    "dev": "tsx watch src/main.ts",
+    "dev": "node --watch --watch-path=src --watch-path=tsconfig.json ../../tooling/dev-api.mjs",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "start": "node dist/main.js"
