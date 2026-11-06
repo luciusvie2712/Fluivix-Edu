@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-06",
+  "sha": "dce1f75dc965c0af3d8e1119443f1d9dcaf97faa",
+  "runId": 42164545223,
+  "url": "https://github.com/luciusvie2712/Fluivix-Edu/actions/runs/42164545223",
+  "conclusion": "failure",
+  "failedStep": "pnpm test:mobile:api",
+  "observedError": {
+    "code": "MOBILE_API_SMOKE_FAILED",
+    "kind": "string"
+  },
+  "rootCause": "pnpm install ignored @embedded-postgres/linux-x64 postinstall; required libpq.so.5 and other module-local shared-library symlinks were absent",
+  "package": "@embedded-postgres/linux-x64@17.6.0-beta.15",
+  "tarballIntegrity": "sha512-f04/oSB35rc2SB4WbJLvUGeh8eNnnwbsIkLXLf86Bi43vOc7H07Znx1zROwpi08mGkUFmNrpAcXyL4Yu8YRgMw==",
+  "integrityMatchesLock": true,
+  "reviewedPostinstall": "scripts/hydrate-symlinks.js",
+  "reviewedLinks": 14,
+  "scope": "All source/target paths module-local native/lib; no traversal; all sources packaged",
+  "linuxReproduction": {
+    "image": "node:24-bookworm-slim",
+    "imageDigest": "sha256:01d566e8d94d8c619591d78652babfccd3c6992a3dffa9ed5ab39e11cf6c70e9",
+    "beforeExit": 127,
+    "beforeError": "libpq.so.5: cannot open shared object file",
+    "afterVersion": "PostgreSQL17.6"
+  },
+  "remediation": "Exact package/version in pnpm.onlyBuiltDependencies; all other unapproved scripts remain blocked",
+  "nativeLifecycleVerification": "PASS: non-root Linux initdb/init/start/status/fast-stop. No bundled psql; SQL acceptance stays with API/CI suites.",
+  "remoteVerification": "NOT_VERIFIED"
+}

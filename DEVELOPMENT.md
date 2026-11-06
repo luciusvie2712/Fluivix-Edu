@@ -216,3 +216,8 @@ Linux browser verification requires pnpm exec playwright install --with-deps
 chromium. The E2E runner sets CHROME_PATH to that installed Chromium for the
 audited Taste inspector, so it uses the same pinned browser as Playwright.
 An explicitly configured CHROME_PATH is honored. Windows retains installed Edge.
+
+The pinned @embedded-postgres/linux-x6417.6.0-beta.15 postinstall is explicitly
+allowed after integrity/script review: it creates required module-local libpq/ICU
+symlinks. Blocking it makes initdb exit127 on Linux. Do not approve all scripts
+or remove the mobile API smoke gate to avoid that startup failure.
