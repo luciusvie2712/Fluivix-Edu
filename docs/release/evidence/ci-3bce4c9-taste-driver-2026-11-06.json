@@ -1,0 +1,26 @@
+{
+  "sha": "3bce4c9b970cc21faf89527a6f4b6eac0b9d2db9",
+  "runId": 42166142485,
+  "url": "https://github.com/luciusvie2712/Fluivix-Edu/actions/runs/42166142485",
+  "conclusion": "failure",
+  "nativeMobileApi": "PASS on Linux after exact-version postinstall allowlist",
+  "e2e": {
+    "passed": 19,
+    "failed": 2,
+    "failures": [
+      "standalone Taste login browser process abort",
+      "standalone Taste platform-login browser process abort"
+    ]
+  },
+  "observedError": "Chrome exited early, code null; browser crash stack captured by standalone CDP launcher",
+  "remediation": "Use existing Playwright browser with unchanged audited probe/frame/layout/app/colourShare and judge/judgeLayout/judgeApp exports. Preserve upstream APP_SKIP app-mode exclusions. No allow-list finding waiver, timeout increase, vendor modification or OS/browser security flag added.",
+  "focusedLocal": "3/3 initial probes passed; enhanced negative enforcement passed for heavy-shadow (app), palette-purple (general), covered-text (frame)",
+  "widths": [
+    1440,
+    1024,
+    768,
+    390,
+    360
+  ],
+  "remoteVerification": "NOT_VERIFIED"
+}

@@ -1,11 +1,10 @@
 import { testOrigins } from "../../tooling/test-origins";
 import { expect, test } from "./fixtures";
 import { createRequire } from "node:module";
-import { execFileSync } from "node:child_process";
 import path from "node:path";
 import { mkdirSync } from "node:fs";
 import { totp } from "../../apps/api/src/platform.security";
-import { reviewTaste } from "../../tooling/taste-review";
+import { inspectTasteApp, reviewTaste } from "../../tooling/taste-review";
 const requireWeb = createRequire(path.resolve("apps/web/package.json"));
 const AxeBuilder = requireWeb("@axe-core/playwright")
   .default as typeof import("../../apps/web/node_modules/@axe-core/playwright").default;
@@ -282,18 +281,12 @@ for (const width of [360, 768, 1024, 1440])
       fullPage: true,
     });
   });
-test("Taste browser inspector reviews separate platform login", async () => {
-  execFileSync(
-    process.execPath,
-    [
-      ".agents/skills/design-taste-frontend/scripts/inspect.mjs",
-      "--app",
-      origin + "/platform/login",
-      "--out",
-      "docs/ai/evidence/platform/taste-login",
-      "--widths",
-      "1440,768,390",
-    ],
-    { env: process.env, stdio: "pipe", timeout: 25000 },
+test("Taste browser inspector reviews separate platform login", async ({
+  page,
+}) => {
+  await page.goto(origin + "/platform/login");
+  await inspectTasteApp(
+    page,
+    "docs/ai/evidence/platform/taste-login-playwright",
   );
 });

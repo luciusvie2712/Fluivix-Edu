@@ -213,9 +213,12 @@ Prisma may load the local .env, so set this variable explicitly if that file has
 a stale test connection. Do not reset the development database to run tests.
 
 Linux browser verification requires pnpm exec playwright install --with-deps
-chromium. The E2E runner sets CHROME_PATH to that installed Chromium for the
-audited Taste inspector, so it uses the same pinned browser as Playwright.
-An explicitly configured CHROME_PATH is honored. Windows retains installed Edge.
+chromium. Taste probes/rules run on the same Playwright-managed browser as the
+functional tests through tooling/taste-review.ts, with scroll/frame checks and
+five viewport screenshots. This avoids a separate native CDP launch, never exports
+credentials to another browser and retains every applicable audited app-mode rule.
+Negative browser probes verify general, app and occlusion failures are enforced.
+Windows uses the configured Edge channel.
 
 The pinned @embedded-postgres/linux-x6417.6.0-beta.15 postinstall is explicitly
 allowed after integrity/script review: it creates required module-local libpq/ICU

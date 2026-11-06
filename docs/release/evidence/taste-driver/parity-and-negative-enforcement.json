@@ -1,0 +1,60 @@
+{
+  "sourceSha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+  "parity": [
+    {
+      "surface": "tenant",
+      "sharedWidthFindingParity": "PASS",
+      "findings": [
+        [
+          "WARN",
+          "hero-void",
+          1440
+        ],
+        [
+          "WARN",
+          "unused-canvas",
+          1440
+        ]
+      ],
+      "additionalWidths": [
+        1024,
+        360
+      ]
+    },
+    {
+      "surface": "platform",
+      "sharedWidthFindingParity": "PASS",
+      "findings": [
+        [
+          "WARN",
+          "hero-void",
+          1440
+        ],
+        [
+          "WARN",
+          "unused-canvas",
+          1440
+        ]
+      ],
+      "additionalWidths": [
+        1024,
+        360
+      ]
+    }
+  ],
+  "negativeEnforcement": {
+    "shadow": [
+      "heavy-shadow"
+    ],
+    "palette": [
+      "palette-purple",
+      "contrast",
+      "heavy-shadow"
+    ],
+    "covered": [
+      "edge-text",
+      "covered-text"
+    ]
+  },
+  "warningDisposition": "hero-void and unused-canvas are unchanged desktop WARNs. The deliberately centered, bounded authentication form keeps labels/read order readable; do not add fabricated dashboard content to fill it."
+}

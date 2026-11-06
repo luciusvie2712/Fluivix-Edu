@@ -6,8 +6,6 @@ import path from "node:path";
 import { createServer } from "node:net";
 import { testPorts } from "./test-origins";
 import { requireTestRedis } from "./test-redis";
-import { chromium } from "@playwright/test";
-import { existsSync } from "node:fs";
 async function databasePort() {
   const server = createServer();
   await new Promise<void>((resolve, reject) => {
@@ -27,16 +25,6 @@ async function databasePort() {
 }
 async function run() {
   await requireTestRedis();
-  // Taste must use the same installed browser as Playwright on Linux CI,
-  // rather than a system Chrome launcher with first-run/update behavior.
-  if (process.platform !== "win32" && !process.env.CHROME_PATH) {
-    const executable = chromium.executablePath();
-    if (!existsSync(executable))
-      throw new Error(
-        "Install Playwright Chromium before running browser verification",
-      );
-    process.env.CHROME_PATH = executable;
-  }
   let postgres: EmbeddedPostgres | undefined;
   if (process.env.E2E_DATABASE_URL) {
     const supplied = new URL(process.env.E2E_DATABASE_URL);

@@ -2,7 +2,7 @@ import { testOrigins, mailLinkPattern } from "../../tooling/test-origins";
 import { expect, test } from "./fixtures";
 import { createRequire } from "node:module";
 import path from "node:path";
-import { execFileSync } from "node:child_process";
+import { inspectTasteApp } from "../../tooling/taste-review";
 import { mkdirSync, writeFileSync } from "node:fs";
 const requireWeb = createRequire(path.resolve("apps/web/package.json"));
 const AxeBuilder = requireWeb("@axe-core/playwright")
@@ -100,21 +100,33 @@ test("inline validation and missing invitation token never submit", async ({
     page.getByRole("button", { name: "Kích hoạt lời mời", exact: true }),
   ).toBeDisabled();
 });
-test("Taste app inspection of the live login page", async () => {
-  test.setTimeout(60000);
-  execFileSync(
-    process.execPath,
-    [
-      ".agents/skills/design-taste-frontend/scripts/inspect.mjs",
-      "--app",
-      testOrigins.web + "/login",
-      "--out",
-      "docs/ai/evidence/taste-login",
-      "--widths",
-      "1440,768,390",
-    ],
-    { stdio: "pipe", timeout: 55000 },
+test("Taste app inspection of the live login page", async ({ page }) => {
+  await page.goto(testOrigins.web + "/login");
+  await inspectTasteApp(page, "docs/ai/evidence/taste-login-playwright");
+});
+test("Taste inspection retains failure enforcement on a real malformed surface", async ({
+  page,
+}) => {
+  await page.goto(testOrigins.web + "/login");
+  await page.addStyleTag({
+    content:
+      ".auth-panel { box-shadow: 0 24px 80px rgba(0,0,0,.8) !important; }",
+  });
+  await expect(
+    inspectTasteApp(page, ".cache/taste-negative-probe/shadow", [1440]),
+  ).rejects.toThrow(/heavy-shadow/);
+  await page.addStyleTag({
+    content: "body, .auth-panel, button { background: #8b5cf6 !important; }",
+  });
+  await expect(
+    inspectTasteApp(page, ".cache/taste-negative-probe/palette", [1440]),
+  ).rejects.toThrow(/palette-purple/);
+  await page.setContent(
+    '<h1 style="font:64px sans-serif">Covered interface heading</h1><div style="position:fixed;inset:0;background:white;z-index:1000">Synthetic occlusion probe</div>',
   );
+  await expect(
+    inspectTasteApp(page, ".cache/taste-negative-probe/covered", [1440]),
+  ).rejects.toThrow(/covered-text/);
 });
 test("forgot password sends through real worker and Mailpit, reset link is one-use", async ({
   page,
