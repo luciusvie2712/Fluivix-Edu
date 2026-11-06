@@ -488,6 +488,46 @@ export const feePlans = {
       api.PATCH("/api/v1/fee-plans/{id}", { params: { path: { id } }, body }),
     ),
 };
+export const payments = {
+  list: (
+    query: NonNullable<paths["/api/v1/payments"]["get"]["parameters"]["query"]>,
+    signal?: AbortSignal,
+  ) =>
+    unwrap(
+      api.GET("/api/v1/payments", {
+        params: { query },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  detail: (id: string, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/payments/{id}", {
+        params: { path: { id } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  history: (id: string, page: number, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/payments/{id}/history", {
+        params: { path: { id }, query: { page, limit: 20 } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  create: (body: components["schemas"]["PaymentInput"], key: string) =>
+    unwrap(
+      api.POST("/api/v1/payments", {
+        body,
+        params: { header: { "idempotency-key": key } },
+      }),
+    ),
+  reverse: (id: string, body: components["schemas"]["FinanceReason"]) =>
+    unwrap(
+      api.POST("/api/v1/payments/{id}/reverse", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+};
 export const invoices = {
   list: (
     query: NonNullable<paths["/api/v1/invoices"]["get"]["parameters"]["query"]>,

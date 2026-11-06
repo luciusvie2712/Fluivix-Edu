@@ -168,6 +168,335 @@ export function feePlanCases(
         },
       });
     });
+    it("payment receipts preserve exact multi-invoice installments, original allocation history and actual actor snapshots", async () => {
+      const fee1 = await create("Receipt first"),
+        fee2 = await create("Receipt second");
+      const first = await api(
+        "/invoices/generate-run",
+        "POST",
+        runInput(fee1.id),
+        tokens.accountant,
+        randomUUID(),
+      );
+      const second = await api(
+        "/invoices/generate-run",
+        "POST",
+        runInput(fee2.id),
+        tokens.accountant,
+        randomUUID(),
+      );
+      expect(first.status).toBe(201);
+      expect(second.status).toBe(201);
+      const invoice1 = first.body.data.invoices[0].id,
+        invoice2 = second.body.data.invoices[0].id;
+      const input = {
+        studentId: student,
+        method: "BANK_TRANSFER",
+        receivedAmountVnd: "600000",
+        receivedAt: jan + "-15T17:00:00Z",
+        externalReference: "Receipt-private-reference",
+        allocations: [
+          { invoiceId: invoice1, amountVnd: "200000" },
+          { invoiceId: invoice2, amountVnd: "300000" },
+        ],
+      };
+      const key = randomUUID(),
+        paid = await api("/payments", "POST", input, tokens.accountant, key);
+      expect(paid.status).toBe(201);
+      expect(
+        (await api("/payments", "POST", input, tokens.accountant, key)).body
+          .data,
+      ).toEqual(paid.body.data);
+      expect(
+        (
+          await api(
+            "/payments",
+            "POST",
+            { ...input, receivedAmountVnd: "700000" },
+            tokens.accountant,
+            key,
+          )
+        ).status,
+      ).toBe(409);
+      const id = paid.body.data.id,
+        original = await api(`/payments/${id}`);
+      expect(original.status).toBe(200);
+      expect(original.body.data).toMatchObject({
+        studentCode: "FEE-STUDENT",
+        receivedBy: ids.accountant,
+        receiverDisplayName: "Synthetic fee accountant",
+        externalReference: input.externalReference,
+        status: "CONFIRMED",
+        receivedAmountVnd: "600000",
+        unallocatedAmountVnd: "100000",
+      });
+      expect(
+        original.body.data.invoiceBalances
+          .map((i: { balanceVnd: string }) => i.balanceVnd)
+          .sort(),
+      ).toEqual(["700000", "800000"]);
+      await getDb().user.update({
+        where: { id: ids.accountant },
+        data: { displayName: "Renamed accountant after receipt" },
+      });
+      expect((await api(`/payments/${id}`)).body.data.receiverDisplayName).toBe(
+        "Synthetic fee accountant",
+      );
+      await getDb().user.update({
+        where: { id: ids.accountant },
+        data: { displayName: "Synthetic fee accountant" },
+      });
+      expect(
+        (await api(`/payments/${id}/history?limit=1`)).body.data[0]
+          .actorDisplayName,
+      ).toBe("Synthetic fee accountant");
+      const remaining = {
+        ...input,
+        method: "CASH",
+        receivedAmountVnd: "1500000",
+        allocations: [
+          { invoiceId: invoice1, amountVnd: "800000" },
+          { invoiceId: invoice2, amountVnd: "700000" },
+        ],
+      };
+      expect(
+        (
+          await api(
+            "/payments",
+            "POST",
+            remaining,
+            tokens.accountant,
+            randomUUID(),
+          )
+        ).status,
+      ).toBe(201);
+      expect(
+        (await api(`/payments/${id}`)).body.data.invoiceBalances.every(
+          (i: { balanceVnd: string }) => i.balanceVnd === "0",
+        ),
+      ).toBe(true);
+      expect(
+        (
+          await api(
+            `/payments/${id}/reverse`,
+            "POST",
+            { reason: "            " },
+            tokens.accountant,
+          )
+        ).status,
+      ).toBe(422);
+      const reason = "Verified full reversal of the initial partial payment";
+      expect(
+        (
+          await api(
+            `/payments/${id}/reverse`,
+            "POST",
+            { reason },
+            tokens.accountant,
+          )
+        ).status,
+      ).toBe(201);
+      const reversed = (await api(`/payments/${id}`)).body.data;
+      expect(reversed).toMatchObject({
+        status: "REVERSED",
+        reversalReason: reason,
+        reversalActorName: "Synthetic fee accountant",
+      });
+      expect(
+        reversed.invoiceBalances
+          .map((i: { balanceVnd: string }) => i.balanceVnd)
+          .sort(),
+      ).toEqual(["200000", "300000"]);
+      expect(reversed.allocations).toEqual(original.body.data.allocations);
+      expect(
+        (await api(`/payments/${id}/history?limit=1&page=1`)).body.page,
+      ).toMatchObject({ total: 2, totalPages: 2 });
+      expect(
+        (await api(`/payments/${id}/history?limit=1&page=2`)).body.data[0]
+          .action,
+      ).toBe("payment.recorded");
+      expect(
+        (
+          await api(
+            `/payments/${id}/reverse`,
+            "POST",
+            { reason },
+            tokens.accountant,
+          )
+        ).status,
+      ).toBe(409);
+      expect(
+        await getDb().paymentAllocation.count({ where: { paymentId: id } }),
+      ).toBe(2);
+      expect(
+        (
+          await api(
+            `/payments?search=FEE-STUDENT&status=REVERSED&method=BANK_TRANSFER&from=${jan}-16&to=${jan}-16`,
+          )
+        ).body.data.map((p: { id: string }) => p.id),
+      ).toContain(id);
+      expect(
+        (
+          await api(
+            `/payments?search=${original.body.data.receiptNo}&to=${jan}-15`,
+          )
+        ).body.data,
+      ).toEqual([]);
+      expect((await api(`/payments?from=${jan}-16&to=${jan}-15`)).status).toBe(
+        422,
+      );
+    });
+    it("payment reads redact internal references and reversal actors for verified guardians and deny foreign or teaching history", async () => {
+      const db = getDb();
+      const p = await db.payment.create({
+        data: {
+          tenantId: tenant,
+          studentId: student,
+          receiptNo: "LEGACY-" + randomUUID(),
+          method: "CASH",
+          receivedAmountVnd: 9007199254740993n,
+          receivedAt: new Date(jan + "-15T17:00:00Z"),
+          receivedBy: ids.owner,
+          externalReference: "Private legacy reference",
+        },
+      });
+      const staff = await api(`/payments/${p.id}`);
+      expect(staff.body.data.receivedAmountVnd).toBe("9007199254740993");
+      expect(staff.body.data.receiverDisplayName).toBeNull();
+      expect(
+        (await api(`/payments/${p.id}`, "GET", undefined, tokens.guardian))
+          .status,
+      ).toBe(404);
+      const link = await db.guardianLink.create({
+        data: {
+          tenantId: tenant,
+          studentId: student,
+          guardianUserId: ids.guardian,
+          status: "ACTIVE",
+          verifiedBy: ids.owner,
+          verifiedAt: new Date(),
+          verificationMethod: "Synthetic receipt scope verification",
+        },
+      });
+      const guardian = await api(
+        `/payments/${p.id}`,
+        "GET",
+        undefined,
+        tokens.guardian,
+      );
+      expect(guardian.status).toBe(200);
+      for (const field of [
+        "externalReference",
+        "receivedBy",
+        "receiverDisplayName",
+        "reversalReason",
+        "reversalActorName",
+        "reversedAt",
+      ])
+        expect(guardian.body.data[field]).toBeNull();
+      expect(
+        (
+          await api(
+            `/payments/${p.id}/history`,
+            "GET",
+            undefined,
+            tokens.guardian,
+          )
+        ).status,
+      ).toBe(403);
+      expect(
+        (
+          await api(
+            `/mobile/guardian/students/${student}/payments?studentId=${randomUUID()}`,
+            "GET",
+            undefined,
+            tokens.guardian,
+          )
+        ).body.data.map((r: { id: string }) => r.id),
+      ).toContain(p.id);
+      await db.guardianLink.update({
+        where: { id: link.id },
+        data: { status: "REVOKED" },
+      });
+      expect(
+        (await api(`/payments/${p.id}`, "GET", undefined, tokens.guardian))
+          .status,
+      ).toBe(404);
+      for (const role of ["teacher", "academic_staff", "student"] as const) {
+        expect(
+          (await api(`/payments/${p.id}`, "GET", undefined, tokens[role]))
+            .status,
+        ).toBe(403);
+        expect(
+          (
+            await api(
+              `/payments/${p.id}/history`,
+              "GET",
+              undefined,
+              tokens[role],
+            )
+          ).status,
+        ).toBe(403);
+      }
+      expect((await api(`/payments/${randomUUID()}`)).status).toBe(404);
+      expect((await api(`/payments/${randomUUID()}/history`)).status).toBe(404);
+      const foreignActor = await db.user.create({
+        data: {
+          email: randomUUID() + "@example.test",
+          displayName: "Foreign receipt actor",
+          status: "ACTIVE",
+        },
+      });
+      await db.membership.create({
+        data: {
+          tenantId: foreign,
+          userId: foreignActor.id,
+          status: "ACTIVE",
+          roles: { create: { role: "owner" } },
+        },
+      });
+      const foreignStudent = await db.student.create({
+        data: {
+          tenantId: foreign,
+          studentCode: "FOREIGN-RECEIPT",
+          fullName: "Foreign receipt learner",
+        },
+      });
+      const foreignReceipt = await db.payment.create({
+        data: {
+          tenantId: foreign,
+          studentId: foreignStudent.id,
+          receiptNo: "FOREIGN-RECEIPT",
+          method: "CASH",
+          receivedAmountVnd: 1n,
+          receivedAt: new Date(),
+          receivedBy: foreignActor.id,
+        },
+      });
+      expect((await api(`/payments/${foreignReceipt.id}`)).status).toBe(404);
+      expect((await api(`/payments/${foreignReceipt.id}/history`)).status).toBe(
+        404,
+      );
+      expect((await api(`/payments?search=FOREIGN-RECEIPT`)).body.data).toEqual(
+        [],
+      );
+      expect(
+        (await api(`/payments/${p.id}`, "GET", undefined, tokens.manager))
+          .status,
+      ).toBe(200);
+      expect(
+        (
+          await api(
+            `/payments/${p.id}/reverse`,
+            "POST",
+            { reason: "Manager must not reverse a payment" },
+            tokens.manager,
+          )
+        ).status,
+      ).toBe(403);
+      expect((await api("/payments?method=UNSAFE")).status).toBe(422);
+      expect((await api("/payments?search=%25")).body.data).toEqual([]);
+    });
     it("invoice administration previews exact intersected eligibility without billing writes and rejects a changed preview atomically", async () => {
       const db = getDb(),
         scopedClass = await db.educationClass.create({

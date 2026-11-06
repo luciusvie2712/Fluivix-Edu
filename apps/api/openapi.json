@@ -7571,6 +7571,30 @@
             "required": false,
             "in": "query",
             "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "method",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string", "enum": ["CASH", "BANK_TRANSFER"] }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string", "enum": ["CONFIRMED", "REVERSED"] }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
           }
         ],
         "responses": {
@@ -7578,7 +7602,9 @@
             "description": "",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/PaymentsResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentReceiptListResponse"
+                }
               }
             }
           },
@@ -7753,7 +7779,107 @@
             "description": "",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/PaymentResponse" }
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentReceiptResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "429": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance"]
+      }
+    },
+    "/api/v1/payments/{id}/history": {
+      "get": {
+        "operationId": "FinanceController_paymentHistory",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinancialHistoryResponse"
+                }
               }
             }
           },
@@ -13336,6 +13462,81 @@
         },
         "required": ["data", "meta"]
       },
+      "PaymentReceiptView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "studentId": { "type": "string" },
+          "receiptNo": { "type": "string" },
+          "method": { "type": "string" },
+          "receivedAmountVnd": { "type": "string" },
+          "unallocatedAmountVnd": { "type": "string" },
+          "receivedAt": { "type": "string", "format": "date-time" },
+          "status": { "type": "string" },
+          "allocations": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AllocationInput" }
+          },
+          "invoiceBalances": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/InvoiceView" }
+          },
+          "receiptNotice": {
+            "type": "string",
+            "description": "Internal receipt, not a VAT invoice or bank verification"
+          },
+          "studentCode": { "type": "string" },
+          "fullName": { "type": "string" },
+          "centreName": {
+            "type": "string",
+            "description": "Current centre name, not an issue-time snapshot"
+          },
+          "externalReference": { "type": "string", "nullable": true },
+          "receivedBy": { "type": "string", "nullable": true },
+          "receiverDisplayName": {
+            "type": "string",
+            "nullable": true,
+            "description": "Actual recorded actor snapshot; unknown legacy names and Guardian reads are null"
+          },
+          "reversalReason": { "type": "string", "nullable": true },
+          "reversalActorName": { "type": "string", "nullable": true },
+          "reversedAt": { "type": "string", "nullable": true }
+        },
+        "required": [
+          "id",
+          "studentId",
+          "receiptNo",
+          "method",
+          "receivedAmountVnd",
+          "unallocatedAmountVnd",
+          "receivedAt",
+          "status",
+          "allocations",
+          "invoiceBalances",
+          "receiptNotice",
+          "studentCode",
+          "fullName",
+          "centreName",
+          "externalReference",
+          "receivedBy",
+          "receiverDisplayName",
+          "reversalReason",
+          "reversalActorName",
+          "reversedAt"
+        ]
+      },
+      "PaymentReceiptListResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PaymentReceiptView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
       "PaymentsResponse": {
         "type": "object",
         "properties": {
@@ -13347,6 +13548,14 @@
           "meta": { "$ref": "#/components/schemas/MetaDto" }
         },
         "required": ["data", "page", "meta"]
+      },
+      "PaymentReceiptResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/PaymentReceiptView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
       },
       "NotificationView": {
         "type": "object",

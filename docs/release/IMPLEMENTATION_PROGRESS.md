@@ -2,7 +2,15 @@
 
 ## Latest checkpoint — 2026-11-06
 
-Remote main ea8fb17 has verified successful CI42232459218. Staff/W17,
+Remote main43e68bd has verified successful CI42241955407 for Invoice/W14,
+including the navigation synchronization repair. Failure42238649247 is retained
+separately; the repair has fresh44 browser/74 integration and the full local gate.
+Payment/W15 local gate PASS: exact paged receipt reads/history, Web cash/bank
+multi-invoice installments, internal print and confirmed reversal are implemented.
+Full76 integration and49 browser cases pass, including committed-response loss,
+unallocated money, actual role restrictions, four viewport axe/Taste and
+keyboard/reduced motion. Final8 screen images and print image reviewed. All other
+local gates pass; Payment commit/remote CI remain pending. Staff/W17,
 Guardian/W06, Teacher/W07, Assessment/W12 and Fee plans/W13 are technically
 verified locally and on exact-SHA CI. Fee-plan evidence uses Node24.22.2:
 71 integration,40 browser,49 unit,15 mobile, uncached builds/types and stable
@@ -15,7 +23,7 @@ route completed. The follow-up asserts the actual detail URL before capturing it
 no timeout/retry/assertion was relaxed. Full repair regression PASS:44 browser,
 74 integration,49 unit,15 mobile Jest, uncached build/types and remaining local
 gates. Production sources and applied migrations are unchanged by the repair.
-Exact-SHA successful remote CI remains pending.
+Exact-SHA successful remote CI42241955407 is now observed for43e68bd.
 Remaining Payment/Receivables,
 Dashboard/Reports/Audit, Privacy/Notifications and
 M4 work are incomplete. Overall release BLOCKED. Older dated sections below retain
@@ -341,3 +349,11 @@ Owner availability clarification (2026-11-06): both service and SQL count only o
 - CI42238649247 at416378f passed43/44 browser cases; its artifact proves the visual scenario captured the directory URL before the client-side detail route completed. Added an assertion of the actual detail URL before capturing it; no timeout/retry/assertion relaxation and no production source change. Failure evidence retained in evidence/ci-416378f-failure-2026-11-06.json.
 - Fresh full verification PASS:44 E2E (0skip/flaky),74 PostgreSQL/Redis integration,49 unit,15 mobile Jest,8 uncached builds,8 uncached typecheck tasks plus tools, lint/format, actual mobile API smoke, Expo alignment, stable156-operation generated contract, frozen offline install and0HIGH/0CRITICAL audit. Source hash and reports in evidence/invoices/ci-repair-verification.json. Initial local setup/command diagnostics are recorded there.
 - Repair commit/exact-SHA remote CI NOT_VERIFIED until observed. Payment/W15 work is preserved separately. All unfinished P0 and external M4 gates remain; release BLOCKED.
+
+
+### Payment/W15 local acceptance gate PASS (2026-11-06)
+- Operational cash/bank entry, paused-student capable real picker, exact VND/time/reference and multi-invoice same-student installments, separately tracked unallocated credit, confirmation and actual committed outcomes. Invalid allocation displays an unknown total rather than a false zero. Ambiguous payment response locks input and reuses the same key/body; a truly committed201 lost on the network creates one receipt. An uncertain reversal resolves by a fresh status read, without a second POST.
+- Real paged receipt list/filter/detail/current balances/audit history, immutable original allocations and reasoned full reversal. Recorded receiver names remain historical audit snapshots; missing legacy names stay unknown. Current centre/student names are labeled. Verified Guardian views redact internal references/receiver/reversal fields and cannot open staff history; actual manager read-only and teaching-role denial are tested. Forward025 adds only the list index; applied001..024 and financial invariants stay intact.
+- Full local matrix PASS:76 PostgreSQL/Redis integration,49 browser E2E with0skip/flaky,49 unit,15 mobile Jest,8 uncached builds plus final Web rebuild, strict types/tools/lint/format, actual mobile API smoke, Expo alignment, stable157-operation contract, frozen offline install and0HIGH/0CRITICAL audit (1LOW/4MODERATE tracked). Source hashes and final reports: evidence/payments/verification.json. Earlier full browser output is retained as superseded because its bundle preceded the final feedback edit; clean rebuild/full rerun supplies acceptance evidence.
+- All three skill sources/five IDs verified/applied. Four viewport axe/Taste/keyboard/reduced motion, eight final screen images and internal794x1123 print image inspected. Print uses actual confirmed receipt data and hides navigation/mutations; no VAT, bank, physical printer, device or legal approval claim. Previous-module regression visuals archived locally and original commit evidence restored.
+- Payment commit/exact-SHA CI remains NOT_VERIFIED until observed. Invoice43e68bd exact CI42241955407 SUCCESS proof is recorded. Receivables, remaining reports/dashboard/audit/privacy/notifications/business/M4 work and external release gates remain; overall release BLOCKED.

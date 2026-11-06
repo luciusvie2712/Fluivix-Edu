@@ -1,6 +1,6 @@
 # API contract coverage
 
-Generated inventory: 156 actual OpenAPI operations; 134
+Generated inventory: 157 actual OpenAPI operations; 134
 method/path intents in the master specification (includes non-P0 design intent).
 Path parameter names are normalized when comparing. MATCH means route metadata
 exists; it does not verify DTOs, permission, object scope or runtime behavior.
@@ -145,6 +145,23 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
 
 ## Explicit contract decisions
 
+- Payment list filters method/status/receipt or student search and Vietnam received
+  dates through parameterized SQL with stable paging. Detail/allocations/balances
+  and actual paged audit history use repeatable snapshots. GET /payments/{id}/history
+  is staff finance.read only; verified Guardian reads redact internal references,
+  receiver IDs/names and reversal details. Unknown legacy actor names remain NULL.
+- Existing POST payment/reversal contracts and stored idempotency responses remain
+  compatible. Receipt GET adds current centre/student labels and actual recorded
+  receiver-name snapshots; this does not fabricate issue-time identity snapshots.
+  Reversed documents retain their original allocations and clearly lose effect.
+  Forward025 adds only the tenant/received-time pagination index; existing actor
+  FKs, append-only records, exact-money and allocation constraints remain.
+- Payment Web confirms actual cash/bank receipt, exact integer same-student
+  allocations and optional unallocated credit. Ambiguous network failure locks
+  the payment intent and reuses its owned key/body; an uncertain reversal resolves
+  through a fresh status/history read rather than an automatic second POST.
+  Printing uses server receipt data and hides navigation/mutation forms; it is an
+  internal receipt, not a VAT invoice or bank-verification/legal approval claim.
 - Invoice preview uses the shared effective-fee/period/enrollment intersection,
   exact integers and paged actual students. POST /invoices/preview-run writes
   only its bounded operation counter, never invoices/audit/outbox/idempotency.

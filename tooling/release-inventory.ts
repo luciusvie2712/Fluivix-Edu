@@ -43,7 +43,7 @@ const evidence: Record<string, string> = {
   CL: "apps/api/src/teaching.*; infra/prisma/migrations/202610240016_schedule_rules; tests/integration/teaching-cases.ts",
   AT: "apps/api/src/teaching.*; apps/mobile/app; tests/integration/teaching-cases.ts",
   GR: "apps/api/src/grades.ts; grade-history.dto.ts; migration022; apps/web/components/assessment-workspace.tsx; apps/mobile/app; tests/integration/assessment-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/assessments.spec.ts",
-  FI: "apps/api/src/finance.*; invoice.dto.ts; invoice-query.ts; migrations023/024; apps/web/components/fee-plan-workspace.tsx; invoice-workspace.tsx; apps/mobile/app; tests/integration/fee-plan-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/fee-plans.spec.ts; invoices.spec.ts",
+  FI: "apps/api/src/finance.*; invoice.dto.ts; invoice-query.ts; payment.dto.ts; payment-query.ts; migrations023/024/025; apps/web/components/fee-plan-workspace.tsx; invoice-workspace.tsx; payment-workspace.tsx; apps/mobile/app; tests/integration/fee-plan-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/fee-plans.spec.ts; invoices.spec.ts; payments.spec.ts",
   NT: "apps/api/src/notifications.ts; mobile-dashboard.ts; apps/worker/src/notifications.ts; tests/integration/teaching-cases.ts",
 };
 const acceptance: Record<string, [string, string]> = {
@@ -109,11 +109,11 @@ const acceptance: Record<string, [string, string]> = {
   ],
   "TC-016": [
     "PARTIAL",
-    "integration same-key payment race/replay; Web payment workflow absent",
+    "integration same-key payment race/replay and unallocated balance; verified operational multi-invoice Web, truly committed lost-response retry and internal print receipt; physical business acceptance pending",
   ],
   "TC-017": [
     "PARTIAL",
-    "integration over-allocation rollback; operational Web flow absent",
+    "integration over-allocation rollback; verified Web exact allocation validation, partial/final receipt and reasoned reversal; physical business acceptance pending",
   ],
   "TC-018": [
     "PARTIAL",
@@ -219,6 +219,23 @@ ${desired.map(({ method, path }) => `| ${method} | \`${path}\` | ${implemented.h
 
 ## Explicit contract decisions
 
+- Payment list filters method/status/receipt or student search and Vietnam received
+  dates through parameterized SQL with stable paging. Detail/allocations/balances
+  and actual paged audit history use repeatable snapshots. GET /payments/{id}/history
+  is staff finance.read only; verified Guardian reads redact internal references,
+  receiver IDs/names and reversal details. Unknown legacy actor names remain NULL.
+- Existing POST payment/reversal contracts and stored idempotency responses remain
+  compatible. Receipt GET adds current centre/student labels and actual recorded
+  receiver-name snapshots; this does not fabricate issue-time identity snapshots.
+  Reversed documents retain their original allocations and clearly lose effect.
+  Forward025 adds only the tenant/received-time pagination index; existing actor
+  FKs, append-only records, exact-money and allocation constraints remain.
+- Payment Web confirms actual cash/bank receipt, exact integer same-student
+  allocations and optional unallocated credit. Ambiguous network failure locks
+  the payment intent and reuses its owned key/body; an uncertain reversal resolves
+  through a fresh status/history read rather than an automatic second POST.
+  Printing uses server receipt data and hides navigation/mutation forms; it is an
+  internal receipt, not a VAT invoice or bank-verification/legal approval claim.
 - Invoice preview uses the shared effective-fee/period/enrollment intersection,
   exact integers and paged actual students. POST /invoices/preview-run writes
   only its bounded operation counter, never invoices/audit/outbox/idempotency.

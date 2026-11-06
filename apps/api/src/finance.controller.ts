@@ -45,6 +45,11 @@ import {
 import { FinanceService } from "./finance.service";
 import { ListDto } from "./auth.dto";
 import {
+  PaymentQuery,
+  PaymentReceiptResponse,
+  PaymentReceiptListResponse,
+} from "./payment.dto";
+import {
   InvoiceQuery,
   InvoiceListResponse,
   InvoiceDetailResponse,
@@ -207,8 +212,8 @@ export class FinanceController {
   }
   @Get("payments")
   @TenantPermission("finance.read")
-  @ApiOkResponse({ type: PaymentsResponse })
-  payments(@Req() r: ApiRequest, @Query() q: FinanceQuery) {
+  @ApiOkResponse({ type: PaymentReceiptListResponse })
+  payments(@Req() r: ApiRequest, @Query() q: PaymentQuery) {
     return this.service.payments(requestClaims(r), q);
   }
   @Get("mobile/guardian/students/:id/payments")
@@ -223,9 +228,19 @@ export class FinanceController {
   }
   @Get("payments/:id")
   @TenantPermission("finance.read", "finance.read.linked")
-  @ApiOkResponse({ type: PaymentResponse })
+  @ApiOkResponse({ type: PaymentReceiptResponse })
   payment(@Req() r: ApiRequest, @Param("id", ParseUUIDPipe) id: string) {
     return this.service.payment(requestClaims(r), id);
+  }
+  @Get("payments/:id/history")
+  @TenantPermission("finance.read")
+  @ApiOkResponse({ type: FinancialHistoryResponse })
+  paymentHistory(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Query() q: ListDto,
+  ) {
+    return this.service.paymentHistory(requestClaims(r), id, q);
   }
   @Post("payments/:id/reverse")
   @TenantPermission("finance.payment.write")

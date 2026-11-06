@@ -1,5 +1,11 @@
 # Baseline P0 gap analysis
 
+Latest delta: Invoice/W14 at43e68bd has exact successful CI42241955407 after
+an asserted-navigation repair. Payment/W15 now implements operational payment
+entry/list/detail, internal print, recorded receiver names and reversal history;
+full76 real integration/49 browser cases pass. Its commit/CI and receivables,
+reports/dashboard/audit/privacy/notifications and remaining M4 work are pending.
+
 Latest checkpoint (2026-11-06): Fee-plan ea8fb17 exact CI42232459218 SUCCESS
 is observed. Invoice/W14 now implements paged exact previews, confirmed/stale-safe
 issuance, list/detail/items/history and void administration. Forward024 legacy

@@ -23,12 +23,13 @@ import { lockTenantActor } from "./tenant-actor";
 import { ListDto } from "./auth.dto";
 import { InvoiceQuery, InvoiceFeeQuery } from "./invoice.dto";
 import { invoiceRows } from "./invoice-query";
+import { PaymentQuery } from "./payment.dto";
+import { paymentIds } from "./payment-query";
 import {
   FeePlanInput,
   FeeClassQuery,
   FeePlanQuery,
   FeePlanTermInput,
-  FinanceQuery,
   InvoiceRunInput,
   PaymentInput,
 } from "./finance.dto";
@@ -997,7 +998,113 @@ export class FinanceService {
       { isolationLevel: "RepeatableRead" },
     );
   }
-  async payments(c: Claims, q: FinanceQuery, childId?: string) {
+  private async receiptView(tx: Tx, p: Payment, guardian: boolean) {
+    const [base, student, centre, recorded, reversed, reversal] =
+      await Promise.all([
+        this.paymentView(tx, p),
+        tx.student.findFirstOrThrow({
+          where: { tenantId: p.tenantId, id: p.studentId },
+          select: { studentCode: true, fullName: true },
+        }),
+        tx.tenant.findUniqueOrThrow({
+          where: { id: p.tenantId },
+          select: { name: true },
+        }),
+        tx.auditLog.findFirst({
+          where: {
+            tenantId: p.tenantId,
+            resourceId: p.id,
+            action: "payment.recorded",
+          },
+          orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+        }),
+        guardian
+          ? null
+          : tx.auditLog.findFirst({
+              where: {
+                tenantId: p.tenantId,
+                resourceId: p.id,
+                action: "payment.reversed",
+              },
+              orderBy: [{ createdAt: "asc" }, { id: "asc" }],
+            }),
+        guardian
+          ? null
+          : tx.paymentReversal.findFirst({
+              where: { tenantId: p.tenantId, paymentId: p.id },
+            }),
+      ]);
+    const name = (row: { metadata: Prisma.JsonValue } | null) =>
+      row?.metadata &&
+      typeof row.metadata === "object" &&
+      !Array.isArray(row.metadata) &&
+      typeof row.metadata.actorDisplayName === "string"
+        ? row.metadata.actorDisplayName
+        : null;
+    return {
+      ...base,
+      ...student,
+      centreName: centre.name,
+      externalReference: guardian ? null : p.externalReference,
+      receivedBy: guardian ? null : p.receivedBy,
+      receiverDisplayName: guardian ? null : name(recorded),
+      reversalReason: reversal?.reason ?? null,
+      reversalActorName: name(reversed),
+      reversedAt: reversal?.createdAt.toISOString() ?? null,
+    };
+  }
+  async paymentHistory(c: Claims, id: string, q: ListDto) {
+    return this.db.$transaction(
+      async (tx) => {
+        if (
+          !(await tx.payment.findFirst({
+            where: { tenantId: this.tenant(c), id },
+            select: { id: true },
+          }))
+        )
+          throw new NotFoundException("Không tìm thấy phiếu thu.");
+        const where = {
+          tenantId: c.tenantId!,
+          resourceId: id,
+          action: { in: ["payment.recorded", "payment.reversed"] },
+        };
+        const [rows, total] = await Promise.all([
+          tx.auditLog.findMany({
+            where,
+            orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+            skip: (q.page - 1) * q.limit,
+            take: q.limit,
+          }),
+          tx.auditLog.count({ where }),
+        ]);
+        return new Paged(
+          rows.map((r) => ({
+            id: r.id,
+            action: r.action,
+            actorUserId: r.actorUserId,
+            actorDisplayName:
+              r.metadata &&
+              typeof r.metadata === "object" &&
+              !Array.isArray(r.metadata) &&
+              typeof r.metadata.actorDisplayName === "string"
+                ? r.metadata.actorDisplayName
+                : null,
+            reason: r.reason,
+            traceId: r.traceId,
+            recordedAt: r.createdAt.toISOString(),
+          })),
+          {
+            page: q.page,
+            limit: q.limit,
+            total,
+            totalPages: Math.ceil(total / q.limit),
+          },
+        );
+      },
+      { isolationLevel: "RepeatableRead" },
+    );
+  }
+  async payments(c: Claims, q: PaymentQuery, childId?: string) {
     this.tenant(c);
     return this.db.$transaction(
       async (tx) => {
@@ -1005,19 +1112,16 @@ export class FinanceService {
             c.role === "guardian"
               ? await this.teaching.subject(tx, c, childId)
               : q.studentId,
-          where = {
-            tenantId: c.tenantId!,
-            ...(studentId ? { studentId } : {}),
-          };
+          selected = await paymentIds(tx, c.tenantId!, q, studentId);
         const rows = await tx.payment.findMany({
-            where,
+            where: { tenantId: c.tenantId!, id: { in: selected.ids } },
             orderBy: [{ receivedAt: "desc" }, { id: "asc" }],
-            take: q.limit,
-            skip: (q.page - 1) * q.limit,
           }),
-          total = await tx.payment.count({ where });
+          total = selected.total;
         return new Paged(
-          await Promise.all(rows.map((p) => this.paymentView(tx, p))),
+          await Promise.all(
+            rows.map((p) => this.receiptView(tx, p, c.role === "guardian")),
+          ),
           {
             page: q.page,
             limit: q.limit,
@@ -1031,32 +1135,35 @@ export class FinanceService {
   }
   async payment(c: Claims, id: string) {
     this.tenant(c);
-    return this.db.$transaction(async (tx) => {
-      const linked =
-        c.role === "guardian"
-          ? await tx.guardianLink.findMany({
-              where: {
-                tenantId: c.tenantId!,
-                guardianUserId: c.sub,
-                status: "ACTIVE",
-                verifiedAt: { not: null },
-                verifiedBy: { not: null },
-              },
-              select: { studentId: true },
-            })
-          : null;
-      const p = await tx.payment.findFirst({
-        where: {
-          tenantId: c.tenantId!,
-          id,
-          ...(linked
-            ? { studentId: { in: linked.map((v) => v.studentId) } }
-            : {}),
-        },
-      });
-      if (!p) throw new NotFoundException("Không tìm thấy phiếu thu.");
-      return this.paymentView(tx, p);
-    });
+    return this.db.$transaction(
+      async (tx) => {
+        const linked =
+          c.role === "guardian"
+            ? await tx.guardianLink.findMany({
+                where: {
+                  tenantId: c.tenantId!,
+                  guardianUserId: c.sub,
+                  status: "ACTIVE",
+                  verifiedAt: { not: null },
+                  verifiedBy: { not: null },
+                },
+                select: { studentId: true },
+              })
+            : null;
+        const p = await tx.payment.findFirst({
+          where: {
+            tenantId: c.tenantId!,
+            id,
+            ...(linked
+              ? { studentId: { in: linked.map((v) => v.studentId) } }
+              : {}),
+          },
+        });
+        if (!p) throw new NotFoundException("Không tìm thấy phiếu thu.");
+        return this.receiptView(tx, p, c.role === "guardian");
+      },
+      { isolationLevel: "RepeatableRead" },
+    );
   }
   async voidInvoice(c: Claims, id: string, reason: string, traceId: string) {
     reason = reason.trim();

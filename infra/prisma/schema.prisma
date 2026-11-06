@@ -633,6 +633,7 @@ model Payment {
   @@unique([tenantId, id, studentId])
   @@unique([tenantId, receiptNo])
   @@index([tenantId, studentId, receivedAt])
+  @@index([tenantId, receivedAt(sort: Desc), id],map:"payment_received_page_idx")
   @@map("payments")
 }
 

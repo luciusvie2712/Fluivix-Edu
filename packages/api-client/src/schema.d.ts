@@ -1396,6 +1396,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/payments/{id}/history": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["FinanceController_paymentHistory"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/payments/{id}/reverse": {
     parameters: {
       query?: never;
@@ -3239,9 +3255,44 @@ export interface components {
       data: components["schemas"]["PaymentView"];
       meta: components["schemas"]["MetaDto"];
     };
+    PaymentReceiptView: {
+      id: string;
+      studentId: string;
+      receiptNo: string;
+      method: string;
+      receivedAmountVnd: string;
+      unallocatedAmountVnd: string;
+      /** Format: date-time */
+      receivedAt: string;
+      status: string;
+      allocations: components["schemas"]["AllocationInput"][];
+      invoiceBalances: components["schemas"]["InvoiceView"][];
+      /** @description Internal receipt, not a VAT invoice or bank verification */
+      receiptNotice: string;
+      studentCode: string;
+      fullName: string;
+      /** @description Current centre name, not an issue-time snapshot */
+      centreName: string;
+      externalReference: string | null;
+      receivedBy: string | null;
+      /** @description Actual recorded actor snapshot; unknown legacy names and Guardian reads are null */
+      receiverDisplayName: string | null;
+      reversalReason: string | null;
+      reversalActorName: string | null;
+      reversedAt: string | null;
+    };
+    PaymentReceiptListResponse: {
+      data: components["schemas"]["PaymentReceiptView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
+    };
     PaymentsResponse: {
       data: components["schemas"]["PaymentView"][];
       page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    PaymentReceiptResponse: {
+      data: components["schemas"]["PaymentReceiptView"];
       meta: components["schemas"]["MetaDto"];
     };
     NotificationView: {
@@ -9796,6 +9847,10 @@ export interface operations {
         limit?: number;
         search?: string;
         studentId?: string;
+        method?: "CASH" | "BANK_TRANSFER";
+        status?: "CONFIRMED" | "REVERSED";
+        from?: string;
+        to?: string;
       };
       header?: never;
       path?: never;
@@ -9808,7 +9863,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["PaymentsResponse"];
+          "application/json": components["schemas"]["PaymentReceiptListResponse"];
         };
       };
       401: {
@@ -10024,7 +10079,80 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["PaymentResponse"];
+          "application/json": components["schemas"]["PaymentReceiptResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  FinanceController_paymentHistory: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FinancialHistoryResponse"];
         };
       };
       401: {

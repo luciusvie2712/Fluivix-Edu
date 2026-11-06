@@ -1,5 +1,16 @@
 # Security report — current assessment
 
+Payment/W15 local gate PASS (2026-11-06): payment reads now use same-snapshot
+allocations/balances, tenant-scoped SQL filters and actual recorded actor names.
+Guardian receipt reads redact internal references, receiver IDs/names and reversal
+details; staff-only history denies Guardian/teaching roles. Original financial
+records remain immutable and reversal retains allocation history. Focused2 API
+cases pass, including exact >2^53 values and actual foreign-resource negatives.
+Full76 integration/49 browser cases and the remaining local matrix pass, including
+real unallocated money and lost committed-payment/reversal transport cases.
+Exact Payment-SHA remote CI remains pending. No external legal, bank, device or
+release acceptance is claimed.
+
 Invoice/W14 local gate PASS (2026-11-06): preview and issue share effective
 terms/period/enrollment intersection; confirmed preview fingerprints detect
 stale eligibility without billing writes. Per-tenant actor counters bound fresh
