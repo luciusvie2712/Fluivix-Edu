@@ -2,6 +2,7 @@ import {
   Body,
   ConflictException,
   Controller,
+  ForbiddenException,
   Get,
   Injectable,
   NotFoundException,
@@ -47,13 +48,17 @@ import type { ApiRequest } from "./http";
 import { Paged } from "./http";
 import type { Claims } from "./security";
 import { TeachingService } from "./teaching.service";
+import { requirePlanFeature } from "./subscription-policy";
+import { lockTenantActor } from "./tenant-actor";
+import { z } from "zod";
 import {
-  requirePlanFeature,
-  requireSubscriptionWrite,
-} from "./subscription-policy";
+  AssessmentQuery,
+  GradeHistoryResponse,
+  GradeLifecycleResponse,
+} from "./grade-history.dto";
 
 export class AssessmentInput {
-  @ApiProperty() @IsString() @Length(1, 150) title!: string;
+  @ApiProperty() @IsString() @Matches(/\S/) @Length(1, 150) title!: string;
   @ApiProperty({ format: "date" })
   @Matches(/^\d{4}-\d{2}-\d{2}$/)
   @IsISO8601({ strict: true })
@@ -82,7 +87,7 @@ export class AssessmentVersion {
   @ApiProperty() @IsInt() @Min(1) version!: number;
 }
 export class AssessmentCorrection extends AssessmentVersion {
-  @ApiProperty() @IsString() @Length(10, 500) reason!: string;
+  @ApiProperty() @IsString() @Matches(/\S/) @Length(10, 500) reason!: string;
 }
 export class GradeInput {
   @ApiProperty({ format: "uuid" }) @IsUUID() studentId!: string;
@@ -103,9 +108,12 @@ export class GradeBatch extends AssessmentVersion {
 }
 export class GradeRow extends GradeInput {
   @ApiProperty() fullName!: string;
+  @ApiProperty() studentCode!: string;
 }
 export class GradeEditor {
   @ApiProperty({ type: AssessmentView }) assessment!: AssessmentView;
+  @ApiProperty() className!: string;
+  @ApiProperty() classCode!: string;
   @ApiProperty({ type: [GradeRow] }) rows!: GradeRow[];
 }
 export class GradeEditorResponse {
@@ -127,6 +135,10 @@ export class GradesService {
     private db: Db,
     private teaching: TeachingService,
   ) {}
+  private tenant(c: Claims) {
+    if (!c.tenantId) throw new ForbiddenException();
+    return c.tenantId;
+  }
   private view(a: {
     id: string;
     classId: string;
@@ -154,6 +166,7 @@ export class GradesService {
     classId: string,
     heldAt: Date,
   ) {
+    this.tenant(c);
     const cls = await tx.educationClass.findFirst({
       where: {
         tenantId: c.tenantId!,
@@ -184,6 +197,7 @@ export class GradesService {
         );
     } else if (!["owner", "manager", "academic_staff"].includes(c.role ?? ""))
       throw new NotFoundException();
+    return cls;
   }
   async create(
     c: Claims,
@@ -195,8 +209,11 @@ export class GradesService {
     if (maxScore.lte(0))
       throw new UnprocessableEntityException("Thang điểm phải lớn hơn 0.");
     return this.db.$transaction(async (tx) => {
-      await tx.$queryRaw`SELECT id FROM tenants WHERE id=${c.tenantId!}::uuid FOR UPDATE`;
-      await requireSubscriptionWrite(tx, c.tenantId!);
+      const actor = await lockTenantActor(
+        tx,
+        c,
+        c.role === "teacher" ? "grade.write.assigned" : "grade.write",
+      );
       await requirePlanFeature(tx, c.tenantId!, "grades");
       const heldAt = new Date(input.heldAt + "T00:00:00Z");
       await this.scope(tx, c, classId, heldAt);
@@ -204,7 +221,7 @@ export class GradesService {
         data: {
           tenantId: c.tenantId!,
           classId,
-          title: input.title,
+          title: input.title.trim(),
           heldAt,
           maxScore,
           createdBy: c.sub,
@@ -217,14 +234,47 @@ export class GradesService {
           action: "assessment.created",
           resourceId: a.id,
           traceId,
+          metadata: {
+            version: a.version,
+            actorDisplayName: actor.user.displayName,
+          },
         },
       });
       return this.view(a);
     });
   }
-  async list(c: Claims, classId: string, q: ListDto) {
+  async list(c: Claims, classId: string, q: AssessmentQuery) {
+    this.tenant(c);
     await this.teaching.classDetail(c, classId);
-    const where = { tenantId: c.tenantId!, classId };
+    const intervals =
+      c.role === "teacher"
+        ? await this.db.classTeacher.findMany({
+            where: {
+              tenantId: c.tenantId!,
+              classId,
+              teacher: { userId: c.sub, status: "ACTIVE" },
+            },
+            select: { effectiveFrom: true, effectiveTo: true },
+          })
+        : null;
+    const where: Prisma.AssessmentWhereInput = {
+      tenantId: c.tenantId!,
+      classId,
+      ...(q.search
+        ? { title: { contains: q.search, mode: "insensitive" } }
+        : {}),
+      ...(q.status ? { status: q.status } : {}),
+      ...(intervals
+        ? {
+            OR: intervals.map((i) => ({
+              heldAt: {
+                gte: i.effectiveFrom,
+                ...(i.effectiveTo ? { lte: i.effectiveTo } : {}),
+              },
+            })),
+          }
+        : {}),
+    };
     const [rows, total] = await this.db.$transaction([
       this.db.assessment.findMany({
         where,
@@ -244,12 +294,21 @@ export class GradesService {
       },
     );
   }
-  private async editor(tx: Prisma.TransactionClient, c: Claims, id: string) {
+  private async scopedAssessment(
+    tx: Prisma.TransactionClient,
+    c: Claims,
+    id: string,
+  ) {
+    this.tenant(c);
     const a = await tx.assessment.findFirst({
       where: { tenantId: c.tenantId!, id },
     });
     if (!a) throw new NotFoundException("Không tìm thấy đánh giá.");
-    await this.scope(tx, c, a.classId, a.heldAt);
+    const cls = await this.scope(tx, c, a.classId, a.heldAt);
+    return { a, cls };
+  }
+  private async editor(tx: Prisma.TransactionClient, c: Claims, id: string) {
+    const { a, cls } = await this.scopedAssessment(tx, c, id);
     const enrollments = await tx.enrollment.findMany({
       where: {
         tenantId: c.tenantId!,
@@ -264,7 +323,7 @@ export class GradesService {
         tenantId: c.tenantId!,
         id: { in: enrollments.map((e) => e.studentId) },
       },
-      select: { id: true, fullName: true },
+      select: { id: true, fullName: true, studentCode: true },
       orderBy: [{ fullName: "asc" }, { id: "asc" }],
     });
     const results = await tx.assessmentResult.findMany({
@@ -272,11 +331,14 @@ export class GradesService {
     });
     return {
       assessment: this.view(a),
+      className: cls.name,
+      classCode: cls.code,
       rows: students.map((s) => {
         const r = results.find((v) => v.studentId === s.id);
         return {
           studentId: s.id,
           fullName: s.fullName,
+          studentCode: s.studentCode,
           score: r?.score?.toFixed(2) ?? null,
           comment: r?.comment ?? "",
         };
@@ -294,8 +356,11 @@ export class GradesService {
     publish = false,
   ) {
     return this.db.$transaction(async (tx) => {
-      await tx.$queryRaw`SELECT id FROM tenants WHERE id=${c.tenantId!}::uuid FOR UPDATE`;
-      await requireSubscriptionWrite(tx, c.tenantId!);
+      const actor = await lockTenantActor(
+        tx,
+        c,
+        c.role === "teacher" ? "grade.write.assigned" : "grade.write",
+      );
       await requirePlanFeature(tx, c.tenantId!, "grades");
       await tx.$queryRaw`SELECT id FROM assessments WHERE tenant_id=${c.tenantId!}::uuid AND id=${id}::uuid FOR UPDATE`;
       const editor = await this.editor(tx, c, id),
@@ -342,8 +407,13 @@ export class GradesService {
                   comment: previous.comment,
                 }
               : Prisma.JsonNull,
-            afterValue: { score: r.score, comment: r.comment },
+            afterValue: {
+              score: fields.score?.toFixed(2) ?? null,
+              comment: r.comment,
+            },
             actorId: c.sub,
+            actorDisplayName: actor.user.displayName,
+            traceId,
           },
         });
         await tx.assessmentResult.upsert({
@@ -387,6 +457,10 @@ export class GradesService {
           action: publish ? "grade.published" : "grade.draft.updated",
           resourceId: id,
           traceId,
+          metadata: {
+            version: next.version,
+            actorDisplayName: actor.user.displayName,
+          },
         },
       });
       if (publish)
@@ -403,43 +477,205 @@ export class GradesService {
     });
   }
   async published(c: Claims, q: ListDto, childId?: string) {
-    return this.db.$transaction(async (tx) => {
-      const studentId = await this.teaching.subject(tx, c, childId);
-      const results = await tx.assessmentResult.findMany({
-        where: { tenantId: c.tenantId!, studentId },
-        select: { assessmentId: true, score: true, comment: true },
-      });
-      const where = {
-        tenantId: c.tenantId!,
-        status: "PUBLISHED",
-        id: { in: results.map((v) => v.assessmentId) },
-      };
-      const [rows, total] = await Promise.all([
-        tx.assessment.findMany({
-          where,
-          orderBy: [{ publishedAt: "desc" }, { id: "asc" }],
-          take: q.limit,
-          skip: (q.page - 1) * q.limit,
-        }),
-        tx.assessment.count({ where }),
-      ]);
-      return new Paged(
-        rows.map((a) => {
-          const r = results.find((v) => v.assessmentId === a.id)!;
-          return {
-            ...this.view(a),
-            score: r.score?.toFixed(2) ?? null,
-            comment: r.comment,
-          };
-        }),
-        {
-          page: q.page,
-          limit: q.limit,
-          total,
-          totalPages: Math.ceil(total / q.limit),
+    this.tenant(c);
+    return this.db.$transaction(
+      async (tx) => {
+        const studentId = await this.teaching.subject(tx, c, childId);
+        return this.publishedRows(tx, c, studentId, q);
+      },
+      { isolationLevel: "RepeatableRead" },
+    );
+  }
+  async studentPublished(c: Claims, studentId: string, q: ListDto) {
+    this.tenant(c);
+    return this.db.$transaction(
+      async (tx) => {
+        if (
+          !(await tx.student.findFirst({
+            where: { tenantId: c.tenantId!, id: studentId },
+            select: { id: true },
+          }))
+        )
+          throw new NotFoundException("Không tìm thấy học viên.");
+        return this.publishedRows(tx, c, studentId, q);
+      },
+      { isolationLevel: "RepeatableRead" },
+    );
+  }
+  private async publishedRows(
+    tx: Prisma.TransactionClient,
+    c: Claims,
+    studentId: string,
+    q: ListDto,
+  ) {
+    const where = {
+      tenantId: c.tenantId!,
+      status: "PUBLISHED",
+      results: { some: { tenantId: c.tenantId!, studentId } },
+    };
+    const [rows, total] = await Promise.all([
+      tx.assessment.findMany({
+        where,
+        include: {
+          results: {
+            where: { tenantId: c.tenantId!, studentId },
+            select: { score: true, comment: true },
+          },
         },
-      );
-    });
+        orderBy: [{ publishedAt: "desc" }, { id: "asc" }],
+        take: q.limit,
+        skip: (q.page - 1) * q.limit,
+      }),
+      tx.assessment.count({ where }),
+    ]);
+    return new Paged(
+      rows.map((a) => {
+        const r = a.results[0]!;
+        return {
+          ...this.view(a),
+          score: r.score?.toFixed(2) ?? null,
+          comment: r.comment,
+        };
+      }),
+      {
+        page: q.page,
+        limit: q.limit,
+        total,
+        totalPages: Math.ceil(total / q.limit),
+      },
+    );
+  }
+  async history(c: Claims, id: string, q: ListDto) {
+    return this.db.$transaction(
+      async (tx) => {
+        await this.scopedAssessment(tx, c, id);
+        const where = { tenantId: c.tenantId!, assessmentId: id };
+        const [rows, total] = await Promise.all([
+          tx.gradeChange.findMany({
+            where,
+            orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+            skip: (q.page - 1) * q.limit,
+            take: q.limit,
+          }),
+          tx.gradeChange.count({ where }),
+        ]);
+        const students = await tx.student.findMany({
+          where: {
+            tenantId: c.tenantId!,
+            id: { in: rows.map((r) => r.studentId) },
+          },
+          select: { id: true, fullName: true },
+        });
+        const names = new Map(students.map((s) => [s.id, s.fullName]));
+        const snapshot = z
+          .object({
+            score: z
+              .string()
+              .regex(/^\d{1,4}(\.\d{1,2})?$/)
+              .nullable(),
+            comment: z.string().max(2000),
+          })
+          .strict()
+          .nullable();
+        const decode = (value: Prisma.JsonValue) => {
+          const parsed = snapshot.safeParse(value);
+          if (!parsed.success)
+            throw new ConflictException(
+              "Lịch sử điểm cần được quản trị viên kiểm tra trước khi hiển thị.",
+            );
+          return parsed.data;
+        };
+        return new Paged(
+          rows.map((row) => {
+            const beforeValue = decode(row.beforeValue),
+              afterValue = decode(row.afterValue),
+              fullName = names.get(row.studentId);
+            if (!afterValue || !fullName)
+              throw new ConflictException(
+                "Không đọc được bản ghi lịch sử trong trung tâm.",
+              );
+            return {
+              id: row.id,
+              studentId: row.studentId,
+              fullName,
+              version: row.version,
+              beforeValue,
+              afterValue,
+              actorUserId: row.actorId,
+              actorDisplayName: row.actorDisplayName,
+              traceId: row.traceId,
+              recordedAt: row.createdAt.toISOString(),
+            };
+          }),
+          {
+            page: q.page,
+            limit: q.limit,
+            total,
+            totalPages: Math.ceil(total / q.limit),
+          },
+        );
+      },
+      { isolationLevel: "RepeatableRead" },
+    );
+  }
+  async lifecycle(c: Claims, id: string, q: ListDto) {
+    return this.db.$transaction(
+      async (tx) => {
+        await this.scopedAssessment(tx, c, id);
+        const where = {
+          tenantId: c.tenantId!,
+          resourceId: id,
+          action: {
+            in: [
+              "assessment.created",
+              "grade.draft.updated",
+              "grade.published",
+              "grade.correction.opened",
+            ],
+          },
+        };
+        const [rows, total] = await Promise.all([
+          tx.auditLog.findMany({
+            where,
+            orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+            skip: (q.page - 1) * q.limit,
+            take: q.limit,
+          }),
+          tx.auditLog.count({ where }),
+        ]);
+        return new Paged(
+          rows.map((row) => {
+            const metadata =
+              row.metadata &&
+              typeof row.metadata === "object" &&
+              !Array.isArray(row.metadata)
+                ? row.metadata
+                : {};
+            return {
+              id: row.id,
+              action: row.action,
+              version:
+                typeof metadata.version === "number" ? metadata.version : null,
+              actorUserId: row.actorUserId,
+              actorDisplayName:
+                typeof metadata.actorDisplayName === "string"
+                  ? metadata.actorDisplayName
+                  : null,
+              reason: row.reason,
+              traceId: row.traceId,
+              recordedAt: row.createdAt.toISOString(),
+            };
+          }),
+          {
+            page: q.page,
+            limit: q.limit,
+            total,
+            totalPages: Math.ceil(total / q.limit),
+          },
+        );
+      },
+      { isolationLevel: "RepeatableRead" },
+    );
   }
   async correction(
     c: Claims,
@@ -448,9 +684,12 @@ export class GradesService {
     traceId: string,
   ) {
     return this.db.$transaction(async (tx) => {
-      await tx.$queryRaw`SELECT id FROM tenants WHERE id=${c.tenantId!}::uuid FOR UPDATE`;
-      await requireSubscriptionWrite(tx, c.tenantId!);
+      const actor = await lockTenantActor(tx, c, "grade.correct");
       await requirePlanFeature(tx, c.tenantId!, "grades");
+      if (input.reason.trim().length < 10)
+        throw new UnprocessableEntityException(
+          "Cần ghi nhận lý do mở sửa từ 10 ký tự.",
+        );
       const editor = await this.editor(tx, c, id);
       if (
         editor.assessment.status !== "PUBLISHED" ||
@@ -459,7 +698,7 @@ export class GradesService {
         throw new ConflictException(
           "Đánh giá hoặc phiên bản không cho phép mở sửa.",
         );
-      await tx.assessment.update({
+      const next = await tx.assessment.update({
         where: { id },
         data: { status: "DRAFT", publishedAt: null, version: { increment: 1 } },
       });
@@ -470,7 +709,11 @@ export class GradesService {
           action: "grade.correction.opened",
           resourceId: id,
           traceId,
-          reason: input.reason,
+          reason: input.reason.trim(),
+          metadata: {
+            version: next.version,
+            actorDisplayName: actor.user.displayName,
+          },
         },
       });
       return this.editor(tx, c, id);
@@ -494,7 +737,7 @@ export class GradesController {
   list(
     @Req() req: ApiRequest,
     @Param("id", ParseUUIDPipe) id: string,
-    @Query() q: ListDto,
+    @Query() q: AssessmentQuery,
   ) {
     return this.service.list(requestClaims(req), id, q);
   }
@@ -513,6 +756,36 @@ export class GradesController {
   @ApiOkResponse({ type: GradeEditorResponse })
   results(@Req() req: ApiRequest, @Param("id", ParseUUIDPipe) id: string) {
     return this.service.results(requestClaims(req), id);
+  }
+  @Get("assessments/:id/history")
+  @TenantPermission("grade.write", "grade.write.assigned")
+  @ApiOkResponse({ type: GradeHistoryResponse })
+  history(
+    @Req() req: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Query() q: ListDto,
+  ) {
+    return this.service.history(requestClaims(req), id, q);
+  }
+  @Get("assessments/:id/lifecycle")
+  @TenantPermission("grade.write", "grade.write.assigned")
+  @ApiOkResponse({ type: GradeLifecycleResponse })
+  lifecycle(
+    @Req() req: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Query() q: ListDto,
+  ) {
+    return this.service.lifecycle(requestClaims(req), id, q);
+  }
+  @Get("students/:id/grades")
+  @TenantPermission("grade.write")
+  @ApiOkResponse({ type: PublishedGradesResponse })
+  studentPublished(
+    @Req() req: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Query() q: ListDto,
+  ) {
+    return this.service.studentPublished(requestClaims(req), id, q);
   }
   @Put("assessments/:id/results")
   @TenantPermission("grade.write", "grade.write.assigned")

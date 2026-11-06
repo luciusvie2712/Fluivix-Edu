@@ -15,6 +15,7 @@ import { teachingCases } from "./teaching-cases";
 import { staffCases } from "./staff-cases";
 import { guardianCases } from "./guardian-cases";
 import { teacherCases } from "./teacher-cases";
+import { assessmentCases } from "./assessment-cases";
 import { requireTestRedis, testRedisUrl } from "../../tooling/test-redis";
 
 let database: EmbeddedPostgres | undefined;
@@ -57,6 +58,12 @@ guardianCases(
   () => hashPassword(password),
 );
 teacherCases(
+  () => base,
+  () => db,
+  password,
+  () => hashPassword(password),
+);
+assessmentCases(
   () => base,
   () => db,
   password,

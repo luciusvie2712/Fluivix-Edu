@@ -13,6 +13,7 @@ export function OperationForm({
   action,
   label,
   disabled,
+  submitDisabled,
   confirm,
   previewAction,
   previewLabel = "Xem trước",
@@ -22,6 +23,7 @@ export function OperationForm({
   action: (data: FormData) => Promise<void>;
   label: string;
   disabled?: boolean;
+  submitDisabled?: boolean;
   confirm?: string;
   previewAction?: (data: FormData) => Promise<void>;
   previewLabel?: string;
@@ -43,7 +45,12 @@ export function OperationForm({
           !!previewAction &&
           submitter instanceof HTMLButtonElement &&
           submitter.value === "preview";
-        if (disabled || busy || (!isPreview && confirm && !accepted)) return;
+        if (
+          disabled ||
+          busy ||
+          (!isPreview && (submitDisabled || (confirm && !accepted)))
+        )
+          return;
         if (!navigator.onLine) {
           setError("Đang ngoại tuyến. Kết nối lại trước khi lưu.");
           return;
@@ -98,7 +105,9 @@ export function OperationForm({
           type="submit"
           name="_intent"
           value="commit"
-          disabled={disabled || busy || (!!confirm && !accepted)}
+          disabled={
+            disabled || submitDisabled || busy || (!!confirm && !accepted)
+          }
         >
           {busy ? "Đang xử lý…" : label}
         </Button>

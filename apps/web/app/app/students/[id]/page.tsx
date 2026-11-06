@@ -13,6 +13,7 @@ import StudentForm, {
 import { studentDetail, deactivateStudent } from "../../../../lib/api";
 import { Button } from "../../../../components/ui/button";
 import { GuardianRelationships } from "../../../../components/guardian-workspace";
+import { StudentGrades } from "../../../../components/assessment-workspace";
 const deactivateSchema = z.object({
   reason: z.string().trim().min(10, "Nêu lý do từ 10 ký tự.").max(500),
 });
@@ -105,6 +106,7 @@ export default function Detail() {
           {writable && (
             <>
               <GuardianRelationships studentId={id} />
+              <StudentGrades studentId={id} />
               <h2 className="section-title">Thông tin hồ sơ</h2>
               <StudentForm
                 student={query.data.data}

@@ -293,8 +293,13 @@ export const teaching = {
     ),
   createClass: (body: components["schemas"]["ClassInput"]) =>
     unwrap(api.POST("/api/v1/classes", { body })),
-  classDetail: (id: string) =>
-    unwrap(api.GET("/api/v1/classes/{id}", { params: { path: { id } } })),
+  classDetail: (id: string, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/classes/{id}", {
+        params: { path: { id } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
   updateClass: (id: string, body: components["schemas"]["ClassUpdate"]) =>
     unwrap(
       api.PATCH("/api/v1/classes/{id}", { params: { path: { id } }, body }),
@@ -418,6 +423,80 @@ export const teaching = {
     unwrap(
       api.GET("/api/v1/classes/{id}/sessions", {
         params: { path: { id }, query },
+      }),
+    ),
+};
+export const assessments = {
+  list: (
+    id: string,
+    page: number,
+    search: string,
+    status: "DRAFT" | "PUBLISHED" | "",
+    signal?: AbortSignal,
+  ) =>
+    unwrap(
+      api.GET("/api/v1/classes/{id}/assessments", {
+        params: {
+          path: { id },
+          query: { page, limit: 20, search, ...(status ? { status } : {}) },
+        },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  create: (id: string, body: components["schemas"]["AssessmentInput"]) =>
+    unwrap(
+      api.POST("/api/v1/classes/{id}/assessments", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+  results: (id: string, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/assessments/{id}/results", {
+        params: { path: { id } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  save: (id: string, body: components["schemas"]["GradeBatch"]) =>
+    unwrap(
+      api.PUT("/api/v1/assessments/{id}/results", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+  publish: (id: string, body: components["schemas"]["AssessmentVersion"]) =>
+    unwrap(
+      api.POST("/api/v1/assessments/{id}/publish", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+  reopen: (id: string, body: components["schemas"]["AssessmentCorrection"]) =>
+    unwrap(
+      api.POST("/api/v1/assessments/{id}/reopen", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
+  history: (id: string, page: number, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/assessments/{id}/history", {
+        params: { path: { id }, query: { page, limit: 20 } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  lifecycle: (id: string, page: number, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/assessments/{id}/lifecycle", {
+        params: { path: { id }, query: { page, limit: 20 } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  student: (id: string, page: number, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/students/{id}/grades", {
+        params: { path: { id }, query: { page, limit: 20 } },
+        ...(signal ? { signal } : {}),
       }),
     ),
 };

@@ -1,6 +1,6 @@
 # API contract coverage
 
-Generated inventory: 144 actual OpenAPI operations; 134
+Generated inventory: 147 actual OpenAPI operations; 134
 method/path intents in the master specification (includes non-P0 design intent).
 Path parameter names are normalized when comparing. MATCH means route metadata
 exists; it does not verify DTOs, permission, object scope or runtime behavior.
@@ -145,6 +145,15 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
 
 ## Explicit contract decisions
 
+- Assessment administration adds GET /assessments/{id}/history and /lifecycle
+  with grade.write or grade.write.assigned and effective-date teacher scope;
+  GET /students/{id}/grades requires staff grade.write and is PUBLISHED only.
+  Student/Guardian retain existing subject-authorized APIs. All new lists are
+  bounded/paged and generated into the shared client.
+- Forward migration022 preserves historical JSON/timestamps; legacy actor names
+  stay NULL. Orphan actors/duplicate student-version history reject upgrade for
+  investigation instead of fabricated membership or deleted history. Earlier
+  migrations stay immutable. Local legacy rehearsal is not staging approval.
 - Unsaved POST /classes/{id}/schedule-rules/preview now executes real constraints
   and a deliberate transaction rollback; no rule/session/audit is retained.
   It previews at most60days from validFrom. POST creation rechecks conflicts.

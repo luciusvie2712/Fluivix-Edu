@@ -5206,6 +5206,12 @@
             "required": false,
             "in": "query",
             "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string", "enum": ["DRAFT", "PUBLISHED"] }
           }
         ],
         "responses": {
@@ -5423,6 +5429,276 @@
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/GradeEditorResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["grades"]
+      }
+    },
+    "/api/v1/assessments/{id}/history": {
+      "get": {
+        "operationId": "GradesController_history",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GradeHistoryResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["grades"]
+      }
+    },
+    "/api/v1/assessments/{id}/lifecycle": {
+      "get": {
+        "operationId": "GradesController_lifecycle",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GradeLifecycleResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["grades"]
+      }
+    },
+    "/api/v1/students/{id}/grades": {
+      "get": {
+        "operationId": "GradesController_studentPublished",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublishedGradesResponse"
+                }
               }
             }
           },
@@ -11351,20 +11627,23 @@
           "studentId": { "type": "string", "format": "uuid" },
           "score": { "type": "string", "nullable": true, "example": "8.00" },
           "comment": { "type": "string" },
-          "fullName": { "type": "string" }
+          "fullName": { "type": "string" },
+          "studentCode": { "type": "string" }
         },
-        "required": ["studentId", "score", "comment", "fullName"]
+        "required": ["studentId", "score", "comment", "fullName", "studentCode"]
       },
       "GradeEditor": {
         "type": "object",
         "properties": {
           "assessment": { "$ref": "#/components/schemas/AssessmentView" },
+          "className": { "type": "string" },
+          "classCode": { "type": "string" },
           "rows": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/GradeRow" }
           }
         },
-        "required": ["assessment", "rows"]
+        "required": ["assessment", "className", "classCode", "rows"]
       },
       "GradeEditorResponse": {
         "type": "object",
@@ -11374,30 +11653,91 @@
         },
         "required": ["data", "meta"]
       },
-      "GradeInput": {
+      "GradeSnapshotView": {
         "type": "object",
         "properties": {
-          "studentId": { "type": "string", "format": "uuid" },
-          "score": { "type": "string", "nullable": true, "example": "8.00" },
+          "score": { "type": "string", "nullable": true },
           "comment": { "type": "string" }
         },
-        "required": ["studentId", "score", "comment"]
+        "required": ["score", "comment"]
       },
-      "GradeBatch": {
+      "GradeChangeView": {
         "type": "object",
         "properties": {
+          "id": { "type": "string" },
+          "studentId": { "type": "string" },
+          "fullName": { "type": "string" },
           "version": { "type": "number" },
-          "records": {
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/GradeInput" }
-          }
+          "beforeValue": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [{ "$ref": "#/components/schemas/GradeSnapshotView" }]
+          },
+          "afterValue": { "$ref": "#/components/schemas/GradeSnapshotView" },
+          "actorUserId": { "type": "string" },
+          "actorDisplayName": { "type": "string", "nullable": true },
+          "traceId": { "type": "string", "nullable": true },
+          "recordedAt": { "type": "string" }
         },
-        "required": ["version", "records"]
+        "required": [
+          "id",
+          "studentId",
+          "fullName",
+          "version",
+          "beforeValue",
+          "afterValue",
+          "actorUserId",
+          "actorDisplayName",
+          "traceId",
+          "recordedAt"
+        ]
       },
-      "AssessmentVersion": {
+      "GradeHistoryResponse": {
         "type": "object",
-        "properties": { "version": { "type": "number" } },
-        "required": ["version"]
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/GradeChangeView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "GradeLifecycleView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "action": { "type": "string" },
+          "version": { "type": "number", "nullable": true },
+          "actorUserId": { "type": "string", "nullable": true },
+          "actorDisplayName": { "type": "string", "nullable": true },
+          "reason": { "type": "string", "nullable": true },
+          "traceId": { "type": "string" },
+          "recordedAt": { "type": "string" }
+        },
+        "required": [
+          "id",
+          "action",
+          "version",
+          "actorUserId",
+          "actorDisplayName",
+          "reason",
+          "traceId",
+          "recordedAt"
+        ]
+      },
+      "GradeLifecycleResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/GradeLifecycleView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
       },
       "PublishedGrade": {
         "type": "object",
@@ -11437,6 +11777,31 @@
           "meta": { "$ref": "#/components/schemas/MetaDto" }
         },
         "required": ["data", "page", "meta"]
+      },
+      "GradeInput": {
+        "type": "object",
+        "properties": {
+          "studentId": { "type": "string", "format": "uuid" },
+          "score": { "type": "string", "nullable": true, "example": "8.00" },
+          "comment": { "type": "string" }
+        },
+        "required": ["studentId", "score", "comment"]
+      },
+      "GradeBatch": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number" },
+          "records": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/GradeInput" }
+          }
+        },
+        "required": ["version", "records"]
+      },
+      "AssessmentVersion": {
+        "type": "object",
+        "properties": { "version": { "type": "number" } },
+        "required": ["version"]
       },
       "AssessmentCorrection": {
         "type": "object",

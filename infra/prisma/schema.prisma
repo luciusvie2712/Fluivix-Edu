@@ -135,6 +135,9 @@ model Membership {
   guardianProfile GuardianProfile? @relation("GuardianProfileMembership")
   createdGuardianProfiles GuardianProfile[] @relation("GuardianProfileCreator")
   teacherProfile Teacher? @relation("TeacherMembership")
+  createdAssessments Assessment[] @relation("AssessmentCreator")
+  gradedResults AssessmentResult[] @relation("AssessmentGrader")
+  gradeActions GradeChange[] @relation("GradeActor")
 
   @@unique([tenantId, userId])
   @@unique([tenantId, id])
@@ -496,6 +499,8 @@ model Assessment {
   version     Int       @default(1)
   publishedAt DateTime? @map("published_at") @db.Timestamptz
   createdBy   String    @map("created_by") @db.Uuid
+  creator Membership @relation("AssessmentCreator",fields:[tenantId,createdBy],references:[tenantId,userId],onDelete:Restrict,onUpdate:NoAction,map:"assessment_creator_member_fk")
+  results AssessmentResult[]
 
   @@unique([tenantId, id])
   @@map("assessments")
@@ -510,6 +515,8 @@ model AssessmentResult {
   comment      String   @default("") @db.VarChar(2000)
   gradedBy     String   @map("graded_by") @db.Uuid
   gradedAt     DateTime @default(now()) @map("graded_at") @db.Timestamptz
+  grader Membership @relation("AssessmentGrader",fields:[tenantId,gradedBy],references:[tenantId,userId],onDelete:Restrict,onUpdate:NoAction,map:"assessment_grader_member_fk")
+  assessment Assessment @relation(fields:[tenantId,assessmentId],references:[tenantId,id],onDelete:NoAction,onUpdate:NoAction,map:"assessment_results_tenant_id_assessment_id_fkey")
 
   @@unique([tenantId, assessmentId, studentId])
   @@map("assessment_results")
@@ -730,8 +737,13 @@ model GradeChange {
   beforeValue  Json     @map("before_value")
   afterValue   Json     @map("after_value")
   actorId      String   @map("actor_id") @db.Uuid
+  actorDisplayName String? @map("actor_display_name") @db.VarChar(150)
+  traceId String? @map("trace_id") @db.VarChar(80)
+  actorMembership Membership @relation("GradeActor",fields:[tenantId,actorId],references:[tenantId,userId],onDelete:Restrict,onUpdate:NoAction,map:"grade_history_actor_member_fk")
   createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz
 
+  @@unique([tenantId,assessmentId,studentId,version],map:"grade_history_student_version_key")
+  @@index([tenantId,assessmentId,createdAt,id],map:"grade_history_page_idx")
   @@map("grade_change_events")
 }
 
@@ -762,6 +774,7 @@ model AuditLog {
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   @@index([tenantId, createdAt])
+  @@index([tenantId,resourceId,createdAt,id],map:"audit_resource_history_idx")
   @@map("audit_logs")
 }
 

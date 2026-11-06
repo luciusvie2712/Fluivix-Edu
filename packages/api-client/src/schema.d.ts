@@ -1028,6 +1028,54 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/assessments/{id}/history": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GradesController_history"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/assessments/{id}/lifecycle": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GradesController_lifecycle"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/students/{id}/grades": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GradesController_studentPublished"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/assessments/{id}/publish": {
     parameters: {
       query?: never;
@@ -2710,28 +2758,53 @@ export interface components {
       score: string | null;
       comment: string;
       fullName: string;
+      studentCode: string;
     };
     GradeEditor: {
       assessment: components["schemas"]["AssessmentView"];
+      className: string;
+      classCode: string;
       rows: components["schemas"]["GradeRow"][];
     };
     GradeEditorResponse: {
       data: components["schemas"]["GradeEditor"];
       meta: components["schemas"]["MetaDto"];
     };
-    GradeInput: {
-      /** Format: uuid */
-      studentId: string;
-      /** @example 8.00 */
+    GradeSnapshotView: {
       score: string | null;
       comment: string;
     };
-    GradeBatch: {
+    GradeChangeView: {
+      id: string;
+      studentId: string;
+      fullName: string;
       version: number;
-      records: components["schemas"]["GradeInput"][];
+      beforeValue: components["schemas"]["GradeSnapshotView"] | null;
+      afterValue: components["schemas"]["GradeSnapshotView"];
+      actorUserId: string;
+      actorDisplayName: string | null;
+      traceId: string | null;
+      recordedAt: string;
     };
-    AssessmentVersion: {
-      version: number;
+    GradeHistoryResponse: {
+      data: components["schemas"]["GradeChangeView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    GradeLifecycleView: {
+      id: string;
+      action: string;
+      version: number | null;
+      actorUserId: string | null;
+      actorDisplayName: string | null;
+      reason: string | null;
+      traceId: string;
+      recordedAt: string;
+    };
+    GradeLifecycleResponse: {
+      data: components["schemas"]["GradeLifecycleView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
     };
     PublishedGrade: {
       title: string;
@@ -2751,6 +2824,20 @@ export interface components {
       data: components["schemas"]["PublishedGrade"][];
       page: components["schemas"]["PageView"];
       meta: components["schemas"]["MetaDto"];
+    };
+    GradeInput: {
+      /** Format: uuid */
+      studentId: string;
+      /** @example 8.00 */
+      score: string | null;
+      comment: string;
+    };
+    GradeBatch: {
+      version: number;
+      records: components["schemas"]["GradeInput"][];
+    };
+    AssessmentVersion: {
+      version: number;
     };
     AssessmentCorrection: {
       version: number;
@@ -7618,6 +7705,7 @@ export interface operations {
         page?: number;
         limit?: number;
         search?: string;
+        status?: "DRAFT" | "PUBLISHED";
       };
       header?: never;
       path: {
@@ -7824,6 +7912,201 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["GradeEditorResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  GradesController_history: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GradeHistoryResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  GradesController_lifecycle: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GradeLifecycleResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  GradesController_studentPublished: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PublishedGradesResponse"];
         };
       };
       401: {

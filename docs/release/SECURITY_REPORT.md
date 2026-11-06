@@ -1,5 +1,19 @@
 # Security report — current assessment
 
+Assessment/W12 local security evidence (2026-11-06): creator, grader and history
+actor are bound to the same tenant membership in forward migration022; existing
+append-only history and published-score SQL guards are retained. All four score
+mutations recheck live membership/role/session/subscription after the tenant lock;
+four real suspended-while-waiting operations commit no revoked changes. Teacher
+list and editor/history scope use actual assignment dates. Student/Guardian
+publication reads use one repeatable snapshot and return only the authorized
+student's published result. Drafts and reopened corrections produce no readable
+published scores; publication remains explicit and versioned. New staff student
+results require grade.write; unauthorized roles and foreign resources are denied.
+Full66 integration passes, including legacy migration and concurrent200/409.
+Browser/exact-commit CI gates are recorded separately. Legacy orphan/duplicate
+data stops upgrade for review; no actor/name/history is fabricated or deleted.
+
 Teacher/W07 local verification (2026-11-06): eligible-account lookup requires ACTIVE membership, ACTIVE global user, accepted activation, teacher role and no existing profile in the selected tenant. Academic staff receives only the minimal name/email/user ID needed to create a teacher profile, without general Staff administration access. Profile, directory and assigned-class reads remain tenant-scoped; teacher/accountant roles cannot enter the management surface. Create/update/assignment now recheck live actor membership/role/session/subscription after the tenant lock. Three real PostgreSQL cases exercise suspension while each operation waits; no write commits. Inactive profile or account cannot receive new teaching assignments/sessions; historical assignments remain. Full61 integration passes locally; full browser and exact-commit CI gates are tracked separately.
 
 Guardian/W06 local security verification (2026-11-06): contact provisioning grants no guardian role to an active staff identity. Pending tenant memberships remain activation-gated even for globally active users; invitation acceptance requires credential proof. Relationship verification is independent of privacy consent. Tenant/profile/student/verifier/history foreign keys, unique open pairs and immutable history are exercised against PostgreSQL. Mutations recheck current membership, selected session/role and subscription after acquiring the canonical tenant lock. Six new guardian cases pass, including a waiting verifier suspended before commit and an actual native client rejecting delayed genuine profile bytes after revocation. Full58 integration passes; signed-device UAT and external security/legal approval remain open. Bodyless Web invitation calls send the existing required JSON header; the CSRF policy is preserved.

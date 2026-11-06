@@ -3,6 +3,133 @@ import { Client } from "pg";
 import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 export function migrationCases() {
+  it("upgrades assessment actor boundaries without fabricating legacy names and rejects orphan or duplicate history", async () => {
+    const connectionString = process.env.DATABASE_URL;
+    if (
+      !connectionString ||
+      !new URL(connectionString).pathname.endsWith("_test")
+    )
+      throw new Error("Disposable database required");
+    const client = new Client({ connectionString });
+    await client.connect();
+    const sql = readFileSync(
+      "infra/prisma/migrations/202611060022_assessment_administration/migration.sql",
+      "utf8",
+    );
+    try {
+      for (const mode of ["valid", "orphan", "duplicate"] as const) {
+        await client.query("BEGIN");
+        const schema = "assessment_upgrade_" + randomUUID().replaceAll("-", "");
+        await client.query(`CREATE SCHEMA "${schema}"`);
+        await client.query(`SET LOCAL search_path TO "${schema}"`);
+        await client.query(
+          "CREATE TABLE tenant_memberships(tenant_id uuid,user_id uuid,PRIMARY KEY(tenant_id,user_id)); CREATE TABLE assessments(id uuid PRIMARY KEY,tenant_id uuid,created_by uuid); CREATE TABLE assessment_results(id uuid PRIMARY KEY,tenant_id uuid,graded_by uuid); CREATE TABLE grade_change_events(id uuid PRIMARY KEY,tenant_id uuid,assessment_id uuid,student_id uuid,version integer,before_value jsonb NOT NULL,after_value jsonb NOT NULL,actor_id uuid,created_at timestamptz); CREATE TABLE audit_logs(id uuid PRIMARY KEY,tenant_id uuid,resource_id text,created_at timestamptz);",
+        );
+        const tenant = randomUUID(),
+          foreign = randomUUID(),
+          owner = randomUUID(),
+          outsider = randomUUID(),
+          assessment = randomUUID(),
+          student = randomUUID(),
+          event = randomUUID();
+        await client.query(
+          "INSERT INTO tenant_memberships VALUES($1,$2),($3,$4)",
+          [tenant, owner, foreign, outsider],
+        );
+        await client.query("INSERT INTO assessments VALUES($1,$2,$3)", [
+          assessment,
+          tenant,
+          mode === "orphan" ? outsider : owner,
+        ]);
+        await client.query("INSERT INTO assessment_results VALUES($1,$2,$3)", [
+          randomUUID(),
+          tenant,
+          owner,
+        ]);
+        const addHistory = (id: string, version = 1, actor = owner) =>
+          client.query(
+            'INSERT INTO grade_change_events VALUES($1,$2,$3,$4,$5,\'null\'::jsonb,\'{"score":"8.00","comment":"Original grade"}\'::jsonb,$6,\'2025-01-01T00:00:00Z\')',
+            [id, tenant, assessment, student, version, actor],
+          );
+        await addHistory(event);
+        if (mode === "duplicate") await addHistory(randomUUID());
+        await client.query("SAVEPOINT upgrade");
+        if (mode !== "valid") {
+          await expect(client.query(sql)).rejects.toThrow(
+            mode === "orphan"
+              ? "assessment_creator_member_fk"
+              : "grade_history_student_version_key",
+          );
+          await client.query("ROLLBACK TO SAVEPOINT upgrade");
+          expect(
+            (
+              await client.query(
+                "SELECT count(*)::integer AS count FROM grade_change_events",
+              )
+            ).rows[0].count,
+          ).toBe(mode === "duplicate" ? 2 : 1);
+          expect(
+            (
+              await client.query(
+                "SELECT count(*)::integer AS count FROM tenant_memberships WHERE tenant_id=$1",
+                [tenant],
+              )
+            ).rows[0].count,
+          ).toBe(1);
+        } else {
+          await client.query(sql);
+          const row = (
+            await client.query(
+              "SELECT * FROM grade_change_events WHERE id=$1",
+              [event],
+            )
+          ).rows[0];
+          expect(row).toMatchObject({
+            id: event,
+            actor_id: owner,
+            version: 1,
+            actor_display_name: null,
+            trace_id: null,
+            before_value: null,
+            after_value: { score: "8.00", comment: "Original grade" },
+          });
+          expect(row.created_at.toISOString()).toBe("2025-01-01T00:00:00.000Z");
+          for (const [query, args, constraint] of [
+            [
+              "UPDATE assessments SET created_by=$1 WHERE id=$2",
+              [outsider, assessment],
+              "assessment_creator_member_fk",
+            ],
+            [
+              "UPDATE assessment_results SET graded_by=$1",
+              [outsider],
+              "assessment_grader_member_fk",
+            ],
+            [
+              'INSERT INTO grade_change_events(id,tenant_id,assessment_id,student_id,version,before_value,after_value,actor_id,created_at) VALUES($1,$2,$3,$4,2,\'null\'::jsonb,\'{"score":"1.00","comment":"Rejected"}\'::jsonb,$5,now())',
+              [randomUUID(), tenant, assessment, student, outsider],
+              "grade_history_actor_member_fk",
+            ],
+            [
+              'INSERT INTO grade_change_events(id,tenant_id,assessment_id,student_id,version,before_value,after_value,actor_id,created_at) VALUES($1,$2,$3,$4,1,\'null\'::jsonb,\'{"score":"1.00","comment":"Rejected"}\'::jsonb,$5,now())',
+              [randomUUID(), tenant, assessment, student, owner],
+              "grade_history_student_version_key",
+            ],
+          ] as const) {
+            await client.query("SAVEPOINT invariant");
+            await expect(client.query(query, [...args])).rejects.toThrow(
+              constraint,
+            );
+            await client.query("ROLLBACK TO SAVEPOINT invariant");
+          }
+        }
+        await client.query("ROLLBACK");
+      }
+    } finally {
+      await client.query("ROLLBACK");
+      await client.end();
+    }
+  });
   it("backfills guardian relationship history honestly and rejects conflicting legacy open pairs", async () => {
     const connectionString = process.env.DATABASE_URL;
     if (

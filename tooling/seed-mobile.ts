@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { createHash, randomBytes, randomUUID } from "node:crypto";
 import { Db } from "../apps/api/dist/db";
 import { hashPassword } from "../apps/api/dist/auth.service";
 import { FinanceService } from "../apps/api/dist/finance.service";
@@ -245,132 +245,156 @@ export async function seedMobile(db: Db, password: string) {
       primaryTeacherId = t.id;
     }
   }
+  // Development/test bootstrap only: real scoped sessions let domain services
+  // enforce their production actor checks. No access/refresh token is issued;
+  // credentials stay unchanged and these owned sessions are revoked in finally.
+  const sessionIds = [randomUUID(), randomUUID()] as const;
+  await db.authSession.createMany({
+    data: (["owner", "teacher"] as const).map((role, index) => ({
+      id: sessionIds[index]!,
+      userId: role === "owner" ? owner.id : teacher.id,
+      clientType: "MOBILE" as const,
+      familyId: randomUUID(),
+      tokenHash: createHash("sha256").update(randomBytes(32)).digest("hex"),
+      selectedTenantId: developmentIds.tenantA,
+      selectedRole: role,
+      expiresAt: new Date(Date.now() + 300000),
+    })),
+  });
   const teaching = new TeachingService(db),
     finance = new FinanceService(db, teaching),
     grades = new GradesService(db, teaching),
     claims = {
       sub: owner.id,
-      sid: randomUUID(),
+      sid: sessionIds[0],
       tenantId: developmentIds.tenantA,
       role: "owner" as const,
     };
-  let fee = await db.feePlan.findFirst({
-    where: {
-      tenantId: claims.tenantId,
-      classId: primaryClassId,
-      name: "Học phí Mobile kiểm thử " + period,
-    },
-  });
-  if (!fee)
-    await finance.fee(
-      claims,
-      {
-        classId: primaryClassId,
-        name: "Học phí Mobile kiểm thử " + period,
-        billingModel: "MONTHLY",
-        amountVnd: "1200000",
-        validFrom: period + "-01",
-        validTo: end.toISOString().slice(0, 10),
-      },
-      "synthetic-mobile-seed",
-    );
-  fee = await db.feePlan.findFirstOrThrow({
-    where: {
-      tenantId: claims.tenantId,
-      classId: primaryClassId,
-      name: "Học phí Mobile kiểm thử " + period,
-    },
-  });
-  const dueAt = new Date(period + "-01T00:00:00Z").toISOString();
-  await finance.generate(
-    claims,
-    { feePlanId: fee.id, periodKey: period, dueAt },
-    "mobile-seed-run-" + period,
-    "synthetic-mobile-seed",
-  );
-  const invoice = await db.invoice.findFirstOrThrow({
-    where: {
-      tenantId: claims.tenantId,
-      studentId: firstChildId,
-      runId: (
-        await db.invoiceRun.findUniqueOrThrow({
-          where: {
-            tenantId_feePlanId_periodKey: {
-              tenantId: claims.tenantId,
-              feePlanId: fee.id,
-              periodKey: period,
-            },
-          },
-        })
-      ).id,
-    },
-  });
-  await finance.pay(
-    claims,
-    {
-      studentId: firstChildId,
-      method: "CASH",
-      receivedAmountVnd: "500000",
-      receivedAt: new Date(period + "-01T01:00:00Z").toISOString(),
-      allocations: [{ invoiceId: invoice.id, amountVnd: "500000" }],
-    },
-    "mobile-seed-payment-" + period,
-    "synthetic-mobile-seed",
-  );
-  const teacherClaims = {
-    ...claims,
-    sub: teacher.id,
-    role: "teacher" as const,
-  };
-  if (
-    !(await db.assessment.findFirst({
+  try {
+    let fee = await db.feePlan.findFirst({
       where: {
         tenantId: claims.tenantId,
         classId: primaryClassId,
-        title: "Kết quả Mobile kiểm thử",
+        name: "Học phí Mobile kiểm thử " + period,
       },
-    }))
-  ) {
-    const assessment = await grades.create(
-      teacherClaims,
-      primaryClassId,
-      { title: "Kết quả Mobile kiểm thử", heldAt: today, maxScore: "10.00" },
+    });
+    if (!fee)
+      await finance.fee(
+        claims,
+        {
+          classId: primaryClassId,
+          name: "Học phí Mobile kiểm thử " + period,
+          billingModel: "MONTHLY",
+          amountVnd: "1200000",
+          validFrom: period + "-01",
+          validTo: end.toISOString().slice(0, 10),
+        },
+        "synthetic-mobile-seed",
+      );
+    fee = await db.feePlan.findFirstOrThrow({
+      where: {
+        tenantId: claims.tenantId,
+        classId: primaryClassId,
+        name: "Học phí Mobile kiểm thử " + period,
+      },
+    });
+    const dueAt = new Date(period + "-01T00:00:00Z").toISOString();
+    await finance.generate(
+      claims,
+      { feePlanId: fee.id, periodKey: period, dueAt },
+      "mobile-seed-run-" + period,
       "synthetic-mobile-seed",
     );
-    const roster = await grades.results(teacherClaims, assessment.id);
-    await grades.save(
-      teacherClaims,
-      assessment.id,
+    const invoice = await db.invoice.findFirstOrThrow({
+      where: {
+        tenantId: claims.tenantId,
+        studentId: firstChildId,
+        runId: (
+          await db.invoiceRun.findUniqueOrThrow({
+            where: {
+              tenantId_feePlanId_periodKey: {
+                tenantId: claims.tenantId,
+                feePlanId: fee.id,
+                periodKey: period,
+              },
+            },
+          })
+        ).id,
+      },
+    });
+    await finance.pay(
+      claims,
       {
-        version: 1,
-        records: roster.rows.map((row) => ({
-          studentId: row.studentId,
-          score: "8.00",
-          comment: "Dữ liệu kiểm thử tổng hợp",
-        })),
+        studentId: firstChildId,
+        method: "CASH",
+        receivedAmountVnd: "500000",
+        receivedAt: new Date(period + "-01T01:00:00Z").toISOString(),
+        allocations: [{ invoiceId: invoice.id, amountVnd: "500000" }],
       },
+      "mobile-seed-payment-" + period,
       "synthetic-mobile-seed",
     );
-    await grades.save(
-      teacherClaims,
-      assessment.id,
-      { version: 2, records: [] },
-      "synthetic-mobile-seed",
-      true,
-    );
-    await grades.create(
-      teacherClaims,
-      primaryClassId,
-      { title: "Bản nháp không công bố", heldAt: today, maxScore: "10.00" },
-      "synthetic-mobile-seed",
-    );
+    const teacherClaims = {
+      ...claims,
+      sub: teacher.id,
+      sid: sessionIds[1],
+      role: "teacher" as const,
+    };
+    if (
+      !(await db.assessment.findFirst({
+        where: {
+          tenantId: claims.tenantId,
+          classId: primaryClassId,
+          title: "Kết quả Mobile kiểm thử",
+        },
+      }))
+    ) {
+      const assessment = await grades.create(
+        teacherClaims,
+        primaryClassId,
+        { title: "Kết quả Mobile kiểm thử", heldAt: today, maxScore: "10.00" },
+        "synthetic-mobile-seed",
+      );
+      const roster = await grades.results(teacherClaims, assessment.id);
+      await grades.save(
+        teacherClaims,
+        assessment.id,
+        {
+          version: 1,
+          records: roster.rows.map((row) => ({
+            studentId: row.studentId,
+            score: "8.00",
+            comment: "Dữ liệu kiểm thử tổng hợp",
+          })),
+        },
+        "synthetic-mobile-seed",
+      );
+      await grades.save(
+        teacherClaims,
+        assessment.id,
+        { version: 2, records: [] },
+        "synthetic-mobile-seed",
+        true,
+      );
+      await grades.create(
+        teacherClaims,
+        primaryClassId,
+        { title: "Bản nháp không công bố", heldAt: today, maxScore: "10.00" },
+        "synthetic-mobile-seed",
+      );
+    }
+    return {
+      teacherId: primaryTeacherId,
+      classId: primaryClassId,
+      childId: firstChildId,
+      tenantId: claims.tenantId,
+    };
+  } finally {
+    await db.authSession.updateMany({
+      where: { id: { in: [...sessionIds] } },
+      data: { revokedAt: new Date() },
+    });
   }
-  return {
-    teacherId: primaryTeacherId,
-    classId: primaryClassId,
-    childId: firstChildId,
-    tenantId: claims.tenantId,
-  };
 }
 if (
   process.argv[1]?.replaceAll("\\", "/").endsWith("/tooling/seed-mobile.ts")

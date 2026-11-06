@@ -1,5 +1,16 @@
 # Baseline P0 gap analysis
 
+Assessment/W12 current delta (2026-11-06): class-scoped list/create and Web
+draft editor, explicit publication/correction, published student-detail panel,
+paged before/after/lifecycle history, exact decimal validation and optimistic
+conflict input preservation implemented. Local66 integration and focused4 E2E
+pass. Final full36-browser regression passes with no skipped/flaky cases; the
+earlier login1440 Windows worker exit and successful recheck are retained in
+separate reports. Module commit/exact-SHA CI remain pending. Migration022
+legacy/actor/history invariants pass locally; staging upgrade is not verified.
+Teacher4093b08 has exact-SHA CI42218621304 SUCCESS. Finance/report/dashboard/audit/
+privacy/notifications and remaining P0/M4 work remain open; release BLOCKED.
+
 Teacher/W07 current delta (2026-11-06): directory/code/status search, active teacher-account picker, profile create/edit/deactivate, assigned-class history and actual class assignment Web are implemented. Actor rechecks close post-lock revocation gaps in those writes; overlapping assignments now return409 instead of500, retaining the SQL exclusion. Local61 integration and full32-browser cases pass. Teacher module commit/exact-SHA CI remain pending. Guardian commitd345764 has exact-SHA CI42194322533 SUCCESS. Assessment/finance/report/dashboard/audit/privacy/notification and broader class/schedule details still require completion; release remains BLOCKED.
 
 Current delta 2026-11-06: Staff/W17 commitdb88cbb has exact-SHA successful CI42182941288. Guardian/W06 now has production contact/profile and relationship/history APIs, tenant-scoped Web list/detail/student panel, confirmation-based verification/revocation, and invitation activation through the real mail worker. Local58 integration,49 unit,15 mobile Jest, mobile API smoke, generated142-operation contract and full29-browser regression pass. Exact Guardian commit/CI remains NOT_VERIFIED until observed. This is scoped technical evidence, not full FR/P0 acceptance. Teacher/assessment/finance/report/dashboard/audit/privacy work and external release gates remain open.

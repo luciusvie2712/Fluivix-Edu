@@ -14,6 +14,7 @@ import {
   text,
 } from "./operation-form";
 import { Button } from "./ui/button";
+import { ClassAssessments } from "./assessment-workspace";
 
 const academic = ["owner", "manager", "academic_staff"];
 const candidateStatusLabels: Record<string, string> = {
@@ -242,6 +243,7 @@ function ClassDetail({ id }: { id: string }) {
         <Link href="/app/classes">Lớp học</Link> / {cls.code}
       </p>
       <h1>{cls.name}</h1>
+      {scope.manage && <ClassAssessments classInfo={cls} />}
       <p>
         {cls.status} · Sức chứa {cls.capacity} · {cls.startDate} → {cls.endDate}
       </p>

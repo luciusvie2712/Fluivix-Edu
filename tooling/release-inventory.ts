@@ -42,7 +42,7 @@ const evidence: Record<string, string> = {
   US: "apps/api/src/students.ts; guardian-links.ts; guardian.service.ts; teaching.service.ts; apps/web/components/guardian-workspace.tsx; teacher-workspace.tsx; tests/integration/identity.test.ts; guardian-cases.ts; teacher-cases.ts; teaching-cases.ts; tests/e2e/guardians.spec.ts; teachers.spec.ts",
   CL: "apps/api/src/teaching.*; infra/prisma/migrations/202610240016_schedule_rules; tests/integration/teaching-cases.ts",
   AT: "apps/api/src/teaching.*; apps/mobile/app; tests/integration/teaching-cases.ts",
-  GR: "apps/api/src/grades.ts; apps/mobile/app; tests/integration/teaching-cases.ts",
+  GR: "apps/api/src/grades.ts; grade-history.dto.ts; migration022; apps/web/components/assessment-workspace.tsx; apps/mobile/app; tests/integration/assessment-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/assessments.spec.ts",
   FI: "apps/api/src/finance.*; apps/mobile/app; tests/integration/teaching-cases.ts",
   NT: "apps/api/src/notifications.ts; mobile-dashboard.ts; apps/worker/src/notifications.ts; tests/integration/teaching-cases.ts",
 };
@@ -97,7 +97,7 @@ const acceptance: Record<string, [string, string]> = {
   ],
   "TC-013": [
     "PARTIAL",
-    "integration exact8/10 publish + native API; assessment Web workflow missing",
+    "Assessment Web draft0/max, publish/correct/history/concurrent editors; real native publication API; physical-device business acceptance missing",
   ],
   "TC-014": [
     "DONE_VERIFIED",
@@ -219,6 +219,15 @@ ${desired.map(({ method, path }) => `| ${method} | \`${path}\` | ${implemented.h
 
 ## Explicit contract decisions
 
+- Assessment administration adds GET /assessments/{id}/history and /lifecycle
+  with grade.write or grade.write.assigned and effective-date teacher scope;
+  GET /students/{id}/grades requires staff grade.write and is PUBLISHED only.
+  Student/Guardian retain existing subject-authorized APIs. All new lists are
+  bounded/paged and generated into the shared client.
+- Forward migration022 preserves historical JSON/timestamps; legacy actor names
+  stay NULL. Orphan actors/duplicate student-version history reject upgrade for
+  investigation instead of fabricated membership or deleted history. Earlier
+  migrations stay immutable. Local legacy rehearsal is not staging approval.
 - Unsaved POST /classes/{id}/schedule-rules/preview now executes real constraints
   and a deliberate transaction rollback; no rule/session/audit is retained.
   It previews at most60days from validFrom. POST creation rechecks conflicts.

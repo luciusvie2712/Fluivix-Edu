@@ -29,8 +29,8 @@ gates are evidenced. File references identify code to review, not proof of PASS.
 | FR-AT-02 | Lưu tạm, xác nhận điểm danh và khóa session | PARTIAL | apps/api/src/teaching.*; apps/mobile/app; tests/integration/teaching-cases.ts |
 | FR-AT-03 | Nhận xét buổi học, nội dung, bài tập giao (văn bản) | PARTIAL | apps/api/src/teaching.*; apps/mobile/app; tests/integration/teaching-cases.ts |
 | FR-AT-04 | Phụ huynh/học viên chỉ xem chuyên cần được công bố | PARTIAL | apps/api/src/teaching.*; apps/mobile/app; tests/integration/teaching-cases.ts |
-| FR-GR-01 | Tạo đầu điểm, nhập điểm/nhận xét, publish kết quả | PARTIAL | apps/api/src/grades.ts; apps/mobile/app; tests/integration/teaching-cases.ts |
-| FR-GR-02 | Lịch sử cập nhật điểm, ngày công bố | PARTIAL | apps/api/src/grades.ts; apps/mobile/app; tests/integration/teaching-cases.ts |
+| FR-GR-01 | Tạo đầu điểm, nhập điểm/nhận xét, publish kết quả | PARTIAL | apps/api/src/grades.ts; grade-history.dto.ts; migration022; apps/web/components/assessment-workspace.tsx; apps/mobile/app; tests/integration/assessment-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/assessments.spec.ts |
+| FR-GR-02 | Lịch sử cập nhật điểm, ngày công bố | PARTIAL | apps/api/src/grades.ts; grade-history.dto.ts; migration022; apps/web/components/assessment-workspace.tsx; apps/mobile/app; tests/integration/assessment-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/assessments.spec.ts |
 | FR-FI-01 | Khai báo fee plan theo khóa hoặc tháng, tiền VND | PARTIAL | apps/api/src/finance.*; apps/mobile/app; tests/integration/teaching-cases.ts |
 | FR-FI-02 | Sinh chứng từ học phí nội bộ theo kỳ/học viên | PARTIAL | apps/api/src/finance.*; apps/mobile/app; tests/integration/teaching-cases.ts |
 | FR-FI-03 | Ghi nhận thanh toán tiền mặt/chuyển khoản, nhiều lần | PARTIAL | apps/api/src/finance.*; apps/mobile/app; tests/integration/teaching-cases.ts |
@@ -62,7 +62,7 @@ the cross-surface scenario stays PARTIAL.
 | TC-010 | FR-AT-02 | 2 thiết bị sửa attendance cùng version | Một request nhận 409, không lost update | PARTIAL | integration stale-version rejection; full two-device simultaneous workflow missing |
 | TC-011 | FR-AT-04 | Student xem attendance trước finalize | Không thấy draft | PARTIAL | integration hides drafts + Student API smoke; signed-device visibility UAT missing |
 | TC-012 | FR-AT-02 | Teacher cố reopen buổi COMPLETED | Bị chặn; manager có quyền kèm reason/audit | PARTIAL | integration privileged reopen/reason/audit; business Web/device UAT missing |
-| TC-013 | FR-GR-01 | Publish điểm 8/10 | Student/guardian thấy; bản DRAFT không thấy | PARTIAL | integration exact8/10 publish + native API; assessment Web workflow missing |
+| TC-013 | FR-GR-01 | Publish điểm 8/10 | Student/guardian thấy; bản DRAFT không thấy | PARTIAL | Assessment Web draft0/max, publish/correct/history/concurrent editors; real native publication API; physical-device business acceptance missing |
 | TC-014 | FR-GR-01 | Nhập điểm 11 với max_score 10 | 422, không lưu | DONE_VERIFIED | integration TC013/014/025: out-of-range score422 and no invalid result persisted |
 | TC-015 | FR-FI-02 | Invoice job chạy lại cùng period key | Không sinh invoice trùng | PARTIAL | integration repeated invoice-run idempotency; Web generation/preview absent |
 | TC-016 | FR-FI-03 | POST payment cùng idempotency key 2 lần | 1 payment, 1 allocation, response nhất quán | PARTIAL | integration same-key payment race/replay; Web payment workflow absent |

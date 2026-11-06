@@ -1,0 +1,141 @@
+{
+  "date": "2026-11-06",
+  "module": "Assessment/W12",
+  "localVerdict": "PASS",
+  "remoteVerdict": "NOT_VERIFIED",
+  "releaseVerdict": "BLOCKED",
+  "baseCommit": "4093b08cb185270e7a6b5f00da5a8d4dd84e94cd",
+  "checks": {
+    "lint": "PASS",
+    "format": "PASS",
+    "typecheckIncludingTools": "PASS",
+    "unit": 49,
+    "mobileJest": 15,
+    "build": "8 tasks PASS plus Web rebuild after form fix",
+    "integration": {
+      "passed": 66,
+      "skipped": 0,
+      "report": "docs/release/evidence/integration-2026-11-06-assessment-full.json"
+    },
+    "e2e": {
+      "passed": 36,
+      "skipped": 0,
+      "flaky": 0,
+      "report": "docs/release/evidence/e2e-2026-11-06-assessment-verified.json"
+    },
+    "mobileApiSmoke": "PASS; actual generated/native client and API, no device UI claim",
+    "expoAlignment": "PASS",
+    "contractGeneration": {
+      "stable": true,
+      "operations": 147,
+      "sha256": {
+        "apps/api/openapi.json": "9aa4be6e60e36a13b6cfac1edbc589f1bba53a0b9829c160d865e49a7d8c06b9",
+        "packages/api-client/src/schema.d.ts": "57ae70be952d4c3e1c6ebf03ac07b9693490ea7e2bc58ba97fa81e251b3a3f8a"
+      }
+    },
+    "frozenOfflineInstall": "PASS",
+    "dependencyAudit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    },
+    "localSecretScreen": "PASS; values withheld"
+  },
+  "implementation": [
+    "real scoped class assessment list/title/status/paging/create",
+    "changed-row partial draft grading with shared exact decimal validation",
+    "confirmed publication and privileged reasoned correction/republication",
+    "version conflict preserves input until confirmed reload",
+    "published-only staff student-detail results, existing Student/Guardian scope preserved",
+    "paged score before/after and lifecycle history with real actor snapshots",
+    "same-tenant actor SQL FKs, unique student/version history, immutable old migrations",
+    "legacy upgrade preserves timestamps/JSON and unknown names; rejects orphan/duplicate data",
+    "live actor/session/role/subscription rechecked after write lock",
+    "effective-date assigned teacher metadata isolation",
+    "temporary seed-only real sessions revoked in finally; production checks unchanged"
+  ],
+  "visual": {
+    "widths": [
+      360,
+      768,
+      1024,
+      1440
+    ],
+    "axe": "no violations on exercised directory/editor",
+    "keyboard": "score to comment focus traversal",
+    "reducedMotion": "editor interaction exercised",
+    "manualReview": "eight exercised images viewed; full-run final images reviewed separately",
+    "style": "existing framed-sheet seed1920114305, blue brand, Vietnamese Arial",
+    "tasteFindings": [],
+    "skills": [
+      {
+        "source": "taste-skill",
+        "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+        "installed": "design-taste-frontend",
+        "verifiedFiles": 38,
+        "status": "PASS"
+      },
+      {
+        "source": "ui-ux-pro-max-skill",
+        "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+        "installed": "ui-ux-pro-max",
+        "verifiedFiles": 73,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "accessible-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "micro-interaction",
+        "verifiedFiles": 4,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "60fps-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      }
+    ]
+  },
+  "sourceHashes": {
+    "normalization": "CRLF to LF",
+    "sha256": {
+      "apps/api/src/grade-history.dto.ts": "0f5cb61fc7fd83473f8f7ada070064bdcbb04ea30e0d66487be825ebb3700b07",
+      "apps/web/app/app/assessments/[id]/page.tsx": "4aed7a817cfa1bd25f6ffa287d06e3e09f6b00facf421004c395b860a8d5f22e",
+      "apps/web/app/app/assessments/page.tsx": "8e7c2a51dc610b58b0c9dc7059611f461e4f4963fcea8177292b879b8cd85d0e",
+      "apps/web/components/assessment-workspace.tsx": "bb04a33a8630a6e463dad7a4524cb5fcf5cbf3d67a034628dbebf606ad0cafb9",
+      "infra/prisma/migrations/202611060022_assessment_administration/migration.sql": "a669264278ef5bc61b3597e53e63a8290d2fd5c7df79e4b6b286b3adc3d7c23f",
+      "packages/contracts/src/grade-validation.ts": "1a8f749bbf9255005b5bccf7f00ddfa1b9236be7ccdd84dc8b06e659b790532c",
+      "tests/e2e/assessments.spec.ts": "57c3a8134232de23c7455f58d8eb4fe37a4ac6bbaddb3cc99f8c71f84c1bb69b",
+      "tests/integration/assessment-cases.ts": "f3a2b6e8c020eb04a12cf54fae43c4e372c4508cc57d95c9ae1eade4ced20108",
+      "apps/api/openapi.json": "9aa4be6e60e36a13b6cfac1edbc589f1bba53a0b9829c160d865e49a7d8c06b9",
+      "apps/api/src/grades.ts": "ced99f930d356ed9339a7b94d12efc6eaad95168104e6eeecdfacf895d83cd58",
+      "apps/mobile/lib/grade-validation.ts": "4ccfc856defee268b71bf752d685fff277ec62ff437e8a6e4f01eb0f44faf291",
+      "apps/mobile/package.json": "2fcab5c32bc9bb5b58e5a9a71d42ae903538ede3b9824eed6c81ec8b44583f45",
+      "apps/web/app/app/layout.tsx": "b25cb74a169e2085b2cbdecafa9a493c19071e6c3b5899b93acad4b703a9a5e6",
+      "apps/web/app/app/students/[id]/page.tsx": "50c35550a53a86cb2488caef3174f4b1f484d25ebd0eef69fb3f3fc2be365755",
+      "apps/web/components/operation-form.tsx": "1035e216378363337f66e57fa83c687c6bc9fe35a2d3a51225fbbb528ba06e6f",
+      "apps/web/components/teaching-workspace.tsx": "5811589c25a3209d3b14681a77e69b0efc74aebefeed09305f324480a7efa5c3",
+      "apps/web/lib/api.ts": "6561d69bd5a7abdfc0eaf6f9ef3cdd5ce93a521bd66801e0fd26aa6de51565ec",
+      "infra/prisma/schema.prisma": "aac37862f4ab0390c0eeba20cab3e577c69026ca07584204f7318a918e9924ba",
+      "packages/api-client/src/schema.d.ts": "57ae70be952d4c3e1c6ebf03ac07b9693490ea7e2bc58ba97fa81e251b3a3f8a",
+      "packages/contracts/src/index.ts": "8caa8600b0535b9182553b72f2ade55970399d139ed5ad30ebe0ee1d7e7333c5",
+      "tests/integration/identity.test.ts": "1a48899f0b72dcdf39fdd43c03fd1e49876e6ee95f19a48ce8bc5241e029d4e3",
+      "tests/integration/migration-cases.ts": "33d5c16d5a857d8cb45e0dba1ab18e81790e7ea3229d276a2353f19bda6828ae",
+      "tooling/release-inventory.ts": "033e40240661968a423638ca982025d93f74c2bd18c0d2d53ca61fd11a193a4f",
+      "tooling/seed-mobile.ts": "86a7e4d806d4b747a2f1833c18aca892ad3917a61832b53fafc82d31db1e2a3b"
+    }
+  },
+  "priorFailures": "Initial two-editor test shared one rotating cookie family and invalidated the older access session. Independent real login sessions exercise optimistic conflict without relaxing token security. Empty-draft form fieldset originally disabled score entry; submitDisabled now disables only submit until changes exist. Initial full E2E had35 pass and a login1440 worker native Windows exit3221226505 before assertions; no application event crash detail was available. Targeted recheck and subsequent full result are separate reports, no assertion/timeouts/retries changed; failed report retained.",
+  "remaining": "Finance/Reports/Dashboard/Audit/Privacy/Notifications, broader class/schedule/auth hardening and M4. Staging/legal/signed-device/push/store approvals remain absent."
+}
