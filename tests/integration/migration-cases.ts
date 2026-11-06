@@ -3,6 +3,165 @@ import { Client } from "pg";
 import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 export function migrationCases() {
+  it("upgrades legacy fee plans without invented terms and retains immutable issued prices with append-only tenant-bound future terms", async () => {
+    const connectionString = process.env.DATABASE_URL;
+    if (
+      !connectionString ||
+      !new URL(connectionString).pathname.endsWith("_test")
+    )
+      throw new Error("Disposable database required");
+    const client = new Client({ connectionString });
+    await client.connect();
+    try {
+      await client.query("BEGIN");
+      const schema = "fee_upgrade_" + randomUUID().replaceAll("-", "");
+      await client.query(`CREATE SCHEMA "${schema}"`);
+      await client.query(`SET LOCAL search_path TO "${schema}"`);
+      await client.query(
+        "CREATE TABLE tenant_memberships(tenant_id uuid,user_id uuid,PRIMARY KEY(tenant_id,user_id)); CREATE TABLE fee_plans(id uuid PRIMARY KEY,tenant_id uuid NOT NULL,class_id uuid NOT NULL,name varchar(150) NOT NULL,billing_model varchar(10) NOT NULL,amount_vnd bigint NOT NULL,valid_from date NOT NULL,valid_to date,status varchar(20) NOT NULL DEFAULT 'ACTIVE',UNIQUE(tenant_id,id)); CREATE TABLE invoice_runs(id uuid PRIMARY KEY,tenant_id uuid,fee_plan_id uuid);",
+      );
+      const old = readFileSync(
+        "infra/prisma/migrations/202610240011_finance/migration.sql",
+        "utf8",
+      );
+      // Use the actual existing no-delete and used-price trigger definitions.
+      const noDelete = old.match(
+        /CREATE FUNCTION finance_no_delete\(\)[\s\S]*?END \$\$;/,
+      )?.[0];
+      const used = old.slice(
+        old.indexOf("CREATE FUNCTION used_fee_immutable()"),
+      );
+      if (!noDelete || !used.startsWith("CREATE FUNCTION used_fee_immutable()"))
+        throw new Error("Legacy finance trigger fixture drift");
+      await client.query(noDelete);
+      await client.query(used);
+      const tenant = randomUUID(),
+        actor = randomUUID(),
+        outsider = randomUUID(),
+        fee = randomUUID(),
+        classId = randomUUID(),
+        year = new Date().getUTCFullYear() + 1;
+      await client.query("INSERT INTO tenant_memberships VALUES($1,$2)", [
+        tenant,
+        actor,
+      ]);
+      await client.query(
+        "INSERT INTO fee_plans(id,tenant_id,class_id,name,billing_model,amount_vnd,valid_from,valid_to) VALUES($1,$2,$3,'Legacy issued fee','MONTHLY',9007199254740993,$4,$5)",
+        [fee, tenant, classId, `${year}-01-01`, `${year}-12-31`],
+      );
+      await client.query("INSERT INTO invoice_runs VALUES($1,$2,$3)", [
+        randomUUID(),
+        tenant,
+        fee,
+      ]);
+      await client.query(
+        readFileSync(
+          "infra/prisma/migrations/202611060023_fee_plan_terms/migration.sql",
+          "utf8",
+        ),
+      );
+      const original = await client.query(
+        "SELECT name,amount_vnd::text,valid_from::text,version FROM fee_plans WHERE id=$1",
+        [fee],
+      );
+      expect(original.rows).toEqual([
+        {
+          name: "Legacy issued fee",
+          amount_vnd: "9007199254740993",
+          valid_from: `${year}-01-01`,
+          version: 1,
+        },
+      ]);
+      expect(
+        (await client.query("SELECT count(*)::int AS n FROM fee_plan_terms"))
+          .rows[0].n,
+      ).toBe(0);
+      const reject = async (sql: string, values: unknown[]) => {
+        await client.query("SAVEPOINT invalid_fee");
+        await expect(client.query(sql, values)).rejects.toThrow();
+        await client.query("ROLLBACK TO SAVEPOINT invalid_fee");
+        await client.query("RELEASE SAVEPOINT invalid_fee");
+      };
+      await reject("UPDATE fee_plans SET amount_vnd=1 WHERE id=$1", [fee]);
+      await reject("DELETE FROM fee_plans WHERE id=$1", [fee]);
+      await client.query("UPDATE fee_plans SET version=2 WHERE id=$1", [fee]);
+      const term = randomUUID();
+      const insert =
+        "INSERT INTO fee_plan_terms(id,tenant_id,fee_plan_id,version,effective_from,name,amount_vnd,reason,created_by,actor_display_name,trace_id) VALUES($1,$2,$3,$4,$5,'Verified future fee',9007199254740994,'Verified future fee change',$6,'Actual verified actor','fee-upgrade-test')";
+      await client.query(insert, [
+        term,
+        tenant,
+        fee,
+        2,
+        `${year}-02-01`,
+        actor,
+      ]);
+      expect(
+        (
+          await client.query(
+            "SELECT amount_vnd::text FROM fee_plan_terms WHERE id=$1",
+            [term],
+          )
+        ).rows[0].amount_vnd,
+      ).toBe("9007199254740994");
+      await reject("UPDATE fee_plan_terms SET amount_vnd=1 WHERE id=$1", [
+        term,
+      ]);
+      await reject("DELETE FROM fee_plan_terms WHERE id=$1", [term]);
+      await reject(insert, [
+        randomUUID(),
+        tenant,
+        fee,
+        2,
+        `${year}-02-01`,
+        actor,
+      ]);
+      await client.query("UPDATE fee_plans SET version=3 WHERE id=$1", [fee]);
+      await reject(insert, [
+        randomUUID(),
+        tenant,
+        fee,
+        3,
+        `${year}-03-01`,
+        outsider,
+      ]);
+      await reject(insert, [
+        randomUUID(),
+        tenant,
+        fee,
+        3,
+        `${year}-03-02`,
+        actor,
+      ]);
+      await reject(insert, [randomUUID(), tenant, fee, 3, "2000-01-01", actor]);
+      await client.query("UPDATE fee_plans SET status='ARCHIVED' WHERE id=$1", [
+        fee,
+      ]);
+      await reject(insert, [
+        randomUUID(),
+        tenant,
+        fee,
+        3,
+        `${year}-03-01`,
+        actor,
+      ]);
+      expect(
+        (
+          await client.query(
+            "SELECT amount_vnd::text FROM fee_plans WHERE id=$1",
+            [fee],
+          )
+        ).rows[0].amount_vnd,
+      ).toBe("9007199254740993");
+      expect(
+        (await client.query("SELECT count(*)::int AS n FROM fee_plan_terms"))
+          .rows[0].n,
+      ).toBe(1);
+    } finally {
+      await client.query("ROLLBACK");
+      await client.end();
+    }
+  });
   it("upgrades assessment actor boundaries without fabricating legacy names and rejects orphan or duplicate history", async () => {
     const connectionString = process.env.DATABASE_URL;
     if (

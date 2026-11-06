@@ -8,6 +8,24 @@ actual evidence. Signed native builds and physical-device acceptance are not ver
 
 ## Mobile on Windows PowerShell
 
+Use the Node24 LTS patch pinned in `.node-version` (currently24.22.2), with
+pnpm10.34.7. Node24.15.0/libuv1.51.0 can silently terminate Windows HTTP-heavy
+test workers with exit3221226505; upstream confirms the TCP-connect fix from
+24.16.0/libuv1.52.1: https://github.com/nodejs/node/issues/63620.
+The target toolchain uses24.22.2/libuv1.52.1; CI reads the same version
+file. Do not hide this failure with retries or longer test timeouts. When a
+system installation cannot be updated, an official portable runtime with its
+SHA256 checked against the versioned nodejs.org SHASUMS256.txt can be used via
+a process-local PATH; never replace another project's runtime or commit binaries.
+
+Run release verification suites sequentially on the local workstation. An
+uncached Expo/Next build plus Jest can delay a separate HTTP request beyond a
+lock-observation polling deadline. Keep the real transaction/permission
+assertions and timings intact; distinguish resource contention from an API
+failure using the isolated case and a complete serial rerun. A Vitest JSON
+`success` field from a worker-crashed partial run is insufficient: require the
+process to exit0 and every expected test to pass with no pending cases.
+
 For **Expo Go on an Android phone**, explicitly select Expo Go mode:
 
 ```powershell
@@ -90,7 +108,7 @@ all production migrations or backup/restore checks are approved.
 
 ## Windows PowerShell
 
-Node 24 and pnpm 10.34.7 are used. Install with `pnpm install --frozen-lockfile`,
+Node24.22.2 (see `.node-version`) and pnpm10.34.7 are used. Install with `pnpm install --frozen-lockfile`,
 then `pnpm db:generate` and `pnpm --filter @fluivix/server-crypto build`.
 Provide the variables in `.env.example` through your process environment or local
 secret configuration. Never commit `.env` or signing/encryption keys.

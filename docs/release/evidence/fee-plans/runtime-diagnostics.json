@@ -1,0 +1,31 @@
+{
+  "oldRuntime": {
+    "node": "24.15.0",
+    "libuv": "1.51.0",
+    "nativeExit": 3221226505,
+    "integration": {
+      "report": "docs/release/evidence/integration-2026-11-06-fee-plans-full.json",
+      "processExit": 1,
+      "passedBeforeCrash": 30,
+      "verdict": "FAIL; JSON success field alone is insufficient"
+    },
+    "browser": {
+      "report": "docs/release/evidence/e2e-2026-11-06-fee-plans-full.json",
+      "processExit": 1,
+      "passed": 39,
+      "workerFailure": 1
+    }
+  },
+  "matchingUpstreamReport": "https://github.com/nodejs/node/issues/63620",
+  "attribution": "Matching observed signature/version and confirmed upstream fix; no local crash dump attribution claimed.",
+  "patchedRuntimeIntermediate": {
+    "report": "docs/release/evidence/integration-2026-11-06-fee-plans-node24.json",
+    "processExit": 1,
+    "passed": 70,
+    "failed": 1,
+    "failure": "Staff live-lock polling deadline during simultaneous uncached builds/Metro/Jest; isolated unchanged case passes in fee-plans-lock-recheck.json. Final suites run without those competing workloads."
+  },
+  "assertionsTimeoutsRetries": "unchanged",
+  "finalIntegration": "docs/release/evidence/integration-2026-11-06-fee-plans-verified.json",
+  "finalBrowser": "docs/release/evidence/e2e-2026-11-06-fee-plans-verified.json"
+}

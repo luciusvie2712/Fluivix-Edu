@@ -2,6 +2,10 @@
 
 Nguồn nghiệp vụ: `docs/FLUIVIXEDU_MASTER_SPEC.md` ngày 23/10/2026, bản đề xuất cần discovery/UAT trước thương mại.
 
+Mã nguồn dự án dùng Node24 LTS theo `.node-version` (24.22.2) và pnpm10.34.7.
+Xem `DEVELOPMENT.md` về bản vá lỗi tiến trình kiểm thử Windows; không dùng
+Node24.15.0 cho vòng xác minh phát hành.
+
 ## Kết quả của bộ tài liệu
 
 - **Hai lệnh điều phối**: `prompts/PROMPT_01_WEB_ADMIN.md` (backend + tenant web + platform web) và `prompts/PROMPT_02_MOBILE_APP.md` (Expo teacher/student/guardian + tích hợp và release verification).

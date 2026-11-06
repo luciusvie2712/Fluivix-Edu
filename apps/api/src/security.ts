@@ -54,6 +54,7 @@ export const permissions = {
     "finance.invoice.write",
     "finance.payment.write",
     "guardian.manage",
+    "finance.fee.write",
   ],
   manager: [
     "staff.read",
@@ -84,6 +85,7 @@ export const permissions = {
     "finance.read",
     "finance.invoice.write",
     "finance.payment.write",
+    "finance.fee.write",
   ],
   teacher: [
     "teaching.read.assigned",

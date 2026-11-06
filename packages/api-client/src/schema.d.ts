@@ -1147,9 +1147,57 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    get: operations["FinanceController_fees"];
     put?: never;
     post: operations["FinanceController_fee"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/fee-plans/classes": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["FinanceController_feeClasses"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/fee-plans/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["FinanceController_feeDetail"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["FinanceController_updateFee"];
+    trace?: never;
+  };
+  "/api/v1/fee-plans/{id}/terms": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["FinanceController_feeTerms"];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -2870,10 +2918,58 @@ export interface components {
       validTo?: string;
       id: string;
       status: string;
+      version: number;
+      classCode: string;
+      className: string;
+      effectiveName: string;
+      effectiveAmountVnd: string;
+      /** Format: date */
+      termsAsOf: string;
     };
     FeePlanResponse: {
       data: components["schemas"]["FeePlanView"];
       meta: components["schemas"]["MetaDto"];
+    };
+    FeePlansResponse: {
+      data: components["schemas"]["FeePlanView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    FinanceClassView: {
+      id: string;
+      code: string;
+      name: string;
+    };
+    FinanceClassesResponse: {
+      data: components["schemas"]["FinanceClassView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    FeePlanTermView: {
+      id: string;
+      version: number;
+      /** Format: date */
+      effectiveFrom: string;
+      name: string;
+      amountVnd: string;
+      reason: string;
+      actorUserId: string;
+      actorDisplayName: string;
+      traceId: string;
+      recordedAt: string;
+    };
+    FeePlanTermsResponse: {
+      data: components["schemas"]["FeePlanTermView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    FeePlanTermInput: {
+      version: number;
+      /** Format: date */
+      effectiveFrom: string;
+      name: string;
+      amountVnd: string;
+      reason: string;
     };
     InvoiceRunInput: {
       /** Format: uuid */
@@ -8409,6 +8505,71 @@ export interface operations {
       };
     };
   };
+  FinanceController_fees: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        classId?: string;
+        status?: "ACTIVE" | "ARCHIVED";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FeePlansResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
   FinanceController_fee: {
     parameters: {
       query?: never;
@@ -8428,6 +8589,261 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["FeePlanResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  FinanceController_feeClasses: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        includeClosed?: "true" | "false";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FinanceClassesResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  FinanceController_feeDetail: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FeePlanResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  FinanceController_updateFee: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["FeePlanTermInput"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FeePlanResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  FinanceController_feeTerms: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FeePlanTermsResponse"];
         };
       };
       401: {

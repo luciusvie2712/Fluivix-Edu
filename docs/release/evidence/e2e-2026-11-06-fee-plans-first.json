@@ -1,0 +1,261 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "D:\\my-project\\fluivixedu\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "fee-plans.spec.ts"
+    ],
+    "configFile": "D:\\my-project\\fluivixedu\\playwright.config.ts",
+    "rootDir": "D:/my-project/fluivixedu/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/my-project/fluivixedu/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tenant-chromium",
+        "name": "tenant-chromium",
+        "testDir": "D:/my-project/fluivixedu/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\my-project\\fluivixedu\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "tenant-chromium",
+        "testDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "snapshotDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:3000",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "browserName": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "tenant-chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/release/evidence/e2e-2026-11-06-fee-plans-first.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm exec tsx tooling/e2e-server.ts",
+      "url": "http://localhost:3000/login",
+      "timeout": 60000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "fee-plans.spec.ts",
+      "file": "fee-plans.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "accountant creates real zero/monthly and course fee plans and confirms exact future terms",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4630,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T13:54:46.181Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "68061340a0dd5ccc9783-3763a33511ff431a6ab0",
+          "file": "fee-plans.spec.ts",
+          "line": 106,
+          "column": 5
+        },
+        {
+          "title": "fee plan conflict retains the entered future amount until explicit reload",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6881,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T13:54:51.975Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "68061340a0dd5ccc9783-7706a4fe2e210f081ad9",
+          "file": "fee-plans.spec.ts",
+          "line": 154,
+          "column": 5
+        },
+        {
+          "title": "fee plan directory and terms forms have responsive accessible keyboard and reduced-motion feedback",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 13357,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T13:54:58.899Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "68061340a0dd5ccc9783-574dc53a413501756bcb",
+          "file": "fee-plans.spec.ts",
+          "line": 211,
+          "column": 5
+        },
+        {
+          "title": "fee plans show empty/read-only/missing states and manager cannot enter configuration",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6085,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T13:55:12.283Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "68061340a0dd5ccc9783-48b97fac10047ea61cfd",
+          "file": "fee-plans.spec.ts",
+          "line": 269,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-06T13:54:32.279Z",
+    "duration": 47642.963,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

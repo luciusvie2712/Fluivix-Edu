@@ -1,5 +1,19 @@
 # Security report — current assessment
 
+Fee plans/W13 security delta (2026-11-06): owner/accountant configuration uses
+finance.fee.write, independent of manager invoice permission. Class options are
+minimal and tenant-scoped; no teaching administration access is granted. SQL023
+binds future terms to the tenant/plan/actor membership, requires future month or
+unissued-course boundaries, and prevents history/plan deletion. Used original
+prices and issued invoice items remain immutable. All six financial mutation
+paths recheck active actor/session/role/subscription after the canonical tenant
+lock, including idempotent requests. Real waiting-revocation negatives and the
+full71 integration suite pass on Node24.22.2; final browser/remote gates are tracked
+separately. Runtime24.15.0 native Windows failures are preserved with process
+exit codes, never accepted from the partial Vitest JSON success flag. Matching
+upstream fix and official portable artifact checksum are recorded; no local
+crash-dump attribution or independent security approval is claimed.
+
 Assessment/W12 local security evidence (2026-11-06): creator, grader and history
 actor are bound to the same tenant membership in forward migration022; existing
 append-only history and published-score SQL guards are retained. All four score

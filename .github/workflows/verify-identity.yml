@@ -48,7 +48,7 @@ jobs:
           version: 10.34.7
       - uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version-file: .node-version
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm db:generate

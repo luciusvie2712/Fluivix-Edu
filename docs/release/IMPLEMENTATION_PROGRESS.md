@@ -2,12 +2,13 @@
 
 ## Latest checkpoint — 2026-11-06
 
-Remote main4093b08 has verified successful CI42218621304. Staff/W17,
-Guardian/W06 and Teacher/W07 are technically verified locally and on exact-SHA CI.
-Assessment/W12 local gate passes:66 integration,36 browser,49 unit,15 mobile,
-all builds/types/lint/format, native API smoke and stable147-operation contract.
-See evidence/assessments/verification.json. Assessment commit/exact-SHA CI pending.
-Remaining Finance, Dashboard/Reports/Audit, Privacy/Notifications and
+Remote main7215008 has verified successful CI42227073662. Staff/W17,
+Guardian/W06, Teacher/W07 and Assessment/W12 are technically verified locally
+and on exact-SHA CI. Fee plans/W13 local gate passes on Node24.22.2:71 integration,
+40 browser,49 unit,15 mobile, uncached builds/types, lint/format, native API smoke
+and stable152-operation contract. See evidence/fee-plans/verification.json;
+Fee-plan commit/exact-SHA CI pending. Remaining Invoice/Payment/Receivables,
+Dashboard/Reports/Audit, Privacy/Notifications and
 M4 work are incomplete. Overall release BLOCKED. Older dated sections below retain
 historical findings and failed attempts; they are not current acceptance verdicts.
 
@@ -307,3 +308,12 @@ Owner availability clarification (2026-11-06): both service and SQL count only o
 - Three skill sources/five IDs byte-verified; existing framed-sheet direction retained. Pro Max inline/error focus recommendations and shared accessible reduced-motion-safe form/button behavior applied; real360/768/1024/1440 axe/Taste and keyboard editor checks pass, eight viewport images viewed. Historical earlier-module screenshots archived then restored to their original commits; failed diagnostic report remains separate.
 - Initial concurrency browser fixture reused rotating refresh cookies, invalidating an older tab. Two independent actual sessions now verify stale409/input preservation without weakening auth; multi-tab restoration remains a separate auth-hardening limitation. A new submitDisabled control preserves editable pristine grade fields while disabling only the save button; full regression verifies shared forms.
 - Assessment remote commit/exact-SHA CI NOT_VERIFIED until observed. Finance/report/dashboard/audit/privacy/notifications and remaining P0/M4 gates remain open. Release BLOCKED; no staging/legal/signed-device/push/store approval or production readiness inferred.
+
+
+### Fee plans/W13 local acceptance gate PASS (2026-11-06)
+- Operational fee-plan directory/detail with scoped search/status/class/paging, real minimal class options, zero/monthly/course creation, exact integer VND and reasoned confirmed future terms/history. Owner/accountant finance.fee.write follows the master configuration policy; manager invoice permissions remain separate. Closed classes are available for historical filters but cannot receive new fee plans.
+- Forward023 retains existing used-fee/issued invoice immutability and stable fee-plan/period run uniqueness. Append-only actor/time/reason/version terms apply only to applicable new runs; same-date higher version wins. Monthly changes start on future month boundaries; course terms apply from the future course start before issue. Legacy rehearsal preserves original >2^53 amount and creates no fictional edit history. All six financial writes recheck live actor/session/role/subscription after tenant lock; waiting-revocation negatives commit no changes.
+- Final Node24.22.2/libuv1.52.1 checks PASS:8 uncached build and8 uncached typecheck tasks plus tools tsc, lint/format,49 unit,15 mobile Jest,71 PostgreSQL/Redis integration,40 browser E2E with0skip/flaky, actual mobile API smoke, Expo alignment, stable152-operation generated contract, frozen offline install, audit0HIGH/0CRITICAL (1LOW/4MODERATE tracked), secret screening with values withheld. Reports/source hashes: evidence/fee-plans/verification.json. Applied001..022 untouched.
+- Node24.15.0 workers silently exited3221226505 in full integration/browser runs. Matching upstream nodejs/node#63620 confirms a Windows TCP/libuv fix from24.16; no local dump attribution claimed. Official latest24 LTS24.22.2 ZIP checksum verified, used through process-only.cache tools; global runtime/PATH unchanged. Root.node-version/engines and CI pin the same patch. Failed30-test/39-browser reports remain FAIL regardless of a partial Vitest JSON success field. A subsequent70/71 run under simultaneous builds/Metro/Jest hit an existing Staff lock-poll deadline; unchanged isolated case and final serial full suite pass. No assertion/timeout/retry relaxation.
+- Three skill sources/five IDs verified; Pro Max confirmation/outcome guidance, existing framed-sheet direction and shared reduced-motion-safe focus/press feedback applied. Real360/768/1024/1440 axe/Taste/keyboard checks pass and eight final images viewed. Any43px section gap WARN is retained with rationale, no waiver. Earlier-module regression screenshots archived then restored to historical commit evidence.
+- Fee-plan remote commit/exact-SHA CI NOT_VERIFIED until observed. W14/W15 invoice preview/list/detail/payment/receivables/print receipts and dashboard/reports/audit/privacy/notifications remain executable work. Overall release BLOCKED; no external staging/legal/signed-device/push/store approval inferred.

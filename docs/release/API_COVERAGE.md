@@ -1,6 +1,6 @@
 # API contract coverage
 
-Generated inventory: 147 actual OpenAPI operations; 134
+Generated inventory: 152 actual OpenAPI operations; 134
 method/path intents in the master specification (includes non-P0 design intent).
 Path parameter names are normalized when comparing. MATCH means route metadata
 exists; it does not verify DTOs, permission, object scope or runtime behavior.
@@ -98,10 +98,10 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
 | GET | `/assessments/{id}/results` | MATCH |
 | PUT | `/assessments/{id}/results` | MATCH |
 | POST | `/assessments/{id}/publish` | MATCH |
-| GET | `/fee-plans` | ABSENT / REVIEW |
+| GET | `/fee-plans` | MATCH |
 | POST | `/fee-plans` | MATCH |
-| GET | `/fee-plans/{id}` | ABSENT / REVIEW |
-| PATCH | `/fee-plans/{id}` | ABSENT / REVIEW |
+| GET | `/fee-plans/{id}` | MATCH |
+| PATCH | `/fee-plans/{id}` | MATCH |
 | POST | `/invoices/preview-run` | ABSENT / REVIEW |
 | POST | `/invoices/generate-run` | MATCH |
 | GET | `/invoices` | MATCH |
@@ -145,6 +145,19 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
 
 ## Explicit contract decisions
 
+- Fee configuration is owner/accountant finance.fee.write; manager's invoice
+  permission remains separate. GET /fee-plans/classes returns minimal class
+  options without granting access to teaching administration. includeClosed=true
+  supports historical class filters; new plans still reject closed classes.
+- Forward023 retains used_fee_immutable and the stable fee-plan/period run key.
+  PATCH /fee-plans/{id} appends versioned future terms with a meaningful reason;
+  baseline fields and issued invoice items remain immutable. Monthly changes
+  start on a future month boundary; course changes precede issue and apply from
+  the course start. At equal effective dates the highest version wins. New runs
+  resolve those terms, while retries preserve actual earlier run snapshots.
+- GET /fee-plans/{id}/terms pages actual actor/time/reason history. No legacy
+  edit/actor history is backfilled. Configuration and all financial writes
+  recheck current actor/session/role/subscription after the tenant lock.
 - Assessment administration adds GET /assessments/{id}/history and /lifecycle
   with grade.write or grade.write.assigned and effective-date teacher scope;
   GET /students/{id}/grades requires staff grade.write and is PUBLISHED only.

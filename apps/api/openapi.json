@@ -6131,6 +6131,414 @@
         },
         "security": [{ "bearer": [] }],
         "tags": ["finance"]
+      },
+      "get": {
+        "operationId": "FinanceController_fees",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "classId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string", "enum": ["ACTIVE", "ARCHIVED"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FeePlansResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance"]
+      }
+    },
+    "/api/v1/fee-plans/classes": {
+      "get": {
+        "operationId": "FinanceController_feeClasses",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "includeClosed",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string", "enum": ["true", "false"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinanceClassesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance"]
+      }
+    },
+    "/api/v1/fee-plans/{id}": {
+      "get": {
+        "operationId": "FinanceController_feeDetail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FeePlanResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance"]
+      },
+      "patch": {
+        "operationId": "FinanceController_updateFee",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FeePlanTermInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FeePlanResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance"]
+      }
+    },
+    "/api/v1/fee-plans/{id}/terms": {
+      "get": {
+        "operationId": "FinanceController_feeTerms",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeePlanTermsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance"]
       }
     },
     "/api/v1/invoices/generate-run": {
@@ -11839,7 +12247,13 @@
           "validFrom": { "type": "string", "format": "date" },
           "validTo": { "type": "string", "format": "date" },
           "id": { "type": "string" },
-          "status": { "type": "string" }
+          "status": { "type": "string" },
+          "version": { "type": "number" },
+          "classCode": { "type": "string" },
+          "className": { "type": "string" },
+          "effectiveName": { "type": "string" },
+          "effectiveAmountVnd": { "type": "string" },
+          "termsAsOf": { "type": "string", "format": "date" }
         },
         "required": [
           "classId",
@@ -11848,7 +12262,13 @@
           "amountVnd",
           "validFrom",
           "id",
-          "status"
+          "status",
+          "version",
+          "classCode",
+          "className",
+          "effectiveName",
+          "effectiveAmountVnd",
+          "termsAsOf"
         ]
       },
       "FeePlanResponse": {
@@ -11858,6 +12278,89 @@
           "meta": { "$ref": "#/components/schemas/MetaDto" }
         },
         "required": ["data", "meta"]
+      },
+      "FeePlansResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FeePlanView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "FinanceClassView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "code": { "type": "string" },
+          "name": { "type": "string" }
+        },
+        "required": ["id", "code", "name"]
+      },
+      "FinanceClassesResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FinanceClassView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "FeePlanTermView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "version": { "type": "number" },
+          "effectiveFrom": { "type": "string", "format": "date" },
+          "name": { "type": "string" },
+          "amountVnd": { "type": "string" },
+          "reason": { "type": "string" },
+          "actorUserId": { "type": "string" },
+          "actorDisplayName": { "type": "string" },
+          "traceId": { "type": "string" },
+          "recordedAt": { "type": "string" }
+        },
+        "required": [
+          "id",
+          "version",
+          "effectiveFrom",
+          "name",
+          "amountVnd",
+          "reason",
+          "actorUserId",
+          "actorDisplayName",
+          "traceId",
+          "recordedAt"
+        ]
+      },
+      "FeePlanTermsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FeePlanTermView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "FeePlanTermInput": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number" },
+          "effectiveFrom": { "type": "string", "format": "date" },
+          "name": { "type": "string" },
+          "amountVnd": { "type": "string" },
+          "reason": { "type": "string" }
+        },
+        "required": ["version", "effectiveFrom", "name", "amountVnd", "reason"]
       },
       "InvoiceRunInput": {
         "type": "object",

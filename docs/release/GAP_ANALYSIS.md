@@ -1,5 +1,17 @@
 # Baseline P0 gap analysis
 
+Fee plans/W13 current delta (2026-11-06): real operational list/detail/create,
+minimal class picker, future price/name terms/history, exact VND, confirmation,
+optimistic conflicts and readonly/role states implemented. Forward023 keeps
+original issued terms and stable fee/period obligations; local legacy rehearsal
+and full71 integration plus40-browser regression pass on Node24.22.2.
+Fee-plan commit/exact-SHA CI remain pending.
+Windows native Node24.15 failures prompted a checksum-verified portable24.22.2
+runtime and CI/.node-version pin; failed diagnostics remain separate. W14/W15
+invoice preview/list/detail, payments/receivables/receipts and remaining business
+modules still require implementation. Assessment7215008 exact CI42227073662
+SUCCESS is verified; overall release remains BLOCKED.
+
 Assessment/W12 current delta (2026-11-06): class-scoped list/create and Web
 draft editor, explicit publication/correction, published student-detail panel,
 paged before/after/lifecycle history, exact decimal validation and optimistic

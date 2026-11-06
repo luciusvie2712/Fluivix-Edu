@@ -138,6 +138,7 @@ model Membership {
   createdAssessments Assessment[] @relation("AssessmentCreator")
   gradedResults AssessmentResult[] @relation("AssessmentGrader")
   gradeActions GradeChange[] @relation("GradeActor")
+  feeTerms FeePlanTerm[]
 
   @@unique([tenantId, userId])
   @@unique([tenantId, id])
@@ -532,9 +533,33 @@ model FeePlan {
   validFrom    DateTime  @map("valid_from") @db.Date
   validTo      DateTime? @map("valid_to") @db.Date
   status       String    @default("ACTIVE") @db.VarChar(20)
+  version      Int       @default(1)
+  terms        FeePlanTerm[]
 
   @@unique([tenantId, id])
   @@map("fee_plans")
+}
+
+model FeePlanTerm {
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  feePlanId String @map("fee_plan_id") @db.Uuid
+  version Int
+  effectiveFrom DateTime @map("effective_from") @db.Date
+  name String @db.VarChar(150)
+  amountVnd BigInt @map("amount_vnd")
+  reason String @db.VarChar(500)
+  createdBy String @map("created_by") @db.Uuid
+  actorDisplayName String @map("actor_display_name") @db.VarChar(150)
+  traceId String @map("trace_id") @db.VarChar(80)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  plan FeePlan @relation(fields:[tenantId,feePlanId],references:[tenantId,id],onDelete:Restrict,onUpdate:NoAction)
+  actor Membership @relation(fields:[tenantId,createdBy],references:[tenantId,userId],onDelete:Restrict,onUpdate:NoAction)
+
+  @@unique([tenantId,id])
+  @@unique([tenantId,feePlanId,version])
+  @@index([tenantId,feePlanId,effectiveFrom(sort: Desc),version(sort: Desc)],map:"fee_terms_effective_idx")
+  @@map("fee_plan_terms")
 }
 
 model InvoiceRun {

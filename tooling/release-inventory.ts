@@ -43,7 +43,7 @@ const evidence: Record<string, string> = {
   CL: "apps/api/src/teaching.*; infra/prisma/migrations/202610240016_schedule_rules; tests/integration/teaching-cases.ts",
   AT: "apps/api/src/teaching.*; apps/mobile/app; tests/integration/teaching-cases.ts",
   GR: "apps/api/src/grades.ts; grade-history.dto.ts; migration022; apps/web/components/assessment-workspace.tsx; apps/mobile/app; tests/integration/assessment-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/assessments.spec.ts",
-  FI: "apps/api/src/finance.*; apps/mobile/app; tests/integration/teaching-cases.ts",
+  FI: "apps/api/src/finance.*; migration023; apps/web/components/fee-plan-workspace.tsx; apps/mobile/app; tests/integration/fee-plan-cases.ts; migration-cases.ts; teaching-cases.ts; tests/e2e/fee-plans.spec.ts",
   NT: "apps/api/src/notifications.ts; mobile-dashboard.ts; apps/worker/src/notifications.ts; tests/integration/teaching-cases.ts",
 };
 const acceptance: Record<string, [string, string]> = {
@@ -219,6 +219,19 @@ ${desired.map(({ method, path }) => `| ${method} | \`${path}\` | ${implemented.h
 
 ## Explicit contract decisions
 
+- Fee configuration is owner/accountant finance.fee.write; manager's invoice
+  permission remains separate. GET /fee-plans/classes returns minimal class
+  options without granting access to teaching administration. includeClosed=true
+  supports historical class filters; new plans still reject closed classes.
+- Forward023 retains used_fee_immutable and the stable fee-plan/period run key.
+  PATCH /fee-plans/{id} appends versioned future terms with a meaningful reason;
+  baseline fields and issued invoice items remain immutable. Monthly changes
+  start on a future month boundary; course changes precede issue and apply from
+  the course start. At equal effective dates the highest version wins. New runs
+  resolve those terms, while retries preserve actual earlier run snapshots.
+- GET /fee-plans/{id}/terms pages actual actor/time/reason history. No legacy
+  edit/actor history is backfilled. Configuration and all financial writes
+  recheck current actor/session/role/subscription after the tenant lock.
 - Assessment administration adds GET /assessments/{id}/history and /lifecycle
   with grade.write or grade.write.assigned and effective-date teacher scope;
   GET /students/{id}/grades requires staff grade.write and is PUBLISHED only.

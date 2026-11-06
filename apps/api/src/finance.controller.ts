@@ -5,6 +5,7 @@ import {
   Headers,
   Param,
   ParseUUIDPipe,
+  Patch,
   Post,
   Query,
   Req,
@@ -24,6 +25,12 @@ import type { ApiRequest } from "./http";
 import { ErrorResponse } from "./response.dto";
 import {
   FeePlanInput,
+  FeeClassQuery,
+  FeePlanQuery,
+  FeePlanTermInput,
+  FeePlansResponse,
+  FeePlanTermsResponse,
+  FinanceClassesResponse,
   FeePlanResponse,
   FinanceQuery,
   FinanceReason,
@@ -36,6 +43,7 @@ import {
   PaymentsResponse,
 } from "./finance.dto";
 import { FinanceService } from "./finance.service";
+import { ListDto } from "./auth.dto";
 @ApiTags("finance")
 @ApiBearerAuth()
 @UseGuards(AccessGuard)
@@ -48,10 +56,48 @@ import { FinanceService } from "./finance.service";
 export class FinanceController {
   constructor(private service: FinanceService) {}
   @Post("fee-plans")
-  @TenantPermission("finance.invoice.write")
+  @TenantPermission("finance.fee.write")
   @ApiCreatedResponse({ type: FeePlanResponse })
   fee(@Req() r: ApiRequest, @Body() dto: FeePlanInput) {
     return this.service.fee(requestClaims(r), dto, r.traceId);
+  }
+  @Get("fee-plans")
+  @TenantPermission("finance.fee.write")
+  @ApiOkResponse({ type: FeePlansResponse })
+  fees(@Req() r: ApiRequest, @Query() q: FeePlanQuery) {
+    return this.service.fees(requestClaims(r), q);
+  }
+  @Get("fee-plans/classes")
+  @TenantPermission("finance.fee.write")
+  @ApiOkResponse({ type: FinanceClassesResponse })
+  feeClasses(@Req() r: ApiRequest, @Query() q: FeeClassQuery) {
+    return this.service.feeClasses(requestClaims(r), q);
+  }
+  @Get("fee-plans/:id")
+  @TenantPermission("finance.fee.write")
+  @ApiOkResponse({ type: FeePlanResponse })
+  feeDetail(@Req() r: ApiRequest, @Param("id", ParseUUIDPipe) id: string) {
+    return this.service.feeDetail(requestClaims(r), id);
+  }
+  @Get("fee-plans/:id/terms")
+  @TenantPermission("finance.fee.write")
+  @ApiOkResponse({ type: FeePlanTermsResponse })
+  feeTerms(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Query() q: ListDto,
+  ) {
+    return this.service.feeTerms(requestClaims(r), id, q);
+  }
+  @Patch("fee-plans/:id")
+  @TenantPermission("finance.fee.write")
+  @ApiOkResponse({ type: FeePlanResponse })
+  updateFee(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() dto: FeePlanTermInput,
+  ) {
+    return this.service.updateFee(requestClaims(r), id, dto, r.traceId);
   }
   @Post("invoices/generate-run")
   @TenantPermission("finance.invoice.write")

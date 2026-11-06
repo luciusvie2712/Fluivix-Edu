@@ -1,22 +1,30 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
 } from "@nestjs/common";
-import { Prisma, type Invoice, type Payment } from "@prisma/client";
+import {
+  Prisma,
+  type FeePlan,
+  type Invoice,
+  type Payment,
+} from "@prisma/client";
 import { createHash, randomUUID } from "node:crypto";
 import { vndSchema } from "@fluivix/contracts";
 import { Db } from "./db";
 import { TeachingService } from "./teaching.service";
 import type { Claims } from "./security";
 import { Paged } from "./http";
-import {
-  requirePlanFeature,
-  requireSubscriptionWrite,
-} from "./subscription-policy";
+import { requirePlanFeature } from "./subscription-policy";
+import { lockTenantActor } from "./tenant-actor";
+import { ListDto } from "./auth.dto";
 import {
   FeePlanInput,
+  FeeClassQuery,
+  FeePlanQuery,
+  FeePlanTermInput,
   FinanceQuery,
   InvoiceRunInput,
   PaymentInput,
@@ -51,10 +59,261 @@ export class FinanceService {
     private db: Db,
     private teaching: TeachingService,
   ) {}
-  private async lock(tx: Tx, c: Claims) {
-    await tx.$queryRaw`SELECT id FROM tenants WHERE id=${c.tenantId!}::uuid FOR UPDATE`;
-    await requireSubscriptionWrite(tx, c.tenantId!);
+  private tenant(c: Claims) {
+    if (!c.tenantId) throw new ForbiddenException();
+    return c.tenantId;
+  }
+  private async lock(tx: Tx, c: Claims, permission = "finance.invoice.write") {
+    const actor = await lockTenantActor(tx, c, permission);
     await requirePlanFeature(tx, c.tenantId!, "finance");
+    return actor;
+  }
+  private today() {
+    return new Intl.DateTimeFormat("sv-SE", {
+      timeZone: "Asia/Ho_Chi_Minh",
+    }).format(new Date());
+  }
+  private async feeViews(tx: Tx, c: Claims, rows: FeePlan[]) {
+    const today = this.today();
+    const classes = await tx.educationClass.findMany({
+      where: {
+        tenantId: this.tenant(c),
+        id: { in: rows.map((r) => r.classId) },
+      },
+      select: { id: true, code: true, name: true },
+    });
+    return Promise.all(
+      rows.map(async (row) => {
+        const cls = classes.find((v) => v.id === row.classId);
+        if (!cls)
+          throw new ConflictException("Cần kiểm tra phạm vi lớp của biểu phí.");
+        const term = await this.effectiveTerms(
+          tx,
+          row,
+          new Date(today + "T00:00:00Z"),
+        );
+        return {
+          id: row.id,
+          classId: row.classId,
+          classCode: cls.code,
+          className: cls.name,
+          name: row.name,
+          billingModel: row.billingModel,
+          amountVnd: row.amountVnd.toString(),
+          validFrom: row.validFrom.toISOString().slice(0, 10),
+          ...(row.validTo
+            ? { validTo: row.validTo.toISOString().slice(0, 10) }
+            : {}),
+          status: row.status,
+          version: row.version,
+          effectiveName: term.name,
+          effectiveAmountVnd: term.amountVnd.toString(),
+          termsAsOf: today,
+        };
+      }),
+    );
+  }
+  private async effectiveTerms(tx: Tx, fee: FeePlan, periodStart: Date) {
+    const term = await tx.feePlanTerm.findFirst({
+      where: {
+        tenantId: fee.tenantId,
+        feePlanId: fee.id,
+        effectiveFrom: { lte: periodStart },
+      },
+      orderBy: [{ effectiveFrom: "desc" }, { version: "desc" }],
+    });
+    return term ?? fee;
+  }
+  async feeClasses(c: Claims, q: FeeClassQuery) {
+    return this.db.$transaction(
+      async (tx) => {
+        const where = {
+          tenantId: this.tenant(c),
+          ...(q.includeClosed === "true"
+            ? {}
+            : { status: { in: ["DRAFT", "ACTIVE"] } }),
+          ...(q.search
+            ? {
+                OR: [
+                  {
+                    name: { contains: q.search, mode: "insensitive" as const },
+                  },
+                  {
+                    code: { contains: q.search, mode: "insensitive" as const },
+                  },
+                ],
+              }
+            : {}),
+        };
+        const [rows, total] = await Promise.all([
+          tx.educationClass.findMany({
+            where,
+            select: { id: true, code: true, name: true },
+            orderBy: [{ name: "asc" }, { id: "asc" }],
+            skip: (q.page - 1) * q.limit,
+            take: q.limit,
+          }),
+          tx.educationClass.count({ where }),
+        ]);
+        return new Paged(rows, {
+          page: q.page,
+          limit: q.limit,
+          total,
+          totalPages: Math.ceil(total / q.limit),
+        });
+      },
+      { isolationLevel: "RepeatableRead" },
+    );
+  }
+  async fees(c: Claims, q: FeePlanQuery) {
+    return this.db.$transaction(
+      async (tx) => {
+        const where = {
+          tenantId: this.tenant(c),
+          ...(q.classId ? { classId: q.classId } : {}),
+          ...(q.status ? { status: q.status } : {}),
+          ...(q.search
+            ? { name: { contains: q.search, mode: "insensitive" as const } }
+            : {}),
+        };
+        const [rows, total] = await Promise.all([
+          tx.feePlan.findMany({
+            where,
+            orderBy: [{ name: "asc" }, { id: "asc" }],
+            skip: (q.page - 1) * q.limit,
+            take: q.limit,
+          }),
+          tx.feePlan.count({ where }),
+        ]);
+        return new Paged(await this.feeViews(tx, c, rows), {
+          page: q.page,
+          limit: q.limit,
+          total,
+          totalPages: Math.ceil(total / q.limit),
+        });
+      },
+      { isolationLevel: "RepeatableRead" },
+    );
+  }
+  private async scopedFee(tx: Tx, c: Claims, id: string) {
+    const row = await tx.feePlan.findFirst({
+      where: { tenantId: this.tenant(c), id },
+    });
+    if (!row) throw new NotFoundException("Không tìm thấy biểu phí.");
+    return row;
+  }
+  async feeDetail(c: Claims, id: string) {
+    return this.db.$transaction(
+      async (tx) =>
+        (await this.feeViews(tx, c, [await this.scopedFee(tx, c, id)]))[0]!,
+      { isolationLevel: "RepeatableRead" },
+    );
+  }
+  async feeTerms(c: Claims, id: string, q: ListDto) {
+    return this.db.$transaction(
+      async (tx) => {
+        await this.scopedFee(tx, c, id);
+        const where = { tenantId: c.tenantId!, feePlanId: id };
+        const [rows, total] = await Promise.all([
+          tx.feePlanTerm.findMany({
+            where,
+            orderBy: [{ version: "desc" }],
+            skip: (q.page - 1) * q.limit,
+            take: q.limit,
+          }),
+          tx.feePlanTerm.count({ where }),
+        ]);
+        return new Paged(
+          rows.map((r) => ({
+            id: r.id,
+            version: r.version,
+            effectiveFrom: r.effectiveFrom.toISOString().slice(0, 10),
+            name: r.name,
+            amountVnd: r.amountVnd.toString(),
+            reason: r.reason,
+            actorUserId: r.createdBy,
+            actorDisplayName: r.actorDisplayName,
+            traceId: r.traceId,
+            recordedAt: r.createdAt.toISOString(),
+          })),
+          {
+            page: q.page,
+            limit: q.limit,
+            total,
+            totalPages: Math.ceil(total / q.limit),
+          },
+        );
+      },
+      { isolationLevel: "RepeatableRead" },
+    );
+  }
+  async updateFee(
+    c: Claims,
+    id: string,
+    input: FeePlanTermInput,
+    traceId: string,
+  ) {
+    const amountVnd = money(input.amountVnd),
+      reason = input.reason.trim();
+    if (reason.length < 10)
+      throw new UnprocessableEntityException(
+        "Lý do cần ít nhất 10 ký tự sau khi bỏ khoảng trắng.",
+      );
+    return this.db.$transaction(async (tx) => {
+      const actor = await this.lock(tx, c, "finance.fee.write"),
+        row = await this.scopedFee(tx, c, id);
+      if (row.version !== input.version)
+        throw new ConflictException("VERSION_CONFLICT: biểu phí đã thay đổi.");
+      if (row.status !== "ACTIVE")
+        throw new ConflictException("Biểu phí không còn hoạt động.");
+      const from = row.validFrom.toISOString().slice(0, 10),
+        to = row.validTo?.toISOString().slice(0, 10);
+      if (
+        input.effectiveFrom <= this.today() ||
+        input.effectiveFrom < from ||
+        (to && input.effectiveFrom > to)
+      )
+        throw new UnprocessableEntityException(
+          "Điều khoản phải có hiệu lực trong tương lai và trong thời hạn biểu phí.",
+        );
+      if (
+        row.billingModel === "MONTHLY" &&
+        !input.effectiveFrom.endsWith("-01")
+      )
+        throw new UnprocessableEntityException(
+          "Biểu phí tháng thay đổi từ ngày đầu tháng; không tự động tính phí lẻ.",
+        );
+      if (
+        row.billingModel === "COURSE" &&
+        (input.effectiveFrom !== from ||
+          (await tx.invoiceRun.count({
+            where: { tenantId: c.tenantId!, feePlanId: id },
+          })))
+      )
+        throw new ConflictException(
+          "Biểu phí khóa chỉ thay đổi trước khi phát hành và áp dụng toàn khóa.",
+        );
+      const next = await tx.feePlan.update({
+        where: { id },
+        data: { version: { increment: 1 } },
+      });
+      await tx.feePlanTerm.create({
+        data: {
+          tenantId: c.tenantId!,
+          feePlanId: id,
+          version: next.version,
+          effectiveFrom: new Date(input.effectiveFrom + "T00:00:00Z"),
+          name: input.name.trim(),
+          amountVnd,
+          reason,
+          createdBy: c.sub,
+          actorDisplayName: actor.user.displayName,
+          traceId,
+        },
+      });
+      await this.audit(tx, c, "fee.future_terms.recorded", id, traceId, reason);
+      return (await this.feeViews(tx, c, [next]))[0]!;
+    });
   }
   private async audit(
     tx: Tx,
@@ -129,16 +388,18 @@ export class FinanceService {
     if (input.validTo && input.validTo < input.validFrom)
       throw new UnprocessableEntityException("Khoảng hiệu lực không hợp lệ.");
     return this.db.$transaction(async (tx) => {
-      await this.lock(tx, c);
+      await this.lock(tx, c, "finance.fee.write");
       const cls = await tx.educationClass.findFirst({
         where: { tenantId: c.tenantId!, id: input.classId },
       });
       if (!cls) throw new NotFoundException("Không tìm thấy lớp.");
+      if (cls.status === "CLOSED")
+        throw new ConflictException("Lớp đã đóng không nhận biểu phí mới.");
       const row = await tx.feePlan.create({
         data: {
           tenantId: c.tenantId!,
           classId: input.classId,
-          name: input.name,
+          name: input.name.trim(),
           billingModel: input.billingModel,
           amountVnd,
           validFrom: new Date(input.validFrom + "T00:00:00Z"),
@@ -148,18 +409,7 @@ export class FinanceService {
         },
       });
       await this.audit(tx, c, "fee.created", row.id, traceId);
-      return {
-        id: row.id,
-        classId: row.classId,
-        name: row.name,
-        billingModel: row.billingModel,
-        amountVnd: row.amountVnd.toString(),
-        validFrom: row.validFrom.toISOString().slice(0, 10),
-        ...(row.validTo
-          ? { validTo: row.validTo.toISOString().slice(0, 10) }
-          : {}),
-        status: row.status,
-      };
+      return (await this.feeViews(tx, c, [row]))[0]!;
     });
   }
   private async invoiceView(tx: Tx, row: Invoice) {
@@ -227,6 +477,7 @@ export class FinanceService {
               "Kỳ nằm ngoài hiệu lực biểu phí.",
             );
         }
+        const terms = await this.effectiveTerms(tx, fee, from);
         let run = await tx.invoiceRun.findUnique({
           where: {
             tenantId_feePlanId_periodKey: {
@@ -267,7 +518,7 @@ export class FinanceService {
                 studentId: e.studentId,
                 runId: run.id,
                 invoiceNo: "INV-" + randomUUID(),
-                totalAmountVnd: fee.amountVnd,
+                totalAmountVnd: terms.amountVnd,
                 dueAt,
                 createdBy: c.sub,
               },
@@ -277,8 +528,8 @@ export class FinanceService {
                 tenantId: c.tenantId!,
                 invoiceId: row.id,
                 feePlanId: fee.id,
-                description: fee.name + " · " + input.periodKey,
-                totalAmountVnd: fee.amountVnd,
+                description: terms.name + " · " + input.periodKey,
+                totalAmountVnd: terms.amountVnd,
               },
             });
             await tx.outboxEvent.create({
@@ -359,7 +610,7 @@ export class FinanceService {
     if (allocated > amount)
       throw new UnprocessableEntityException("Phân bổ vượt số tiền nhận.");
     return this.db.$transaction(async (tx) => {
-      await this.lock(tx, c);
+      await this.lock(tx, c, "finance.payment.write");
       const prior = await this.prior(tx, c, "payment", key, input);
       if (prior) return prior;
       if (
@@ -569,7 +820,7 @@ export class FinanceService {
   }
   async reverse(c: Claims, id: string, reason: string, traceId: string) {
     return this.db.$transaction(async (tx) => {
-      await this.lock(tx, c);
+      await this.lock(tx, c, "finance.payment.write");
       await tx.$queryRaw`SELECT id FROM payments WHERE tenant_id=${c.tenantId!}::uuid AND id=${id}::uuid FOR UPDATE`;
       const p = await tx.payment.findFirst({
         where: { tenantId: c.tenantId!, id, status: "CONFIRMED" },

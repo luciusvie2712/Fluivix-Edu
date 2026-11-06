@@ -5,12 +5,14 @@ import {
   ArrayUnique,
   IsArray,
   IsIn,
+  IsInt,
   IsISO8601,
   IsOptional,
   IsString,
   IsUUID,
   Length,
   Matches,
+  Min,
   ValidateNested,
 } from "class-validator";
 import { Type } from "class-transformer";
@@ -18,7 +20,7 @@ import { ListDto } from "./auth.dto";
 import { MetaDto, PageView } from "./response.dto";
 export class FeePlanInput {
   @ApiProperty({ format: "uuid" }) @IsUUID() classId!: string;
-  @ApiProperty() @IsString() @Length(1, 150) name!: string;
+  @ApiProperty() @IsString() @Matches(/\S/) @Length(1, 150) name!: string;
   @ApiProperty({ enum: ["MONTHLY", "COURSE"] })
   @IsIn(["MONTHLY", "COURSE"])
   billingModel!: string;
@@ -38,9 +40,75 @@ export class FeePlanInput {
 export class FeePlanView extends FeePlanInput {
   @ApiProperty() id!: string;
   @ApiProperty() status!: string;
+  @ApiProperty() version!: number;
+  @ApiProperty() classCode!: string;
+  @ApiProperty() className!: string;
+  @ApiProperty() effectiveName!: string;
+  @ApiProperty({ type: String }) effectiveAmountVnd!: string;
+  @ApiProperty({ format: "date" }) termsAsOf!: string;
 }
 export class FeePlanResponse {
   @ApiProperty({ type: FeePlanView }) data!: FeePlanView;
+  @ApiProperty({ type: MetaDto }) meta!: MetaDto;
+}
+export class FeePlansResponse {
+  @ApiProperty({ type: [FeePlanView] }) data!: FeePlanView[];
+  @ApiProperty({ type: PageView }) page!: PageView;
+  @ApiProperty({ type: MetaDto }) meta!: MetaDto;
+}
+export class FeePlanQuery extends ListDto {
+  @ApiPropertyOptional({ format: "uuid" })
+  @IsOptional()
+  @IsUUID()
+  classId?: string;
+  @ApiPropertyOptional({ enum: ["ACTIVE", "ARCHIVED"] })
+  @IsOptional()
+  @IsIn(["ACTIVE", "ARCHIVED"])
+  status?: string;
+}
+export class FeeClassQuery extends ListDto {
+  @ApiPropertyOptional({ enum: ["true", "false"] })
+  @IsOptional()
+  @IsIn(["true", "false"])
+  includeClosed?: string;
+}
+export class FeePlanTermInput {
+  @ApiProperty() @IsInt() @Min(1) version!: number;
+  @ApiProperty({ format: "date" })
+  @Matches(/^\d{4}-\d{2}-\d{2}$/)
+  @IsISO8601({ strict: true })
+  effectiveFrom!: string;
+  @ApiProperty() @IsString() @Matches(/\S/) @Length(1, 150) name!: string;
+  @ApiProperty({ type: String })
+  @Matches(/^(0|[1-9]\d{0,18})$/)
+  amountVnd!: string;
+  @ApiProperty() @IsString() @Length(10, 500) @Matches(/\S/) reason!: string;
+}
+export class FeePlanTermView {
+  @ApiProperty() id!: string;
+  @ApiProperty() version!: number;
+  @ApiProperty({ format: "date" }) effectiveFrom!: string;
+  @ApiProperty() name!: string;
+  @ApiProperty({ type: String }) amountVnd!: string;
+  @ApiProperty() reason!: string;
+  @ApiProperty() actorUserId!: string;
+  @ApiProperty() actorDisplayName!: string;
+  @ApiProperty() traceId!: string;
+  @ApiProperty() recordedAt!: string;
+}
+export class FeePlanTermsResponse {
+  @ApiProperty({ type: [FeePlanTermView] }) data!: FeePlanTermView[];
+  @ApiProperty({ type: PageView }) page!: PageView;
+  @ApiProperty({ type: MetaDto }) meta!: MetaDto;
+}
+export class FinanceClassView {
+  @ApiProperty() id!: string;
+  @ApiProperty() code!: string;
+  @ApiProperty() name!: string;
+}
+export class FinanceClassesResponse {
+  @ApiProperty({ type: [FinanceClassView] }) data!: FinanceClassView[];
+  @ApiProperty({ type: PageView }) page!: PageView;
   @ApiProperty({ type: MetaDto }) meta!: MetaDto;
 }
 export class InvoiceRunInput {

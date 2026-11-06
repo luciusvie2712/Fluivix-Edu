@@ -1,0 +1,180 @@
+{
+  "date": "2026-11-06",
+  "module": "Fee plans/W13",
+  "localVerdict": "PASS",
+  "remoteVerdict": "NOT_VERIFIED",
+  "releaseVerdict": "BLOCKED",
+  "baseCommit": "72150084a9e8ce7ad8aad9be1392c0681bb5cac6",
+  "checks": {
+    "node": "24.22.2/libuv1.52.1; official SHA256 verified portable runtime",
+    "pnpm": "10.34.7",
+    "lint": "PASS",
+    "format": "PASS",
+    "typecheckIncludingTools": "8 uncached tasks plus tools tsc PASS",
+    "build": "8 uncached tasks PASS",
+    "unit": 49,
+    "mobileJest": 15,
+    "integration": {
+      "passed": 71,
+      "skipped": 0,
+      "report": "docs/release/evidence/integration-2026-11-06-fee-plans-verified.json"
+    },
+    "browser": {
+      "passed": 40,
+      "skipped": 0,
+      "flaky": 0,
+      "report": "docs/release/evidence/e2e-2026-11-06-fee-plans-verified.json"
+    },
+    "mobileApiSmoke": "actual client/API PASS; no device UI claim",
+    "expoAlignment": "PASS",
+    "frozenOfflineInstall": "PASS",
+    "generatedContract": {
+      "operations": 152,
+      "runtime": "24.22.2",
+      "sha256": {
+        "apps/api/openapi.json": "2C1552672BE14EB8A9FBCACD258F05A1B23F58F005105113BEB8CC136D6D09F7",
+        "packages/api-client/src/schema.d.ts": "F069DE45905CB25BA0DA6007EBA857C1FB19F7E8FE150DFE1ED94D878F1D59BA"
+      },
+      "stable": true
+    },
+    "dependencyAudit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    },
+    "localSecretScreen": "PASS; values withheld"
+  },
+  "implementation": [
+    "scoped fee directory/search/status/class paging, minimal real financial class options",
+    "owner/accountant named fee configuration permission separate from manager invoice permission",
+    "real zero/monthly/course fee creation and exact BigInt VND display",
+    "append-only reasoned future terms, optimistic version and actor snapshots",
+    "future month boundary and unissued whole-course validation in service and SQL",
+    "stable fee-plan/period obligation key across revisions; no duplicated invoices",
+    "new applicable-period runs use effective terms; prior issued invoice/price descriptions and idempotency snapshots stay unchanged",
+    "post-lock live actor/session/role/subscription check on all six financial mutation paths",
+    "023 legacy upgrade preserves >2^53 original terms without invented actor/history",
+    "conflicting editors preserve input until confirmed reload, explicit commit confirmation/outcome focus",
+    "patched Node LTS pinned in CI/.node-version/engines; global installation unchanged"
+  ],
+  "visual": {
+    "widths": [
+      360,
+      768,
+      1024,
+      1440
+    ],
+    "axe": "no violations on exercised directory/detail",
+    "keyboard": "future amount to effective date traversal",
+    "reducedMotion": "forms exercised",
+    "manualReview": "all eight final images viewed",
+    "style": "existing framed-sheet seed1920114305/blue/Arial Vietnamese",
+    "tasteFindings": [
+      {
+        "level": "WARN",
+        "id": "panel-void",
+        "message": "1 card(s) hold a blank band inside: 43px in \"Bi\u00e1\u00bb\u0192u ph\u00c3\u00ad\".",
+        "fix": "A card stretches to its neighbour only when it has content to fill. Keep a legend or a note directly under its chart (only an action or a total may sit at a stretched card's foot), let a short card keep its own height (align-items: start), and let a filtered block shrink to its rows.",
+        "width": 1440
+      }
+    ],
+    "warningDisposition": "43px semantic section separation if reported; retained without waiver or artificial filler.",
+    "skills": [
+      {
+        "source": "taste-skill",
+        "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+        "installed": "design-taste-frontend",
+        "verifiedFiles": 38,
+        "status": "PASS"
+      },
+      {
+        "source": "ui-ux-pro-max-skill",
+        "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+        "installed": "ui-ux-pro-max",
+        "verifiedFiles": 73,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "accessible-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "micro-interaction",
+        "verifiedFiles": 4,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "60fps-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      }
+    ]
+  },
+  "sourceHashes": {
+    "normalization": "CRLF to LF",
+    "sha256": {
+      ".node-version": "9185b9f67843cabfa8054f65ce47ce0b52036b0bfe07ae5a6b834d97cc127140",
+      "apps/web/app/app/finance/fee-plans/[id]/page.tsx": "312bbba3ac3a4b46c652b5ab9b8009c85a741f6bca745c114cf25700f491517c",
+      "apps/web/app/app/finance/fee-plans/page.tsx": "f5a48730fb92ce92a22947b9508cd2d04c463693edcbe928407f81f4debe9f81",
+      "apps/web/components/fee-plan-workspace.tsx": "4346ddcd0c41b39ec00c243ff0eff15db2e5d5708bd2ddec853a5bab4427589e",
+      "infra/prisma/migrations/202611060023_fee_plan_terms/migration.sql": "bbf2e8b0183afe95402bf068f3a9cb54c7d3b5ae6eadf7993a9847dfadf5822f",
+      "tests/e2e/fee-plans.spec.ts": "e21d2412d6ebc66cdf1e27e3d5e19f54586441996ee469db95ab73d4207d6543",
+      "tests/integration/fee-plan-cases.ts": "3dec0dc599af3f1738fa9a7404d311158249257efd1f296e32a590fc7664922b",
+      ".github/workflows/verify-identity.yml": "19c91345e759f619a68df6855f10f613fe6268ca0cd108687f779e9838f8b961",
+      "apps/api/openapi.json": "2c1552672be14eb8a9fbcacd258f05a1b23f58f005105113beb8cc136d6d09f7",
+      "apps/api/src/finance.controller.ts": "5394c3ee1f268d72616619dadc4d5dfe310213bc16acb6579bfa16791245d6a9",
+      "apps/api/src/finance.dto.ts": "abe05f12b6267e58459a7c5ec08de391d3b9b93431f80dcca25ad51d6d354713",
+      "apps/api/src/finance.service.ts": "36b668a5ac70b899b0e58086d3eab6b382730ee57d5615cee7ec0c1d1a0ab0bd",
+      "apps/api/src/security.ts": "a5216bcff2a5991affd32ceebd6c06ef0bf661d6d8e8483e39336771db61c33d",
+      "apps/web/app/app/layout.tsx": "a2df980469f3a06fe9365efff41589fc48b7c92f9c07cecbe500cfcd15741aff",
+      "apps/web/lib/api.ts": "5fee25ddb3a2252580241dcc80bdc147b5ffa570c88606aa30f1e29688e24c7b",
+      "infra/prisma/schema.prisma": "bddb44ef01b9af0ac181fc9eac672ed8734a4dc580e887bdad47850e37da16a1",
+      "package.json": "ef388b1e02a81b1442ea4be16ddfb5d81d54534cd2d9cbe0be547970dd6e0b17",
+      "packages/api-client/src/schema.d.ts": "f069de45905cb25ba0da6007eba857c1fb19f7e8fe150dfe1ed94d878f1d59ba",
+      "tests/integration/identity.test.ts": "eb0d7c740cbe2ba371b789dd497947ceb88483cfed48f0d7dcf7529ac0611e49",
+      "tests/integration/migration-cases.ts": "7fd12f7b046bebdfa323c6e52549a981ad0e3ae72ef67ea1cde65af4bb21bd85",
+      "tooling/release-inventory.ts": "51ad90a40ac472697039f0e5f560fa932fb568a9b41d4297acdddc721022fa89"
+    }
+  },
+  "runtimeFailures": {
+    "oldRuntime": {
+      "node": "24.15.0",
+      "libuv": "1.51.0",
+      "nativeExit": 3221226505,
+      "integration": {
+        "report": "docs/release/evidence/integration-2026-11-06-fee-plans-full.json",
+        "processExit": 1,
+        "passedBeforeCrash": 30,
+        "verdict": "FAIL; JSON success field alone is insufficient"
+      },
+      "browser": {
+        "report": "docs/release/evidence/e2e-2026-11-06-fee-plans-full.json",
+        "processExit": 1,
+        "passed": 39,
+        "workerFailure": 1
+      }
+    },
+    "matchingUpstreamReport": "https://github.com/nodejs/node/issues/63620",
+    "attribution": "Matching observed signature/version and confirmed upstream fix; no local crash dump attribution claimed.",
+    "patchedRuntimeIntermediate": {
+      "report": "docs/release/evidence/integration-2026-11-06-fee-plans-node24.json",
+      "processExit": 1,
+      "passed": 70,
+      "failed": 1,
+      "failure": "Staff live-lock polling deadline during simultaneous uncached builds/Metro/Jest; isolated unchanged case passes in fee-plans-lock-recheck.json. Final suites run without those competing workloads."
+    },
+    "assertionsTimeoutsRetries": "unchanged",
+    "finalIntegration": "docs/release/evidence/integration-2026-11-06-fee-plans-verified.json",
+    "finalBrowser": "docs/release/evidence/e2e-2026-11-06-fee-plans-verified.json"
+  },
+  "remaining": "Invoice preview/list/detail Web, payments/receivables/receipts, dashboard/reports/audit/privacy/notifications, broader class/schedule/auth hardening and external M4 staging/legal/device/push/store evidence."
+}

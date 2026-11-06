@@ -426,6 +426,68 @@ export const teaching = {
       }),
     ),
 };
+export const feePlans = {
+  list: (
+    page: number,
+    search: string,
+    status: "" | "ACTIVE" | "ARCHIVED",
+    classId: string,
+    signal?: AbortSignal,
+  ) =>
+    unwrap(
+      api.GET("/api/v1/fee-plans", {
+        params: {
+          query: {
+            page,
+            limit: 20,
+            search,
+            ...(status ? { status } : {}),
+            ...(classId ? { classId } : {}),
+          },
+        },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  classes: (
+    page: number,
+    search: string,
+    signal?: AbortSignal,
+    includeClosed = false,
+  ) =>
+    unwrap(
+      api.GET("/api/v1/fee-plans/classes", {
+        params: {
+          query: {
+            page,
+            limit: 20,
+            search,
+            ...(includeClosed ? { includeClosed: "true" } : {}),
+          },
+        },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  detail: (id: string, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/fee-plans/{id}", {
+        params: { path: { id } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  terms: (id: string, page: number, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/fee-plans/{id}/terms", {
+        params: { path: { id }, query: { page, limit: 20 } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  create: (body: components["schemas"]["FeePlanInput"]) =>
+    unwrap(api.POST("/api/v1/fee-plans", { body })),
+  update: (id: string, body: components["schemas"]["FeePlanTermInput"]) =>
+    unwrap(
+      api.PATCH("/api/v1/fee-plans/{id}", { params: { path: { id } }, body }),
+    ),
+};
 export const assessments = {
   list: (
     id: string,
