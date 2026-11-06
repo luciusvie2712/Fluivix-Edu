@@ -11,7 +11,19 @@ const titles: Record<string, string> = {
   INVOICE_ISSUED: "Có chứng từ học phí mới",
   PAYMENT_RECORDED: "Trung tâm đã ghi nhận khoản thu",
 };
-export function Inbox() {
+const deliveryLabels: Record<string, string> = {
+  PENDING: "Đang chờ gửi hoặc thử lại",
+  SENDING: "Đang gửi",
+  ACCEPTED: "Nhà cung cấp đã tiếp nhận",
+  SENT: "Đã chuyển đến dịch vụ hệ điều hành",
+  UNKNOWN: "Chưa xác định kết quả; không tự gửi lại",
+  INVALID: "Đăng ký thiết bị không còn hợp lệ",
+  FAILED: "Gửi không thành công",
+  RETRY_EXHAUSTED: "Đã dừng sau giới hạn thử lại",
+  SUPPRESSED: "Đã dừng theo quyền hoặc tùy chọn hiện tại",
+  NOT_CONFIGURED: "Push chưa được cấu hình",
+};
+function InboxView() {
   const session = useSession(),
     [page, setPage] = useState(1),
     [error, setError] = useState<unknown>(null),
@@ -31,11 +43,12 @@ export function Inbox() {
     setBusy(true);
     setError(null);
     try {
-      unwrap(
-        await session.client.api.PATCH("/api/v1/notifications/{id}/read", {
-          params: { path: { id } },
-        }),
-      );
+      if (session.canWrite)
+        unwrap(
+          await session.client.api.PATCH("/api/v1/notifications/{id}/read", {
+            params: { path: { id } },
+          }),
+        );
       if (open) await openNotification(session, id);
       else await query.refetch();
     } catch (cause) {
@@ -54,18 +67,26 @@ export function Inbox() {
           <Panel key={n.id}>
             <Body>{titles[n.type] ?? "Thông báo từ trung tâm"}</Body>
             <Body>
-              {new Date(n.createdAt).toLocaleString("vi-VN")} ·{" "}
-              {n.readAt ? "Đã đọc" : "Chưa đọc"}
+              {new Date(n.createdAt).toLocaleString("vi-VN", {
+                timeZone: session.activeTenant?.timezone ?? "Asia/Ho_Chi_Minh",
+              })}{" "}
+              · {n.readAt ? "Đã đọc" : "Chưa đọc"}
             </Body>
+            {n.deliveryStatuses.map((s) => (
+              <Body key={s.status}>
+                {deliveryLabels[s.status] ?? "Chưa có mô tả trạng thái"} ·{" "}
+                {s.count} thiết bị
+              </Body>
+            ))}
             <Button
               title="Mở nội dung được phép"
-              disabled={busy}
+              disabled={busy || !session.online}
               onPress={() => void read(n.id, true)}
             />
             {!n.readAt && (
               <Button
                 title="Đánh dấu đã đọc"
-                disabled={busy}
+                disabled={busy || !session.online || !session.canWrite}
                 onPress={() => void read(n.id)}
               />
             )}
@@ -76,6 +97,16 @@ export function Inbox() {
         <Body>Chưa có thông báo trong ngữ cảnh này.</Body>
       )}
       {error ? <Failure error={error} /> : null}
+      {!session.canWrite && (
+        <Body>
+          Chế độ chỉ đọc: vẫn mở được nội dung có quyền, chưa thể đánh dấu đã
+          đọc.
+        </Body>
+      )}
+      <Body>
+        Trạng thái push của nhà cung cấp không xác nhận nội dung đã hiển thị
+        trên điện thoại.
+      </Body>
       {page > 1 && (
         <Button title="Trang trước" onPress={() => setPage(page - 1)} />
       )}
@@ -85,4 +116,8 @@ export function Inbox() {
       <Button title="Tải lại hộp thư" onPress={() => void query.refetch()} />
     </Screen>
   );
+}
+export function Inbox() {
+  const session = useSession();
+  return <InboxView key={session.scope.join(":")} />;
 }

@@ -1,11 +1,17 @@
-import {
-  PrismaClient,
-  Prisma,
-  type Notification,
-  type Role,
-} from "@prisma/client";
+import { PrismaClient, Prisma, type Role } from "@prisma/client";
 import { openToken } from "@fluivix/server-crypto";
 import { z } from "zod";
+import {
+  claimPushDelivery,
+  retryPush,
+  sendAttemptWhere,
+} from "./notification-claims";
+import {
+  notificationAuthorized,
+  consentFor,
+  categoryEnabled,
+} from "./notification-access";
+export { notificationAuthorized } from "./notification-access";
 export const DOMAIN_EVENTS = [
   "CLASS_SCHEDULE_CHANGED",
   "ATTENDANCE_FINALIZED_ABSENT",
@@ -18,57 +24,10 @@ type Recipient = { userId: string; role: Role; studentId: string | null };
 const ticketSchema = z.object({
   data: z.object({
     status: z.enum(["ok", "error"]),
-    id: z.string().optional(),
+    id: z.string().min(1).max(150).optional(),
     details: z.object({ error: z.string().optional() }).optional(),
   }),
 });
-export async function notificationAuthorized(
-  db: Tx,
-  n: Pick<
-    Notification,
-    "tenantId" | "recipientUserId" | "recipientRole" | "subjectStudentId"
-  >,
-) {
-  const membership = await db.membership.findFirst({
-    where: {
-      tenantId: n.tenantId,
-      userId: n.recipientUserId,
-      status: "ACTIVE",
-      roles: { some: { role: n.recipientRole } },
-      user: { status: "ACTIVE" },
-      tenant: {
-        status: { notIn: ["SUSPENDED", "TERMINATED", "PENDING_ACTIVATION"] },
-      },
-    },
-  });
-  if (!membership) return false;
-  if (n.recipientRole === "guardian")
-    return (
-      !!n.subjectStudentId &&
-      !!(await db.guardianLink.findFirst({
-        where: {
-          tenantId: n.tenantId,
-          studentId: n.subjectStudentId,
-          guardianUserId: n.recipientUserId,
-          status: "ACTIVE",
-          verifiedBy: { not: null },
-          verifiedAt: { not: null },
-        },
-      }))
-    );
-  if (n.recipientRole === "student")
-    return (
-      !!n.subjectStudentId &&
-      !!(await db.student.findFirst({
-        where: {
-          tenantId: n.tenantId,
-          id: n.subjectStudentId,
-          userId: n.recipientUserId,
-        },
-      }))
-    );
-  return n.recipientRole === "teacher";
-}
 async function recipients(
   tx: Tx,
   event: {
@@ -93,7 +52,7 @@ async function recipients(
         id: event.aggregateId,
         version: event.eventVersion,
         ...(event.eventType === "ATTENDANCE_FINALIZED_ABSENT"
-          ? { status: "COMPLETED" }
+          ? { status: "COMPLETED", finalizedAt: { not: null } }
           : {}),
       },
     });
@@ -134,6 +93,7 @@ async function recipients(
         tenantId,
         id: event.aggregateId,
         status: "PUBLISHED",
+        publishedAt: { not: null },
         version: event.eventVersion,
       },
     });
@@ -199,48 +159,56 @@ export async function deliverDomainEvent(
       where: { id: eventId },
     });
     if (event.processedAt) return;
+    if (event.tenantId)
+      await tx.$queryRaw`SELECT id FROM tenants WHERE id=${event.tenantId}::uuid FOR SHARE`;
     const targets = await recipients(tx, event);
     if (targets && event.tenantId)
       for (const r of targets.rows) {
+        await tx.$queryRaw`SELECT id FROM tenant_memberships WHERE tenant_id=${event.tenantId}::uuid AND user_id=${r.userId}::uuid FOR SHARE`;
         const subject = {
           tenantId: event.tenantId,
           recipientUserId: r.userId,
           recipientRole: r.role,
           subjectStudentId: r.studentId,
+          type: event.eventType,
+          entityType: targets.entityType,
+          entityId: event.aggregateId,
         };
         if (!(await notificationAuthorized(tx, subject))) continue;
+        // New inbox events require actual current purpose/version consent.
+        // Existing historical rows are retained; relationship is not consent.
+        if (!(await consentFor(tx, subject, [r.studentId]))) continue;
         const pref = await tx.notificationPreference.findUnique({
           where: {
             tenantId_userId: { tenantId: event.tenantId, userId: r.userId },
           },
         });
-        const enabled =
-          event.eventType === "GRADE_PUBLISHED"
-            ? pref?.grades
-            : event.eventType === "ATTENDANCE_FINALIZED_ABSENT"
-              ? pref?.attendance
-              : event.eventType === "CLASS_SCHEDULE_CHANGED"
-                ? pref?.schedule
-                : pref?.finance;
-        if (enabled === false) continue;
+        if (!categoryEnabled(event.eventType, pref)) continue;
         const prior = await tx.notification.findFirst({
           where: { eventId, recipientUserId: r.userId, recipientRole: r.role },
         });
-        if (prior) continue; // one event per recipient/role, even siblings share an assessment.
+        if (prior) continue; // Role audiences project to one event per recipient.
         const n = await tx.notification.create({
           data: {
             ...subject,
             eventId,
-            type: event.eventType,
-            entityType: targets.entityType,
-            entityId: event.aggregateId,
           },
         });
         if (pref?.pushEnabled) {
           const devices = await tx.devicePushToken.findMany({
             where: { userId: r.userId, status: "ACTIVE" },
           });
-          for (const device of devices)
+          for (const device of devices) {
+            const queued = await tx.pushDelivery.findFirst({
+              where: {
+                eventId: event.id,
+                recipientUserId: r.userId,
+                deviceId: device.id,
+                canonical: true,
+              },
+              select: { id: true },
+            });
+            if (queued) continue;
             await tx.pushDelivery.create({
               data: {
                 tenantId: event.tenantId,
@@ -248,6 +216,7 @@ export async function deliverDomainEvent(
                 deviceId: device.id,
               },
             });
+          }
         }
       }
     await tx.outboxEvent.update({
@@ -262,84 +231,17 @@ export async function deliverDomainEvent(
   const deliveries = await db.pushDelivery.findMany({
     where: {
       notificationId: { in: notifications.map((n) => n.id) },
+      canonical: true,
       status: "PENDING",
       attempts: { lt: 5 },
+      OR: [{ nextAttemptAt: null }, { nextAttemptAt: { lte: new Date() } }],
     },
   });
   for (const delivery of deliveries) {
-    const n = await db.notification.findFirstOrThrow({
-        where: { tenantId: delivery.tenantId, id: delivery.notificationId },
-      }),
-      device = await db.devicePushToken.findUniqueOrThrow({
-        where: { id: delivery.deviceId },
-      });
-    const activeSession = await db.authSession.findFirst({
-      where: {
-        userId: device.userId,
-        familyId: device.familyId,
-        revokedAt: null,
-        consumedAt: null,
-        expiresAt: { gt: new Date() },
-        user: { status: "ACTIVE" },
-      },
-    });
-    const pref = await db.notificationPreference.findUnique({
-      where: {
-        tenantId_userId: { tenantId: n.tenantId, userId: n.recipientUserId },
-      },
-    });
-    const categoryEnabled =
-      n.type === "GRADE_PUBLISHED"
-        ? pref?.grades
-        : n.type === "ATTENDANCE_FINALIZED_ABSENT"
-          ? pref?.attendance
-          : n.type === "CLASS_SCHEDULE_CHANGED"
-            ? pref?.schedule
-            : pref?.finance;
-    const consent = process.env.PRIVACY_POLICY_VERSION
-      ? await db.privacyConsent.findFirst({
-          where: {
-            tenantId: n.tenantId,
-            consentingUserId: n.recipientUserId,
-            subjectStudentId: n.subjectStudentId,
-            purposeCode: "NOTIFICATIONS",
-            policyVersion: process.env.PRIVACY_POLICY_VERSION,
-            granted: true,
-            revokedAt: null,
-          },
-        })
-      : null;
-    if (
-      !consent ||
-      device.userId !== n.recipientUserId ||
-      !activeSession ||
-      device.status !== "ACTIVE" ||
-      !pref?.pushEnabled ||
-      categoryEnabled === false ||
-      !(await notificationAuthorized(db, n))
-    ) {
-      await db.pushDelivery.update({
-        where: { id: delivery.id },
-        data: { status: "SUPPRESSED" },
-      });
-      continue;
-    }
-    if (process.env.PUSH_PROVIDER !== "expo") {
-      await db.pushDelivery.update({
-        where: { id: delivery.id },
-        data: { status: "NOT_CONFIGURED" },
-      });
-      continue;
-    }
-    const claimed = await db.pushDelivery.updateMany({
-      where: { id: delivery.id, status: "PENDING" },
-      data: {
-        status: "SENDING",
-        attempts: { increment: 1 },
-        lastAttemptAt: new Date(),
-      },
-    });
-    if (!claimed.count) continue;
+    const prepared = await claimPushDelivery(db, delivery);
+    if (!prepared) continue;
+    const { n, device, attempt } = prepared;
+    const where = sendAttemptWhere(delivery.id, attempt, device.version);
     try {
       const response = await request("https://exp.host/--/api/v2/push/send", {
         method: "POST",
@@ -359,132 +261,74 @@ export async function deliverDomainEvent(
         signal: AbortSignal.timeout(10000),
       });
       if (response.status === 429 || response.status >= 500) {
-        await db.pushDelivery.update({
-          where: { id: delivery.id },
-          data: { status: "PENDING" },
-        });
-        throw new Error("PUSH_RETRYABLE_REJECTION");
+        await retryPush(
+          db,
+          delivery.id,
+          attempt,
+          device.version,
+          response.headers.get("Retry-After"),
+        );
       }
       if (!response.ok) {
-        await db.pushDelivery.update({
-          where: { id: delivery.id },
+        await db.pushDelivery.updateMany({
+          where,
           data: { status: "FAILED" },
         });
         continue;
       }
       const ticket = ticketSchema.parse(await response.json()).data;
       if (ticket.status === "error") {
+        if (ticket.details?.error === "MessageRateExceeded")
+          await retryPush(db, delivery.id, attempt, device.version);
         const invalid = ticket.details?.error === "DeviceNotRegistered";
         await db.$transaction([
-          db.pushDelivery.update({
-            where: { id: delivery.id },
+          db.pushDelivery.updateMany({
+            where,
             data: { status: invalid ? "INVALID" : "FAILED" },
           }),
           ...(invalid
             ? [
-                db.devicePushToken.update({
-                  where: { id: device.id },
+                db.devicePushToken.updateMany({
+                  where: {
+                    id: device.id,
+                    userId: n.recipientUserId,
+                    version: device.version,
+                    status: "ACTIVE",
+                  },
                   data: { status: "INVALID" },
                 }),
               ]
             : []),
         ]);
       } else if (ticket.id)
-        await db.pushDelivery.update({
-          where: { id: delivery.id },
-          data: { status: "ACCEPTED", providerRef: ticket.id },
+        await db.pushDelivery.updateMany({
+          where,
+          data: {
+            status: "ACCEPTED",
+            providerRef: ticket.id,
+            nextReceiptAt: new Date(Date.now() + 15 * 60000),
+            receiptChecks: 0,
+          },
         });
       else
-        await db.pushDelivery.update({
-          where: { id: delivery.id },
+        await db.pushDelivery.updateMany({
+          where,
           data: { status: "UNKNOWN" },
         });
     } catch (cause) {
       if (
         cause instanceof Error &&
-        cause.message === "PUSH_RETRYABLE_REJECTION"
+        ["PUSH_RETRYABLE_REJECTION", "PUSH_RETRY_EXHAUSTED"].includes(
+          cause.message,
+        )
       )
         throw cause;
       // Expo has no send-idempotency contract: uncertain acceptance must not blindly resend.
-      await db.pushDelivery.update({
-        where: { id: delivery.id },
+      await db.pushDelivery.updateMany({
+        where,
         data: { status: "UNKNOWN" },
       });
     }
   }
 }
-export async function checkPushReceipts(
-  db: PrismaClient,
-  request: typeof fetch = fetch,
-) {
-  await db.pushDelivery.updateMany({
-    where: {
-      OR: [
-        {
-          status: "SENDING",
-          lastAttemptAt: { lt: new Date(Date.now() - 60000) },
-        },
-        {
-          status: "ACCEPTED",
-          lastAttemptAt: { lt: new Date(Date.now() - 86400000) },
-        },
-      ],
-    },
-    data: { status: "UNKNOWN" },
-  });
-  if (process.env.PUSH_PROVIDER !== "expo") return;
-  const rows = await db.pushDelivery.findMany({
-    where: {
-      status: "ACCEPTED",
-      lastAttemptAt: { lt: new Date(Date.now() - 15000) },
-    },
-    take: 100,
-  });
-  if (!rows.length) return;
-  const response = await request(
-    "https://exp.host/--/api/v2/push/getReceipts",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(process.env.EXPO_ACCESS_TOKEN
-          ? { Authorization: `Bearer ${process.env.EXPO_ACCESS_TOKEN}` }
-          : {}),
-      },
-      body: JSON.stringify({ ids: rows.map((r) => r.providerRef) }),
-      signal: AbortSignal.timeout(10000),
-    },
-  );
-  if (!response.ok) return;
-  const receipts = z
-    .object({
-      data: z.record(
-        z.string(),
-        z.object({
-          status: z.enum(["ok", "error"]),
-          details: z.object({ error: z.string().optional() }).optional(),
-        }),
-      ),
-    })
-    .parse(await response.json());
-  for (const row of rows) {
-    const receipt = row.providerRef
-      ? receipts.data[row.providerRef]
-      : undefined;
-    if (!receipt) continue;
-    const invalid = receipt.details?.error === "DeviceNotRegistered";
-    await db.pushDelivery.update({
-      where: { id: row.id },
-      data: {
-        status:
-          receipt.status === "ok" ? "SENT" : invalid ? "INVALID" : "FAILED",
-      },
-    });
-    if (invalid)
-      await db.devicePushToken.update({
-        where: { id: row.deviceId },
-        data: { status: "INVALID" },
-      });
-  }
-  // A crash after claiming a send has an unknown provider outcome; never treat it as delivered.
-}
+export { checkPushReceipts } from "./notification-receipts";

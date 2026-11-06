@@ -16,7 +16,7 @@ const labels: Record<keyof Preferences, string> = {
   finance: "Học phí và phiếu thu",
   schedule: "Thay đổi lịch học",
 };
-export function Preferences() {
+function PreferencesForm() {
   const pushSupported = supportsRemotePush();
   const session = useSession(),
     [draft, setDraft] = useState<Preferences | null>(null),
@@ -136,7 +136,7 @@ export function Preferences() {
             <Switch
               accessibilityLabel={labels[key]}
               value={draft[key]}
-              disabled={busy}
+              disabled={busy || !session.canWrite}
               onValueChange={(value) => setDraft({ ...draft, [key]: value })}
             />
           </View>
@@ -146,12 +146,14 @@ export function Preferences() {
       {message ? <Body>{message}</Body> : null}
       <Button
         title="Lưu tùy chọn"
-        disabled={!draft || busy || !session.online}
+        disabled={!draft || busy || !session.online || !session.canWrite}
         onPress={() => void save()}
       />
       <Button
         title="Cho phép và đăng ký push"
-        disabled={!pushSupported || busy || !session.online}
+        disabled={
+          !pushSupported || busy || !session.online || !session.canWrite
+        }
         onPress={() => void register()}
       />
       {!pushSupported && (
@@ -162,9 +164,18 @@ export function Preferences() {
       )}
       <Button
         title="Gỡ đăng ký push thiết bị này"
-        disabled={busy || !session.online}
+        disabled={busy || !session.online || !session.canWrite}
         onPress={() => void register(true)}
       />
+      {!session.canWrite && (
+        <Body>
+          Chế độ chỉ đọc: chưa thể thay đổi tùy chọn hoặc đăng ký thiết bị.
+        </Body>
+      )}
     </Panel>
   );
+}
+export function Preferences() {
+  const session = useSession();
+  return <PreferencesForm key={session.scope.join(":")} />;
 }

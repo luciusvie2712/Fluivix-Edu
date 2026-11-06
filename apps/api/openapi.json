@@ -9090,6 +9090,14 @@
             "schema": { "type": "string" }
           }
         ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": { "type": "object", "additionalProperties": false }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "",
@@ -14966,6 +14974,17 @@
         },
         "required": ["data", "meta"]
       },
+      "NotificationDeliveryStatusView": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Provider status; SENT means provider handoff, not device display. RETRY_EXHAUSTED projects a retained legacy pending row with five attempts."
+          },
+          "count": { "type": "number", "minimum": 1 }
+        },
+        "required": ["status", "count"]
+      },
       "NotificationView": {
         "type": "object",
         "properties": {
@@ -14975,7 +14994,17 @@
           "entityId": { "type": "string" },
           "readAt": { "type": "string", "nullable": true },
           "createdAt": { "type": "string", "format": "date-time" },
-          "subjectStudentId": { "type": "string", "nullable": true }
+          "subjectStudentId": { "type": "string", "nullable": true },
+          "subjectStudentIds": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "deliveryStatuses": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NotificationDeliveryStatusView"
+            }
+          }
         },
         "required": [
           "id",
@@ -14984,7 +15013,9 @@
           "entityId",
           "readAt",
           "createdAt",
-          "subjectStudentId"
+          "subjectStudentId",
+          "subjectStudentIds",
+          "deliveryStatuses"
         ]
       },
       "NotificationsResponse": {

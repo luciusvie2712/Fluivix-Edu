@@ -10,14 +10,19 @@ export async function openNotification(
       params: { path: { id } },
     }),
   );
+  if (!["session", "assessment", "invoice", "payment"].includes(n.entityType))
+    throw new Error("Loại nội dung thông báo chưa được hỗ trợ.");
   const role = session.me?.activeRole;
   if (role === "guardian") {
-    if (!n.subjectStudentId)
-      throw new Error("Thông báo không có học viên được phép.");
+    const subjectId =
+      session.child && n.subjectStudentIds.includes(session.child.id)
+        ? session.child.id
+        : n.subjectStudentIds[0];
+    if (!subjectId) throw new Error("Thông báo không có học viên được phép.");
     const child = unwrap(
       await session.client.api.GET(
         "/api/v1/mobile/guardian/students/{id}/profile",
-        { params: { path: { id: n.subjectStudentId } } },
+        { params: { path: { id: subjectId } } },
       ),
     );
     session.selectChild(child);

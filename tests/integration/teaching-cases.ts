@@ -1949,9 +1949,12 @@ export function teachingCases(
           },
         });
       const oldProvider = process.env.PUSH_PROVIDER,
-        oldPolicy = process.env.PRIVACY_POLICY_VERSION;
+        oldPolicy = process.env.PRIVACY_POLICY_VERSION,
+        oldNotice = process.env.PRIVACY_NOTICE_URL;
       process.env.PUSH_PROVIDER = "expo";
       process.env.PRIVACY_POLICY_VERSION = "synthetic-policy-v1";
+      process.env.PRIVACY_NOTICE_URL =
+        "https://example.test/synthetic-policy-v1";
       try {
         await db.privacyConsent.create({
           data: {
@@ -2137,6 +2140,8 @@ export function teachingCases(
         else process.env.PUSH_PROVIDER = oldProvider;
         if (oldPolicy === undefined) delete process.env.PRIVACY_POLICY_VERSION;
         else process.env.PRIVACY_POLICY_VERSION = oldPolicy;
+        if (oldNotice === undefined) delete process.env.PRIVACY_NOTICE_URL;
+        else process.env.PRIVACY_NOTICE_URL = oldNotice;
       }
     });
   });

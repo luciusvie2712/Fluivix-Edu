@@ -6,11 +6,11 @@ import { mailProvider } from "./mail";
 import { deliver, MAIL_EVENTS } from "./delivery";
 import { purgeExpiredImports } from "./import-retention";
 import { enqueueSchedulePage, generateScheduledRule } from "./schedule-jobs";
+import { checkPushReceipts } from "./notifications";
 import {
-  checkPushReceipts,
-  deliverDomainEvent,
-  DOMAIN_EVENTS,
-} from "./notifications";
+  enqueueNotificationPage,
+  processNotificationJob,
+} from "./notification-jobs";
 async function main() {
   const provider = mailProvider();
   const origin = new URL(z.url().parse(process.env.WEB_ORIGIN));
@@ -63,7 +63,7 @@ async function main() {
     lastScheduleDispatch = 0;
   const notificationWorker = new Worker<{ eventId: string }>(
     "domain-notifications",
-    (job) => deliverDomainEvent(db, z.uuid().parse(job.data.eventId)),
+    (job) => processNotificationJob(db, z.uuid().parse(job.data.eventId)),
     { connection, prefix, concurrency: 2 },
   );
   notificationWorker.on("error", () =>
@@ -179,24 +179,7 @@ async function main() {
             removeOnFail: false,
           },
         );
-      const domainEvents = await db.outboxEvent.findMany({
-        where: { processedAt: null, eventType: { in: DOMAIN_EVENTS } },
-        take: 50,
-        orderBy: { createdAt: "asc" },
-        select: { id: true },
-      });
-      for (const event of domainEvents)
-        await notificationQueue.add(
-          "deliver",
-          { eventId: event.id },
-          {
-            jobId: event.id,
-            attempts: 5,
-            backoff: { type: "exponential", delay: 5000 },
-            removeOnComplete: { age: 86400 },
-            removeOnFail: false,
-          },
-        );
+      await enqueueNotificationPage(db, notificationQueue);
       await checkPushReceipts(db);
     } catch {
       console.error(JSON.stringify({ code: "MAIL_DISPATCH_FAILED" }));

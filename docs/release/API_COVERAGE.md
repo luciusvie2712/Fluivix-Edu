@@ -272,3 +272,10 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
   same-origin Web Locks; ephemeral peer tokens are verified before use. Changed
   identity/context clears cached data and old links. Only same-scope GET may be
   retried once after actual401 recovery; financial writes are never auto-replayed.
+
+
+### Notifications N1 — local PASS; remote NOT_VERIFIED; release BLOCKED (2026-11-07)
+
+Notifications N1 passes the complete local frozen-source gate:109 integration,78 browser0skip/flaky,60unit/20mobile,8uncached builds/types, real mobile API smoke, stable168-operation contract, offline frozen install,0HIGH/CRITICAL audit and verified skills. Current-resource inbox/legacy sibling scope, multi-role event/device dedupe, actual device generations, bounded retries/receipts/Redis recovery, committed finance during provider failure and Web/Mobile controls are verified. N1 commit/exact-SHA CI pending. Auth4bccaa7 exact CI42296909065 is successful. Fee reminders under approved policy, Privacy/remaining operations/M4 and external staging/legal/UAT/signed-device/real-push remain; release BLOCKED.
+
+Evidence: `docs/release/evidence/notifications/verification.json`; full integration/browser reports and eight responsive normal/reduced-motion images in the same evidence family. Actual failures retained with root causes/repairs; no assertions weakened. Additive028 retains9 legacy rows/3 duplicate groups in migration regression, unknown generation staysNULL, foreign legacy event binding fails23503, new cross-audience unique index23505 and immutable/retry guards23514. New inbox materialization requires current configured purpose/version consent; retained history still requires current role/resource authorization. Generic push has opaque notification ID only. Provider facts/application safety choice: `notifications/provider-policy.json`. Physical push/legal approval not claimed.

@@ -1,0 +1,9 @@
+{
+  "sources": [
+    "https://docs.expo.dev/push-notifications/sending-notifications/",
+    "https://docs.expo.dev/push-notifications/faq/"
+  ],
+  "providerFacts": "Tickets acknowledge Expo acceptance; receipts describe handoff to platform services, not physical display. Provider recommends delayed receipt polling and retry/backoff for rejection/connection errors; downstream delivery may duplicate or fail.",
+  "applicationChoice": "Durable business event/user/device dedupe and bounded known-rejection retries. Ambiguous acceptance becomes UNKNOWN with no blind resend; this conservative choice is ours, not an Expo exactly-once guarantee or vendor requirement.",
+  "evidenceBoundary": "Injected provider adapters plus real PG/API/Redis tests only. No external Expo send, configured release credentials or physical-device delivery evidence."
+}

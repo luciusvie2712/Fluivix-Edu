@@ -3683,6 +3683,11 @@ export interface components {
       data: components["schemas"]["PaymentReceiptView"];
       meta: components["schemas"]["MetaDto"];
     };
+    NotificationDeliveryStatusView: {
+      /** @description Provider status; SENT means provider handoff, not device display. RETRY_EXHAUSTED projects a retained legacy pending row with five attempts. */
+      status: string;
+      count: number;
+    };
     NotificationView: {
       id: string;
       type: string;
@@ -3692,6 +3697,8 @@ export interface components {
       /** Format: date-time */
       createdAt: string;
       subjectStudentId: string | null;
+      subjectStudentIds: string[];
+      deliveryStatuses: components["schemas"]["NotificationDeliveryStatusView"][];
     };
     NotificationsResponse: {
       data: components["schemas"]["NotificationView"][];
@@ -11312,7 +11319,11 @@ export interface operations {
       };
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody?: {
+      content: {
+        "application/json": Record<string, never>;
+      };
+    };
     responses: {
       200: {
         headers: {

@@ -705,6 +705,7 @@ model NotificationPreference {
 }
 
 model DevicePushToken {
+  version Int @default(1)
   id             String @id @default(uuid()) @db.Uuid
   userId         String @map("user_id") @db.Uuid
   familyId       String @map("family_id") @db.Uuid
@@ -731,12 +732,23 @@ model Notification {
   createdAt        DateTime  @default(now()) @map("created_at") @db.Timestamptz
 
   @@unique([tenantId, id])
+  @@unique([tenantId,id,eventId,recipientUserId],map:"notification_delivery_scope_key")
   @@unique([eventId, recipientUserId, recipientRole, subjectStudentId])
   @@index([tenantId, recipientUserId, recipientRole, createdAt])
   @@map("notifications")
 }
 
 model PushDelivery {
+  // Actual generation is captured at send claim; legacy unknown stays NULL.
+  deviceVersion Int? @map("device_version")
+  nextAttemptAt DateTime? @map("next_attempt_at") @db.Timestamptz
+  nextReceiptAt DateTime? @map("next_receipt_at") @db.Timestamptz
+  receiptChecks Int @default(0) @map("receipt_checks")
+  // Trigger derives immutable scope from the actual notification.
+  eventId String @default(dbgenerated()) @map("event_id") @db.Uuid
+  recipientUserId String @default(dbgenerated()) @map("recipient_user_id") @db.Uuid
+  // Partial unique event/user/device WHERE canonical is defined in SQL028.
+  canonical Boolean @default(true)
   id             String    @id @default(uuid()) @db.Uuid
   tenantId       String    @map("tenant_id") @db.Uuid
   notificationId String    @map("notification_id") @db.Uuid
@@ -841,6 +853,7 @@ model OutboxEvent {
   createdAt    DateTime      @default(now()) @map("created_at") @db.Timestamptz
   mailDelivery MailDelivery?
 
+  @@unique([tenantId,id],map:"notification_outbox_tenant_id")
   @@unique([eventType, aggregateId, eventVersion])
   @@index([processedAt, createdAt])
   @@map("outbox_events")

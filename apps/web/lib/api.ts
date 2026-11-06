@@ -15,6 +15,39 @@ export type ReportExport = "attendance" | "enrollments" | "collections";
 export type TenantAuditQuery = NonNullable<
   paths["/api/v1/audit-logs"]["get"]["parameters"]["query"]
 >;
+export type NotificationPreferences = components["schemas"]["PreferencesInput"];
+export type InboxNotification = components["schemas"]["NotificationView"];
+export const notificationInbox = {
+  list: (page: number, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/notifications", {
+        params: { query: { page, limit: 20 } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  read: (id: string, signal?: AbortSignal) =>
+    unwrap(
+      api.PATCH("/api/v1/notifications/{id}/read", {
+        params: { path: { id } },
+        body: {},
+        headers: { "Content-Type": "application/json" },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  preferences: (signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/me/notification-preferences", {
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  save: (body: NotificationPreferences, signal?: AbortSignal) =>
+    unwrap(
+      api.PATCH("/api/v1/me/notification-preferences", {
+        body,
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+};
 export const tenantAudit = {
   list: (query: TenantAuditQuery, signal?: AbortSignal) =>
     unwrap(

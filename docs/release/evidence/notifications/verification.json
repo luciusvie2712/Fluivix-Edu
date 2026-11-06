@@ -1,0 +1,113 @@
+{
+  "date": "2026-11-07",
+  "module": "Notifications N1 lifecycle hardening and scoped self inbox",
+  "baseCommit": "4bccaa70554606438f9b5d10161a51243ce9b007",
+  "localVerdict": "PASS",
+  "remoteVerdict": "NOT_VERIFIED",
+  "releaseVerdict": "BLOCKED",
+  "checks": {
+    "prisma": "validate/generate PASS; new additive028; applied001..027 unchanged",
+    "lintFormat": "PASS",
+    "uncachedBuild": 8,
+    "uncachedTypesAndTools": "PASS",
+    "unit": 60,
+    "mobileJest": 20,
+    "actualMobileApiSmoke": "PASS; physical device not verified",
+    "expoAlignment": "PASS",
+    "integration": {
+      "passed": 109,
+      "skipped": 0,
+      "report": "docs/release/evidence/integration-2026-11-07-notifications-full.json"
+    },
+    "browser": {
+      "passed": 78,
+      "skipped": 0,
+      "flaky": 0,
+      "report": "docs/release/evidence/e2e-2026-11-07-notifications-full.json"
+    },
+    "stableContract": {
+      "clientSha256": "973535BB014487513BF1FC45D89F7E4132170E85AD83A5C76D65F34848D69BDE",
+      "openapiSha256": "FEA29D301E664B840ECA936EB4DC068B0B54185A2C561FD10F32BC5526482371",
+      "stable": true,
+      "operations": 168
+    },
+    "offlineFrozenInstall": "PASS",
+    "audit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    },
+    "secretScreen": "PASS; values withheld; .env unchanged"
+  },
+  "baselineEvidence": "../notification-baseline-diagnostic.json",
+  "failuresAndRepairs": {
+    "reports": [
+      "integration-2026-11-07-notifications-first.json",
+      "integration-2026-11-07-notifications-third.json",
+      "integration-2026-11-07-notifications-fourth.json",
+      "integration-2026-11-07-notifications-fifth.json",
+      "e2e-2026-11-07-notifications-first.json"
+    ],
+    "causes": [
+      "First native fixture incorrectly sent browser Origin: correct NATIVE_TRANSPORT_REQUIRED403; removed fixture Origin, guard unchanged.",
+      "Third fixture DELETE omitted JSON body and synthetic schedule event used nonexistent version2; added body and actual API reschedule.",
+      "Fourth queue fixture used pre-v6 Queue.client; verified installed BullMQ6 types and used real disconnect() and typed worker.",
+      "Fifth migration fixture tied UNKNOWN/SENDING timestamps; documented tie uses ID, so fixture now supplies distinct original times and verifies earliest uncertain history without editing migration.",
+      "First browser mark-read genuinely failed CSRF_REJECTED because empty PATCH omitted body. Optional empty JSON object documented in OpenAPI and supplied by generated client; CSRF unchanged. Full browser success/status and real read-state assertions retained."
+    ]
+  },
+  "frozenSourceProof": {
+    "baseCommit": "4bccaa70554606438f9b5d10161a51243ce9b007",
+    "rawSourceSha256": {
+      "apps/api/src/notification-policy.ts": "2845d9c378f3889fdd5f2b2d3dad905e81673cada7443072491cfeb3aca26604",
+      "apps/api/src/privacy-policy.ts": "ec67b939c927efd8bdbb4695f547a6d82e3d078dd4d17f46d114489c11a07166",
+      "apps/mobile/__tests__/notification-subjects.test.tsx": "7f56e3da4e8c4e2845fd271b43c07a2061dd8f09db53b2bd1c4094704d25d0c7",
+      "apps/web/app/app/notifications/page.tsx": "5ecd21d274a7ce5944a9a4084ed8dce6b82e3ce3d6b47f945ed888d05b852d9e",
+      "apps/web/components/notification-workspace.tsx": "ba908b21e2b363ee2b1992865df4fefb41d5a17e787c50ee44afa3273214700b",
+      "apps/worker/src/notification-access.ts": "6f2191e2a793bfe9331ca487ff50e585f498155e947afa7e44712c3721458d10",
+      "apps/worker/src/notification-claims.ts": "4998281d38de4b6e7d569f5539d5c3c9e97045927403a8408c01d8267d9532e2",
+      "apps/worker/src/notification-jobs.ts": "d1564969a2bd804e12f52e92aa4149aada2d3cf6bbd63564855f749253ebbf7c",
+      "apps/worker/src/notification-receipts.ts": "e50af7aad01cc7c31546bdf19b8bc1e5861c1b10620f7909090feecf07279e37",
+      "infra/prisma/migrations/202611070028_notification_delivery/migration.sql": "d5368d7037f41fa29d85759f06530abe82395e21572cd863167e56480d0aac98",
+      "tests/e2e/notifications.spec.ts": "bffb49edfd6f8cfcf29afdc5fa2c17388deabbdbb8403f809e49888e2d9d5a70",
+      "tests/integration/notification-cases.ts": "64ab5a7f48ab930baba29da946251048495416e64828a64cfcef63f42549b3ee",
+      "tests/integration/notification-migration-case.ts": "9d9be4a69ae52dafa30f3726cd31026ea862464f0cb642f2e67ab5399fb84052",
+      "apps/api/openapi.json": "fea29d301e664b840eca936eb4dc068b0b54185a2c561fd10f32bc5526482371",
+      "apps/api/src/notifications.ts": "694991e1d908590482090be7615fc578cc7dc6e06aae4210369e32e5c6f15da4",
+      "apps/api/src/privacy.ts": "c666b2f49020ffc745389c431e416f3290a0c10c417b33183fa28b503a92a2e2",
+      "apps/api/src/security.ts": "a5866c8f29d1e0e55109640594a48ddf1f7ae0d69869dbf436c16e74e7168ec6",
+      "apps/mobile/components/inbox.tsx": "2116efc9b223ab97f05315fb01c616b635c5cd03df3a98bdcc34b434e345847a",
+      "apps/mobile/components/preferences.tsx": "20a78b59544f26ab9899807921ef79bf3cef247e850b04f3a21c6a38ae423b86",
+      "apps/mobile/lib/notifications.ts": "6a174d14d9c56985b78f6e4ec486bed0d66b302688b921d4f6178eb990ed2882",
+      "apps/web/app/app/layout.tsx": "703410d28d0d0551bbf9211155ffe3e7aa1ce4ea623aa2ad2d8d573e742cb85d",
+      "apps/web/app/globals.css": "eb69fb8e2a383d6aabe80e750e19e2ac33266538d470262d6102dcfcc00faaec",
+      "apps/web/lib/api.ts": "e9a5476bb6e94ec1a8d004d5db0be20f938a90b5c51b0938b630fc2b2191f887",
+      "apps/worker/src/main.ts": "30b68a02a22060d00b320e518351dd647d6174ca5220e473d5a80dc7a1e14843",
+      "apps/worker/src/notifications.ts": "8cebbf13cfcfa75b588db2de5d1975b18603046212d4c2b2989c577e62836411",
+      "infra/prisma/schema.prisma": "c923e752708fcd99dad5a903847b7c5a220a61920c26f338105a0bcd6abaf992",
+      "packages/api-client/src/schema.d.ts": "973535bb014487513bf1fc45d89f7e4132170e85ad83a5c76d65f34848d69bde",
+      "tests/integration/identity.test.ts": "800d710a98d2e9c03b293ee47a26b05bf9f73be51def5586efa067cbdbe6f0b0",
+      "tests/integration/migration-cases.ts": "9424d49e2ac9c90e1509be6e131b9d03040a8cdad5a97e1518860681bee8ffc7",
+      "tests/integration/teaching-cases.ts": "a7c3bdba68051bc1ad99a048b10549e18828c3438a08df2128ba86d9b438db44",
+      "tooling/e2e-server.ts": "7f7369b7148c8e601fb5cdc23559361f45c2732bedb4238363b1a34f142e2a0a"
+    },
+    "stable": true,
+    "envUnchanged": true
+  },
+  "implemented": [
+    "Current SQL resource-derived recipient/child authorization, historical hint preserved, one event per user in selected role, shared actual user/event read state.",
+    "Additive migration retains all delivery history, actual generation snapshot, canonical event/user/device partial uniqueness and immutable send identity/counters. Legacy generation stays unknown.",
+    "Current mobile family/device, tenant/member/object, consent and preferences checked before send; stale send/receipt cannot invalidate another registration generation.",
+    "Known rejected retries persist bounded five-attempt counters/due times; UNKNOWN never blindly resent; delayed bounded receipt reconciliation; real Redis loss/restart recovery and retained queue failure sanitization.",
+    "Confirmed payment/allocation/audit stay committed through provider timeout and idempotent replay.",
+    "Real API Web self inbox/preferences, own-resource Mobile navigation with current selected eligible sibling, scope-keyed state and READ_ONLY controls. API delivery summaries expose counts/status only, preserve actual legacy handoff, and never expose provider references/tokens."
+  ],
+  "limitations": [
+    "N1 is a bounded slice, not completion of the entire Notifications/Privacy/M4 assignment. Approved P0 fee-reminder policy/implementation remains to reconcile.",
+    "Web staff inbox can correctly be empty; educator browser checks bootstrap a valid shared API recipient context. The product role selector still keeps teacher/student/guardian mobile-only. No extra audience/object permission is granted.",
+    "Privacy administrative workflows, remaining operational settings/student tabs, local/staging load/backup/restore/monitoring and M4 evidence remain.",
+    "Actual staging, legal/consent approval, UAT, signed physical devices and real provider push remain BLOCKED. No production-ready or end-to-end exactly-once push claim."
+  ]
+}

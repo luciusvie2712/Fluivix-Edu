@@ -15,6 +15,12 @@ async function run() {
   process.env.OUTBOX_TOKEN_KEY = randomBytes(32).toString("hex");
   process.env.WEB_ORIGIN = testOrigins.web;
   process.env.PLATFORM_ORIGIN = testOrigins.platform;
+  // Isolated synthetic policy only; browser fixtures must never send external push.
+  process.env.PRIVACY_POLICY_VERSION = "synthetic-e2e-notifications-v1";
+  process.env.PRIVACY_NOTICE_URL =
+    "https://example.test/e2e-notifications-policy";
+  process.env.PUSH_PROVIDER = "disabled";
+  delete process.env.EXPO_ACCESS_TOKEN;
   if (!process.env.E2E_DATABASE_URL)
     throw new Error("Use pnpm test:e2e to provision an isolated database");
   process.env.DATABASE_URL = process.env.E2E_DATABASE_URL;

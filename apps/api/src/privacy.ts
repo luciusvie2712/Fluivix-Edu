@@ -34,6 +34,7 @@ import { requestClaims } from "./auth.controller";
 import { ErrorResponse, MetaDto } from "./response.dto";
 import type { ApiRequest } from "./http";
 import type { Claims } from "./security";
+import { configuredPrivacyPolicy } from "./privacy-policy";
 export class ConsentInput {
   @ApiPropertyOptional({ format: "uuid" })
   @IsOptional()
@@ -99,13 +100,7 @@ export class PrivacyService {
     private teaching: TeachingService,
   ) {}
   policy() {
-    const version = process.env.PRIVACY_POLICY_VERSION,
-      noticeUrl = process.env.PRIVACY_NOTICE_URL;
-    return {
-      configured: !!version && !!noticeUrl && /^https:\/\//.test(noticeUrl),
-      version: version ?? null,
-      noticeUrl: noticeUrl ?? null,
-    };
+    return configuredPrivacyPolicy();
   }
   private consentView(row: {
     id: string;
@@ -229,7 +224,7 @@ export class PrivacyService {
 @ApiTags("privacy")
 @ApiBearerAuth()
 @UseGuards(AccessGuard)
-@TenantPermission("notification.read")
+@TenantPermission("privacy.self")
 @Controller("privacy")
 @ApiResponse({ status: 401, type: ErrorResponse })
 @ApiResponse({ status: 403, type: ErrorResponse })

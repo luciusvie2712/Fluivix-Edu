@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-07",
+  "verdict": "REPRODUCED_CURRENT_GAPS_NOT_ACCEPTANCE",
+  "syntheticOnly": true,
+  "findings": [
+    {
+      "case": "repeat3",
+      "eventRowsForOneMultiRoleUser": 2,
+      "guardianAudienceSubjects": 1,
+      "linkedSiblings": 2,
+      "acceptedInjectedProviderAdapterCallsForSameEventUserDevice": 2
+    },
+    {
+      "case": "revokeRepresentativeSibling",
+      "visibleGuardianRows": 0,
+      "remainingActiveLinkedSibling": 1
+    },
+    {
+      "case": "reassignActualSession",
+      "oldTeacherStillAuthorized": true
+    },
+    {
+      "case": "legacyCompletedWithoutFinalizedAt",
+      "finalizedAt": null,
+      "materializedAbsenceNotifications": 1
+    },
+    {
+      "case": "registrationChangesWhileOldSendWaitsForProvider",
+      "newRegistrationBelongsToDifferentActiveUser": true,
+      "oldResponseInvalidatesNewRegistration": true
+    }
+  ],
+  "limitations": "Internal actual worker/DB/service diagnostic with injected provider response; no external request, actual Expo receipt or physical-device delivery claimed. No production fixture or guard changes."
+}
