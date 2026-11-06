@@ -1,0 +1,229 @@
+{
+  "config": {
+    "argv": [
+      "D:\\my-project\\fluivixedu\\.cache\\node-v24.22.2-win-x64\\node.exe",
+      "D:\\my-project\\fluivixedu\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--config",
+      ".cache/auth-multitab-diagnostic.config.ts"
+    ],
+    "configFile": "D:\\my-project\\fluivixedu\\.cache\\auth-multitab-diagnostic.config.ts",
+    "rootDir": "D:/my-project/fluivixedu/.cache",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/my-project/fluivixedu/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tenant-chromium",
+        "name": "tenant-chromium",
+        "testDir": "D:/my-project/fluivixedu/.cache",
+        "testIgnore": [],
+        "testMatch": [
+          "auth-multitab-diagnostic.spec.ts"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\my-project\\fluivixedu\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "tenant-chromium",
+        "testDir": "D:\\my-project\\fluivixedu\\.cache",
+        "snapshotDir": "D:\\my-project\\fluivixedu\\.cache",
+        "testIgnore": [],
+        "testMatch": "auth-multitab-diagnostic.spec.ts",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:3000",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "browserName": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "tenant-chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "D:\\my-project\\fluivixedu\\docs\\release\\evidence\\auth-multitab-baseline-diagnostic.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm exec tsx tooling/e2e-server.ts",
+      "cwd": "D:\\my-project\\fluivixedu",
+      "url": "http://localhost:3000/login",
+      "timeout": 60000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "auth-multitab-diagnostic.spec.ts",
+      "file": "auth-multitab-diagnostic.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "BASELINE DIAGNOSTIC: a second real tab rotates shared cookie while the first tab retains a consumed access SID",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4014,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T19:46:59.338Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "141ef4cfb581975e3b0c-cf24778f8042123139e9",
+          "file": "auth-multitab-diagnostic.spec.ts",
+          "line": 3,
+          "column": 5
+        },
+        {
+          "title": "BASELINE DIAGNOSTIC: an existing account can select a pending activation membership before accepting its centre invitation",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 684,
+                  "error": {
+                    "message": "PrismaClientUnknownRequestError: \nInvalid `db.membership.update()` invocation in\nD:\\my-project\\fluivixedu\\.cache\\auth-multitab-diagnostic.spec.ts:19:25\n\n  16 try{\n  17   const user=await db.user.findUniqueOrThrow({where:{email:'accountant@example.test'}});\n  18   const member=await db.membership.findFirstOrThrow({where:{userId:user.id,status:'ACTIVE',roles:{some:{role:'accountant'}}}});\n→ 19   await db.membership.update(\nError occurred during query execution:\nConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: \"23514\", message: \"new row for relation \\\"tenant_memberships\\\" violates check constraint \\\"membership_activation_required\\\"\", severity: \"ERROR\", detail: Some(\"Failing row contains (a83a7c88-048e-4f16-bb35-004831d16471, 10000000-0000-4000-8000-000000000001, 4912832d-abca-4077-acbc-9ca026d408d8, ACTIVE, 1, f, t).\"), column: None, hint: None }), transient: false })",
+                    "stack": "PrismaClientUnknownRequestError: \nInvalid `db.membership.update()` invocation in\nD:\\my-project\\fluivixedu\\.cache\\auth-multitab-diagnostic.spec.ts:19:25\n\n  16 try{\n  17   const user=await db.user.findUniqueOrThrow({where:{email:'accountant@example.test'}});\n  18   const member=await db.membership.findFirstOrThrow({where:{userId:user.id,status:'ACTIVE',roles:{some:{role:'accountant'}}}});\n→ 19   await db.membership.update(\nError occurred during query execution:\nConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: \"23514\", message: \"new row for relation \\\"tenant_memberships\\\" violates check constraint \\\"membership_activation_required\\\"\", severity: \"ERROR\", detail: Some(\"Failing row contains (a83a7c88-048e-4f16-bb35-004831d16471, 10000000-0000-4000-8000-000000000001, 4912832d-abca-4077-acbc-9ca026d408d8, ACTIVE, 1, f, t).\"), column: None, hint: None }), transient: false })\n    at D:\\my-project\\fluivixedu\\.cache\\auth-multitab-diagnostic.spec.ts:19:25\n    at ei.handleRequestError (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:237:13)\n    at ei.handleAndLogRequestError (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:174:12)\n    at ei.request (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:143:12)\n    at a (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\getPrismaClient.ts:833:24)\n    at D:\\my-project\\fluivixedu\\.cache\\auth-multitab-diagnostic.spec.ts:19:5",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\.cache\\auth-multitab-diagnostic.spec.ts",
+                      "column": 25,
+                      "line": 19
+                    },
+                    "snippet": "  17 |     const user=await db.user.findUniqueOrThrow({where:{email:'accountant@example.test'}});\n  18 |     const member=await db.membership.findFirstOrThrow({where:{userId:user.id,status:'ACTIVE',roles:{some:{role:'accountant'}}}});\n> 19 |     await db.membership.update({where:{id:member.id},data:{activationPending:true}});\n     |                         ^\n  20 |     await page.goto('/login');await page.getByLabel('Email',{exact:true}).fill('accountant@example.test');await page.getByLabel('Mật khẩu',{exact:true}).fill('Fluivix-Test-Password-2026');await page.getByRole('button',{name:'Đăng nhập',exact:true}).click();await page.getByRole('button',{name:'Kế toán',exact:true}).click();await expect(page).toHaveURL('/app/students');\n  21 |     await expect(page.getByRole('cell',{name:'Học viên kiểm thử A',exact:true})).toBeVisible();\n  22 |     expect((await db.membership.findUniqueOrThrow({where:{id:member.id}})).activationPending).toBe(true);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\.cache\\auth-multitab-diagnostic.spec.ts",
+                        "column": 25,
+                        "line": 19
+                      },
+                      "message": "PrismaClientUnknownRequestError: \nInvalid `db.membership.update()` invocation in\nD:\\my-project\\fluivixedu\\.cache\\auth-multitab-diagnostic.spec.ts:19:25\n\n  16 try{\n  17   const user=await db.user.findUniqueOrThrow({where:{email:'accountant@example.test'}});\n  18   const member=await db.membership.findFirstOrThrow({where:{userId:user.id,status:'ACTIVE',roles:{some:{role:'accountant'}}}});\n→ 19   await db.membership.update(\nError occurred during query execution:\nConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: \"23514\", message: \"new row for relation \\\"tenant_memberships\\\" violates check constraint \\\"membership_activation_required\\\"\", severity: \"ERROR\", detail: Some(\"Failing row contains (a83a7c88-048e-4f16-bb35-004831d16471, 10000000-0000-4000-8000-000000000001, 4912832d-abca-4077-acbc-9ca026d408d8, ACTIVE, 1, f, t).\"), column: None, hint: None }), transient: false })\n\n  17 |     const user=await db.user.findUniqueOrThrow({where:{email:'accountant@example.test'}});\n  18 |     const member=await db.membership.findFirstOrThrow({where:{userId:user.id,status:'ACTIVE',roles:{some:{role:'accountant'}}}});\n> 19 |     await db.membership.update({where:{id:member.id},data:{activationPending:true}});\n     |                         ^\n  20 |     await page.goto('/login');await page.getByLabel('Email',{exact:true}).fill('accountant@example.test');await page.getByLabel('Mật khẩu',{exact:true}).fill('Fluivix-Test-Password-2026');await page.getByRole('button',{name:'Đăng nhập',exact:true}).click();await page.getByRole('button',{name:'Kế toán',exact:true}).click();await expect(page).toHaveURL('/app/students');\n  21 |     await expect(page.getByRole('cell',{name:'Học viên kiểm thử A',exact:true})).toBeVisible();\n  22 |     expect((await db.membership.findUniqueOrThrow({where:{id:member.id}})).activationPending).toBe(true);\n    at D:\\my-project\\fluivixedu\\.cache\\auth-multitab-diagnostic.spec.ts:19:25\n    at ei.handleRequestError (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:237:13)\n    at ei.handleAndLogRequestError (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:174:12)\n    at ei.request (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:143:12)\n    at a (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\getPrismaClient.ts:833:24)\n    at D:\\my-project\\fluivixedu\\.cache\\auth-multitab-diagnostic.spec.ts:19:5"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T19:47:03.960Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\auth-multitab-diagnostic-B-5be75-pting-its-centre-invitation-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\auth-multitab-diagnostic-B-5be75-pting-its-centre-invitation-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\auth-multitab-diagnostic-B-5be75-pting-its-centre-invitation-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\.cache\\auth-multitab-diagnostic.spec.ts",
+                    "column": 25,
+                    "line": 19
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "141ef4cfb581975e3b0c-e0780dc483cf4764729b",
+          "file": "auth-multitab-diagnostic.spec.ts",
+          "line": 12,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-06T19:46:44.649Z",
+    "duration": 20964.345999999998,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

@@ -1,6 +1,6 @@
 # API contract coverage
 
-Generated inventory: 167 actual OpenAPI operations; 134
+Generated inventory: 168 actual OpenAPI operations; 134
 method/path intents in the master specification (includes non-P0 design intent).
 Path parameter names are normalized when comparing. MATCH means route metadata
 exists; it does not verify DTOs, permission, object scope or runtime behavior.
@@ -266,3 +266,9 @@ ABSENT requires review for a documented equivalent, P1 exclusion or implementati
 - VND values remain canonical decimal strings backed by PostgreSQL BIGINT, avoiding
   JavaScript precision loss. Existing clients must not coerce them to Number.
 - Native auth remains separate from browser HttpOnly-cookie transport.
+- GET /auth/web-session validates the current HttpOnly cookie against the bearer
+  session, user, client transport and exact selected context, without rotation or
+  credential issuance. Browser refresh/login/context/logout are serialized with
+  same-origin Web Locks; ephemeral peer tokens are verified before use. Changed
+  identity/context clears cached data and old links. Only same-scope GET may be
+  retried once after actual401 recovery; financial writes are never auto-replayed.

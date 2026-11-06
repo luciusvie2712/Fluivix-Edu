@@ -5,7 +5,7 @@ import { sessions, revokeSession } from "../../../lib/api";
 import { useSession } from "../../../components/providers";
 import { Button } from "../../../components/ui/button";
 export default function Page() {
-  const { me, clear } = useSession();
+  const { me } = useSession();
   const cache = useQueryClient();
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -27,7 +27,6 @@ export default function Page() {
       await cache.invalidateQueries({ queryKey: ["sessions"] });
     } catch (cause) {
       if (cause instanceof Error) setError(cause.message);
-      clear();
     } finally {
       setBusy(false);
     }

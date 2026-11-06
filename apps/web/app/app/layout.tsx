@@ -1,7 +1,12 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useSyncExternalStore, type ReactNode } from "react";
+import {
+  useEffect,
+  useState,
+  useSyncExternalStore,
+  type ReactNode,
+} from "react";
 import { useSession } from "../../components/providers";
 import { Button } from "../../components/ui/button";
 import type { Role } from "../../lib/api";
@@ -26,6 +31,7 @@ const networkSnapshot = () => navigator.onLine;
 const serverNetworkSnapshot = () => true;
 export default function Layout({ children }: { children: ReactNode }) {
   const session = useSession();
+  const [logoutError, setLogoutError] = useState("");
   const router = useRouter();
   const online = useSyncExternalStore(
     subscribeNetwork,
@@ -111,14 +117,25 @@ export default function Layout({ children }: { children: ReactNode }) {
         </span>
         <Button
           variant="outline"
-          onClick={() =>
-            void session.signOut().then(() => router.replace("/login"))
-          }
+          onClick={() => {
+            setLogoutError("");
+            void session
+              .signOut()
+              .then(() => router.replace("/login"))
+              .catch((e: unknown) =>
+                setLogoutError(
+                  e instanceof Error
+                    ? e.message
+                    : "Chưa xác nhận được đăng xuất.",
+                ),
+              );
+          }}
         >
           Đăng xuất
         </Button>
       </header>
       <main className="sheet" id="main">
+        {logoutError && <p role="alert">{logoutError}</p>}
         {!online && (
           <p role="alert" className="notice">
             Bạn đang ngoại tuyến. Dữ liệu đang hiển thị có thể đã cũ; chờ kết

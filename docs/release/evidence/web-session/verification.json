@@ -1,0 +1,192 @@
+{
+  "date": "2026-11-07",
+  "module": "Cookie-bound Web session coordination and safe401 recovery",
+  "baseCommit": "732de75f06a4c7b6b087be36dc3826c99a9c80b4",
+  "localVerdict": "PASS",
+  "remoteVerdict": "NOT_VERIFIED",
+  "releaseVerdict": "BLOCKED",
+  "checks": {
+    "runtime": "Node24.22.2/libuv1.52.1;pnpm10.34.7",
+    "prisma": "validate/generate PASS;schema and applied001..027 unchanged",
+    "lintFormat": "PASS",
+    "uncachedBuild": 8,
+    "uncachedTypesAndTools": "PASS",
+    "unit": 60,
+    "mobileJest": 15,
+    "actualMobileApiSmoke": "PASS;physical device NOT_VERIFIED",
+    "expoAlignment": "PASS",
+    "integration": {
+      "passed": 98,
+      "skipped": 0,
+      "report": "docs/release/evidence/integration-2026-11-07-web-session-full.json"
+    },
+    "browser": {
+      "passed": 75,
+      "skipped": 0,
+      "flaky": 0,
+      "report": "docs/release/evidence/e2e-2026-11-07-web-session-full.json"
+    },
+    "stableContract": {
+      "clientSha256": "AEFE6D8A462ABE40DAD388F9763CBD8719F4322733EB67D9450CD768949EDD0E",
+      "operations": 168,
+      "stable": true,
+      "openapiSha256": "5D13A53AE7821FB858150F07FBAB36DF3D79118D8380B578107E00B8AD9B83D4"
+    },
+    "frozenOfflineInstall": "PASS",
+    "audit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    },
+    "secretScreen": "PASS;.env unchanged;values withheld"
+  },
+  "baseline": {
+    "report": "auth-multitab-baseline-diagnostic.json",
+    "actualFinding": "Twice reproduced second-tab refresh consuming the first-tab SID; first-tab next GET401 led to login despite the shared browser cookie remaining valid. Diagnostic PASS means bug reproduced, not feature accepted.",
+    "rejectedHypothesis": "ACTIVE activationPending membership cannot be persisted because existing migration020 membership_activation_required rejects23514; invariant verified rather than weakened. Failed exploratory probe retained."
+  },
+  "implementation": [
+    "GET/auth/web-session validates current HttpOnly-cookie hash, bearer SID/user, WEB transport, unconsumed/unrevoked/unexpired session, active user/membership/role/tenant and exact selected context including null bootstrap. Validation does not issue credentials, set cookies or consume a refresh session.",
+    "Same-origin Web Lock serializes full refresh plus cookie verification, login, context and logout across tabs. BroadcastChannel carries only ephemeral access candidates or invalidation/logout signals. Every candidate is verified against the CURRENT cookie; valid foreign-user/family bearer is rejected. No local/sessionStorage credentials or persistent PII.",
+    "Monotonic four-minute renewal avoids dependence on device wall clock. Visibility and actual401 recover through the same lock. Same verified identity/context preserves drafts and cache. Identity/context changes clear and cancel queries, reject old-revision responses and replace stale deep links before new scope renders.",
+    "GET may retry only once with the same verified scope/revision; POST/PATCH/DELETE are never automatically replayed. Actual financialPOST401 returns to the form; explicit user retry produces the sole payment. Lost context-switch response adopts actual cookie-bound server outcome without repeating itsPOST.",
+    "Network verification failures expose labelled retry/pending/error feedback; login waits for initial verification. Logout failure does not falsely claim confirmed server logout. Existing session-reuse family revocation, platform MFA/audiences and native SecureStore transport are unchanged. Browsers lacking WebLocks/BroadcastChannel receive an explicit upgrade requirement."
+  ],
+  "testEvidence": [
+    "Five new realPG/API cases verify current-cookie binding, missing/foreign/same-user-different-family cookie rejection, null-context staleness, validation nonconsumption, real refresh/reuse revocation, removed role/suspended tenant, truly expired signed JWT and MOBILE transport denial while native/me remains valid.",
+    "Eight actual browser cases: two tabs/reloads/sharedcookie/draft retention; cross-tenant switch/logout invalidation; actual external rotation and clock-skew-tolerant renewal; actual financialPOST401/no replay/one explicit successful receipt; committed lost switch-context response/no repeat; injected valid foreign-family peer candidate rejected and explicit different-user login propagated; real delayed owner audit bytes excluded after manager switch; actual verification transport abort/accessible retry with restored actual cookie state.",
+    "All4 revised widths360/768/1024/1440 manually reviewed; axe/Taste/keyboard/reduced motion pass. Lock-screen/push/physical mobile claims are not inferred."
+  ],
+  "failuresAndRecovery": [
+    "Initial expanded7/8: payment fixture lacked required allocation, actual form correctly blockedPOST. Second expanded7/8: invoice and item fixture used separate transactions, existing deferred invoice-items-total invariant correctly rejected. Fixed test fixture to create real invoice/item atomically and allocate100000VND; payment focused1/1 then expanded8/8 PASS. No financial rule/assertion was weakened.",
+    "First full browser74/75 failed the existing self-suspension regression: signOut compared full context after verification legitimately dropped revoked membership, and navigated to tenant selection before logout. Fixed production signOut to verify without premature navigation and compare the cookie-bound principal instead of the revoked context. Different-user protection retained. Strengthened the original regression with a second tab, actual cookie removal and no remaining unrevoked family sessions; original401/login/stale-data assertions retained.",
+    "A restricted-sandbox browser runner could not access disposable local DB/Redis; authorized local elevated retry completed. No approval rejection. Initial custom diagnostic webServer.cwd corrected explicitly to repository root."
+  ],
+  "visual": {
+    "widths": [
+      360,
+      768,
+      1024,
+      1440
+    ],
+    "manual": "All four revised and final images inspected",
+    "axe": "No violations on exercised retry surfaces",
+    "tasteFindings": [
+      {
+        "level": "WARN",
+        "id": "unused-canvas",
+        "message": "The content stops 533px short of the right edge while it starts 28px from the sidebar.",
+        "fix": "Let the grid fill the canvas (columns in fr units), or centre a capped canvas with equal margins. A dead strip on one side reads as unfinished.",
+        "width": 1440
+      }
+    ],
+    "style": {
+      "direction": "Existing single FluivixEdu framed-sheet, blue accent, Arial16 Vietnamese",
+      "seed": 1920114305,
+      "question": "Can the user safely recover the current browser session without losing same-scope work or seeing the previous identity/context?",
+      "proMax": {
+        "query": "accessible authentication --domain ux",
+        "result": "Accessible Authentication (Minimum)",
+        "applied": "Password-manager autocomplete and paste retained; native labelled retry with visible keyboard focus and explicit pending/error state",
+        "sourceSha": "d14efff8ed1faa4187f004f79926f428c8074ec7"
+      },
+      "taste": {
+        "sourceSha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+        "applied": "Actual initial browser images exposed orphaned top-left notice and full-viewport gap. Scoped notice now aligns to the440px auth panel, wraps on360px and removes excess auth-layout height only while the notice is present. All4 revised browser images manually reviewed."
+      },
+      "motion": {
+        "sourceSha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "skills": [
+          "accessible-animation",
+          "micro-interaction",
+          "60fps-animation"
+        ],
+        "applied": "Immediate native button/focus and text feedback; no added decorative motion, layout animation or delay to auth/payment completion. Actual reduced-motion browser and keyboard checks pass."
+      }
+    },
+    "skills": [
+      {
+        "source": "taste-skill",
+        "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+        "installed": "design-taste-frontend",
+        "verifiedFiles": 38,
+        "status": "PASS"
+      },
+      {
+        "source": "ui-ux-pro-max-skill",
+        "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+        "installed": "ui-ux-pro-max",
+        "verifiedFiles": 73,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "accessible-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "micro-interaction",
+        "verifiedFiles": 4,
+        "status": "PASS"
+      },
+      {
+        "source": "web-animation-skills",
+        "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+        "installed": "60fps-animation",
+        "verifiedFiles": 3,
+        "status": "PASS"
+      }
+    ]
+  },
+  "frozenSourceProof": {
+    "baseCommit": "732de75f06a4c7b6b087be36dc3826c99a9c80b4",
+    "rawSourceSha256": {
+      "apps/web/lib/browser-session.ts": "1249fcba53534dc7407a90823632c64a658a91c79d1614ac038bf1fd7b7e7b5b",
+      "tests/e2e/browser-session.spec.ts": "24b6e23e81c0a3c3d460e85259e31d2099e318a4713bf6076b930305bf0a33e9",
+      "tests/integration/web-session-cases.ts": "6e0dbae4250cf0ffb98fa50e6741a8d10bf553d6b13f32d35ccd48421db83973",
+      "apps/api/openapi.json": "5d13a53ae7821fb858150f07fbab36df3d79118d8380b578107e00b8ad9b83d4",
+      "apps/api/src/auth.controller.ts": "5c8c205ee63e0a51324ae14d91c6ae57e06d1eb05cb1fe476fdcfde1d3ee0295",
+      "apps/api/src/auth.service.ts": "d1466fef015fd28c5b4ac3266bd36f016743edf11358b85d61d292afd03179d9",
+      "apps/web/app/app/account/page.tsx": "7e94b65b30976ddcf654f7beb2982809f45f0c1651ee1a8b6a65b94c4331dc7b",
+      "apps/web/app/app/layout.tsx": "4b74c432eb828446d66a7f652ca598772d59faa9fd54c816f83fa9468c88cb45",
+      "apps/web/app/globals.css": "6688bf54bbd89cf79fc4470ae98193659fa2c886f08aa8e02546879270e2bdfa",
+      "apps/web/components/auth-form.tsx": "1449b1b8aa6955d73a98e1fe0fa5ed8a86d87ea5759adcb9184dbef2c50de92c",
+      "apps/web/components/providers.tsx": "420290187734f02dae25ce9e7293308cde417c3c097d1caf37e7177bcc07b340",
+      "apps/web/lib/api.ts": "7dba0b3f0da2cb13ebefefb20c96dcaea7601c940948148eae55aca67aa47565",
+      "packages/api-client/src/schema.d.ts": "aefe6d8a462abe40dad388f9763cbd8719f4322733eb67d9450cd768949edd0e",
+      "tests/e2e/staff.spec.ts": "b2ae51d68ff14698e64975342cc505f48b3e0f85e22b3fa08a692972a07e04ee",
+      "tests/integration/identity.test.ts": "1ebd2e98e9853059d92c3d7d6bb8900719f5cc4b03710f5800e9f3910f620ef2",
+      "tooling/release-inventory.ts": "c0abb8025be2c262d2092966073ad25cbcfa8b41d1239bb2a64248edb02b7b22"
+    },
+    "stable": true,
+    "envUnchanged": true
+  },
+  "sourceHashes": {
+    "normalization": "CRLF to LF",
+    "sha256": {
+      "apps/web/lib/browser-session.ts": "1249fcba53534dc7407a90823632c64a658a91c79d1614ac038bf1fd7b7e7b5b",
+      "tests/e2e/browser-session.spec.ts": "24b6e23e81c0a3c3d460e85259e31d2099e318a4713bf6076b930305bf0a33e9",
+      "tests/integration/web-session-cases.ts": "6e0dbae4250cf0ffb98fa50e6741a8d10bf553d6b13f32d35ccd48421db83973",
+      "apps/api/openapi.json": "5d13a53ae7821fb858150f07fbab36df3d79118d8380b578107e00b8ad9b83d4",
+      "apps/api/src/auth.controller.ts": "5c8c205ee63e0a51324ae14d91c6ae57e06d1eb05cb1fe476fdcfde1d3ee0295",
+      "apps/api/src/auth.service.ts": "d1466fef015fd28c5b4ac3266bd36f016743edf11358b85d61d292afd03179d9",
+      "apps/web/app/app/account/page.tsx": "7e94b65b30976ddcf654f7beb2982809f45f0c1651ee1a8b6a65b94c4331dc7b",
+      "apps/web/app/app/layout.tsx": "4b74c432eb828446d66a7f652ca598772d59faa9fd54c816f83fa9468c88cb45",
+      "apps/web/app/globals.css": "6688bf54bbd89cf79fc4470ae98193659fa2c886f08aa8e02546879270e2bdfa",
+      "apps/web/components/auth-form.tsx": "1449b1b8aa6955d73a98e1fe0fa5ed8a86d87ea5759adcb9184dbef2c50de92c",
+      "apps/web/components/providers.tsx": "420290187734f02dae25ce9e7293308cde417c3c097d1caf37e7177bcc07b340",
+      "apps/web/lib/api.ts": "7dba0b3f0da2cb13ebefefb20c96dcaea7601c940948148eae55aca67aa47565",
+      "packages/api-client/src/schema.d.ts": "aefe6d8a462abe40dad388f9763cbd8719f4322733eb67d9450cd768949edd0e",
+      "tests/e2e/staff.spec.ts": "b2ae51d68ff14698e64975342cc505f48b3e0f85e22b3fa08a692972a07e04ee",
+      "tests/integration/identity.test.ts": "1ebd2e98e9853059d92c3d7d6bb8900719f5cc4b03710f5800e9f3910f620ef2",
+      "tooling/release-inventory.ts": "c0abb8025be2c262d2092966073ad25cbcfa8b41d1239bb2a64248edb02b7b22"
+    }
+  },
+  "limitations": "Technical auth slice; exact commit CI pending. Notifications/privacy/remaining operational/M4 and external staging/legal/UAT/signed-device/real-push gates remain. Full P0 and production readiness not declared."
+}

@@ -1,0 +1,437 @@
+{
+  "config": {
+    "argv": [
+      "D:\\my-project\\fluivixedu\\.cache\\node-v24.22.2-win-x64\\node.exe",
+      "D:\\my-project\\fluivixedu\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "browser-session.spec.ts"
+    ],
+    "configFile": "D:\\my-project\\fluivixedu\\playwright.config.ts",
+    "rootDir": "D:/my-project/fluivixedu/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/my-project/fluivixedu/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tenant-chromium",
+        "name": "tenant-chromium",
+        "testDir": "D:/my-project/fluivixedu/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\my-project\\fluivixedu\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "tenant-chromium",
+        "testDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "snapshotDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:3000",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "browserName": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "tenant-chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/release/evidence/e2e-2026-11-07-web-session-expanded-second.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm exec tsx tooling/e2e-server.ts",
+      "url": "http://localhost:3000/login",
+      "timeout": 60000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "browser-session.spec.ts",
+      "file": "browser-session.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "two real tabs retain the same verified scope and draft while shared HttpOnly refresh rotates",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4875,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T20:24:47.268Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "15cc6b6ebc7b3727cbe0-d137c3c2ef5c4aa59644",
+          "file": "browser-session.spec.ts",
+          "line": 52,
+          "column": 5
+        },
+        {
+          "title": "another tab's centre switch clears old drafts and deep links, and logout removes both tabs' access",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3614,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T20:24:52.763Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "15cc6b6ebc7b3727cbe0-b72aa0f1fdad35aa987d",
+          "file": "browser-session.spec.ts",
+          "line": 89,
+          "column": 5
+        },
+        {
+          "title": "a real external cookie rotation recovers a safe GET while elapsed-time renewal tolerates a changed client wall clock",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2640,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T20:24:56.419Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "15cc6b6ebc7b3727cbe0-5d86ecd95208f9abf550",
+          "file": "browser-session.spec.ts",
+          "line": 134,
+          "column": 5
+        },
+        {
+          "title": "a genuine payment 401 recovers credentials but never automatically replays the financial POST",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 692,
+                  "error": {
+                    "message": "PrismaClientUnknownRequestError: \nInvalid `db.invoice.create()` invocation in\nD:\\my-project\\fluivixedu\\tests\\e2e\\browser-session.spec.ts:218:38\n\n  215     createdBy: actor.id,\n  216   },\n  217 });\n→ 218 const invoice = await db.invoice.create(\nError occurred during query execution:\nConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: \"P0001\", message: \"invoice items total mismatch\", severity: \"ERROR\", detail: None, column: None, hint: None }), transient: false })",
+                    "stack": "PrismaClientUnknownRequestError: \nInvalid `db.invoice.create()` invocation in\nD:\\my-project\\fluivixedu\\tests\\e2e\\browser-session.spec.ts:218:38\n\n  215     createdBy: actor.id,\n  216   },\n  217 });\n→ 218 const invoice = await db.invoice.create(\nError occurred during query execution:\nConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: \"P0001\", message: \"invoice items total mismatch\", severity: \"ERROR\", detail: None, column: None, hint: None }), transient: false })\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\browser-session.spec.ts:218:38\n    at ei.handleRequestError (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:237:13)\n    at ei.handleAndLogRequestError (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:174:12)\n    at ei.request (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:143:12)\n    at a (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\getPrismaClient.ts:833:24)\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\browser-session.spec.ts:218:21",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\browser-session.spec.ts",
+                      "column": 38,
+                      "line": 218
+                    },
+                    "snippet": "  216 |       },\n  217 |     });\n> 218 |     const invoice = await db.invoice.create({\n      |                                      ^\n  219 |       data: {\n  220 |         tenantId: student.tenantId,\n  221 |         studentId: student.id,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\browser-session.spec.ts",
+                        "column": 38,
+                        "line": 218
+                      },
+                      "message": "PrismaClientUnknownRequestError: \nInvalid `db.invoice.create()` invocation in\nD:\\my-project\\fluivixedu\\tests\\e2e\\browser-session.spec.ts:218:38\n\n  215     createdBy: actor.id,\n  216   },\n  217 });\n→ 218 const invoice = await db.invoice.create(\nError occurred during query execution:\nConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: \"P0001\", message: \"invoice items total mismatch\", severity: \"ERROR\", detail: None, column: None, hint: None }), transient: false })\n\n  216 |       },\n  217 |     });\n> 218 |     const invoice = await db.invoice.create({\n      |                                      ^\n  219 |       data: {\n  220 |         tenantId: student.tenantId,\n  221 |         studentId: student.id,\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\browser-session.spec.ts:218:38\n    at ei.handleRequestError (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:237:13)\n    at ei.handleAndLogRequestError (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:174:12)\n    at ei.request (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:143:12)\n    at a (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\getPrismaClient.ts:833:24)\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\browser-session.spec.ts:218:21"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T20:24:59.081Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\browser-session-a-genuine--183a5--replays-the-financial-POST-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\browser-session-a-genuine--183a5--replays-the-financial-POST-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\browser-session-a-genuine--183a5--replays-the-financial-POST-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\browser-session.spec.ts",
+                    "column": 38,
+                    "line": 218
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "15cc6b6ebc7b3727cbe0-1791f0650160bdc1a9c8",
+          "file": "browser-session.spec.ts",
+          "line": 169,
+          "column": 5
+        },
+        {
+          "title": "a committed context switch with a genuinely lost response is verified without repeating its POST",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4318,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T20:25:01.886Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "15cc6b6ebc7b3727cbe0-58dcd230905b5653322e",
+          "file": "browser-session.spec.ts",
+          "line": 319,
+          "column": 5
+        },
+        {
+          "title": "foreign-family peer tokens are rejected and an explicit different-user login clears the old identity in every tab",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5259,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T20:25:06.928Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "15cc6b6ebc7b3727cbe0-da16f8dc78cd822c9b8a",
+          "file": "browser-session.spec.ts",
+          "line": 360,
+          "column": 5
+        },
+        {
+          "title": "a role switch cancels real delayed owner audit bytes and removes the previous deep link",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4218,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T20:25:12.212Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "15cc6b6ebc7b3727cbe0-7445788eb8855638590a",
+          "file": "browser-session.spec.ts",
+          "line": 445,
+          "column": 5
+        },
+        {
+          "title": "session verification network failures have accessible retry and recover real cookie state",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7880,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-06T20:25:16.459Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "15cc6b6ebc7b3727cbe0-a06d28fb88225020bd9c",
+          "file": "browser-session.spec.ts",
+          "line": 563,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-06T20:24:34.078Z",
+    "duration": 51398.985,
+    "expected": 7,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

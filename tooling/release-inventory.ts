@@ -38,7 +38,7 @@ if (fr.length !== 33 || tc.length !== 30)
   throw new Error("Spec inventory drift: reconcile before releasing");
 const evidence: Record<string, string> = {
   PL: "apps/api/src/platform*; tests/integration/platform-cases.ts; tests/e2e/platform*",
-  AU: "apps/api/src/auth*; staff.ts; staff-policy.ts; mobile-auth.ts; tests/integration/identity.test.ts; staff-cases.ts; native-cases.ts; tests/e2e/staff.spec.ts",
+  AU: "apps/api/src/auth*; staff.ts; staff-policy.ts; mobile-auth.ts; apps/web/lib/browser-session.ts; apps/web/lib/api.ts; tests/integration/identity.test.ts; staff-cases.ts; native-cases.ts; web-session-cases.ts; tests/e2e/staff.spec.ts; browser-session.spec.ts",
   US: "apps/api/src/students.ts; guardian-links.ts; guardian.service.ts; teaching.service.ts; apps/web/components/guardian-workspace.tsx; teacher-workspace.tsx; tests/integration/identity.test.ts; guardian-cases.ts; teacher-cases.ts; teaching-cases.ts; tests/e2e/guardians.spec.ts; teachers.spec.ts",
   CL: "apps/api/src/teaching.*; infra/prisma/migrations/202610240016_schedule_rules; tests/integration/teaching-cases.ts",
   AT: "apps/api/src/teaching.*; apps/mobile/app; tests/integration/teaching-cases.ts",
@@ -340,6 +340,12 @@ ${desired.map(({ method, path }) => `| ${method} | \`${path}\` | ${implemented.h
 - VND values remain canonical decimal strings backed by PostgreSQL BIGINT, avoiding
   JavaScript precision loss. Existing clients must not coerce them to Number.
 - Native auth remains separate from browser HttpOnly-cookie transport.
+- GET /auth/web-session validates the current HttpOnly cookie against the bearer
+  session, user, client transport and exact selected context, without rotation or
+  credential issuance. Browser refresh/login/context/logout are serialized with
+  same-origin Web Locks; ephemeral peer tokens are verified before use. Changed
+  identity/context clears cached data and old links. Only same-scope GET may be
+  retried once after actual401 recovery; financial writes are never auto-replayed.
 `,
 );
 console.log(

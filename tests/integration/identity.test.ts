@@ -20,6 +20,7 @@ import { feePlanCases } from "./fee-plan-cases";
 import { receivableCases } from "./receivable-cases";
 import { reportCases } from "./report-cases";
 import { tenantAuditCases } from "./tenant-audit-cases";
+import { webSessionCases } from "./web-session-cases";
 import { requireTestRedis, testRedisUrl } from "../../tooling/test-redis";
 
 let database: EmbeddedPostgres | undefined;
@@ -93,6 +94,12 @@ reportCases(
   () => hashPassword(password),
 );
 tenantAuditCases(
+  () => base,
+  () => db,
+  password,
+  () => hashPassword(password),
+);
+webSessionCases(
   () => base,
   () => db,
   password,

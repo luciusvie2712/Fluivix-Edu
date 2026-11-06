@@ -2,6 +2,12 @@
 
 ## Current checkpoint — 2026-11-07
 
+Remote main732de75 has exact successful Audit CI42281736732(all30 steps). Web-session hardening now passes the complete local gate:98 integration/75 browser0skip/flaky,60unit/15mobile and all automated checks, stable168-operation contract. Real cookie-bound validation, coordinated multi-tab refresh/context/logout, old-scope data removal and financialPOST no-replay are verified. Four revised responsive images inspected. Auth commit/exact-SHA CI pending. Notifications/privacy/remaining operational/M4 and external staging/legal/UAT/signed-device/real-push gates remain; release BLOCKED.
+
+## Historical checkpoints and detailed evidence
+
+## Current checkpoint — 2026-11-07
+
 Remote main82cac35 has exact successful CI42276412806(all30 steps) for operational reporting plus navigation synchronization. Tenant audit W19 now passes the full local gate:93 integration/67 browser0skip/flaky,60unit/15mobile and all automated checks, stable167-operation contract. Real role-limited/redacted event history, exact filters/calendar/server pages and audited CSV are verified; four final responsive images inspected. Audit commit/exact-SHA CI pending. Notifications/privacy/remaining operational/auth/M4 and external staging/legal/UAT/signed-device/real-push gates remain; release BLOCKED.
 
 ## Historical checkpoints and detailed evidence
@@ -133,3 +139,11 @@ vendors, secrets and raw runtime artifacts remain excluded.
 - Actual CSV <=5000/formula-safe; verifies current actor/session/member/role and mode under share lock, permits readonly audited GET, records actor/date/identifier filter/count/trace. Real Web downloaded-file and audit checks, same-person role narrowing, network retry/invalid/empty states and live revocation clearing.
 - Final frozen-source local matrix PASS:93 integration/67 browser0skip/flaky,60unit/15mobileJest,actual mobile API smoke/Expo alignment,8 uncached builds/types/tools,lint/format,Prisma,stable167 contract,frozen install,audit0HIGH/CRITICAL.4 final responsive images manually viewed, axe/Taste/keyboard/reduced motion pass. Three skill sources/five IDs verified and applied; same framed-sheet direction. .env unchanged/secret screen PASS. Failed setup report retained; strict fixture calendar fields corrected, no production guards/assertions weakened.
 - Evidence:evidence/tenant-audit/verification.json. Audit commit/exact CI pending; remaining notifications/privacy/operational/auth/M4 and external gates BLOCKED.
+
+
+### Web session coordination — local acceptance PASS (2026-11-07)
+- Real multi-tab logout bug reproduced before implementation. New validation-only GET/auth/web-session binds current HttpOnly cookie to bearer SID/user/WEB transport/exact context, without rotating or issuing credentials. Foreign-family candidates, removed roles, suspended tenant, expired JWT and MOBILE cookie transport rejected. Existing activation-required SQL invariant positively verified; no schema/migration changes.
+- Same-origin Web Locks coordinate full refresh/verification/login/context/logout; BroadcastChannel candidates remain ephemeral and cookie-verified. Same-scope drafts/cache retained; changed identity/context cancels/clears cache, discards delayed old-scope bytes and replaces old deep links. Monotonic four-minute renewal tolerates client wall-clock changes. Native SecureStore/platform audience/MFA and real reuse family revocation unchanged.
+- Safe GET at most one same-scope retry; financial/mutation requests never auto-replayed. Actual paymentPOST401 creates no receipt until explicit user retry; truly lost committed context response verified without repeatingPOST. Accessible network retry/loading and honest logout-error handling.
+- Final frozen-source matrix PASS:98 integration/75 browser0skip/flaky,60unit/15mobileJest,actual mobileAPI smoke,Expo alignment,8 uncached builds/types/tools,lint/format,Prisma,stable168-operation contract,frozen offlineinstall,audit0HIGH/CRITICAL. Four revised responsive screenshots manually reviewed; axe/Taste/keyboard/reduced motion pass. Three source repos/five skill IDs verified/applied; same design direction. .env unchanged, secret values withheld.
+- Retained fixture failures: required financial allocation missing, then deferred invoice/item invariant rejected separate transactions. Corrected synthetic fixture with atomic real invoice/item creation and valid allocation; guards/assertions retained. Evidence:evidence/web-session/verification.json. Exact Auth commit CI pending; release BLOCKED, remaining P0/M4 work continues.

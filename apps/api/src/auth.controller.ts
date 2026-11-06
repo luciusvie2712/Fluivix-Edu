@@ -152,6 +152,16 @@ export class AuthController {
   accept(@Body() dto: AcceptInvitationDto, @Req() req: ApiRequest) {
     return this.auth.acceptInvitation(dto, req.traceId);
   }
+  @Get("auth/web-session")
+  @ApiOkResponse({ type: MeResponse })
+  webSession(@Req() req: ApiRequest) {
+    const cookies: unknown = req.cookies;
+    const token =
+      cookies && typeof cookies === "object" && REFRESH_COOKIE in cookies
+        ? cookies[REFRESH_COOKIE]
+        : undefined;
+    return this.auth.webSession(requestClaims(req), token);
+  }
   @Get("me") @ApiOkResponse({ type: MeResponse }) me(@Req() req: ApiRequest) {
     return this.auth.me(requestClaims(req));
   }

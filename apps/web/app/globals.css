@@ -519,6 +519,17 @@ dd {
   border-left: 3px solid var(--color-primary);
   margin: 16px 0;
 }
+.session-notice {
+  width: min(440px, calc(100% - 32px));
+  margin: 24px auto 0;
+}
+.session-notice p {
+  margin-bottom: 12px;
+}
+body:has(.session-notice) .auth-layout {
+  min-height: 0;
+  padding-top: 24px;
+}
 @media (max-width: 1024px) {
   .shell {
     display: block;

@@ -79,14 +79,62 @@ export class ApiError extends Error {
     super(message);
   }
 }
-let accessToken: string | null = null;
-export const setAccessToken = (token: string | null) => {
-  accessToken = token;
-};
-const api = createApiClient(
+export type SessionAccess = { token: string; scope: string; revision: number };
+export type SessionRecovery = (
+  access: SessionAccess,
+) => Promise<SessionAccess | null>;
+let access: SessionAccess | null = null;
+let sessionRevision = 0;
+let recoverSession: SessionRecovery | null = null;
+export function installSessionAccess(
+  value: SessionAccess | null,
+  revision: number,
+) {
+  access = value;
+  sessionRevision = revision;
+}
+export function installSessionRecovery(handler: SessionRecovery | null) {
+  recoverSession = handler;
+}
+const baseUrl =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/api\/v1\/?$/, "") ??
-    "http://localhost:4000",
-);
+  "http://localhost:4000";
+const api = createApiClient(baseUrl);
+// Recovery never runs through the ordinary request/401 middleware: its complete
+// cookie-bound verification is serialized before a global credential is installed.
+const authApi = createApiClient(baseUrl);
+export const browserAuth = {
+  login: (email: string, password: string) =>
+    unwrap(authApi.POST("/api/v1/auth/login", { body: { email, password } })),
+  refresh: () =>
+    unwrap(
+      authApi.POST("/api/v1/auth/refresh", {
+        headers: { "Content-Type": "application/json" },
+      }),
+    ),
+  session: (token: string) =>
+    unwrap(
+      authApi.GET("/api/v1/auth/web-session", {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    ),
+  select: (token: string, tenantId: string, role: Role) =>
+    unwrap(
+      authApi.POST("/api/v1/auth/switch-context", {
+        headers: { Authorization: `Bearer ${token}` },
+        body: { tenantId, role },
+      }),
+    ),
+  logout: (token: string) =>
+    unwrap(
+      authApi.POST("/api/v1/auth/logout", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }),
+    ),
+};
 export const staff = {
   list: (
     page: number,
@@ -159,22 +207,49 @@ export const commitStudentImport = (id: string) =>
       headers: { "Content-Type": "application/json" },
     }),
   );
+const requestSessions = new WeakMap<Request, SessionAccess>();
+const publicAuth = new Set([
+  "/api/v1/auth/login",
+  "/api/v1/auth/refresh",
+  "/api/v1/auth/forgot-password",
+  "/api/v1/auth/reset-password",
+  "/api/v1/auth/accept-invitation",
+]);
+const staleRequest = () =>
+  new DOMException("Ngữ cảnh đăng nhập đã thay đổi.", "AbortError");
 api.use({
   onRequest({ request }) {
-    if (accessToken)
-      request.headers.set("Authorization", `Bearer ${accessToken}`);
+    if (access && !publicAuth.has(new URL(request.url).pathname)) {
+      request.headers.set("Authorization", `Bearer ${access.token}`);
+      requestSessions.set(request, access);
+    }
     return request;
   },
-  onResponse({ request, response }) {
+  async onResponse({ request, response }) {
+    const original = requestSessions.get(request);
+    if (original && original.revision !== sessionRevision) throw staleRequest();
+    if (response.status !== 401 || !original || !recoverSession)
+      return response;
+    const recovered = await recoverSession(original);
+    if (request.signal.aborted || original.revision !== sessionRevision)
+      throw staleRequest();
+    // A write's original intent/outcome belongs to its form. In particular,
+    // financial POSTs are never automatically replayed after credential recovery.
     if (
-      response.status === 401 &&
-      request.headers.has("Authorization") &&
-      typeof window !== "undefined"
-    ) {
-      accessToken = null;
-      window.dispatchEvent(new Event("fluivix-session-expired"));
-    }
-    return response;
+      request.method !== "GET" ||
+      !recovered ||
+      recovered.scope !== original.scope ||
+      recovered.revision !== original.revision
+    )
+      return response;
+    const headers = new Headers(request.headers);
+    headers.set("Authorization", `Bearer ${recovered.token}`);
+    const retried = await fetch(new Request(request, { headers }));
+    if (request.signal.aborted || original.revision !== sessionRevision)
+      throw staleRequest();
+    if (retried.status === 401) await recoverSession(recovered);
+    if (original.revision !== sessionRevision) throw staleRequest();
+    return retried;
   },
 });
 async function unwrap<T>(

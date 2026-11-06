@@ -321,6 +321,7 @@ test("staff directory has responsive keyboard access and no accessibility violat
 test("self suspension commits, revokes the selected session and clears cached staff data", async ({
   page,
   request,
+  context,
 }) => {
   const url = process.env.E2E_DATABASE_URL;
   if (
@@ -360,6 +361,14 @@ test("self suspension commits, revokes the selected session and clears cached st
     );
     await openStaff(page, email);
     const selected = await (await switched).json();
+    const second = await context.newPage();
+    await second.goto("/app/staff");
+    await expect(
+      second.getByRole("heading", {
+        name: "Nhân sự và quyền truy cập",
+        exact: true,
+      }),
+    ).toBeVisible();
     await page.getByLabel("Tìm tên hoặc email nhân sự").fill(email);
     await page
       .getByRole("region", { name: "Danh sách nhân sự" })
@@ -380,6 +389,17 @@ test("self suspension commits, revokes the selected session and clears cached st
       .getByRole("button", { name: "Lưu trạng thái", exact: true })
       .click();
     await expect(page).toHaveURL("/login");
+    await expect(second).toHaveURL("/login");
+    expect(
+      (await context.cookies()).some(
+        (cookie) => cookie.name === "__Host-fluivix-refresh",
+      ),
+    ).toBe(false);
+    expect(
+      await db.authSession.count({
+        where: { userId: user.id, revokedAt: null },
+      }),
+    ).toBe(0);
     expect(
       (await db.membership.findUniqueOrThrow({ where: { id: membership.id } }))
         .status,

@@ -1,0 +1,12 @@
+{
+  "sourceSha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+  "findings": [
+    {
+      "level": "WARN",
+      "id": "unused-canvas",
+      "message": "The content stops 533px short of the right edge while it starts 28px from the sidebar.",
+      "fix": "Let the grid fill the canvas (columns in fr units), or centre a capped canvas with equal margins. A dead strip on one side reads as unfinished.",
+      "width": 1440
+    }
+  ]
+}

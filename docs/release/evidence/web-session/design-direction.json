@@ -1,0 +1,24 @@
+{
+  "direction": "Existing single FluivixEdu framed-sheet, blue accent, Arial16 Vietnamese",
+  "seed": 1920114305,
+  "question": "Can the user safely recover the current browser session without losing same-scope work or seeing the previous identity/context?",
+  "proMax": {
+    "query": "accessible authentication --domain ux",
+    "result": "Accessible Authentication (Minimum)",
+    "applied": "Password-manager autocomplete and paste retained; native labelled retry with visible keyboard focus and explicit pending/error state",
+    "sourceSha": "d14efff8ed1faa4187f004f79926f428c8074ec7"
+  },
+  "taste": {
+    "sourceSha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+    "applied": "Actual initial browser images exposed orphaned top-left notice and full-viewport gap. Scoped notice now aligns to the440px auth panel, wraps on360px and removes excess auth-layout height only while the notice is present. All4 revised browser images manually reviewed."
+  },
+  "motion": {
+    "sourceSha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+    "skills": [
+      "accessible-animation",
+      "micro-interaction",
+      "60fps-animation"
+    ],
+    "applied": "Immediate native button/focus and text feedback; no added decorative motion, layout animation or delay to auth/payment completion. Actual reduced-motion browser and keyboard checks pass."
+  }
+}

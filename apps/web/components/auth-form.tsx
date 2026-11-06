@@ -200,7 +200,17 @@ export function AuthForm({ mode }: { mode: Mode }) {
                 {error}
               </p>
             )}
-            <Button disabled={isSubmitting || invalidToken} type="submit">
+            {mode === "login" && !session.ready && (
+              <p role="status">Đang xác minh phiên đăng nhập…</p>
+            )}
+            <Button
+              disabled={
+                isSubmitting ||
+                invalidToken ||
+                (mode === "login" && !session.ready)
+              }
+              type="submit"
+            >
               {isSubmitting ? "Đang xử lý…" : title}
             </Button>
           </form>

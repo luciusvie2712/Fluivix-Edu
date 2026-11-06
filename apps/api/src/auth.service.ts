@@ -147,6 +147,41 @@ export class AuthService {
       ),
     };
   }
+  async webSession(claims: Claims, cookieToken: unknown) {
+    if (typeof cookieToken !== "string") throw new UnauthorizedException();
+    // A valid bearer from another browser login/family is not proof that it
+    // belongs to the CURRENT shared HttpOnly cookie. Do not issue credentials
+    // or consume/rotate the refresh token from this validation-only endpoint.
+    const session = await this.db.authSession.findFirst({
+      where: {
+        id: claims.sid,
+        userId: claims.sub,
+        tokenHash: hashToken(cookieToken),
+        clientType: "WEB",
+        consumedAt: null,
+        revokedAt: null,
+        expiresAt: { gt: new Date() },
+        selectedTenantId: claims.tenantId ?? null,
+        selectedRole: claims.role ?? null,
+        user: { status: "ACTIVE" },
+      },
+    });
+    if (!session) throw new UnauthorizedException();
+    if (claims.tenantId && claims.role) {
+      const membership = await this.db.membership.findFirst({
+        where: {
+          tenantId: claims.tenantId,
+          userId: claims.sub,
+          status: "ACTIVE",
+          activationPending: false,
+          roles: { some: { role: claims.role } },
+          tenant: { status: { in: ["ACTIVE", "PAST_DUE_GRACE", "READ_ONLY"] } },
+        },
+      });
+      if (!membership) throw new UnauthorizedException();
+    }
+    return this.me(claims);
+  }
   async me(claims: Claims) {
     const user = await this.db.user.findUniqueOrThrow({
       where: { id: claims.sub },

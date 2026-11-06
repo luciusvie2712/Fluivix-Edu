@@ -8,16 +8,9 @@ import {
   type ReactNode,
 } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  getMe,
-  refresh,
-  setAccessToken,
-  type Me,
-  type Role,
-  switchContext,
-  login,
-  logout,
-} from "../lib/api";
+import type { Me, Role } from "../lib/api";
+import { BrowserSession } from "../lib/browser-session";
+import { Button } from "./ui/button";
 type Session = {
   me: Me | null;
   ready: boolean;
@@ -42,83 +35,61 @@ export function Providers({ children }: { children: ReactNode }) {
         },
       }),
   );
-  const [me, setMe] = useState<Me | null>(null);
-  const [ready, setReady] = useState(false);
-  const epoch = useRef(0);
+  const [state, setState] = useState<{
+    me: Me | null;
+    ready: boolean;
+    notice: string;
+  }>({ me: null, ready: false, notice: "" });
+  const session = useRef<BrowserSession | null>(null);
   useEffect(() => {
-    let active = true;
-    const revision = epoch.current;
-    void refresh()
-      .then(async (result) => {
-        if (!active || epoch.current !== revision) return;
-        setAccessToken(result.data.accessToken);
-        const identity = await getMe();
-        if (active && epoch.current === revision) setMe(identity.data);
-      })
-      .catch(() => {
-        if (active && epoch.current === revision) {
-          setAccessToken(null);
-          setMe(null);
-        }
-      })
-      .finally(() => {
-        if (active && epoch.current === revision) setReady(true);
-      });
+    const controller = new BrowserSession({
+      clear: async () => {
+        await cache.cancelQueries();
+        cache.clear();
+      },
+      update: (me, ready, notice) => setState({ me, ready, notice }),
+      navigate: (path) => {
+        window.location.replace(path);
+      },
+    });
+    session.current = controller;
+    void controller.start();
     return () => {
-      active = false;
+      session.current = null;
+      controller.destroy();
     };
-  }, []);
-  useEffect(() => {
-    const expired = () => {
-      epoch.current++;
-      setAccessToken(null);
-      setMe(null);
-      setReady(true);
-      cache.clear();
-    };
-    window.addEventListener("fluivix-session-expired", expired);
-    return () => window.removeEventListener("fluivix-session-expired", expired);
   }, [cache]);
-  function clear() {
-    epoch.current++;
-    setAccessToken(null);
-    setMe(null);
-    cache.clear();
-  }
-  async function signIn(email: string, password: string) {
-    clear();
-    const result = await login({ email, password });
-    setAccessToken(result.data.accessToken);
-    const identity = await getMe();
-    setMe(identity.data);
-    setReady(true);
-  }
-  async function select(tenantId: string, role: Role) {
-    const revision = ++epoch.current;
-    setReady(false);
-    setMe(null);
-    await cache.cancelQueries();
-    cache.clear();
-    try {
-      const result = await switchContext({ tenantId, role });
-      if (revision !== epoch.current) return;
-      setAccessToken(result.data.accessToken);
-      const identity = await getMe();
-      if (revision === epoch.current) setMe(identity.data);
-    } finally {
-      if (revision === epoch.current) setReady(true);
-    }
-  }
-  async function signOut() {
-    try {
-      await logout();
-    } finally {
-      clear();
-    }
-  }
+  const current = () => {
+    if (!session.current) throw new Error("Đang xác minh phiên đăng nhập.");
+    return session.current;
+  };
   return (
     <QueryClientProvider client={cache}>
-      <Context.Provider value={{ me, ready, signIn, select, signOut, clear }}>
+      <Context.Provider
+        value={{
+          me: state.me,
+          ready: state.ready,
+          signIn: (email, password) => current().signIn(email, password),
+          select: (tenantId, role) => current().select(tenantId, role),
+          signOut: () => current().signOut(),
+          clear: () => current().clear(),
+        }}
+      >
+        {state.notice && (
+          <section
+            className="notice session-notice"
+            aria-label="Trạng thái phiên đăng nhập"
+          >
+            <p role="alert">{state.notice}</p>
+            <Button
+              variant="outline"
+              disabled={!state.ready}
+              onClick={() => void current().retry()}
+            >
+              {state.ready ? "Thử lại phiên đăng nhập" : "Đang xác minh phiên…"}
+            </Button>
+          </section>
+        )}
         {children}
       </Context.Provider>
     </QueryClientProvider>
