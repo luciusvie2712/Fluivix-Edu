@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-07",
+  "baseCommit": "e85260b44941a8ecac3c8212e79e467dab4b9558",
+  "verdict": "REPRODUCED_BASELINE_GAPS_NOT_ACCEPTANCE",
+  "syntheticOnly": true,
+  "findings": [
+    {
+      "case": "missing-centre-settings-and-usage",
+      "ownerSettingsStatus": 404,
+      "ownerUsageStatus": 404
+    },
+    {
+      "case": "room-create-trusts-actor-before-tenant-lock",
+      "actualOwnerSuspendQueuedFirst": true,
+      "actualRoomQueuedBehindSuspension": true,
+      "actualPostGuardTenantLockWaiters": 2,
+      "ownerSuspendStatus": 200,
+      "actorMembershipStatus": "SUSPENDED",
+      "queuedRoomStatus": 201,
+      "roomsCommittedAfterSuspension": 1,
+      "freshRequestStatus": 403
+    }
+  ],
+  "boundary": "Actual PostgreSQL/Nest API/native sessions and actual owner staff suspension API; isolated disposable test database only. No staging, real message, customer data or production readiness claim."
+}

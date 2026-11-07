@@ -1,0 +1,109 @@
+{
+  "date": "2026-11-07",
+  "module": "Teaching current actor after lock waits",
+  "baseCommit": "e85260b44941a8ecac3c8212e79e467dab4b9558",
+  "localVerdict": "PASS",
+  "remoteVerdict": "NOT_VERIFIED",
+  "releaseVerdict": "BLOCKED",
+  "checks": {
+    "lintFormat": "PASS",
+    "uncachedBuildTasks": 8,
+    "uncachedTypesAndTools": "PASS",
+    "unit": 66,
+    "mobileJest": 30,
+    "actualMobileApiSmoke": "PASS; physical device not tested",
+    "expoAlignment": "PASS",
+    "integration": {
+      "passed": 123,
+      "skipped": 0,
+      "report": "docs/release/evidence/integration-2026-11-07-teaching-actor-full.json"
+    },
+    "browser": {
+      "passed": 84,
+      "skipped": 0,
+      "flaky": 0,
+      "report": "docs/release/evidence/e2e-2026-11-07-teaching-actor-full.json"
+    },
+    "stableContract": {
+      "clientSha256": "84B6C58E9725C09B721B7475BDA2647F1AB52DB3C47150064C4229888514A506",
+      "stable": true,
+      "openapiSha256": "655F5607BC66EF73FD358A4A08B2D521B04EB1C8DB94A7597A126915E8A76B99",
+      "operations": 179
+    },
+    "offlineFrozenInstall": "PASS",
+    "audit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    },
+    "prisma": "validate/generate PASS; no migration or schema change;001..029 unchanged",
+    "secretScreen": "PASS; values/private hash withheld; .env unchanged"
+  },
+  "frozenSourceProof": {
+    "baseCommit": "e85260b44941a8ecac3c8212e79e467dab4b9558",
+    "rawSourceSha256": {
+      "tests/integration/teaching-actor-cases.ts": "e5a38b384e0bc2cb474cad4ab13f0a38bd12c2104de51692d33b7a0c6fa51b57",
+      "apps/api/src/teaching.service.ts": "de550fb2dd04ef48bf1b5ccfc32c438c95677e9b802bec620f0e0e21c0aae498",
+      "tests/e2e/fee-plans.spec.ts": "1bb7bccf3cc4d685dfb1699a7d3795f0704b6d4123d3d0de5c239d3b099918ae",
+      "tests/e2e/teaching.spec.ts": "891fff1d50ce5e4a4ad0717c0de6c71014247f080f9fc5feff3c756df6ac95f0",
+      "tests/integration/identity.test.ts": "5d9875edf3674f7a670bcc7f0e8b04d4697c9fcaae4cd27a926062c9a6a0383d"
+    },
+    "stable": true,
+    "envUnchanged": true
+  },
+  "uiSourceChanged": false,
+  "visualEvidence": "All existing responsive/axe/Taste/reduced-motion browser cases rerun; fresh images archived privately, historical committed images preserved. No new UI/manual-device claim.",
+  "baseline": "../operations-baseline-diagnostic.json",
+  "failuresRetained": [
+    "../integration-2026-11-07-teaching-actor-baseline.json",
+    "../e2e-2026-11-07-teaching-actor-first.json",
+    "../teaching-browser-second-aborted-diagnostic.json"
+  ],
+  "focused": "../integration-2026-11-07-teaching-actor-focused.json",
+  "verifiedSkills": [
+    {
+      "source": "taste-skill",
+      "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+      "installed": "design-taste-frontend",
+      "verifiedFiles": 38,
+      "status": "PASS"
+    },
+    {
+      "source": "ui-ux-pro-max-skill",
+      "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+      "installed": "ui-ux-pro-max",
+      "verifiedFiles": 73,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "accessible-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "micro-interaction",
+      "verifiedFiles": 4,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "60fps-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    }
+  ],
+  "remaining": [
+    "W05 scoped student detail tabs",
+    "W18 centre settings/usage/rooms operations",
+    "Automatic fee-reminder schedule remains proposal pending centre activation approval",
+    "Local synthetic backup/restore/load/monitoring and reproducible staging configuration",
+    "Actual staging/legal/UAT/signed-device/push external gates"
+  ]
+}

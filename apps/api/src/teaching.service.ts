@@ -50,7 +50,8 @@ import {
 } from "./teaching.dto";
 type Tx = Prisma.TransactionClient;
 type TenantScope = Pick<Claims, "tenantId">;
-type ScheduleActor = TenantScope & { sub?: string };
+type ScheduleActor = TenantScope &
+  Partial<Pick<Claims, "sub" | "sid" | "role">>;
 const day = (value: Date) => value.toISOString().slice(0, 10);
 const date = (value: string) => new Date(value + "T00:00:00Z");
 const teacherInclude = {
@@ -111,7 +112,24 @@ export class TeachingService {
       },
     });
   }
-  private async lockTenant(tx: Tx, c: TenantScope) {
+  private async lockTenant(
+    tx: Tx,
+    c: ScheduleActor,
+    permission = "teaching.manage",
+  ) {
+    if (!c.tenantId) throw new ForbiddenException("Chưa chọn trung tâm.");
+    // Interactive writes must recheck the actual selected actor after waiting.
+    // Only the internal rolling worker supplies a tenant scope with no identity;
+    // it remains a system action with actorNULL, never a fabricated user token.
+    if ("sub" in c || "sid" in c || "role" in c) {
+      if (!c.sub || !c.sid || !c.role) throw new ForbiddenException();
+      await lockTenantActor(
+        tx,
+        { tenantId: c.tenantId, sub: c.sub, sid: c.sid, role: c.role },
+        permission,
+      );
+      return;
+    }
     await tx.$queryRaw`SELECT id FROM tenants WHERE id=${c.tenantId!}::uuid FOR UPDATE`;
     await requireSubscriptionWrite(tx, c.tenantId!);
   }
@@ -1855,7 +1873,11 @@ export class TeachingService {
   }
   async draft(c: Claims, id: string, input: AttendanceDraft, traceId: string) {
     return this.db.$transaction(async (tx) => {
-      await this.lockTenant(tx, c);
+      await this.lockTenant(
+        tx,
+        c,
+        c.role === "teacher" ? "attendance.write.assigned" : "attendance.write",
+      );
       await requirePlanFeature(tx, c.tenantId!, "attendance");
       const s = await this.authorizedSession(tx, c, id, true);
       if (s.version !== input.sessionVersion)
@@ -1906,7 +1928,11 @@ export class TeachingService {
   }
   async finalize(c: Claims, id: string, version: number, traceId: string) {
     return this.db.$transaction(async (tx) => {
-      await this.lockTenant(tx, c);
+      await this.lockTenant(
+        tx,
+        c,
+        c.role === "teacher" ? "attendance.write.assigned" : "attendance.write",
+      );
       await requirePlanFeature(tx, c.tenantId!, "attendance");
       const s = await this.authorizedSession(tx, c, id, true);
       if (s.version !== version)
@@ -1955,7 +1981,7 @@ export class TeachingService {
   }
   async reopen(c: Claims, id: string, input: ReopenInput, traceId: string) {
     return this.db.$transaction(async (tx) => {
-      await this.lockTenant(tx, c);
+      await this.lockTenant(tx, c, "attendance.reopen");
       const s = await this.authorizedSession(tx, c, id, true);
       if (s.status !== "COMPLETED" || s.version !== input.sessionVersion)
         throw new ConflictException(
@@ -2111,7 +2137,14 @@ export class TeachingService {
   }
   async lesson(c: Claims, id: string, input?: LessonInput, traceId = "") {
     return this.db.$transaction(async (tx) => {
-      if (input) await this.lockTenant(tx, c);
+      if (input)
+        await this.lockTenant(
+          tx,
+          c,
+          c.role === "teacher"
+            ? "attendance.write.assigned"
+            : "attendance.write",
+        );
       const s = await this.authorizedSession(tx, c, id, !!input);
       if (input) {
         if (input.sessionVersion !== s.version)

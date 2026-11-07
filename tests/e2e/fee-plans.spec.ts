@@ -211,17 +211,17 @@ test("fee plan conflict retains the entered future amount until explicit reload"
     await db.$disconnect();
   }
 });
-test("fee plan directory and terms forms have responsive accessible keyboard and reduced-motion feedback", async ({
-  page,
-}) => {
-  const db = database();
-  try {
-    const f = await fixture(db);
-    await login(page);
-    await create(page, f);
-    const detail = new URL(page.url()).pathname;
-    mkdirSync("docs/release/evidence/fee-plans", { recursive: true });
-    for (const surface of ["directory", "detail"]) {
+for (const surface of ["directory", "detail"] as const) {
+  test(`fee plan ${surface} has responsive accessible keyboard and reduced-motion feedback`, async ({
+    page,
+  }) => {
+    const db = database();
+    try {
+      const f = await fixture(db);
+      await login(page);
+      await create(page, f);
+      const detail = new URL(page.url()).pathname;
+      mkdirSync("docs/release/evidence/fee-plans", { recursive: true });
       await page.goto(
         surface === "directory" ? "/app/finance/fee-plans" : detail,
       );
@@ -254,21 +254,23 @@ test("fee plan directory and terms forms have responsive accessible keyboard and
           `docs/release/evidence/fee-plans/${surface}-taste-${width}.json`,
         );
       }
+      if (surface === "detail") {
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        await page
+          .getByLabel("Số tiền cho kỳ tương lai (VND)", { exact: true })
+          .focus();
+        await page.keyboard.press("ControlOrMeta+A");
+        await page.keyboard.type("1500000");
+        await page.keyboard.press("Tab");
+        await expect(
+          page.getByLabel("Ngày áp dụng điều khoản mới", { exact: true }),
+        ).toBeFocused();
+      }
+    } finally {
+      await db.$disconnect();
     }
-    await page.emulateMedia({ reducedMotion: "reduce" });
-    await page
-      .getByLabel("Số tiền cho kỳ tương lai (VND)", { exact: true })
-      .focus();
-    await page.keyboard.press("ControlOrMeta+A");
-    await page.keyboard.type("1500000");
-    await page.keyboard.press("Tab");
-    await expect(
-      page.getByLabel("Ngày áp dụng điều khoản mới", { exact: true }),
-    ).toBeFocused();
-  } finally {
-    await db.$disconnect();
-  }
-});
+  });
+}
 test("fee plans show empty/read-only/missing states and manager cannot enter configuration", async ({
   page,
 }) => {

@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-07",
+  "module": "Teaching browser recovery",
+  "status": "ABORTED_AFTER_OBSERVED_FAILURE",
+  "completed": false,
+  "observedMinimumPasses": 31,
+  "observedFailures": [
+    {
+      "test": "fee plan directory and terms forms have responsive accessible keyboard and reduced-motion feedback",
+      "error": "Original30000ms aggregate timeout;34.0s including teardown",
+      "businessFailureProven": false
+    }
+  ],
+  "notExecutedOrCompleted": "Remaining full-suite cases are NOT_VERIFIED for this aborted run. No complete83PASS or focused3PASS claim.",
+  "hostObservation": {
+    "freePhysicalMemoryMB": 959,
+    "totalPhysicalMemoryMB": 15556,
+    "cpuLoadPercent": 45,
+    "interpretation": "Concurrent host memory pressure observed; not proof of product latency or the sole cause."
+  },
+  "recovery": "Stopped only the freshly verified owned Playwright CLI descendant tree; parent runner exited1 and performed owned disposable PostgreSQL cleanup. No user application or development database stopped. Split the two visual surfaces into independently selectable cases, retaining all4-width axe/Taste/screenshot assertions and original detail reduced-motion keyboard assertions. Original timeouts/retries unchanged.",
+  "artifacts": "The fee timeout error context was read and the34.0s failure was observed in actual runner output. Its raw screenshot/trace were removed by the next Playwright run before archival: they are NOT available and no artifact hash/retention claim is made. The earlier complete81PASS/1teaching-timeout report and that teaching raw trace were separately archived before cleanup. Raw traces may contain synthetic credentials and are not published."
+}

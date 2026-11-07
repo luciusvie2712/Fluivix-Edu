@@ -1,4 +1,6 @@
-import { expect, test } from "./fixtures";
+import { expect, test, type Page } from "./fixtures";
+import { PrismaClient } from "@prisma/client";
+import { randomUUID } from "node:crypto";
 import { createRequire } from "node:module";
 import { mkdirSync } from "node:fs";
 import path from "node:path";
@@ -163,11 +165,100 @@ test("a delayed real lesson response cannot overwrite a newer lesson from anothe
   expect(stored.homeworkText).toBe("Bài tập sau khi đối chiếu phiên bản");
 });
 
-test("Web class enrollment, recurring preview/generation, real calendar, draft and published attendance", async ({
-  page,
-}) => {
+function teachingDatabase() {
+  const url = process.env.E2E_DATABASE_URL;
+  if (
+    !url ||
+    !["localhost", "127.0.0.1"].includes(new URL(url).hostname) ||
+    !new URL(url).pathname.endsWith("_test")
+  )
+    throw Error("Disposable teaching browser database required");
+  return new PrismaClient({ datasourceUrl: url });
+}
+async function teachingFixture(db: PrismaClient) {
+  const stamp = randomUUID(),
+    source = await db.user.findUniqueOrThrow({
+      where: { email: "inviter@example.test" },
+    });
+  const tenant = await db.tenant.create({
+    data: {
+      slug: "teaching-journey-" + stamp,
+      name: "Trung tâm giảng dạy " + stamp.slice(0, 8),
+      status: "ACTIVE",
+      subscriptionEndsAt: new Date("2040-01-01Z"),
+      graceUntil: new Date("2040-02-01Z"),
+    },
+  });
+  const plan = await db.plan.findUniqueOrThrow({
+    where: { code: "SYNTHETIC_TEST" },
+  });
+  await db.subscription.create({
+    data: {
+      tenantId: tenant.id,
+      planId: plan.id,
+      startsAt: new Date("2020-01-01Z"),
+      endsAt: new Date("2040-01-01Z"),
+      graceUntil: new Date("2040-02-01Z"),
+    },
+  });
+  const owner = await db.user.create({
+    data: {
+      email: `teaching-owner-${stamp}@example.test`,
+      displayName: "Chủ trung tâm giảng dạy kiểm thử",
+      status: "ACTIVE",
+      passwordHash: source.passwordHash,
+    },
+  });
+  await db.membership.create({
+    data: {
+      tenantId: tenant.id,
+      userId: owner.id,
+      status: "ACTIVE",
+      roles: { create: [{ role: "owner" }] },
+    },
+  });
+  const teacher = await db.user.create({
+    data: {
+      email: `teaching-teacher-${stamp}@example.test`,
+      displayName: "Giáo viên kiểm thử Web",
+      status: "ACTIVE",
+      passwordHash: source.passwordHash,
+    },
+  });
+  await db.membership.create({
+    data: {
+      tenantId: tenant.id,
+      userId: teacher.id,
+      status: "ACTIVE",
+      roles: { create: [{ role: "teacher" }] },
+    },
+  });
+  await db.teacher.create({
+    data: {
+      tenantId: tenant.id,
+      userId: teacher.id,
+      teacherCode: "WEB-TEACHER",
+      fullName: "Giáo viên kiểm thử Web",
+    },
+  });
+  await db.student.create({
+    data: {
+      tenantId: tenant.id,
+      studentCode: "TEST-001",
+      fullName: "Học viên kiểm thử A",
+      status: "ACTIVE",
+    },
+  });
+  return { owner, tenant };
+}
+// Both independently selectable cases run every original business assertion.
+// Each owns its centre, so teachers/students/sessions never depend on test order.
+async function teachingJourney(
+  page: Page,
+  f: Awaited<ReturnType<typeof teachingFixture>>,
+) {
   await page.goto(testOrigins.web + "/login");
-  await page.getByLabel("Email", { exact: true }).fill("inviter@example.test");
+  await page.getByLabel("Email", { exact: true }).fill(f.owner.email);
   await page
     .getByLabel("Mật khẩu", { exact: true })
     .fill("Fluivix-Test-Password-2026");
@@ -176,7 +267,7 @@ test("Web class enrollment, recurring preview/generation, real calendar, draft a
     .locator("section")
     .filter({
       has: page.getByRole("heading", {
-        name: "Trung tâm kiểm thử A",
+        name: f.tenant.name,
         exact: true,
       }),
     })
@@ -371,58 +462,81 @@ test("Web class enrollment, recurring preview/generation, real calendar, draft a
     })
     .click();
   await expect(page.getByText(/18:00–19:30 → 20:00–21:30/)).toBeVisible();
-  mkdirSync("docs/release/evidence/visual", { recursive: true });
-  for (const width of [360, 768, 1024, 1440]) {
-    await page.setViewportSize({ width, height: 900 });
-    expect(
-      await page.evaluate(
-        () => document.documentElement.scrollWidth <= innerWidth,
-      ),
-    ).toBe(true);
-    expect(
-      (
-        await new AxeBuilder({ page })
-          .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
-          .analyze()
-      ).violations,
-    ).toEqual([]);
-    await page
-      .getByText("Đổi lịch định kỳ trong tương lai và xem lịch sử", {
-        exact: true,
-      })
-      .locator("..")
-      .screenshot({
-        path: `docs/release/evidence/visual/rule-revision-${width}.png`,
-      });
-    await reviewTaste(
-      page,
-      `docs/release/evidence/visual/rule-revision-taste-${width}.json`,
-    );
+  return sessionUrl;
+}
+
+test("Web class enrollment, recurring preview/generation, real calendar, draft and published attendance; rule revision visual checks", async ({
+  page,
+}) => {
+  const db = teachingDatabase();
+  try {
+    await teachingJourney(page, await teachingFixture(db));
+    mkdirSync("docs/release/evidence/visual", { recursive: true });
+    for (const width of [360, 768, 1024, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
+      expect(
+        (
+          await new AxeBuilder({ page })
+            .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+            .analyze()
+        ).violations,
+      ).toEqual([]);
+      await page
+        .getByText("Đổi lịch định kỳ trong tương lai và xem lịch sử", {
+          exact: true,
+        })
+        .locator("..")
+        .screenshot({
+          path: `docs/release/evidence/visual/rule-revision-${width}.png`,
+        });
+      await reviewTaste(
+        page,
+        `docs/release/evidence/visual/rule-revision-taste-${width}.json`,
+      );
+    }
+  } finally {
+    await db.$disconnect();
   }
-  await page.goto(sessionUrl);
-  await expect(page.getByText(/COMPLETED.*Phiên bản 3/)).toBeVisible();
-  mkdirSync("docs/release/evidence/visual", { recursive: true });
-  for (const width of [360, 768, 1024, 1440]) {
-    await page.setViewportSize({ width, height: 900 });
-    expect(
-      await page.evaluate(
-        () => document.documentElement.scrollWidth <= innerWidth,
-      ),
-    ).toBe(true);
-    expect(
-      (
-        await new AxeBuilder({ page })
-          .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
-          .analyze()
-      ).violations,
-    ).toEqual([]);
-    await page.screenshot({
-      path: `docs/release/evidence/visual/session-${width}.png`,
-      fullPage: true,
-    });
-    await reviewTaste(
-      page,
-      `docs/release/evidence/visual/session-taste-${width}.json`,
-    );
+});
+
+test("Web class enrollment, recurring preview/generation, real calendar, draft and published attendance; locked session visual checks", async ({
+  page,
+}) => {
+  const db = teachingDatabase();
+  try {
+    const sessionUrl = await teachingJourney(page, await teachingFixture(db));
+    await page.goto(sessionUrl);
+    await expect(page.getByText(/COMPLETED.*Phiên bản 3/)).toBeVisible();
+    mkdirSync("docs/release/evidence/visual", { recursive: true });
+    for (const width of [360, 768, 1024, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      ).toBe(true);
+      expect(
+        (
+          await new AxeBuilder({ page })
+            .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+            .analyze()
+        ).violations,
+      ).toEqual([]);
+      await page.screenshot({
+        path: `docs/release/evidence/visual/session-${width}.png`,
+        fullPage: true,
+      });
+      await reviewTaste(
+        page,
+        `docs/release/evidence/visual/session-taste-${width}.json`,
+      );
+    }
+  } finally {
+    await db.$disconnect();
   }
 });
