@@ -14,6 +14,7 @@ import { Button } from "./ui/button";
 type Session = {
   me: Me | null;
   ready: boolean;
+  refreshProfile: () => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   select: (tenantId: string, role: Role) => Promise<void>;
   signOut: () => Promise<void>;
@@ -69,6 +70,7 @@ export function Providers({ children }: { children: ReactNode }) {
         value={{
           me: state.me,
           ready: state.ready,
+          refreshProfile: () => current().refreshProfile(),
           signIn: (email, password) => current().signIn(email, password),
           select: (tenantId, role) => current().select(tenantId, role),
           signOut: () => current().signOut(),

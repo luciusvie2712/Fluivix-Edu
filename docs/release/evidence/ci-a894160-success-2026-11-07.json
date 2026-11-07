@@ -1,0 +1,175 @@
+{
+  "date": "2026-11-07",
+  "headSha": "a8941608667a2a2def583e8c3f4f01b0d40a6fca",
+  "runId": 42342299472,
+  "url": "https://github.com/luciusvie2712/Fluivix-Edu/actions/runs/42342299472",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 128312428167,
+      "name": "identity",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run mkdir -p .agents/skills && cp -R .ci-taste/skills/taste-skill .agents/skills/design-taste-frontend",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm install --frozen-lockfile",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm db:generate",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm --filter @fluivix/server-crypto build",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm lint",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm format:check",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm typecheck",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm test",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm --filter @fluivix/mobile test",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm build",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm openapi:generate && pnpm client:generate",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run git diff --exit-code -- apps/api/openapi.json packages/api-client/src/schema.d.ts",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm test:integration",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm test:mobile:api",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm exec playwright install --with-deps chromium",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm test:e2e",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm audit --audit-level=high",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "observedCounts": {
+    "unit": 66,
+    "integration": 123,
+    "browser": 86,
+    "actualMobileApiSmoke": "PASS"
+  },
+  "observationSource": "Actual completed job128312428167 logs;86passed(4.5m); no provider/device delivery claim"
+}

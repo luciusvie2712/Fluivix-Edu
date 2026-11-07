@@ -8,6 +8,7 @@ import type { PrivacyFulfillInput } from "./privacy.dto";
 import { privateFields, tenantDate } from "./students";
 import { financialTimezone } from "./finance-query";
 import { privacySnapshot } from "./privacy-snapshot";
+import { assertManagedStorageQuota } from "./subscription-policy";
 import {
   privacyExportTtlMinutes,
   sealPrivacyExport,
@@ -75,6 +76,11 @@ export async function fulfillPrivacyRequest(
       expiresAt = new Date(
         createdAt.getTime() + privacyExportTtlMinutes() * 60000,
       );
+    await assertManagedStorageQuota(
+      tx,
+      r.tenantId,
+      Buffer.byteLength(sealed.ciphertext, "utf8"),
+    );
     const artifact = await tx.privacyExportArtifact.create({
       data: {
         tenantId: r.tenantId,

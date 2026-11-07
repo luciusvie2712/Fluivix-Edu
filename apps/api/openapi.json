@@ -13229,6 +13229,67 @@
         "tags": ["tenant"]
       }
     },
+    "/api/v1/tenant/settings": {
+      "get": {
+        "operationId": "TenantSettingsController_read",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TenantSettingsResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["tenant"]
+      },
+      "patch": {
+        "operationId": "TenantSettingsController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TenantSettingsInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TenantSettingsResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": ["tenant"]
+      }
+    },
+    "/api/v1/tenant/usage": {
+      "get": {
+        "operationId": "TenantSettingsController_usage",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TenantUsageResponse" }
+              }
+            }
+          }
+        },
+        "tags": ["tenant"]
+      }
+    },
     "/api/v1/platform/audit-logs": {
       "get": {
         "operationId": "PlatformAuditController_list",
@@ -17382,6 +17443,78 @@
         "type": "object",
         "properties": {
           "data": { "$ref": "#/components/schemas/TenantSubscriptionView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "TenantSettingsView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "slug": { "type": "string" },
+          "name": { "type": "string" },
+          "contactEmail": { "type": "string", "nullable": true },
+          "timezone": { "type": "string" },
+          "version": { "type": "number" },
+          "timezoneChangeAllowed": { "type": "boolean" }
+        },
+        "required": [
+          "id",
+          "slug",
+          "name",
+          "contactEmail",
+          "timezone",
+          "version",
+          "timezoneChangeAllowed"
+        ]
+      },
+      "TenantSettingsResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/TenantSettingsView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "TenantSettingsInput": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number", "minimum": 1 },
+          "name": { "type": "string" },
+          "contactEmail": { "type": "string", "nullable": true },
+          "timezone": { "type": "string" },
+          "reason": { "type": "string", "minLength": 10, "maxLength": 500 }
+        },
+        "required": ["version", "name", "contactEmail", "timezone", "reason"]
+      },
+      "TenantUsageView": {
+        "type": "object",
+        "properties": {
+          "activeStudents": { "type": "number" },
+          "reservedUsers": { "type": "number" },
+          "activeOrDraftClasses": { "type": "number" },
+          "managedExportBytes": {
+            "type": "string",
+            "description": "Exact stored base64 encrypted export payload bytes, including expired payloads awaiting purge. Excludes database rows/indexes/WAL/backups; P0 has no file uploads."
+          },
+          "limits": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [{ "$ref": "#/components/schemas/PlanLimitsDto" }]
+          }
+        },
+        "required": [
+          "activeStudents",
+          "reservedUsers",
+          "activeOrDraftClasses",
+          "managedExportBytes",
+          "limits"
+        ]
+      },
+      "TenantUsageResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/TenantUsageView" },
           "meta": { "$ref": "#/components/schemas/MetaDto" }
         },
         "required": ["data", "meta"]

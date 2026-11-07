@@ -2404,6 +2404,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/tenant/settings": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TenantSettingsController_read"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["TenantSettingsController_update"];
+    trace?: never;
+  };
+  "/api/v1/tenant/usage": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TenantSettingsController_usage"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/platform/audit-logs": {
     parameters: {
       query?: never;
@@ -4445,6 +4477,38 @@ export interface components {
     };
     TenantSubscriptionResponse: {
       data: components["schemas"]["TenantSubscriptionView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    TenantSettingsView: {
+      id: string;
+      slug: string;
+      name: string;
+      contactEmail: string | null;
+      timezone: string;
+      version: number;
+      timezoneChangeAllowed: boolean;
+    };
+    TenantSettingsResponse: {
+      data: components["schemas"]["TenantSettingsView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    TenantSettingsInput: {
+      version: number;
+      name: string;
+      contactEmail: string | null;
+      timezone: string;
+      reason: string;
+    };
+    TenantUsageView: {
+      activeStudents: number;
+      reservedUsers: number;
+      activeOrDraftClasses: number;
+      /** @description Exact stored base64 encrypted export payload bytes, including expired payloads awaiting purge. Excludes database rows/indexes/WAL/backups; P0 has no file uploads. */
+      managedExportBytes: string;
+      limits: components["schemas"]["PlanLimitsDto"] | null;
+    };
+    TenantUsageResponse: {
+      data: components["schemas"]["TenantUsageView"];
       meta: components["schemas"]["MetaDto"];
     };
     PlatformAuditView: {
@@ -15205,6 +15269,67 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["TenantSubscriptionResponse"];
+        };
+      };
+    };
+  };
+  TenantSettingsController_read: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TenantSettingsResponse"];
+        };
+      };
+    };
+  };
+  TenantSettingsController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TenantSettingsInput"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TenantSettingsResponse"];
+        };
+      };
+    };
+  };
+  TenantSettingsController_usage: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TenantUsageResponse"];
         };
       };
     };

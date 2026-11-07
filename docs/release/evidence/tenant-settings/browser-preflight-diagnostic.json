@@ -1,0 +1,8 @@
+{
+  "date": "2026-11-07",
+  "status": "NOT_RUN_PREFLIGHT_FAILED",
+  "browserCasesExecuted": 0,
+  "cause": "Local focused command omitted TEST_REDIS_URL; runner checked default6379 before disposable database creation, while owned test Redis is6385",
+  "repair": "Set explicit TEST_REDIS_URL for the new process; keep production/CI defaults and bounded readiness guard unchanged",
+  "releaseVerdict": "BLOCKED"
+}

@@ -51,6 +51,7 @@ export const permissions = {
     "staff.roles",
     "permissions.read",
     "tenant.read",
+    "tenant.settings.write",
     "audit.read",
     "audit.export",
     "teaching.manage",

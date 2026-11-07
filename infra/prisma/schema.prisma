@@ -55,6 +55,7 @@ model User {
 }
 
 model Tenant {
+  settingsVersion Int @default(1) @map("settings_version")
   id                 String         @id @default(uuid()) @db.Uuid
   slug               String         @unique @db.VarChar(80)
   name               String         @db.VarChar(150)

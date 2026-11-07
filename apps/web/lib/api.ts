@@ -456,8 +456,18 @@ async function unwrap<T>(
 }
 export const login = (body: components["schemas"]["LoginDto"]) =>
   unwrap(api.POST("/api/v1/auth/login", { body }));
-export const subscriptionInfo = () =>
-  unwrap(api.GET("/api/v1/tenant/subscription"));
+export const subscriptionInfo = (signal: AbortSignal | null = null) =>
+  unwrap(api.GET("/api/v1/tenant/subscription", { signal }));
+export const tenantSettings = {
+  read: (signal: AbortSignal) =>
+    unwrap(api.GET("/api/v1/tenant/settings", { signal })),
+  usage: (signal: AbortSignal) =>
+    unwrap(api.GET("/api/v1/tenant/usage", { signal })),
+  update: (
+    body: components["schemas"]["TenantSettingsInput"],
+    signal: AbortSignal,
+  ) => unwrap(api.PATCH("/api/v1/tenant/settings", { body, signal })),
+};
 let refreshing: ReturnType<typeof refreshRequest> | null = null;
 const refreshRequest = () =>
   unwrap(

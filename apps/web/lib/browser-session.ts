@@ -222,6 +222,9 @@ export class BrowserSession {
       }
     }
   }
+  async refreshProfile() {
+    await this.lock(() => this.ensure());
+  }
   async start() {
     try {
       await this.lock(() => this.ensure());

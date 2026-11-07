@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-07",
+  "module": "Additive030 upgrade over owned populated schema029",
+  "status": "PASS_SYNTHETIC_UPGRADE",
+  "releaseVerdict": "BLOCKED",
+  "scope": "Fresh clone of owned synthetic source only; no original source, developer/customer database or.env writes",
+  "sourceDatabase": "fluivixedu_teaching_actor_third_full_test",
+  "targetDatabase": "fluivixedu_settings_upgrade_1794032067047_test",
+  "actualStagingVerified": false,
+  "migrationMilliseconds": 4655,
+  "originalTablesCompared": 57,
+  "originalBusinessRowsCompared": 12820,
+  "ordinaryDataSha256": "48e9640f61d356c514f2c45e1a1cc8afc82ef946cb149aa48cdc1c9a57e34ac2",
+  "legacyMigrationRowsUnchanged": 29,
+  "newMigration": {
+    "name": "202611070030_tenant_settings",
+    "checksumSha256": "a7768a3b3e4d6f60f0820894fe4cd948406e0adc649c36b32935a0776817cb87"
+  },
+  "initializedLegacyTenantVersions": 70,
+  "triggerChecks": "Existing version cannot be forged; actual profile edit1->2; metadata no-op remains2; rollback restores all original data and initialized versions",
+  "constraint": "Positive settings_version CHECK exists and is validated",
+  "durationMilliseconds": 7912,
+  "priorDiagnostic": "upgrade-first-diagnostic.json"
+}

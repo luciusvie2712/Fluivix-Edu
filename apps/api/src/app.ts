@@ -28,6 +28,10 @@ import { PlatformService } from "./platform.service";
 import { PlatformTenantsController } from "./platform-tenants.controller";
 import { PlatformTenantsService } from "./platform-tenants.service";
 import { TenantSubscriptionController } from "./tenant-subscription";
+import {
+  TenantSettingsController,
+  TenantSettingsService,
+} from "./tenant-settings";
 import { MobileAuthController } from "./mobile-auth";
 import { MobilePeopleController } from "./mobile-people";
 import { TeachingController } from "./teaching.controller";
@@ -76,6 +80,7 @@ import {
     PlatformController,
     PlatformTenantsController,
     TenantSubscriptionController,
+    TenantSettingsController,
     PlatformAuditController,
     PlatformHealthController,
   ],
@@ -85,6 +90,7 @@ import {
     StaffService,
     StudentImportsService,
     Db,
+    TenantSettingsService,
     AuthService,
     TeachingService,
     GradesService,

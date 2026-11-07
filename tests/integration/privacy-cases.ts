@@ -1219,5 +1219,187 @@ export function privacyCases(
         f.db.privacyExportArtifact.delete({ where: { id: artifact.id } }),
       ).rejects.toThrow();
     });
+    it("measures actual scoped encrypted export payload bytes, counts retained expired content until real purge and excludes the other centre", async () => {
+      const f = await fixture(),
+        other = await fixture();
+      const ownRequest = await f.approve(await f.create()),
+        foreignRequest = await other.approve(await other.create());
+      expect((await f.fulfill(ownRequest)).status).toBe(200);
+      expect((await other.fulfill(foreignRequest)).status).toBe(200);
+      const own = await f.db.privacyExportArtifact.findUniqueOrThrow({
+        where: {
+          tenantId_requestId: { tenantId: f.tenant, requestId: ownRequest.id },
+        },
+      });
+      const foreign = await f.db.privacyExportArtifact.findUniqueOrThrow({
+        where: {
+          tenantId_requestId: {
+            tenantId: other.tenant,
+            requestId: foreignRequest.id,
+          },
+        },
+      });
+      const ownBytes = Buffer.byteLength(own.ciphertext!, "utf8"),
+        foreignBytes = Buffer.byteLength(foreign.ciphertext!, "utf8");
+      expect(ownBytes).toBeGreaterThan(0);
+      expect(foreignBytes).toBeGreaterThan(0);
+      expect(
+        (await api("/tenant/usage", "GET", undefined, f.tokens.owner)).body.data
+          .managedExportBytes,
+      ).toBe(String(ownBytes));
+      expect(
+        (await api("/tenant/usage", "GET", undefined, other.tokens.owner)).body
+          .data.managedExportBytes,
+      ).toBe(String(foreignBytes));
+      const expiredRequest = await f.approve(await f.create());
+      const { sealPrivacyExport } = await import(
+        "../../apps/api/dist/privacy-export-crypto.js"
+      );
+      const sealed = sealPrivacyExport(
+        f.tenant,
+        expiredRequest.id,
+        JSON.stringify({
+          fixture: "Synthetic expired content, not a completed request",
+        }),
+      );
+      const expired = await f.db.privacyExportArtifact.create({
+        data: {
+          tenantId: f.tenant,
+          requestId: expiredRequest.id,
+          ...sealed,
+          createdAt: new Date(Date.now() - 7200000),
+          expiresAt: new Date(Date.now() - 3600000),
+        },
+      });
+      expect(
+        (await api("/tenant/usage", "GET", undefined, f.tokens.owner)).body.data
+          .managedExportBytes,
+      ).toBe(String(ownBytes + Buffer.byteLength(expired.ciphertext!, "utf8")));
+      const { purgeExpiredPrivacyExports } = await import(
+        "../../apps/worker/dist/privacy-retention.js"
+      );
+      expect(await purgeExpiredPrivacyExports(f.db)).toBe(1);
+      expect(
+        (await api("/tenant/usage", "GET", undefined, f.tokens.owner)).body.data
+          .managedExportBytes,
+      ).toBe(String(ownBytes));
+      expect(
+        await f.db.privacyExportArtifact.findUniqueOrThrow({
+          where: { id: expired.id },
+        }),
+      ).toMatchObject({
+        ciphertext: null,
+        sha256: expired.sha256,
+        byteCount: expired.byteCount,
+        purgedAt: expect.any(Date),
+      });
+      expect(
+        (
+          await f.db.dataSubjectRequest.findUniqueOrThrow({
+            where: { id: expiredRequest.id },
+          })
+        ).status,
+      ).toBe("APPROVED");
+    });
+    it("enforces the real plan storage ceiling and serializes concurrent exports without completing rejected requests or deleting retained audit", async () => {
+      const f = await fixture();
+      const storagePlan = (maxStorageBytes: string) =>
+        f.db.plan.create({
+          data: {
+            code:
+              "STORAGE_" +
+              randomUUID().replaceAll("-", "").slice(0, 12).toUpperCase(),
+            name: "Synthetic managed content quota",
+            monthlyPriceVnd: 0n,
+            limitsJson: {
+              maxStudents: 10000,
+              maxUsers: 10000,
+              maxClasses: 10000,
+              maxStorageBytes,
+            },
+            featureFlagsJson: {
+              attendance: true,
+              grades: true,
+              finance: true,
+              reports: true,
+            },
+          },
+        });
+      const plan = await storagePlan("0");
+      await f.db.subscription.updateMany({
+        where: { tenantId: f.tenant },
+        data: { planId: plan.id },
+      });
+      const denied = await f.approve(await f.create());
+      expect((await f.fulfill(denied)).status).toBe(409);
+      expect(
+        await f.db.privacyExportArtifact.count({
+          where: { tenantId: f.tenant },
+        }),
+      ).toBe(0);
+      expect(
+        await f.db.dataSubjectRequest.findUniqueOrThrow({
+          where: { id: denied.id },
+        }),
+      ).toMatchObject({
+        status: "APPROVED",
+        version: denied.version,
+        completedAt: null,
+      });
+      const expandedPlan = await storagePlan("1073741824");
+      await f.db.subscription.updateMany({
+        where: { tenantId: f.tenant },
+        data: { planId: expandedPlan.id },
+      });
+      expect((await f.fulfill(denied)).status).toBe(200);
+      const primer = await f.db.privacyExportArtifact.findUniqueOrThrow({
+        where: {
+          tenantId_requestId: { tenantId: f.tenant, requestId: denied.id },
+        },
+      });
+      const oneSize = Buffer.byteLength(primer.ciphertext!, "utf8");
+      expect(oneSize).toBeGreaterThan(512);
+      // Same child, unchanged allowlisted snapshot.64 bytes cover variable PG
+      // timestamp precision, while the actual quota can hold only one more copy.
+      const ceiling = BigInt(oneSize) * 2n + 64n;
+      const boundedPlan = await storagePlan(ceiling.toString());
+      await f.db.subscription.updateMany({
+        where: { tenantId: f.tenant },
+        data: { planId: boundedPlan.id },
+      });
+      const first = await f.approve(await f.create()),
+        second = await f.approve(await f.create());
+      const results = await Promise.all([f.fulfill(first), f.fulfill(second)]);
+      expect(results.map((r) => r.status).sort()).toEqual([200, 409]);
+      const rows = await f.db.privacyExportArtifact.findMany({
+        where: { tenantId: f.tenant },
+      });
+      expect(rows).toHaveLength(2);
+      const stored = rows.reduce(
+        (total, row) =>
+          total + BigInt(Buffer.byteLength(row.ciphertext!, "utf8")),
+        0n,
+      );
+      expect(stored <= ceiling).toBe(true);
+      expect(
+        (await api("/tenant/usage", "GET", undefined, f.tokens.owner)).body.data
+          .managedExportBytes,
+      ).toBe(stored.toString());
+      const loser = results[0]!.status === 409 ? first : second;
+      expect(
+        await f.db.dataSubjectRequest.findUniqueOrThrow({
+          where: { id: loser.id },
+        }),
+      ).toMatchObject({
+        status: "APPROVED",
+        version: loser.version,
+        completedAt: null,
+      });
+      expect(
+        await f.db.auditLog.count({
+          where: { tenantId: f.tenant, action: "privacy.request.completed" },
+        }),
+      ).toBe(2);
+    });
   });
 }

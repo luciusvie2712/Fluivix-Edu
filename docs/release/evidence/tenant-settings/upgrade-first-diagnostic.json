@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-07",
+  "module": "Additive030 upgrade over owned populated schema029",
+  "status": "FAIL",
+  "releaseVerdict": "BLOCKED",
+  "scope": "Fresh clone of owned synthetic source only; no original source, developer/customer database or.env writes",
+  "sourceDatabase": "fluivixedu_teaching_actor_third_full_test",
+  "targetDatabase": "fluivixedu_settings_upgrade_1794032014634_test",
+  "actualStagingVerified": false,
+  "failureType": "TypeError",
+  "durationMilliseconds": 3316,
+  "diagnosticCause": "information_schema sql_identifier[] returned as an unparsed driver string; cast catalogue column names to text before array aggregation. Diagnostic stopped before migration execution; no production source/guard changes."
+}

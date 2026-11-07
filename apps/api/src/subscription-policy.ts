@@ -88,3 +88,30 @@ export async function assertQuota(
       "Đã đạt giới hạn gói dịch vụ. Liên hệ quản trị để nâng gói.",
     );
 }
+
+// Logical managed content bytes, not a claim about physical database size.
+// Expired but unpurged payloads still occupy the quota until actually cleared.
+export async function managedExportBytes(db: Database, tenantId: string) {
+  const [row] = await db.$queryRaw<{ bytes: bigint }[]>`
+    SELECT COALESCE(sum(octet_length(ciphertext)),0)::bigint AS bytes
+    FROM privacy_export_artifacts WHERE tenant_id=${tenantId}::uuid AND ciphertext IS NOT NULL
+  `;
+  return row?.bytes ?? 0n;
+}
+// Caller holds the canonical tenant lock until payload creation and audit commit.
+export async function assertManagedStorageQuota(
+  tx: Prisma.TransactionClient,
+  tenantId: string,
+  additional: number,
+) {
+  const subscription = await requireSubscriptionWrite(tx, tenantId);
+  const limits = planLimitsSchema.parse(subscription.plan.limitsJson);
+  if (
+    (await managedExportBytes(tx, tenantId)) + BigInt(additional) >
+    BigInt(limits.maxStorageBytes)
+  ) {
+    throw new ConflictException(
+      "Đã đạt giới hạn lưu nội dung bản xuất tạm. Chờ nội dung hết hạn được dọn hoặc liên hệ quản trị về hạn mức. Yêu cầu chưa được thực thi.",
+    );
+  }
+}
