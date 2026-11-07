@@ -458,6 +458,38 @@ export const login = (body: components["schemas"]["LoginDto"]) =>
   unwrap(api.POST("/api/v1/auth/login", { body }));
 export const subscriptionInfo = (signal: AbortSignal | null = null) =>
   unwrap(api.GET("/api/v1/tenant/subscription", { signal }));
+export type RoomQuery = NonNullable<
+  paths["/api/v1/rooms"]["get"]["parameters"]["query"]
+>;
+export const rooms = {
+  list: (query: RoomQuery, signal: AbortSignal | null = null) =>
+    unwrap(api.GET("/api/v1/rooms", { params: { query }, signal })),
+  detail: (id: string, signal: AbortSignal | null = null) =>
+    unwrap(api.GET("/api/v1/rooms/{id}", { params: { path: { id } }, signal })),
+  create: (
+    body: components["schemas"]["RoomInput"],
+    signal: AbortSignal | null = null,
+  ) => unwrap(api.POST("/api/v1/rooms", { body, signal })),
+  update: (
+    id: string,
+    body: components["schemas"]["RoomUpdateInput"],
+    signal: AbortSignal | null = null,
+  ) =>
+    unwrap(
+      api.PATCH("/api/v1/rooms/{id}", {
+        params: { path: { id } },
+        body,
+        signal,
+      }),
+    ),
+  history: (id: string, page: number, signal: AbortSignal | null = null) =>
+    unwrap(
+      api.GET("/api/v1/rooms/{id}/history", {
+        params: { path: { id }, query: { page, limit: 10 } },
+        signal,
+      }),
+    ),
+};
 export const tenantSettings = {
   read: (signal: AbortSignal) =>
     unwrap(api.GET("/api/v1/tenant/settings", { signal })),
@@ -614,6 +646,13 @@ export const teaching = {
     ),
   createClass: (body: components["schemas"]["ClassInput"]) =>
     unwrap(api.POST("/api/v1/classes", { body })),
+  extraSession: (id: string, body: components["schemas"]["SessionInput"]) =>
+    unwrap(
+      api.POST("/api/v1/classes/{id}/sessions/extra", {
+        params: { path: { id } },
+        body,
+      }),
+    ),
   classDetail: (id: string, signal?: AbortSignal) =>
     unwrap(
       api.GET("/api/v1/classes/{id}", {

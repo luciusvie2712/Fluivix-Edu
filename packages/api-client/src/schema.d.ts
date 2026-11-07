@@ -1156,6 +1156,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/rooms/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["RoomsController_read"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["RoomsController_update"];
+    trace?: never;
+  };
+  "/api/v1/rooms/{id}/history": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["RoomsController_history"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/classes/{id}/assessments": {
     parameters: {
       query?: never;
@@ -3057,6 +3089,7 @@ export interface components {
       code: string;
       name: string;
       capacity: number;
+      version: number;
       id: string;
       active: boolean;
     };
@@ -3151,12 +3184,14 @@ export interface components {
     ClassUpdate: {
       version: number;
       reason: string;
+      /** Format: uuid */
+      roomId?: string | null;
       name: string;
       capacity: number;
     };
     ClassView: {
       /** Format: uuid */
-      roomId?: string;
+      roomId?: string | null;
       code: string;
       name: string;
       capacity: number;
@@ -3256,7 +3291,7 @@ export interface components {
     };
     ClassInput: {
       /** Format: uuid */
-      roomId?: string;
+      roomId?: string | null;
       code: string;
       name: string;
       capacity: number;
@@ -3403,6 +3438,58 @@ export interface components {
       lessonSummary: string;
       homeworkText: string;
       teacherNotesPrivate: string;
+    };
+    RoomUsageView: {
+      activeOrDraftClasses: number;
+      futureActiveRules: number;
+      upcomingOrOngoingSessions: number;
+      requiredCapacity: number;
+    };
+    RoomDetailView: {
+      code: string;
+      name: string;
+      capacity: number;
+      version: number;
+      id: string;
+      active: boolean;
+      usage: components["schemas"]["RoomUsageView"];
+      timezone: string;
+    };
+    RoomDetailResponse: {
+      data: components["schemas"]["RoomDetailView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    RoomUpdateInput: {
+      version: number;
+      reason: string;
+      name: string;
+      capacity: number;
+      active: boolean;
+    };
+    RoomSnapshotView: {
+      code: string;
+      name: string;
+      capacity: number;
+      active: boolean;
+      version: number;
+    };
+    RoomHistoryItem: {
+      id: string;
+      /** @enum {string} */
+      action: "room.created" | "room.updated";
+      actorId: string | null;
+      actorName: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      reason: string | null;
+      hasDetails: boolean;
+      before: components["schemas"]["RoomSnapshotView"] | null;
+      after: components["schemas"]["RoomSnapshotView"] | null;
+    };
+    RoomHistoryResponse: {
+      data: components["schemas"]["RoomHistoryItem"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
     };
     AssessmentView: {
       title: string;
@@ -6609,6 +6696,7 @@ export interface operations {
         page?: number;
         limit?: number;
         search?: string;
+        active?: "true" | "false";
       };
       header?: never;
       path?: never;
@@ -9255,6 +9343,76 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  RoomsController_read: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RoomDetailResponse"];
+        };
+      };
+    };
+  };
+  RoomsController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RoomUpdateInput"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RoomDetailResponse"];
+        };
+      };
+    };
+  };
+  RoomsController_history: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RoomHistoryResponse"];
         };
       };
     };

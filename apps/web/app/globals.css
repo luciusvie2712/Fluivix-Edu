@@ -730,6 +730,22 @@ body:has(.session-notice) .auth-layout {
 .centre-settings-grid p:empty {
   display: none;
 }
+.room-workspace dl {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px 24px;
+}
+.room-form > button {
+  margin-top: 12px;
+}
+.room-picker {
+  min-width: 0;
+}
+.room-directory table {
+  min-width: 640px;
+}
+.room-title {
+  overflow-wrap: anywhere;
+}
 .centre-settings-grid table {
   min-width: 440px;
 }

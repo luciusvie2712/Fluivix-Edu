@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-07",
+  "module": "Additive031 upgrade over owned populated schema030",
+  "status": "PASS_SYNTHETIC_UPGRADE",
+  "releaseVerdict": "BLOCKED",
+  "scope": "Fresh clone of owned synthetic source only; no original source, developer/customer database or.env writes",
+  "sourceDatabase": "fluivixedu_tenant_settings_full_test",
+  "targetDatabase": "fluivixedu_rooms_upgrade_1794035806549_test",
+  "actualStagingVerified": false,
+  "migrationMilliseconds": 4058,
+  "originalTablesCompared": 57,
+  "originalBusinessRowsCompared": 13132,
+  "ordinaryDataSha256": "de0d67d1d18edd41270498e12ff17efa1f43cde1751be43c50d49722305df0df",
+  "legacyMigrationRowsUnchanged": 30,
+  "newMigration": {
+    "name": "202611070031_room_lifecycle",
+    "checksumSha256": "a51dbc6803049f7dcc1d7aa0fc962f57c89ba327d01aa2d2fcf083b795afdd5e"
+  },
+  "initializedLegacyRoomVersions": 3,
+  "triggerChecks": "Existing version cannot be forged; actual room edit1->2; metadata no-op remains2; rollback restores all original data and initialized versions",
+  "constraint": "Positive room version CHECK exists and is validated",
+  "durationMilliseconds": 8854
+}

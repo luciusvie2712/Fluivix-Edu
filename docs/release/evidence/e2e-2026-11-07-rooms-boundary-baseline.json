@@ -1,0 +1,275 @@
+{
+  "config": {
+    "argv": [
+      "D:\\my-project\\fluivixedu\\.cache\\node-v24.22.2-win-x64\\node.exe",
+      "D:\\my-project\\fluivixedu\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "rooms.spec.ts",
+      "--grep",
+      "room draft survives|maximum valid unbroken"
+    ],
+    "configFile": "D:\\my-project\\fluivixedu\\playwright.config.ts",
+    "rootDir": "D:/my-project/fluivixedu/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/my-project/fluivixedu/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tenant-chromium",
+        "name": "tenant-chromium",
+        "testDir": "D:/my-project/fluivixedu/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\my-project\\fluivixedu\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "tenant-chromium",
+        "testDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "snapshotDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:3000",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "browserName": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "tenant-chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/release/evidence/e2e-2026-11-07-rooms-boundary-baseline.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm exec tsx tooling/e2e-server.ts",
+      "url": "http://localhost:3000/login",
+      "timeout": 60000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "rooms.spec.ts",
+      "file": "rooms.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "room draft survives a real transport failure and successful retry while actual owner suspension removes access",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 8671,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveValue\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Tên phòng', { exact: true })\nExpected: \u001b[32m\"Nội dung phòng đang sửa trước lỗi kết nối\"\u001b[39m\nReceived: \u001b[31m\"Phòng học đối chiếu\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveValue\" getByLabel('Tên phòng', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Tên phòng', { exact: true })\u001b[22m\n\u001b[2m    13 × locator resolved to <input id=\"_r_1_-name\" maxlength=\"150\" aria-invalid=\"false\" value=\"Phòng học đối chiếu\"/>\u001b[22m\n\u001b[2m       - unexpected value \"Phòng học đối chiếu\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveValue\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Tên phòng', { exact: true })\nExpected: \u001b[32m\"Nội dung phòng đang sửa trước lỗi kết nối\"\u001b[39m\nReceived: \u001b[31m\"Phòng học đối chiếu\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveValue\" getByLabel('Tên phòng', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Tên phòng', { exact: true })\u001b[22m\n\u001b[2m    13 × locator resolved to <input id=\"_r_1_-name\" maxlength=\"150\" aria-invalid=\"false\" value=\"Phòng học đối chiếu\"/>\u001b[22m\n\u001b[2m       - unexpected value \"Phòng học đối chiếu\"\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\rooms.spec.ts:888:65",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\rooms.spec.ts",
+                      "column": 65,
+                      "line": 888
+                    },
+                    "snippet": "  886 |       .getByRole(\"button\", { name: \"Thử tải lại\", exact: true })\n  887 |       .click();\n> 888 |     await expect(page.getByLabel(\"Tên phòng\", { exact: true })).toHaveValue(\n      |                                                                 ^\n  889 |       draft,\n  890 |     );\n  891 |     await expect("
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\rooms.spec.ts",
+                        "column": 65,
+                        "line": 888
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveValue\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Tên phòng', { exact: true })\nExpected: \u001b[32m\"Nội dung phòng đang sửa trước lỗi kết nối\"\u001b[39m\nReceived: \u001b[31m\"Phòng học đối chiếu\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveValue\" getByLabel('Tên phòng', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Tên phòng', { exact: true })\u001b[22m\n\u001b[2m    13 × locator resolved to <input id=\"_r_1_-name\" maxlength=\"150\" aria-invalid=\"false\" value=\"Phòng học đối chiếu\"/>\u001b[22m\n\u001b[2m       - unexpected value \"Phòng học đối chiếu\"\u001b[22m\n\n\n  886 |       .getByRole(\"button\", { name: \"Thử tải lại\", exact: true })\n  887 |       .click();\n> 888 |     await expect(page.getByLabel(\"Tên phòng\", { exact: true })).toHaveValue(\n      |                                                                 ^\n  889 |       draft,\n  890 |     );\n  891 |     await expect(\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\rooms.spec.ts:888:65"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T07:44:16.255Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\rooms-room-draft-survives--44ff3-r-suspension-removes-access-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\rooms-room-draft-survives--44ff3-r-suspension-removes-access-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\rooms-room-draft-survives--44ff3-r-suspension-removes-access-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\rooms.spec.ts",
+                    "column": 65,
+                    "line": 888
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c60be36dadaf24e75fb7-02f4ec3343401a5ac0ce",
+          "file": "rooms.spec.ts",
+          "line": 833,
+          "column": 5
+        },
+        {
+          "title": "maximum valid unbroken room code remains within a 360px screen and preserves native keyboard access",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 2684,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\rooms.spec.ts:964:9",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\rooms.spec.ts",
+                      "column": 9,
+                      "line": 964
+                    },
+                    "snippet": "  962 |           () => document.documentElement.scrollWidth <= innerWidth,\n  963 |         ),\n> 964 |       ).toBe(true);\n      |         ^\n  965 |       expect(\n  966 |         await page\n  967 |           .getByRole(\"heading\", { level: 1 })"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\rooms.spec.ts",
+                        "column": 9,
+                        "line": 964
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\n  962 |           () => document.documentElement.scrollWidth <= innerWidth,\n  963 |         ),\n> 964 |       ).toBe(true);\n      |         ^\n  965 |       expect(\n  966 |         await page\n  967 |           .getByRole(\"heading\", { level: 1 })\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\rooms.spec.ts:964:9"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T07:44:27.949Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\rooms-maximum-valid-unbrok-cde5b-rves-native-keyboard-access-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\rooms-maximum-valid-unbrok-cde5b-rves-native-keyboard-access-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\rooms-maximum-valid-unbrok-cde5b-rves-native-keyboard-access-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\rooms.spec.ts",
+                    "column": 9,
+                    "line": 964
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c60be36dadaf24e75fb7-4ad70838356f605d86a1",
+          "file": "rooms.spec.ts",
+          "line": 945,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-07T07:43:52.708Z",
+    "duration": 39872.293,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

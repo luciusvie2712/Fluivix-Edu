@@ -1,0 +1,16 @@
+{
+  "date": "2026-11-07",
+  "sourceCommit": "7feda306275cb38ffceecf87005cd1b400246252",
+  "module": "Class capacity vs future rule override room baseline",
+  "status": "REPRODUCED_INVALID_CLASS_CAPACITY",
+  "releaseVerdict": "BLOCKED",
+  "scope": "Owned new synthetic database; actual API commands, no production fixture/provider/worker",
+  "expectedStatus": 409,
+  "actualStatus": 200,
+  "beforeClassCapacity": 5,
+  "afterClassCapacity": 8,
+  "ruleOverrideRoomCapacity": 6,
+  "ruleStillActive": true,
+  "generatedSessionCount": 0,
+  "classResponseIncludesStoredRoomId": false
+}

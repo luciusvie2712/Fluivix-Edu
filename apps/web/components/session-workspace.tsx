@@ -15,6 +15,7 @@ import {
   text,
 } from "./operation-form";
 import { Button } from "./ui/button";
+import { RoomPicker } from "./room-picker";
 
 const statuses = {
   UNMARKED: "Chưa đánh dấu",
@@ -46,14 +47,23 @@ function CalendarDetail() {
     today = localDay(scope.tenant?.timezone ?? "UTC");
   const [range, setRange] = useState({ from: today, to: today }),
     [page, setPage] = useState(1),
-    [classId, setClassId] = useState("");
+    [classId, setClassId] = useState(""),
+    [roomId, setRoomId] = useState("");
   const classes = useQuery({
     queryKey: ["teaching", ...scope.key, "calendar-classes"],
     enabled: scope.allowed,
     queryFn: () => teaching.classes(),
   });
   const result = useQuery({
-    queryKey: ["teaching", ...scope.key, "calendar", range, page, classId],
+    queryKey: [
+      "teaching",
+      ...scope.key,
+      "calendar",
+      range,
+      page,
+      classId,
+      roomId,
+    ],
     enabled: scope.allowed,
     queryFn: () =>
       teaching.calendar({
@@ -61,6 +71,7 @@ function CalendarDetail() {
         page,
         limit: 20,
         ...(classId ? { classId } : {}),
+        ...(roomId ? { roomId } : {}),
       }),
   });
   if (!scope.allowed)
@@ -81,6 +92,17 @@ function CalendarDetail() {
           setPage(1);
         }}
       >
+        {scope.manage && (
+          <RoomPicker
+            label="Lọc phòng học"
+            emptyLabel="Mọi phòng trong phạm vi quyền"
+            includeInactive
+            onChange={(id) => {
+              setRoomId(id);
+              setPage(1);
+            }}
+          />
+        )}
         <div className="operations-grid">
           <Field
             label="Lịch từ ngày"
@@ -402,7 +424,9 @@ function SessionDetail({ id }: { id: string }) {
               await teaching.reschedule(id, {
                 sessionVersion: s.version,
                 teacherId: s.teacherId,
-                ...(s.roomId ? { roomId: s.roomId } : {}),
+                ...(text(data, "roomId")
+                  ? { roomId: text(data, "roomId") }
+                  : {}),
                 startsAt,
                 endsAt,
                 reason: text(data, "reason"),
@@ -411,6 +435,10 @@ function SessionDetail({ id }: { id: string }) {
             }}
           >
             <Field label="Ngày học mới" name="day" type="date" required />
+            <RoomPicker
+              label="Phòng cho buổi dời lịch"
+              initial={s.roomId ?? ""}
+            />
             <Field label="Giờ bắt đầu mới" name="start" type="time" required />
             <Field label="Giờ kết thúc mới" name="end" type="time" required />
             <Reason />

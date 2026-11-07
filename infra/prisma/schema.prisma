@@ -431,6 +431,7 @@ model ScheduleRuleRevision {
   @@map("schedule_rule_revisions")
 }
 model Room {
+ version Int @default(1)
  id String @id @default(uuid()) @db.Uuid
  tenantId String @map("tenant_id") @db.Uuid
  code String @db.VarChar(40)

@@ -12,6 +12,7 @@ import { ApiError, tenantSettings } from "../lib/api";
 import { focusAfterAction } from "../lib/focus-after-action";
 import { useSession } from "./providers";
 import { Button } from "./ui/button";
+import Link from "next/link";
 type Settings = components["schemas"]["TenantSettingsView"];
 type Input = components["schemas"]["TenantSettingsInput"];
 type Errors = Partial<
@@ -416,6 +417,7 @@ export function TenantSettingsWorkspace({ children }: { children: ReactNode }) {
         ["ACTIVE", "PAST_DUE_GRACE"].includes(tenant.status)
       }
     >
+      <Link href="/app/settings/rooms">Quản lý phòng học</Link>
       {children}
     </Workspace>
   );

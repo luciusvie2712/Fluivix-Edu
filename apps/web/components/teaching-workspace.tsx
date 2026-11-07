@@ -15,6 +15,8 @@ import {
 } from "./operation-form";
 import { Button } from "./ui/button";
 import { ClassAssessments } from "./assessment-workspace";
+import { RoomPicker } from "./room-picker";
+import { wallClockUtc } from "@fluivix/contracts";
 
 const academic = ["owner", "manager", "academic_staff"];
 const candidateStatusLabels: Record<string, string> = {
@@ -54,6 +56,9 @@ export function ClassesWorkspace() {
   return (
     <>
       <h1>Lớp học</h1>
+      {scope.manage && (
+        <Link href="/app/settings/rooms">Quản lý phòng học</Link>
+      )}
       <p className="muted">
         Sĩ số, ghi danh và lịch học trong {scope.tenant?.name}.
       </p>
@@ -148,6 +153,9 @@ export function ClassesWorkspace() {
                 capacity: Number(text(data, "capacity")),
                 startDate: text(data, "startDate"),
                 endDate: text(data, "endDate"),
+                ...(text(data, "roomId")
+                  ? { roomId: text(data, "roomId") }
+                  : {}),
               });
               router.push(`/app/classes/${result.data.id}`);
             }}
@@ -161,6 +169,10 @@ export function ClassesWorkspace() {
                 maxLength={40}
               />
               <Field label="Tên lớp" name="name" required maxLength={150} />
+              <RoomPicker
+                label="Phòng mặc định của lớp"
+                emptyLabel="Chưa đặt phòng mặc định"
+              />
               <Field
                 label="Sức chứa lớp"
                 name="capacity"
@@ -259,6 +271,7 @@ function ClassDetail({ id }: { id: string }) {
                 version: cls.version,
                 name: text(data, "name"),
                 capacity: Number(text(data, "capacity")),
+                roomId: text(data, "roomId") || null,
                 reason: text(data, "reason"),
               });
               await refresh();
@@ -270,6 +283,11 @@ function ClassDetail({ id }: { id: string }) {
               defaultValue={cls.name}
               required
               maxLength={150}
+            />
+            <RoomPicker
+              label="Phòng mặc định mới của lớp"
+              initial={cls.roomId ?? ""}
+              emptyLabel="Chưa đặt phòng mặc định"
             />
             <Field
               label="Sức chứa mới"
@@ -493,6 +511,78 @@ function ClassDetail({ id }: { id: string }) {
           disabled={disabled}
         />
       )}
+      {scope.manage && scope.tenant && (
+        <section className="operation-panel">
+          <h2>Buổi học bổ sung</h2>
+          <p>
+            Ngày và giờ theo {scope.tenant.timezone}. Máy chủ kiểm tra lại phân
+            công giáo viên, sức chứa và xung đột trước khi lưu.
+          </p>
+          <OperationForm
+            label="Tạo buổi học bổ sung"
+            disabled={disabled || !teachers.length}
+            action={async (data) => {
+              if (!scope.tenant)
+                throw new Error("Chưa xác minh múi giờ trung tâm.");
+              const day = text(data, "day");
+              const result = await teaching.extraSession(id, {
+                teacherId: text(data, "teacherId"),
+                ...(text(data, "roomId")
+                  ? { roomId: text(data, "roomId") }
+                  : {}),
+                startsAt: wallClockUtc(
+                  day,
+                  text(data, "start"),
+                  scope.tenant.timezone,
+                ).toISOString(),
+                endsAt: wallClockUtc(
+                  day,
+                  text(data, "end"),
+                  scope.tenant.timezone,
+                ).toISOString(),
+              });
+              await refresh();
+              window.location.assign(`/app/sessions/${result.data.id}`);
+            }}
+          >
+            <div className="operations-grid">
+              <SelectField
+                label="Giáo viên buổi bổ sung"
+                name="teacherId"
+                required
+              >
+                <option value="">Chọn giáo viên đã phân công</option>
+                {teachers.map((teacher) => (
+                  <option key={teacher.id} value={teacher.id}>
+                    {teacher.teacherCode} · {teacher.fullName}
+                  </option>
+                ))}
+              </SelectField>
+              <RoomPicker label="Phòng cho buổi bổ sung" />
+              <Field
+                label="Ngày học bổ sung"
+                name="day"
+                type="date"
+                min={cls.startDate}
+                max={cls.endDate}
+                required
+              />
+              <Field
+                label="Giờ bắt đầu buổi bổ sung"
+                name="start"
+                type="time"
+                required
+              />
+              <Field
+                label="Giờ kết thúc buổi bổ sung"
+                name="end"
+                type="time"
+                required
+              />
+            </div>
+          </OperationForm>
+        </section>
+      )}
     </>
   );
 }
@@ -519,6 +609,7 @@ function RuleBuilder({
   >(null);
   const readRuleInput = (data: FormData) => ({
     teacherId: text(data, "teacherId"),
+    ...(text(data, "roomId") ? { roomId: text(data, "roomId") } : {}),
     weekday: Number(text(data, "weekday")),
     localStart: text(data, "localStart"),
     localEnd: text(data, "localEnd"),
@@ -587,6 +678,7 @@ function RuleBuilder({
               </option>
             ))}
           </SelectField>
+          <RoomPicker label="Phòng cho lịch định kỳ" />
           <Field
             label="Giờ bắt đầu địa phương"
             name="localStart"
@@ -832,7 +924,7 @@ function RuleEditor({
           const result = await teaching.replaceRule(id, rule.id, {
             version: rule.version,
             teacherId: text(data, "teacherId"),
-            ...(rule.roomId ? { roomId: rule.roomId } : {}),
+            ...(text(data, "roomId") ? { roomId: text(data, "roomId") } : {}),
             weekday: Number(text(data, "weekday")),
             localStart: text(data, "localStart"),
             localEnd: text(data, "localEnd"),
@@ -861,6 +953,10 @@ function RuleEditor({
               </option>
             ))}
           </SelectField>
+          <RoomPicker
+            label="Phòng cho lịch thay thế"
+            initial={rule.roomId ?? ""}
+          />
           <SelectField
             label="Thứ của lịch thay thế"
             name="weekday"

@@ -20,6 +20,8 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { TeachingService } from "./teaching.service";
+import { RoomsService } from "./rooms.service";
+import { RoomQuery } from "./rooms.dto";
 import { AccessGuard, TenantPermission } from "./guards";
 import { requestClaims } from "./auth.controller";
 import type { ApiRequest } from "./http";
@@ -79,7 +81,10 @@ import {
 @ApiResponse({ status: 409, type: ErrorResponse })
 @ApiResponse({ status: 422, type: ErrorResponse })
 export class TeachingController {
-  constructor(private service: TeachingService) {}
+  constructor(
+    private service: TeachingService,
+    private roomsService: RoomsService,
+  ) {}
   @Post("classes/:id/schedule-rules/preview")
   @HttpCode(200)
   @TenantPermission("teaching.manage")
@@ -122,8 +127,8 @@ export class TeachingController {
   @Get("rooms")
   @TenantPermission("teaching.manage")
   @ApiOkResponse({ type: RoomsResponse })
-  rooms(@Req() r: ApiRequest, @Query() q: ListDto) {
-    return this.service.rooms(requestClaims(r), q);
+  rooms(@Req() r: ApiRequest, @Query() q: RoomQuery) {
+    return this.roomsService.list(requestClaims(r), q);
   }
   @Get("schedule")
   @TenantPermission("teaching.read", "teaching.read.assigned")
@@ -298,7 +303,7 @@ export class TeachingController {
   @TenantPermission("teaching.manage")
   @ApiCreatedResponse({ type: RoomResponse })
   room(@Req() r: ApiRequest, @Body() dto: RoomInput) {
-    return this.service.room(requestClaims(r), dto, r.traceId);
+    return this.roomsService.create(requestClaims(r), dto, r.traceId);
   }
   @Post("sessions/:id/reschedule")
   @TenantPermission("teaching.manage")

@@ -36,6 +36,8 @@ import { MobileAuthController } from "./mobile-auth";
 import { MobilePeopleController } from "./mobile-people";
 import { TeachingController } from "./teaching.controller";
 import { TeachingService } from "./teaching.service";
+import { RoomsController } from "./rooms.controller";
+import { RoomsService } from "./rooms.service";
 import { GradesController, GradesService } from "./grades";
 import { FinanceController } from "./finance.controller";
 import { FinanceService } from "./finance.service";
@@ -69,6 +71,7 @@ import {
     MobileAuthController,
     MobilePeopleController,
     TeachingController,
+    RoomsController,
     GradesController,
     FinanceController,
     NotificationsController,
@@ -93,6 +96,7 @@ import {
     TenantSettingsService,
     AuthService,
     TeachingService,
+    RoomsService,
     GradesService,
     FinanceService,
     NotificationsService,

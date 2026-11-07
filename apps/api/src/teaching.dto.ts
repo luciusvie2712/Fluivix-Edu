@@ -81,6 +81,10 @@ export class TeacherUpdate extends LifecycleVersion {
   status!: string;
 }
 export class ClassUpdate extends LifecycleVersion {
+  @ApiPropertyOptional({ type: String, format: "uuid", nullable: true })
+  @IsOptional()
+  @IsUUID()
+  roomId?: string | null;
   @ApiProperty() @IsString() @Matches(/\S/) @Length(1, 150) name!: string;
   @ApiProperty({ minimum: 1, maximum: 1000 })
   @IsInt()
@@ -99,10 +103,10 @@ export class TeacherResponse {
   @ApiProperty({ type: MetaDto }) meta!: MetaDto;
 }
 export class ClassInput {
-  @ApiPropertyOptional({ format: "uuid" })
+  @ApiPropertyOptional({ type: String, format: "uuid", nullable: true })
   @IsOptional()
   @IsUUID()
-  roomId?: string;
+  roomId?: string | null;
   @ApiProperty() @Matches(/^[A-Za-z0-9_-]{1,40}$/) code!: string;
   @ApiProperty() @IsString() @Length(1, 150) name!: string;
   @ApiProperty({ minimum: 1, maximum: 1000 })
@@ -373,7 +377,7 @@ export class RescheduleInput extends SessionInput {
 }
 export class RoomInput {
   @ApiProperty() @Matches(/^[A-Za-z0-9_-]{1,40}$/) code!: string;
-  @ApiProperty() @IsString() @Length(1, 150) name!: string;
+  @ApiProperty() @IsString() @Matches(/\S/) @Length(1, 150) name!: string;
   @ApiProperty({ minimum: 1, maximum: 1000 })
   @IsInt()
   @Min(1)
@@ -381,6 +385,7 @@ export class RoomInput {
   capacity!: number;
 }
 export class RoomView extends RoomInput {
+  @ApiProperty({ minimum: 1 }) version!: number;
   @ApiProperty() id!: string;
   @ApiProperty() active!: boolean;
 }

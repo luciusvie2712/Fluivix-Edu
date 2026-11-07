@@ -2,7 +2,6 @@ import {
   Body,
   ConflictException,
   Controller,
-  ForbiddenException,
   Get,
   Injectable,
   Patch,
@@ -17,8 +16,9 @@ import { Db } from "./db";
 import { AccessGuard, TenantPermission } from "./guards";
 import { requestClaims } from "./auth.controller";
 import type { ApiRequest } from "./http";
-import { hasPermission, type Claims } from "./security";
+import type { Claims } from "./security";
 import { lockTenantActor } from "./tenant-actor";
+import { lockTenantReader } from "./tenant-reader";
 import {
   currentSubscription,
   managedExportBytes,
@@ -39,51 +39,12 @@ async function timezoneHeld(tx: Prisma.TransactionClient, tenantId: string) {
   ]);
   return students + classes + runs + payments > 0;
 }
-async function readActor(tx: Prisma.TransactionClient, c: Claims) {
-  if (!c.tenantId || !c.role || !hasPermission(c.role, "tenant.read"))
-    throw new ForbiddenException();
-  // Share the same canonical tenant row used by profile/quota/revocation writes.
-  await tx.$queryRaw`SELECT id FROM tenants WHERE id=${c.tenantId}::uuid FOR SHARE`;
-  const [member, session] = await Promise.all([
-    tx.membership.findUnique({
-      where: { tenantId_userId: { tenantId: c.tenantId, userId: c.sub } },
-      include: {
-        roles: true,
-        tenant: true,
-        user: { select: { status: true } },
-      },
-    }),
-    tx.authSession.findFirst({
-      where: {
-        id: c.sid,
-        userId: c.sub,
-        selectedTenantId: c.tenantId,
-        selectedRole: c.role,
-        consumedAt: null,
-        revokedAt: null,
-        expiresAt: { gt: new Date() },
-      },
-    }),
-  ]);
-  if (
-    !session ||
-    !member ||
-    member.status !== "ACTIVE" ||
-    member.activationPending ||
-    member.user.status !== "ACTIVE" ||
-    !member.roles.some((r) => r.role === c.role) ||
-    !["ACTIVE", "PAST_DUE_GRACE", "READ_ONLY"].includes(member.tenant.status)
-  )
-    throw new ForbiddenException(
-      "Quyền truy cập đã thay đổi. Vui lòng tải lại.",
-    );
-}
 @Injectable()
 export class TenantSettingsService {
   constructor(private readonly db: Db) {}
   async read(c: Claims) {
     return this.db.$transaction(async (tx) => {
-      await readActor(tx, c);
+      await lockTenantReader(tx, c, "tenant.read");
       const t = await tx.tenant.findUniqueOrThrow({
         where: { id: c.tenantId! },
       });
@@ -100,7 +61,7 @@ export class TenantSettingsService {
   }
   async usage(c: Claims) {
     return this.db.$transaction(async (tx) => {
-      await readActor(tx, c);
+      await lockTenantReader(tx, c, "tenant.read");
       const tenantId = c.tenantId!,
         current = await currentSubscription(tx, tenantId);
       return {

@@ -16,6 +16,7 @@ import { wallClockUtc } from "@fluivix/contracts";
 import { peakEnrollment } from "./enrollment-capacity";
 import { randomUUID } from "node:crypto";
 import { Db } from "./db";
+import { tenantDate } from "./students";
 import type { Claims } from "./security";
 import { lockTenantActor } from "./tenant-actor";
 import { Paged } from "./http";
@@ -35,7 +36,6 @@ import {
   SessionInput,
   TeacherAssignmentInput,
   TeacherInput,
-  RoomInput,
   RescheduleInput,
   ScheduleRuleInput,
   GenerationWindow,
@@ -374,22 +374,70 @@ export class TeachingService {
         throw new ConflictException(
           "Sĩ số mới nhỏ hơn số học viên đang ghi danh.",
         );
+      const nextRoomId = input.roomId === undefined ? old.roomId : input.roomId;
+      if (nextRoomId !== old.roomId && nextRoomId) {
+        const nextRoom = await tx.room.findFirst({
+          where: { tenantId: c.tenantId!, id: nextRoomId, active: true },
+        });
+        if (!nextRoom)
+          throw new NotFoundException(
+            "Không tìm thấy phòng đang sử dụng trong trung tâm.",
+          );
+        if (nextRoom.capacity < input.capacity)
+          throw new ConflictException(
+            "Phòng mặc định mới không đủ sức chứa lớp.",
+          );
+      }
       const rooms = await tx.classSession.findMany({
         where: {
           tenantId: c.tenantId!,
           classId: id,
-          status: { in: ["SCHEDULED", "IN_PROGRESS"] },
+          status: { in: ["SCHEDULED", "IN_PROGRESS", "REOPENED"] },
+          endsAt: { gt: new Date() },
           roomId: { not: null },
+        },
+        select: { roomId: true },
+      });
+      const tenant = await tx.tenant.findUniqueOrThrow({
+        where: { id: c.tenantId! },
+        select: { timezone: true },
+      });
+      const ruleRooms = await tx.scheduleRule.findMany({
+        where: {
+          tenantId: c.tenantId!,
+          classId: id,
+          active: true,
+          validTo: { gte: date(tenantDate(tenant.timezone)) },
         },
         select: { roomId: true },
       });
       const roomIds = [
         ...new Set(
-          [old.roomId, ...rooms.map((v) => v.roomId)].filter(
-            (v): v is string => !!v,
-          ),
+          [
+            nextRoomId,
+            ...rooms.map((v) => v.roomId),
+            ...ruleRooms.map((v) => v.roomId),
+          ].filter((v): v is string => !!v),
         ),
       ];
+      // Old nullable assignments inherit the default. Do not silently move them.
+      if (
+        nextRoomId !== old.roomId &&
+        (ruleRooms.some((rule) => rule.roomId === null) ||
+          (await tx.classSession.count({
+            where: {
+              tenantId: c.tenantId!,
+              classId: id,
+              roomId: null,
+              status: { in: ["SCHEDULED", "IN_PROGRESS", "REOPENED"] },
+              endsAt: { gt: new Date() },
+            },
+          })))
+      ) {
+        throw new ConflictException(
+          "Cần đặt phòng cụ thể cho lịch tương lai trước khi đổi phòng mặc định của lớp.",
+        );
+      }
       if (
         await tx.room.count({
           where: {
@@ -407,6 +455,7 @@ export class TeachingService {
         data: {
           name: input.name.trim(),
           capacity: input.capacity,
+          roomId: nextRoomId,
           version: { increment: 1 },
         },
       });
@@ -571,6 +620,7 @@ export class TeachingService {
     version: number;
     startDate: Date;
     endDate: Date;
+    roomId: string | null;
   }) {
     return {
       id: item.id,
@@ -579,6 +629,7 @@ export class TeachingService {
       capacity: item.capacity,
       status: item.status,
       version: item.version,
+      roomId: item.roomId,
       startDate: day(item.startDate),
       endDate: day(item.endDate),
     };
@@ -1651,45 +1702,6 @@ export class TeachingService {
         ["EXISTING", "PRESERVED"].includes(v.status),
       ).length,
     };
-  }
-  async room(c: Claims, input: RoomInput, traceId: string) {
-    return this.db.$transaction(async (tx) => {
-      await this.lockTenant(tx, c);
-      const r = await tx.room.create({
-        data: { tenantId: c.tenantId!, ...input },
-      });
-      await this.audit(tx, c, "room.created", r.id, traceId);
-      return {
-        id: r.id,
-        code: r.code,
-        name: r.name,
-        capacity: r.capacity,
-        active: r.active,
-      };
-    });
-  }
-  async rooms(c: Claims, q: ListDto) {
-    const where = {
-      tenantId: c.tenantId!,
-      ...(q.search
-        ? { name: { contains: q.search, mode: "insensitive" as const } }
-        : {}),
-    };
-    const [items, total] = await this.db.$transaction([
-      this.db.room.findMany({
-        where,
-        orderBy: [{ name: "asc" }, { id: "asc" }],
-        take: q.limit,
-        skip: (q.page - 1) * q.limit,
-      }),
-      this.db.room.count({ where }),
-    ]);
-    return new Paged(items, {
-      page: q.page,
-      limit: q.limit,
-      total,
-      totalPages: Math.ceil(total / q.limit),
-    });
   }
   async sessionDetail(c: Claims, id: string) {
     return this.db.$transaction(async (tx) =>

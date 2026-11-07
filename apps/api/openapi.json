@@ -2618,6 +2618,12 @@
             "required": false,
             "in": "query",
             "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "active",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string", "enum": ["true", "false"] }
           }
         ],
         "responses": {
@@ -5959,6 +5965,101 @@
         },
         "security": [{ "bearer": [] }],
         "tags": ["teaching"]
+      }
+    },
+    "/api/v1/rooms/{id}": {
+      "get": {
+        "operationId": "RoomsController_read",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RoomDetailResponse" }
+              }
+            }
+          }
+        },
+        "tags": ["rooms"]
+      },
+      "patch": {
+        "operationId": "RoomsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RoomUpdateInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RoomDetailResponse" }
+              }
+            }
+          }
+        },
+        "tags": ["rooms"]
+      }
+    },
+    "/api/v1/rooms/{id}/history": {
+      "get": {
+        "operationId": "RoomsController_history",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RoomHistoryResponse" }
+              }
+            }
+          }
+        },
+        "tags": ["rooms"]
       }
     },
     "/api/v1/classes/{id}/assessments": {
@@ -14583,10 +14684,11 @@
           "code": { "type": "string" },
           "name": { "type": "string" },
           "capacity": { "type": "number", "minimum": 1, "maximum": 1000 },
+          "version": { "type": "number", "minimum": 1 },
           "id": { "type": "string" },
           "active": { "type": "boolean" }
         },
-        "required": ["code", "name", "capacity", "id", "active"]
+        "required": ["code", "name", "capacity", "version", "id", "active"]
       },
       "RoomsResponse": {
         "type": "object",
@@ -14770,6 +14872,7 @@
         "properties": {
           "version": { "type": "number", "minimum": 1 },
           "reason": { "type": "string", "minLength": 10, "maxLength": 500 },
+          "roomId": { "type": "string", "format": "uuid", "nullable": true },
           "name": { "type": "string" },
           "capacity": { "type": "number", "minimum": 1, "maximum": 1000 }
         },
@@ -14778,7 +14881,7 @@
       "ClassView": {
         "type": "object",
         "properties": {
-          "roomId": { "type": "string", "format": "uuid" },
+          "roomId": { "type": "string", "format": "uuid", "nullable": true },
           "code": { "type": "string" },
           "name": { "type": "string" },
           "capacity": { "type": "number", "minimum": 1, "maximum": 1000 },
@@ -14959,7 +15062,7 @@
       "ClassInput": {
         "type": "object",
         "properties": {
-          "roomId": { "type": "string", "format": "uuid" },
+          "roomId": { "type": "string", "format": "uuid", "nullable": true },
           "code": { "type": "string" },
           "name": { "type": "string" },
           "capacity": { "type": "number", "minimum": 1, "maximum": 1000 },
@@ -15215,6 +15318,122 @@
           "homeworkText",
           "teacherNotesPrivate"
         ]
+      },
+      "RoomUsageView": {
+        "type": "object",
+        "properties": {
+          "activeOrDraftClasses": { "type": "number" },
+          "futureActiveRules": { "type": "number" },
+          "upcomingOrOngoingSessions": { "type": "number" },
+          "requiredCapacity": { "type": "number" }
+        },
+        "required": [
+          "activeOrDraftClasses",
+          "futureActiveRules",
+          "upcomingOrOngoingSessions",
+          "requiredCapacity"
+        ]
+      },
+      "RoomDetailView": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string" },
+          "name": { "type": "string" },
+          "capacity": { "type": "number", "minimum": 1, "maximum": 1000 },
+          "version": { "type": "number", "minimum": 1 },
+          "id": { "type": "string" },
+          "active": { "type": "boolean" },
+          "usage": { "$ref": "#/components/schemas/RoomUsageView" },
+          "timezone": { "type": "string" }
+        },
+        "required": [
+          "code",
+          "name",
+          "capacity",
+          "version",
+          "id",
+          "active",
+          "usage",
+          "timezone"
+        ]
+      },
+      "RoomDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/RoomDetailView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "RoomUpdateInput": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number", "minimum": 1 },
+          "reason": { "type": "string", "minLength": 10, "maxLength": 500 },
+          "name": { "type": "string" },
+          "capacity": { "type": "number", "minimum": 1, "maximum": 1000 },
+          "active": { "type": "boolean" }
+        },
+        "required": ["version", "reason", "name", "capacity", "active"]
+      },
+      "RoomSnapshotView": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string" },
+          "name": { "type": "string" },
+          "capacity": { "type": "number" },
+          "active": { "type": "boolean" },
+          "version": { "type": "number" }
+        },
+        "required": ["code", "name", "capacity", "active", "version"]
+      },
+      "RoomHistoryItem": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "action": {
+            "type": "string",
+            "enum": ["room.created", "room.updated"]
+          },
+          "actorId": { "type": "string", "nullable": true },
+          "actorName": { "type": "string", "nullable": true },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "reason": { "type": "string", "nullable": true },
+          "hasDetails": { "type": "boolean" },
+          "before": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [{ "$ref": "#/components/schemas/RoomSnapshotView" }]
+          },
+          "after": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [{ "$ref": "#/components/schemas/RoomSnapshotView" }]
+          }
+        },
+        "required": [
+          "id",
+          "action",
+          "actorId",
+          "actorName",
+          "createdAt",
+          "reason",
+          "hasDetails",
+          "before",
+          "after"
+        ]
+      },
+      "RoomHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/RoomHistoryItem" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
       },
       "AssessmentView": {
         "type": "object",

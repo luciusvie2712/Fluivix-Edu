@@ -25,6 +25,8 @@ import { notificationCases } from "./notification-cases";
 import { privacyCases } from "./privacy-cases";
 import { teachingActorCases } from "./teaching-actor-cases";
 import { tenantSettingsCases } from "./tenant-settings-cases";
+import { roomsCases } from "./rooms-cases";
+import { roomLifecycleCases } from "./room-lifecycle-cases";
 import { requireTestRedis, testRedisUrl } from "../../tooling/test-redis";
 
 let database: EmbeddedPostgres | undefined;
@@ -116,6 +118,18 @@ notificationCases(
   () => hashPassword(password),
 );
 privacyCases(
+  () => base,
+  () => db,
+  password,
+  () => hashPassword(password),
+);
+roomLifecycleCases(
+  () => base,
+  () => db,
+  password,
+  () => hashPassword(password),
+);
+roomsCases(
   () => base,
   () => db,
   password,
