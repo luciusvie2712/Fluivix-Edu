@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-07",
+  "baseCommit": "9a80fa265898c34f16782bef5956df81545bcde8",
+  "verdict": "REPRODUCED_BASELINE_GAPS_NOT_ACCEPTANCE",
+  "syntheticOnly": true,
+  "findings": [
+    {
+      "case": "self-request-list-and-admin-review-absent",
+      "requestCreateStatus": 201,
+      "selfListStatus": 404,
+      "adminVerifyStatus": 404
+    },
+    {
+      "case": "consent-subject-checked-before-membership-lock",
+      "actualConsentBlockedOnControlledMembership": true,
+      "actualOwnerApiRevokeCommittedBeforeGrantUnblocked": true,
+      "relationStatus": "REVOKED",
+      "grantStatus": 201,
+      "activeGrantedRowsWrittenAfterRevocation": 1
+    }
+  ],
+  "boundary": "Real PostgreSQL, Nest API, native authentication, owner guardian-revocation API and controlled SQL row lock. No export/erasure performed, no legal-policy approval or physical push claim."
+}

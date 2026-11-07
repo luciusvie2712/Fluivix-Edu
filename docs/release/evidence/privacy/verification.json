@@ -1,0 +1,123 @@
+{
+  "date": "2026-11-07",
+  "module": "Privacy versioned review and scoped actual fulfillment",
+  "baseCommit": "9a80fa265898c34f16782bef5956df81545bcde8",
+  "localVerdict": "PASS",
+  "remoteVerdict": "NOT_VERIFIED",
+  "releaseVerdict": "BLOCKED",
+  "checks": {
+    "prisma": "validate/generate PASS; additive029;001..028 unchanged",
+    "lintFormat": "PASS",
+    "uncachedBuildTasks": 8,
+    "uncachedTypesAndTools": "PASS",
+    "unit": 66,
+    "mobileJest": 30,
+    "mobileApiSmoke": "PASS; physical device unverified",
+    "expoAlignment": "PASS",
+    "integration": {
+      "passed": 119,
+      "skipped": 0,
+      "report": "docs/release/evidence/integration-2026-11-07-privacy-full.json"
+    },
+    "browser": {
+      "passed": 82,
+      "skipped": 0,
+      "flaky": 0,
+      "report": "docs/release/evidence/e2e-2026-11-07-privacy-full.json"
+    },
+    "stableContract": {
+      "clientSha256": "84B6C58E9725C09B721B7475BDA2647F1AB52DB3C47150064C4229888514A506",
+      "operations": 179,
+      "stable": true,
+      "openapiSha256": "655F5607BC66EF73FD358A4A08B2D521B04EB1C8DB94A7597A126915E8A76B99"
+    },
+    "offlineFrozenInstall": "PASS",
+    "audit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    },
+    "secretScreen": "PASS; values and private hash withheld; .env unchanged"
+  },
+  "frozenSourceProof": {
+    "baseCommit": "9a80fa265898c34f16782bef5956df81545bcde8",
+    "rawSourceSha256": {
+      "apps/api/src/privacy-access.ts": "938e4fa377e1b75032235868384e5f0a1f83c01a49bee86e208ba342975e7bcd",
+      "apps/api/src/privacy-admin.controller.ts": "10c48dce31177f0ef81ae053f3818c5ee91bee39118cb8f356aa2ec0db849d5c",
+      "apps/api/src/privacy-export-crypto.ts": "e97496432e6407b4ee716ed3c05b25db986cdc0dcacfd8a33fc069c938597629",
+      "apps/api/src/privacy-fulfillment.ts": "6d5efe45e3e5fde7c0c344e0f041ee01efc32cd921767a45081f9dea58ad9a00",
+      "apps/api/src/privacy-requests.ts": "a40a7804c43d7388792f6960c56e91a6c883ded27b1e2abc1d47ce8a43c8fc89",
+      "apps/api/src/privacy-snapshot.ts": "3e09989155615c6c1786e557d47abc7f4ebd063f73efb7e565831149fcab830b",
+      "apps/api/src/privacy.dto.ts": "eeb203d0aa590c2584f2589545c368017caa6d7a099b6b51713e879f77b10977",
+      "apps/mobile/__tests__/privacy-export.test.tsx": "c43c4ca05357af45ffc182bc43ebd907fb3738b88392f2eea8cafdb5e9f7df09",
+      "apps/mobile/__tests__/privacy-scope.test.tsx": "1a37097b102dc9537f5fc3dc772f9aa9d8fcce47bba113c4ee8211cf73f2bc3a",
+      "apps/mobile/lib/privacy-export.ts": "7c488ab104bbe5bd1f7100d69cdda03fef3377beba8ca23dc56c0de90cb6de3a",
+      "apps/web/app/app/privacy/page.tsx": "7381a0b52dc89a44e703eb19d6f87d107367233dc1cd6d6eaca96bfd3bc7a391",
+      "apps/web/components/privacy-workspace.tsx": "fdcf09678f280f02ae3aa9bd40e14028762444745709df5d8c3f75ee99f923f5",
+      "apps/worker/src/privacy-retention.ts": "ad444ce13e0dc05253258883d5e004908c3dfd9f41d8ac3115225c39cde650a7",
+      "infra/prisma/migrations/202611070029_privacy_workflow/migration.sql": "fdce5c4717970f9aa75bc65dd9933741480429dbed8d60358d355d095872af13",
+      "tests/e2e/privacy.spec.ts": "bb68eb192cf9d62bdc4dfa0a2c26f141f69041e34df2f49b3705badef6358700",
+      "tests/integration/privacy-cases.ts": "d432a1b485a42a6db006aab03aec365734d5812fff2c5b1375d313d26295bc3e",
+      "tests/integration/privacy-migration-case.ts": "8e83462694134c3082cc70af0011c407960db267f3980ec3690eb470615943e6",
+      "tests/unit/privacy-export-crypto.test.ts": "b964e9ac06684b619ab3ab577be9378d0d708dc2c14deeeaf1324e394dbe1708",
+      "apps/api/openapi.json": "655f5607bc66ef73fd358a4a08b2d521b04eb1c8db94a7597a126915e8a76b99",
+      "apps/api/src/app.ts": "f784988a1fc3d98593bfdec33b529b12269a9c661c38ffa004cbd8d25c646cfe",
+      "apps/api/src/privacy.ts": "22b3dcdd441104238aba4fd8e3f73e8cf072c8eb5aa891e8e972c0adc306584d",
+      "apps/api/src/security.ts": "406cd959def165dd71eade40774d2f49cec4ad64ae7d1b4da97216230cd7101e",
+      "apps/mobile/app/_layout.tsx": "1f8cdca94a22891c63367e58f4787851ccb5840b90c1749444c069942bfd22bf",
+      "apps/mobile/components/privacy.tsx": "600a74e4f54aeeed23f3d08a14b7f7afed3160ffb180bdb8a18b2fcc5ad801e7",
+      "apps/mobile/package.json": "53c337822bde67545246c6de4f3c456646f919e5f105fef2d8c97b4802abf71b",
+      "apps/web/app/app/layout.tsx": "d51c1ec30fc633d423f28d79a706edac0713c9568fd0802250397d8847d87773",
+      "apps/web/app/globals.css": "d909176dfdbc752b42280386b4d23c3be81fa7d057a4db1f99753d6114ee4509",
+      "apps/web/lib/api.ts": "761db6ebbfc600d74c91732aabd2c9e1ba720e4f9ca2f3016688aeb3fe9ce94b",
+      "apps/worker/src/main.ts": "b6cf7a98607ee0f79a274774d5b54f3b7ac2071179689cbbccb8d1d7f6c2de3e",
+      "infra/prisma/schema.prisma": "7ea1ee794b0cf47bfd9d79c5b3e53856de101707fb8c3a2826054bb46441a640",
+      "packages/api-client/src/schema.d.ts": "84b6c58e9725c09b721b7475bda2647f1ab52db3c47150064c4229888514a506",
+      "pnpm-lock.yaml": "1508dc4cc6799dd757dd08095fdb6a543804ba08a6518fd0b49ecc1cc893f937",
+      "tests/integration/identity.test.ts": "3a24ef4c90b55d43a8e88725a681dc5e8f88e0c89de1666c718d1900fced3515",
+      "tests/integration/migration-cases.ts": "9f5fbb31727e2e3e2bb59b973bcc5f724600393107a645f47fce3d82b5c5e5d9",
+      "tooling/e2e-server.ts": "b143842de73d094953f21e7c3a4d09bbe29e8afdf29f153d2450710fe2829b29"
+    },
+    "stable": true,
+    "envUnchanged": true
+  },
+  "manualVisualReview": {
+    "allEightManuallyInspected": true,
+    "images": {
+      "review-no-preference-1024.png": "5b6b7aefb5e59a37333caaa5a780181e7d155ec63e5f369e7afc3d65a3a74576",
+      "review-no-preference-1440.png": "b9844bc20defefc0d25af2802826629a60b8a9813122e38fc6ee5dbf617fe4bc",
+      "review-no-preference-360.png": "dd2b9dd7689f79601fa670c281427258bb56147f42881022d13b52d88a0b2bc8",
+      "review-no-preference-768.png": "8929c7a1f4c7bfe257cb4aa658494eccb4acc25c06d0161c062c94502301a359",
+      "review-reduce-1024.png": "5b6b7aefb5e59a37333caaa5a780181e7d155ec63e5f369e7afc3d65a3a74576",
+      "review-reduce-1440.png": "b9844bc20defefc0d25af2802826629a60b8a9813122e38fc6ee5dbf617fe4bc",
+      "review-reduce-360.png": "dd2b9dd7689f79601fa670c281427258bb56147f42881022d13b52d88a0b2bc8",
+      "review-reduce-768.png": "8929c7a1f4c7bfe257cb4aa658494eccb4acc25c06d0161c062c94502301a359"
+    },
+    "notes": [
+      "Viewed every final normal and reduced-motion image at360,768,1024,1440.",
+      "Desktop queue/detail and first review input visible together; single-column narrow forms wrap without clipped controls or IDs.",
+      "Focus ring visible; disabled actions and current actual request/history remain readable.",
+      "Existing shared mobile-width navigation preserved; no new motion."
+    ]
+  },
+  "baselineEvidence": "../privacy-baseline-diagnostic.json",
+  "migrationProvenance": "029 applied only isolated diagnostic/focused/full test databases before this commit; real legacy upgrade in rollback and actual clean-schema integration. Customer/staging upgrade remains blocked.",
+  "externalLimits": [
+    "Approved legal/retention/identity-custodian process",
+    "Actual staging migration and restore",
+    "Signed physical iOS/Android export/share/cache and push",
+    "Human UAT/pilot approval"
+  ],
+  "remainingExecutableWork": [
+    "Approved P0 fee reminder reconciliation",
+    "W05/W18 and remaining operational verification",
+    "Local ops/load/backup/restore/worker monitoring M4"
+  ],
+  "failuresRetained": [
+    "integration-2026-11-07-privacy-fourth.json",
+    "e2e-2026-11-07-privacy-first.json",
+    "private .cache/privacy-mobile-* failed diagnostics; sanitized causes above"
+  ]
+}

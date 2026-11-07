@@ -22,6 +22,7 @@ import { reportCases } from "./report-cases";
 import { tenantAuditCases } from "./tenant-audit-cases";
 import { webSessionCases } from "./web-session-cases";
 import { notificationCases } from "./notification-cases";
+import { privacyCases } from "./privacy-cases";
 import { requireTestRedis, testRedisUrl } from "../../tooling/test-redis";
 
 let database: EmbeddedPostgres | undefined;
@@ -107,6 +108,12 @@ webSessionCases(
   () => hashPassword(password),
 );
 notificationCases(
+  () => base,
+  () => db,
+  password,
+  () => hashPassword(password),
+);
+privacyCases(
   () => base,
   () => db,
   password,

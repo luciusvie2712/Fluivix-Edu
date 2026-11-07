@@ -5,6 +5,7 @@ import { redisConnection } from "./redis";
 import { mailProvider } from "./mail";
 import { deliver, MAIL_EVENTS } from "./delivery";
 import { purgeExpiredImports } from "./import-retention";
+import { purgeExpiredPrivacyExports } from "./privacy-retention";
 import { enqueueSchedulePage, generateScheduledRule } from "./schedule-jobs";
 import { checkPushReceipts } from "./notifications";
 import {
@@ -155,6 +156,7 @@ async function main() {
       }
       if (Date.now() - lastImportSweep >= 60000) {
         await purgeExpiredImports(db);
+        await purgeExpiredPrivacyExports(db);
         lastImportSweep = Date.now();
       }
       const events = await db.outboxEvent.findMany({

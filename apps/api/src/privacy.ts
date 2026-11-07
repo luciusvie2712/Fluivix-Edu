@@ -4,95 +4,50 @@ import {
   ForbiddenException,
   Get,
   Injectable,
+  HttpCode,
+  NotFoundException,
   Param,
   ParseUUIDPipe,
   Post,
   Req,
+  Query,
   UseGuards,
 } from "@nestjs/common";
 import {
   ApiBearerAuth,
+  ApiBody,
+  ApiHeader,
   ApiCreatedResponse,
   ApiOkResponse,
-  ApiProperty,
-  ApiPropertyOptional,
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
-import {
-  IsBoolean,
-  IsIn,
-  IsOptional,
-  IsString,
-  IsUUID,
-  Length,
-} from "class-validator";
 import { Db } from "./db";
 import { TeachingService } from "./teaching.service";
 import { AccessGuard, TenantPermission } from "./guards";
 import { requestClaims } from "./auth.controller";
-import { ErrorResponse, MetaDto } from "./response.dto";
+import { ErrorResponse } from "./response.dto";
 import type { ApiRequest } from "./http";
 import type { Claims } from "./security";
 import { configuredPrivacyPolicy } from "./privacy-policy";
-export class ConsentInput {
-  @ApiPropertyOptional({ format: "uuid" })
-  @IsOptional()
-  @IsUUID()
-  subjectStudentId?: string;
-  @ApiProperty() @IsString() @Length(1, 100) policyVersion!: string;
-  @ApiProperty({ enum: ["NOTIFICATIONS"] })
-  @IsIn(["NOTIFICATIONS"])
-  purposeCode!: string;
-  @ApiProperty() @IsBoolean() granted!: boolean;
-}
-export class ConsentView {
-  @ApiProperty() id!: string;
-  @ApiProperty({ type: String, nullable: true }) subjectStudentId!:
-    | string
-    | null;
-  @ApiProperty() policyVersion!: string;
-  @ApiProperty() purposeCode!: string;
-  @ApiProperty() granted!: boolean;
-  @ApiProperty({ format: "date-time" }) capturedAt!: string;
-  @ApiProperty({ type: String, nullable: true }) revokedAt!: string | null;
-}
-export class ConsentResponse {
-  @ApiProperty({ type: ConsentView }) data!: ConsentView;
-  @ApiProperty({ type: MetaDto }) meta!: MetaDto;
-}
-export class ConsentsResponse {
-  @ApiProperty({ type: [ConsentView] }) data!: ConsentView[];
-  @ApiProperty({ type: MetaDto }) meta!: MetaDto;
-}
-export class PolicyView {
-  @ApiProperty() configured!: boolean;
-  @ApiProperty({ type: String, nullable: true }) version!: string | null;
-  @ApiProperty({ type: String, nullable: true }) noticeUrl!: string | null;
-}
-export class PolicyResponse {
-  @ApiProperty({ type: PolicyView }) data!: PolicyView;
-  @ApiProperty({ type: MetaDto }) meta!: MetaDto;
-}
-export class PrivacyRequestInput {
-  @ApiPropertyOptional({ format: "uuid" })
-  @IsOptional()
-  @IsUUID()
-  subjectStudentId?: string;
-  @ApiProperty({ enum: ["ACCESS", "CORRECT", "EXPORT", "ERASE", "WITHDRAW"] })
-  @IsIn(["ACCESS", "CORRECT", "EXPORT", "ERASE", "WITHDRAW"])
-  type!: string;
-}
-export class PrivacyRequestView {
-  @ApiProperty() id!: string;
-  @ApiProperty() type!: string;
-  @ApiProperty() status!: string;
-  @ApiProperty({ format: "date-time" }) createdAt!: string;
-}
-export class PrivacyRequestResponse {
-  @ApiProperty({ type: PrivacyRequestView }) data!: PrivacyRequestView;
-  @ApiProperty({ type: MetaDto }) meta!: MetaDto;
-}
+import {
+  ConsentInput,
+  ConsentResponse,
+  ConsentsResponse,
+  ConsentView,
+  PolicyResponse,
+  PrivacyRequestInput,
+  PrivacyRequestResponse,
+  PrivacyRequestsQuery,
+  PrivacyRequestsResponse,
+  PrivacyVersionInput,
+  PrivacyPageQuery,
+  PrivacyEventsResponse,
+  PrivacyExportResponse,
+} from "./privacy.dto";
+import type { Role } from "@prisma/client";
+import { privacyActor, privacyWriteActor } from "./privacy-access";
+import { PrivacyRequestsService } from "./privacy-requests";
 @Injectable()
 export class PrivacyService {
   constructor(
@@ -110,7 +65,9 @@ export class PrivacyService {
     granted: boolean;
     capturedAt: Date;
     revokedAt: Date | null;
-  }) {
+    captureMethod: string | null;
+    capturedRole: Role | null;
+  }): ConsentView {
     return {
       id: row.id,
       subjectStudentId: row.subjectStudentId,
@@ -119,15 +76,20 @@ export class PrivacyService {
       granted: row.granted,
       capturedAt: row.capturedAt.toISOString(),
       revokedAt: row.revokedAt?.toISOString() ?? null,
+      captureMethod: row.captureMethod,
+      capturedRole: row.capturedRole,
     };
   }
   async consents(c: Claims) {
-    const rows = await this.db.privacyConsent.findMany({
-      where: { tenantId: c.tenantId!, consentingUserId: c.sub },
-      orderBy: { capturedAt: "desc" },
-      take: 100,
+    return this.db.$transaction(async (tx) => {
+      await privacyActor(tx, c, false);
+      const rows = await tx.privacyConsent.findMany({
+        where: { tenantId: c.tenantId!, consentingUserId: c.sub },
+        orderBy: { capturedAt: "desc" },
+        take: 100,
+      });
+      return rows.map((r) => this.consentView(r));
     });
-    return rows.map((r) => this.consentView(r));
   }
   async consent(c: Claims, input: ConsentInput, traceId: string) {
     const policy = this.policy();
@@ -136,6 +98,20 @@ export class PrivacyService {
         "Chính sách quyền riêng tư chưa cấu hình hoặc đã thay đổi.",
       );
     return this.db.$transaction(async (tx) => {
+      await privacyWriteActor(
+        tx,
+        c,
+        traceId,
+        input.granted
+          ? "Ghi nhận đồng ý thông báo theo phiên bản chính sách"
+          : "Rút đồng ý thông báo theo phiên bản chính sách",
+      );
+      const currentPolicy = this.policy();
+      if (
+        !currentPolicy.configured ||
+        currentPolicy.version !== input.policyVersion
+      )
+        throw new ForbiddenException("Chính sách quyền riêng tư đã thay đổi.");
       const subjectStudentId = input.subjectStudentId
         ? await this.teaching.subject(tx, c, input.subjectStudentId)
         : c.role === "student"
@@ -159,10 +135,13 @@ export class PrivacyService {
           tenantId: c.tenantId!,
           consentingUserId: c.sub,
           subjectStudentId,
-          policyVersion: policy.version!,
+          policyVersion: currentPolicy.version!,
           purposeCode: input.purposeCode,
           legalBasis: "CONSENT",
           granted: input.granted,
+          captureMethod: "AUTHENTICATED_SELF_SERVICE",
+          capturedRole: c.role!,
+          evidenceRef: traceId,
         },
       });
       await tx.auditLog.create({
@@ -179,46 +158,38 @@ export class PrivacyService {
       return this.consentView(r);
     });
   }
-  async request(c: Claims, input: PrivacyRequestInput, traceId: string) {
+
+  async withdrawOwn(c: Claims, id: string, traceId: string) {
     return this.db.$transaction(async (tx) => {
-      if (input.subjectStudentId)
-        await this.teaching.subject(tx, c, input.subjectStudentId);
-      const r = await tx.dataSubjectRequest.create({
-        data: {
-          tenantId: c.tenantId!,
-          requesterUserId: c.sub,
-          subjectStudentId: input.subjectStudentId ?? null,
-          type: input.type,
-        },
+      await privacyWriteActor(
+        tx,
+        c,
+        traceId,
+        "Chủ thể rút bản đồng ý đã ghi nhận của chính mình",
+      );
+      const old = await tx.privacyConsent.findFirst({
+        where: { tenantId: c.tenantId!, consentingUserId: c.sub, id },
+      });
+      if (!old)
+        throw new NotFoundException(
+          "Không tìm thấy bản đồng ý trong phạm vi được phép.",
+        );
+      if (old.revokedAt) return this.consentView(old);
+      const updated = await tx.privacyConsent.update({
+        where: { id: old.id },
+        data: { revokedAt: new Date() },
       });
       await tx.auditLog.create({
         data: {
           tenantId: c.tenantId!,
           actorUserId: c.sub,
-          action: "privacy.request.received",
-          resourceId: r.id,
+          action: "privacy.consent.withdrawn",
+          resourceId: old.id,
           traceId,
         },
       });
-      return {
-        id: r.id,
-        type: r.type,
-        status: r.status,
-        createdAt: r.createdAt.toISOString(),
-      };
+      return this.consentView(updated);
     });
-  }
-  async detail(c: Claims, id: string) {
-    const r = await this.db.dataSubjectRequest.findFirst({
-      where: { tenantId: c.tenantId!, requesterUserId: c.sub, id },
-    });
-    if (!r) throw new ForbiddenException("Không có quyền xem yêu cầu.");
-    return {
-      id: r.id,
-      type: r.type,
-      status: r.status,
-      createdAt: r.createdAt.toISOString(),
-    };
   }
 }
 @ApiTags("privacy")
@@ -228,9 +199,16 @@ export class PrivacyService {
 @Controller("privacy")
 @ApiResponse({ status: 401, type: ErrorResponse })
 @ApiResponse({ status: 403, type: ErrorResponse })
+@ApiResponse({ status: 404, type: ErrorResponse })
+@ApiResponse({ status: 409, type: ErrorResponse })
+@ApiResponse({ status: 410, type: ErrorResponse })
+@ApiResponse({ status: 503, type: ErrorResponse })
 @ApiResponse({ status: 422, type: ErrorResponse })
 export class PrivacyController {
-  constructor(private service: PrivacyService) {}
+  constructor(
+    private service: PrivacyService,
+    private requests: PrivacyRequestsService,
+  ) {}
   @Get("policy") @ApiOkResponse({ type: PolicyResponse }) policy() {
     return this.service.policy();
   }
@@ -246,14 +224,64 @@ export class PrivacyController {
     return this.service.consent(requestClaims(r), dto, r.traceId);
   }
   @Post("requests")
+  @ApiHeader({
+    name: "Idempotency-Key",
+    required: false,
+    description:
+      "Reuse the same key after a lost create response; changed content conflicts.",
+  })
   @ApiCreatedResponse({ type: PrivacyRequestResponse })
   request(@Req() r: ApiRequest, @Body() dto: PrivacyRequestInput) {
-    return this.service.request(requestClaims(r), dto, r.traceId);
+    return this.requests.create(
+      requestClaims(r),
+      dto,
+      r.traceId,
+      r.get("Idempotency-Key"),
+    );
+  }
+  @Post("consents/:id/withdraw")
+  @HttpCode(200)
+  @ApiBody({
+    required: false,
+    schema: { type: "object", additionalProperties: false },
+  })
+  @ApiOkResponse({ type: ConsentResponse })
+  withdraw(@Req() r: ApiRequest, @Param("id", ParseUUIDPipe) id: string) {
+    return this.service.withdrawOwn(requestClaims(r), id, r.traceId);
+  }
+  @Get("requests")
+  @ApiOkResponse({ type: PrivacyRequestsResponse })
+  list(@Req() r: ApiRequest, @Query() q: PrivacyRequestsQuery) {
+    return this.requests.list(requestClaims(r), q);
+  }
+  @Post("requests/:id/confirm-scope")
+  @HttpCode(200)
+  @ApiOkResponse({ type: PrivacyRequestResponse })
+  confirm(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Body() dto: PrivacyVersionInput,
+  ) {
+    return this.requests.confirmScope(requestClaims(r), id, dto, r.traceId);
+  }
+  @Get("requests/:id/history")
+  @ApiOkResponse({ type: PrivacyEventsResponse })
+  history(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Query() q: PrivacyPageQuery,
+  ) {
+    return this.requests.history(requestClaims(r), id, q);
+  }
+  @Get("requests/:id/export")
+  @ApiOkResponse({ type: PrivacyExportResponse })
+  download(@Req() r: ApiRequest, @Param("id", ParseUUIDPipe) id: string) {
+    return this.requests.download(requestClaims(r), id, r.traceId);
   }
   @Get("requests/:id") @ApiOkResponse({ type: PrivacyRequestResponse }) detail(
     @Req() r: ApiRequest,
     @Param("id", ParseUUIDPipe) id: string,
   ) {
-    return this.service.detail(requestClaims(r), id);
+    return this.requests.detail(requestClaims(r), id);
   }
 }

@@ -20,6 +20,13 @@ async function run() {
   process.env.PRIVACY_NOTICE_URL =
     "https://example.test/e2e-notifications-policy";
   process.env.PUSH_PROVIDER = "disabled";
+  process.env.PRIVACY_EXPORT_KEY = randomBytes(32).toString("hex");
+  process.env.PRIVACY_EXPORT_KEY_ID = "synthetic-e2e-privacy-key";
+  process.env.PRIVACY_EXPORT_TTL_MINUTES = "30";
+  // Never inherit operator retention approval or simulate qualified legal sign-off.
+  delete process.env.PRIVACY_ERASURE_POLICY_VERSION;
+  delete process.env.PRIVACY_ERASURE_APPROVAL_REF;
+  delete process.env.PRIVACY_ERASURE_FIELDS;
   delete process.env.EXPO_ACCESS_TOKEN;
   if (!process.env.E2E_DATABASE_URL)
     throw new Error("Use pnpm test:e2e to provision an isolated database");

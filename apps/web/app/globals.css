@@ -576,6 +576,67 @@ body:has(.session-notice) .auth-layout {
 .tenant-audit-workspace {
   overflow-wrap: anywhere;
 }
+.privacy-workspace {
+  overflow-wrap: anywhere;
+}
+.privacy-workspace section {
+  margin-block: 24px;
+  padding-block: 16px;
+}
+.privacy-workspace label {
+  display: grid;
+  gap: 8px;
+}
+.privacy-workspace input[type="checkbox"] {
+  width: 20px;
+  min-height: 20px;
+}
+.privacy-review {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  max-width: 680px;
+  margin-block: 24px;
+}
+.privacy-review button {
+  justify-self: start;
+}
+.privacy-correction-field {
+  display: grid;
+  gap: 8px;
+}
+.privacy-id {
+  overflow-wrap: anywhere;
+}
+.privacy-columns {
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(0, 2fr);
+  gap: 32px;
+  margin-top: 24px;
+  align-items: start;
+}
+.privacy-columns > .privacy-detail {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.privacy-workspace > section > .toolbar:first-child {
+  margin-top: 0;
+  align-items: center;
+}
+.privacy-workspace label:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.privacy-workspace label:has(input[type="checkbox"]) input {
+  flex-shrink: 0;
+}
+@media (max-width: 1100px) {
+  .privacy-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
 .audit-filters {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

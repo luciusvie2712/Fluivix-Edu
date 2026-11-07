@@ -9387,7 +9387,39 @@
               }
             }
           },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "410": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
           "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "503": {
             "description": "",
             "content": {
               "application/json": {
@@ -9429,7 +9461,39 @@
               }
             }
           },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "410": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
           "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "503": {
             "description": "",
             "content": {
               "application/json": {
@@ -9477,7 +9541,39 @@
               }
             }
           },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "410": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
           "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "503": {
             "description": "",
             "content": {
               "application/json": {
@@ -9493,7 +9589,15 @@
     "/api/v1/privacy/requests": {
       "post": {
         "operationId": "PrivacyController_request",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "Reuse the same key after a lost create response; changed content conflicts.",
+            "required": false,
+            "schema": { "type": "string" }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -9529,7 +9633,524 @@
               }
             }
           },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "410": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
           "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["privacy"]
+      },
+      "get": {
+        "operationId": "PrivacyController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "RECEIVED",
+                "VERIFIED",
+                "APPROVED",
+                "REJECTED",
+                "COMPLETED"
+              ]
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["ACCESS", "CORRECT", "EXPORT", "ERASE", "WITHDRAW"]
+            }
+          },
+          {
+            "name": "subjectStudentId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivacyRequestsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "410": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["privacy"]
+      }
+    },
+    "/api/v1/privacy/consents/{id}/withdraw": {
+      "post": {
+        "operationId": "PrivacyController_withdraw",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": { "type": "object", "additionalProperties": false }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ConsentResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "410": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["privacy"]
+      }
+    },
+    "/api/v1/privacy/requests/{id}/confirm-scope": {
+      "post": {
+        "operationId": "PrivacyController_confirm",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PrivacyVersionInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivacyRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "410": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["privacy"]
+      }
+    },
+    "/api/v1/privacy/requests/{id}/history": {
+      "get": {
+        "operationId": "PrivacyController_history",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivacyEventsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "410": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "503": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["privacy"]
+      }
+    },
+    "/api/v1/privacy/requests/{id}/export": {
+      "get": {
+        "operationId": "PrivacyController_download",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivacyExportResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "410": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "503": {
             "description": "",
             "content": {
               "application/json": {
@@ -9580,7 +10201,39 @@
               }
             }
           },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "410": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
           "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "503": {
             "description": "",
             "content": {
               "application/json": {
@@ -9591,6 +10244,490 @@
         },
         "security": [{ "bearer": [] }],
         "tags": ["privacy"]
+      }
+    },
+    "/api/v1/privacy/admin/requests": {
+      "get": {
+        "operationId": "PrivacyAdminController_list",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "RECEIVED",
+                "VERIFIED",
+                "APPROVED",
+                "REJECTED",
+                "COMPLETED"
+              ]
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["ACCESS", "CORRECT", "EXPORT", "ERASE", "WITHDRAW"]
+            }
+          },
+          {
+            "name": "subjectStudentId",
+            "required": false,
+            "in": "query",
+            "schema": { "format": "uuid", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivacyAdminRequestsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["privacy-administration"]
+      }
+    },
+    "/api/v1/privacy/admin/requests/{id}": {
+      "get": {
+        "operationId": "PrivacyAdminController_detail",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivacyAdminRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["privacy-administration"]
+      }
+    },
+    "/api/v1/privacy/admin/requests/{id}/history": {
+      "get": {
+        "operationId": "PrivacyAdminController_history",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivacyEventsResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["privacy-administration"]
+      }
+    },
+    "/api/v1/privacy/admin/requests/{id}/verify": {
+      "post": {
+        "operationId": "PrivacyAdminController_verify",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PrivacyVerifyInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivacyAdminRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["privacy-administration"]
+      }
+    },
+    "/api/v1/privacy/admin/requests/{id}/decision": {
+      "post": {
+        "operationId": "PrivacyAdminController_decide",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PrivacyDecisionInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivacyAdminRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["privacy-administration"]
+      }
+    },
+    "/api/v1/privacy/admin/requests/{id}/fulfill": {
+      "post": {
+        "operationId": "PrivacyAdminController_fulfill",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PrivacyFulfillInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivacyAdminRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["privacy-administration"]
       }
     },
     "/api/v1/mobile/dashboard": {
@@ -15100,7 +16237,21 @@
           "purposeCode": { "type": "string" },
           "granted": { "type": "boolean" },
           "capturedAt": { "type": "string", "format": "date-time" },
-          "revokedAt": { "type": "string", "nullable": true }
+          "revokedAt": { "type": "string", "nullable": true },
+          "captureMethod": { "type": "string", "nullable": true },
+          "capturedRole": {
+            "type": "string",
+            "enum": [
+              "owner",
+              "manager",
+              "academic_staff",
+              "accountant",
+              "teacher",
+              "student",
+              "guardian"
+            ],
+            "nullable": true
+          }
         },
         "required": [
           "id",
@@ -15109,7 +16260,9 @@
           "purposeCode",
           "granted",
           "capturedAt",
-          "revokedAt"
+          "revokedAt",
+          "captureMethod",
+          "capturedRole"
         ]
       },
       "ConsentsResponse": {
@@ -15158,9 +16311,73 @@
           "id": { "type": "string" },
           "type": { "type": "string" },
           "status": { "type": "string" },
-          "createdAt": { "type": "string", "format": "date-time" }
+          "createdAt": { "type": "string", "format": "date-time" },
+          "version": { "type": "number" },
+          "subjectStudentId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid"
+          },
+          "requesterRole": {
+            "type": "string",
+            "enum": [
+              "owner",
+              "manager",
+              "academic_staff",
+              "accountant",
+              "teacher",
+              "student",
+              "guardian"
+            ],
+            "nullable": true
+          },
+          "scopeConfirmedAt": { "type": "string", "nullable": true },
+          "verifiedAt": { "type": "string", "nullable": true },
+          "decidedAt": { "type": "string", "nullable": true },
+          "decisionReason": { "type": "string", "nullable": true },
+          "completedAt": { "type": "string", "nullable": true },
+          "fulfillmentKind": { "type": "string", "nullable": true },
+          "scopeAvailable": { "type": "boolean" },
+          "exportAvailable": { "type": "boolean" },
+          "resultFields": { "type": "array", "items": { "type": "string" } },
+          "retainedSections": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "resultStudentVersion": { "type": "number", "nullable": true },
+          "withdrawnConsentCount": { "type": "number", "nullable": true },
+          "temporaryExportsPurged": { "type": "number", "nullable": true },
+          "configuredPolicyVersion": { "type": "string", "nullable": true },
+          "exportExpiresAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          }
         },
-        "required": ["id", "type", "status", "createdAt"]
+        "required": [
+          "id",
+          "type",
+          "status",
+          "createdAt",
+          "version",
+          "subjectStudentId",
+          "requesterRole",
+          "scopeConfirmedAt",
+          "verifiedAt",
+          "decidedAt",
+          "decisionReason",
+          "completedAt",
+          "fulfillmentKind",
+          "scopeAvailable",
+          "exportAvailable",
+          "resultFields",
+          "retainedSections",
+          "resultStudentVersion",
+          "withdrawnConsentCount",
+          "temporaryExportsPurged",
+          "configuredPolicyVersion",
+          "exportExpiresAt"
+        ]
       },
       "PrivacyRequestResponse": {
         "type": "object",
@@ -15169,6 +16386,251 @@
           "meta": { "$ref": "#/components/schemas/MetaDto" }
         },
         "required": ["data", "meta"]
+      },
+      "PrivacyRequestsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PrivacyRequestView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "PrivacyVersionInput": {
+        "type": "object",
+        "properties": { "version": { "type": "number", "minimum": 1 } },
+        "required": ["version"]
+      },
+      "PrivacyEventView": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number" },
+          "eventType": { "type": "string" },
+          "beforeStatus": { "type": "string", "nullable": true },
+          "afterStatus": { "type": "string" },
+          "actorUserId": { "type": "string", "nullable": true },
+          "reason": { "type": "string", "nullable": true },
+          "recordedAt": { "type": "string", "format": "date-time" }
+        },
+        "required": [
+          "version",
+          "eventType",
+          "beforeStatus",
+          "afterStatus",
+          "actorUserId",
+          "reason",
+          "recordedAt"
+        ]
+      },
+      "PrivacyEventsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PrivacyEventView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "PrivacyExportView": {
+        "type": "object",
+        "properties": {
+          "filename": { "type": "string" },
+          "json": {
+            "type": "string",
+            "description": "UTF-8 JSON file content, transient; do not persist in browser/AsyncStorage."
+          },
+          "sha256": { "type": "string" },
+          "expiresAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["filename", "json", "sha256", "expiresAt"]
+      },
+      "PrivacyExportResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/PrivacyExportView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "PrivacyAdminRequestView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string" },
+          "status": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "version": { "type": "number" },
+          "subjectStudentId": {
+            "type": "string",
+            "nullable": true,
+            "format": "uuid"
+          },
+          "requesterRole": {
+            "type": "string",
+            "enum": [
+              "owner",
+              "manager",
+              "academic_staff",
+              "accountant",
+              "teacher",
+              "student",
+              "guardian"
+            ],
+            "nullable": true
+          },
+          "scopeConfirmedAt": { "type": "string", "nullable": true },
+          "verifiedAt": { "type": "string", "nullable": true },
+          "decidedAt": { "type": "string", "nullable": true },
+          "decisionReason": { "type": "string", "nullable": true },
+          "completedAt": { "type": "string", "nullable": true },
+          "fulfillmentKind": { "type": "string", "nullable": true },
+          "scopeAvailable": { "type": "boolean" },
+          "exportAvailable": { "type": "boolean" },
+          "resultFields": { "type": "array", "items": { "type": "string" } },
+          "retainedSections": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "resultStudentVersion": { "type": "number", "nullable": true },
+          "withdrawnConsentCount": { "type": "number", "nullable": true },
+          "temporaryExportsPurged": { "type": "number", "nullable": true },
+          "configuredPolicyVersion": { "type": "string", "nullable": true },
+          "exportExpiresAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "subjectVersion": { "type": "number", "nullable": true },
+          "requesterUserId": { "type": "string" },
+          "requesterDisplayName": { "type": "string" },
+          "subjectFullName": { "type": "string", "nullable": true },
+          "verificationMethod": { "type": "string", "nullable": true },
+          "verificationEvidenceRef": { "type": "string", "nullable": true }
+        },
+        "required": [
+          "id",
+          "type",
+          "status",
+          "createdAt",
+          "version",
+          "subjectStudentId",
+          "requesterRole",
+          "scopeConfirmedAt",
+          "verifiedAt",
+          "decidedAt",
+          "decisionReason",
+          "completedAt",
+          "fulfillmentKind",
+          "scopeAvailable",
+          "exportAvailable",
+          "resultFields",
+          "retainedSections",
+          "resultStudentVersion",
+          "withdrawnConsentCount",
+          "temporaryExportsPurged",
+          "configuredPolicyVersion",
+          "exportExpiresAt",
+          "subjectVersion",
+          "requesterUserId",
+          "requesterDisplayName",
+          "subjectFullName",
+          "verificationMethod",
+          "verificationEvidenceRef"
+        ]
+      },
+      "PrivacyAdminRequestsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PrivacyAdminRequestView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "PrivacyAdminRequestResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/PrivacyAdminRequestView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "PrivacyVerifyInput": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number", "minimum": 1 },
+          "reason": { "type": "string", "minLength": 10, "maxLength": 500 },
+          "method": {
+            "type": "string",
+            "enum": [
+              "ACCOUNT_CONFIRMATION",
+              "VERIFIED_GUARDIAN",
+              "REVIEWED_EVIDENCE"
+            ]
+          },
+          "evidenceRef": {
+            "type": "string",
+            "description": "Opaque reference to verified evidence; no identity-document content or secret URL.",
+            "minLength": 3,
+            "maxLength": 150
+          }
+        },
+        "required": ["version", "reason", "method", "evidenceRef"]
+      },
+      "PrivacyDecisionInput": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number", "minimum": 1 },
+          "reason": { "type": "string", "minLength": 10, "maxLength": 500 },
+          "decision": { "type": "string", "enum": ["APPROVE", "REJECT"] }
+        },
+        "required": ["version", "reason", "decision"]
+      },
+      "PrivacyCorrectionInput": {
+        "type": "object",
+        "properties": {
+          "fullName": { "type": "string", "maxLength": 150 },
+          "dateOfBirth": {
+            "type": "string",
+            "nullable": true,
+            "format": "date"
+          },
+          "contactEmail": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 254
+          },
+          "contactPhone": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 30
+          }
+        }
+      },
+      "PrivacyFulfillInput": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number", "minimum": 1 },
+          "reason": { "type": "string", "minLength": 10, "maxLength": 500 },
+          "correction": {
+            "$ref": "#/components/schemas/PrivacyCorrectionInput"
+          },
+          "studentVersion": { "type": "number", "minimum": 1 },
+          "confirmRetainedRecords": {
+            "type": "boolean",
+            "description": "Explicit confirmation of the configured tenant profile redaction scope and retained financial/audit/global identity records."
+          }
+        },
+        "required": ["version", "reason"]
       },
       "DashboardView": {
         "type": "object",

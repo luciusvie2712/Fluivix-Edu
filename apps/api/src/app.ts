@@ -37,6 +37,8 @@ import { FinanceController } from "./finance.controller";
 import { FinanceService } from "./finance.service";
 import { NotificationsController, NotificationsService } from "./notifications";
 import { PrivacyController, PrivacyService } from "./privacy";
+import { PrivacyAdminController } from "./privacy-admin.controller";
+import { PrivacyRequestsService } from "./privacy-requests";
 import {
   MobileDashboardController,
   MobileDashboardService,
@@ -67,6 +69,7 @@ import {
     FinanceController,
     NotificationsController,
     PrivacyController,
+    PrivacyAdminController,
     MobileDashboardController,
     GuardianLinksController,
     StudentsController,
@@ -88,6 +91,7 @@ import {
     FinanceService,
     NotificationsService,
     PrivacyService,
+    PrivacyRequestsService,
     MobileDashboardService,
     GuardianLinksService,
     AccessGuard,

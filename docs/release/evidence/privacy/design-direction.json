@@ -1,0 +1,79 @@
+{
+  "direction": "Existing single FluivixEdu framed-sheet, blue accent, Arial16 Vietnamese",
+  "seed": 1920114305,
+  "question": "Which step has the current request reached, and what reviewed action is available to its requester or centre owner?",
+  "proMax": {
+    "sourceSha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+    "query": "privacy destructive confirmation consent feedback --domain ux",
+    "applied": "Explicit destructive and retained-record confirmation; pending and actual server outcomes; labelled evidence and correction fields; readonly controls."
+  },
+  "taste": {
+    "sourceSha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+    "applied": "Real API request queue and reviewed detail, no invented counts. Initial screenshot exposed a long single-column review and duplicated section rules; desktop queue/detail columns and aligned toolbar repaired it. Final eight normal/reduced images manually inspected; axe/Taste and keyboard pass."
+  },
+  "motion": {
+    "sourceSha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+    "skills": [
+      "accessible-animation",
+      "micro-interaction",
+      "60fps-animation"
+    ],
+    "applied": "Existing focus/press and reduced-motion rules retained; no new entrance/layout animation or commit delay. Native controls use existing RN driver, no DOM/GSAP."
+  },
+  "verifiedSources": [
+    {
+      "source": "taste-skill",
+      "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+      "installed": "design-taste-frontend",
+      "verifiedFiles": 38,
+      "status": "PASS"
+    },
+    {
+      "source": "ui-ux-pro-max-skill",
+      "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+      "installed": "ui-ux-pro-max",
+      "verifiedFiles": 73,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "accessible-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "micro-interaction",
+      "verifiedFiles": 4,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "60fps-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    }
+  ],
+  "visualReview": {
+    "allEightManuallyInspected": true,
+    "images": {
+      "review-no-preference-1024.png": "5b6b7aefb5e59a37333caaa5a780181e7d155ec63e5f369e7afc3d65a3a74576",
+      "review-no-preference-1440.png": "b9844bc20defefc0d25af2802826629a60b8a9813122e38fc6ee5dbf617fe4bc",
+      "review-no-preference-360.png": "dd2b9dd7689f79601fa670c281427258bb56147f42881022d13b52d88a0b2bc8",
+      "review-no-preference-768.png": "8929c7a1f4c7bfe257cb4aa658494eccb4acc25c06d0161c062c94502301a359",
+      "review-reduce-1024.png": "5b6b7aefb5e59a37333caaa5a780181e7d155ec63e5f369e7afc3d65a3a74576",
+      "review-reduce-1440.png": "b9844bc20defefc0d25af2802826629a60b8a9813122e38fc6ee5dbf617fe4bc",
+      "review-reduce-360.png": "dd2b9dd7689f79601fa670c281427258bb56147f42881022d13b52d88a0b2bc8",
+      "review-reduce-768.png": "8929c7a1f4c7bfe257cb4aa658494eccb4acc25c06d0161c062c94502301a359"
+    },
+    "notes": [
+      "Viewed every final normal and reduced-motion image at360,768,1024,1440.",
+      "Desktop queue/detail and first review input visible together; single-column narrow forms wrap without clipped controls or IDs.",
+      "Focus ring visible; disabled actions and current actual request/history remain readable.",
+      "Existing shared mobile-width navigation preserved; no new motion."
+    ]
+  }
+}

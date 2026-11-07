@@ -4,9 +4,11 @@ import { randomUUID } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { reportMigrationCase } from "./report-migration-case";
 import { notificationMigrationCase } from "./notification-migration-case";
+import { privacyMigrationCase } from "./privacy-migration-case";
 export function migrationCases() {
   reportMigrationCase();
   notificationMigrationCase();
+  privacyMigrationCase();
   it("upgrades invoice actors and meaningful reasons without rewriting legacy financial rows or accepting orphan actors", async () => {
     const connectionString = process.env.DATABASE_URL;
     if (

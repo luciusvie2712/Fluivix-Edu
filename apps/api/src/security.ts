@@ -37,6 +37,7 @@ export const permissions = {
   owner: [
     "notification.read",
     "privacy.self",
+    "privacy.manage",
     "report.dashboard.read",
     "report.attendance.read",
     "report.attendance.export",

@@ -1,0 +1,339 @@
+{
+  "config": {
+    "argv": [
+      "D:\\my-project\\fluivixedu\\.cache\\node-v24.22.2-win-x64\\node.exe",
+      "D:\\my-project\\fluivixedu\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "privacy.spec.ts"
+    ],
+    "configFile": "D:\\my-project\\fluivixedu\\playwright.config.ts",
+    "rootDir": "D:/my-project/fluivixedu/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/my-project/fluivixedu/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tenant-chromium",
+        "name": "tenant-chromium",
+        "testDir": "D:/my-project/fluivixedu/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\my-project\\fluivixedu\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "tenant-chromium",
+        "testDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "snapshotDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:3000",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "browserName": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "tenant-chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/release/evidence/e2e-2026-11-07-privacy-first.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm exec tsx tooling/e2e-server.ts",
+      "url": "http://localhost:3000/login",
+      "timeout": 60000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "privacy.spec.ts",
+      "file": "privacy.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "privacy requester and owner complete a real reviewed encrypted export and download the authenticated file",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "timedOut",
+                  "duration": 30329,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                    },
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\privacy.spec.ts",
+                        "column": 8,
+                        "line": 159
+                      },
+                      "message": "Error: locator.selectOption: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByLabel('Loại yêu cầu', { exact: true })\u001b[22m\n\n\n  157 |     await page\n  158 |       .getByLabel(\"Loại yêu cầu\", { exact: true })\n> 159 |       .selectOption(\"EXPORT\");\n      |        ^\n  160 |     await page\n  161 |       .getByRole(\"button\", { name: \"Gửi yêu cầu\", exact: true })\n  162 |       .click();\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\privacy.spec.ts:159:8"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T02:00:50.774Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\privacy-privacy-requester--a4158-load-the-authenticated-file-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\privacy-privacy-requester--a4158-load-the-authenticated-file-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\privacy-privacy-requester--a4158-load-the-authenticated-file-tenant-chromium\\trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "62491902cb946290adea-1ed639a5cfa387650de8",
+          "file": "privacy.spec.ts",
+          "line": 149,
+          "column": 5
+        },
+        {
+          "title": "privacy hides stale data on transport failure, restricts owner review and respects read-only writes",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 6886,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m403\u001b[39m\nReceived: \u001b[31m401\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m403\u001b[39m\nReceived: \u001b[31m401\u001b[39m\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\privacy.spec.ts:289:29",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\privacy.spec.ts",
+                      "column": 29,
+                      "line": 289
+                    },
+                    "snippet": "  287 |       { headers: { Authorization: \"Bearer \" + token } },\n  288 |     );\n> 289 |     expect(denied.status()).toBe(403);\n      |                             ^\n  290 |   } finally {\n  291 |     await db.$disconnect();\n  292 |   }"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\privacy.spec.ts",
+                        "column": 29,
+                        "line": 289
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m403\u001b[39m\nReceived: \u001b[31m401\u001b[39m\n\n  287 |       { headers: { Authorization: \"Bearer \" + token } },\n  288 |     );\n> 289 |     expect(denied.status()).toBe(403);\n      |                             ^\n  290 |   } finally {\n  291 |     await db.$disconnect();\n  292 |   }\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\privacy.spec.ts:289:29"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T02:01:24.774Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\privacy-privacy-hides-stal-dc942-d-respects-read-only-writes-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\privacy-privacy-hides-stal-dc942-d-respects-read-only-writes-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\privacy-privacy-hides-stal-dc942-d-respects-read-only-writes-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\privacy.spec.ts",
+                    "column": 29,
+                    "line": 289
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "62491902cb946290adea-be716fa5bbf94e4afd36",
+          "file": "privacy.spec.ts",
+          "line": 230,
+          "column": 5
+        },
+        {
+          "title": "privacy review remains keyboard accessible across four widths and reduced motion with real requests",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 8931,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByLabel('Cách xác minh', { exact: true })\nExpected: focused\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByLabel('Cách xác minh', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Cách xác minh', { exact: true })\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByLabel('Cách xác minh', { exact: true })\nExpected: focused\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByLabel('Cách xác minh', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Cách xác minh', { exact: true })\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\privacy.spec.ts:325:11",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\privacy.spec.ts",
+                      "column": 11,
+                      "line": 325
+                    },
+                    "snippet": "  323 |         await expect(\n  324 |           page.getByLabel(\"Cách xác minh\", { exact: true }),\n> 325 |         ).toBeFocused();\n      |           ^\n  326 |         expect(\n  327 |           await page.evaluate(\n  328 |             () => document.documentElement.scrollWidth <= innerWidth,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\privacy.spec.ts",
+                        "column": 11,
+                        "line": 325
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByLabel('Cách xác minh', { exact: true })\nExpected: focused\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByLabel('Cách xác minh', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Cách xác minh', { exact: true })\u001b[22m\n\n\n  323 |         await expect(\n  324 |           page.getByLabel(\"Cách xác minh\", { exact: true }),\n> 325 |         ).toBeFocused();\n      |           ^\n  326 |         expect(\n  327 |           await page.evaluate(\n  328 |             () => document.documentElement.scrollWidth <= innerWidth,\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\privacy.spec.ts:325:11"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T02:01:36.510Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\privacy-privacy-review-rem-451e8-d-motion-with-real-requests-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\privacy-privacy-review-rem-451e8-d-motion-with-real-requests-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\privacy-privacy-review-rem-451e8-d-motion-with-real-requests-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\privacy.spec.ts",
+                    "column": 11,
+                    "line": 325
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "62491902cb946290adea-3ba48667d8e0f2035406",
+          "file": "privacy.spec.ts",
+          "line": 295,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-07T02:00:25.714Z",
+    "duration": 82315.666,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  }
+}

@@ -763,6 +763,9 @@ model PushDelivery {
 }
 
 model PrivacyConsent {
+  captureMethod String? @map("capture_method") @db.VarChar(40)
+  capturedRole Role? @map("captured_role")
+  evidenceRef String? @map("evidence_ref") @db.VarChar(150)
   id               String    @id @default(uuid()) @db.Uuid
   tenantId         String    @map("tenant_id") @db.Uuid
   subjectStudentId String?   @map("subject_student_id") @db.Uuid
@@ -779,6 +782,19 @@ model PrivacyConsent {
 }
 
 model DataSubjectRequest {
+  version Int @default(1)
+  requesterRole Role? @map("requester_role")
+  scopeConfirmedAt DateTime? @map("scope_confirmed_at") @db.Timestamptz
+  verifiedAt DateTime? @map("verified_at") @db.Timestamptz
+  verifiedBy String? @map("verified_by") @db.Uuid
+  verificationMethod String? @map("verification_method") @db.VarChar(40)
+  verificationEvidenceRef String? @map("verification_evidence_ref") @db.VarChar(150)
+  decidedAt DateTime? @map("decided_at") @db.Timestamptz
+  decidedBy String? @map("decided_by") @db.Uuid
+  decisionReason String? @map("decision_reason") @db.VarChar(500)
+  completedAt DateTime? @map("completed_at") @db.Timestamptz
+  completedBy String? @map("completed_by") @db.Uuid
+  fulfillmentSummary Json? @map("fulfillment_summary")
   id               String   @id @default(uuid()) @db.Uuid
   tenantId         String   @map("tenant_id") @db.Uuid
   requesterUserId  String   @map("requester_user_id") @db.Uuid
@@ -789,6 +805,40 @@ model DataSubjectRequest {
 
   @@unique([tenantId, id])
   @@map("data_subject_requests")
+}
+
+model PrivacyRequestEvent {
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  requestId String @map("request_id") @db.Uuid
+  version Int
+  eventType String @map("event_type") @db.VarChar(30)
+  beforeStatus String? @map("before_status") @db.VarChar(20)
+  afterStatus String @map("after_status") @db.VarChar(20)
+  actorUserId String? @map("actor_user_id") @db.Uuid
+  reason String? @db.VarChar(500)
+  evidenceRef String? @map("evidence_ref") @db.VarChar(150)
+  traceId String? @map("trace_id") @db.VarChar(80)
+  recordedAt DateTime @default(now()) @map("recorded_at") @db.Timestamptz
+  @@unique([tenantId,requestId,version])
+  @@map("privacy_request_events")
+}
+
+model PrivacyExportArtifact {
+  erasedByRequestId String? @map("erased_by_request_id") @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
+  tenantId String @map("tenant_id") @db.Uuid
+  requestId String @map("request_id") @db.Uuid
+  keyId String @map("key_id") @db.VarChar(80)
+  ciphertext String?
+  sha256 String @db.Char(64)
+  byteCount Int @map("byte_count")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+  expiresAt DateTime @map("expires_at") @db.Timestamptz
+  purgedAt DateTime? @map("purged_at") @db.Timestamptz
+  @@unique([tenantId,requestId])
+  @@index([expiresAt])
+  @@map("privacy_export_artifacts")
 }
 
 model GradeChange {

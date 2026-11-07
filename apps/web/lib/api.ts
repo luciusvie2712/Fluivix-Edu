@@ -17,6 +17,144 @@ export type TenantAuditQuery = NonNullable<
 >;
 export type NotificationPreferences = components["schemas"]["PreferencesInput"];
 export type InboxNotification = components["schemas"]["NotificationView"];
+export const privacy = {
+  policy: (signal: AbortSignal | null = null) =>
+    unwrap(api.GET("/api/v1/privacy/policy", { signal })),
+  consents: (signal: AbortSignal | null = null) =>
+    unwrap(api.GET("/api/v1/privacy/consents", { signal })),
+  consent: (
+    body: components["schemas"]["ConsentInput"],
+    signal: AbortSignal | null = null,
+  ) => unwrap(api.POST("/api/v1/privacy/consents", { body, signal })),
+  withdraw: (id: string, signal: AbortSignal | null = null) =>
+    unwrap(
+      api.POST("/api/v1/privacy/consents/{id}/withdraw", {
+        params: { path: { id } },
+        body: {},
+        headers: { "Content-Type": "application/json" },
+        signal,
+      }),
+    ),
+  create: (
+    body: components["schemas"]["PrivacyRequestInput"],
+    key: string,
+    signal: AbortSignal | null = null,
+  ) =>
+    unwrap(
+      api.POST("/api/v1/privacy/requests", {
+        body,
+        headers: { "Idempotency-Key": key },
+        signal,
+      }),
+    ),
+  list: (
+    admin: boolean,
+    page: number,
+    status?: "RECEIVED" | "VERIFIED" | "APPROVED" | "REJECTED" | "COMPLETED",
+    signal: AbortSignal | null = null,
+  ) =>
+    admin
+      ? unwrap(
+          api.GET("/api/v1/privacy/admin/requests", {
+            params: {
+              query: { page, limit: 10, ...(status ? { status } : {}) },
+            },
+            signal,
+          }),
+        )
+      : unwrap(
+          api.GET("/api/v1/privacy/requests", {
+            params: {
+              query: { page, limit: 10, ...(status ? { status } : {}) },
+            },
+            signal,
+          }),
+        ),
+  detail: (id: string, admin: boolean, signal: AbortSignal | null = null) =>
+    admin
+      ? unwrap(
+          api.GET("/api/v1/privacy/admin/requests/{id}", {
+            params: { path: { id } },
+            signal,
+          }),
+        )
+      : unwrap(
+          api.GET("/api/v1/privacy/requests/{id}", {
+            params: { path: { id } },
+            signal,
+          }),
+        ),
+  history: (
+    id: string,
+    admin: boolean,
+    page: number,
+    signal: AbortSignal | null = null,
+  ) =>
+    admin
+      ? unwrap(
+          api.GET("/api/v1/privacy/admin/requests/{id}/history", {
+            params: { path: { id }, query: { page, limit: 10 } },
+            signal,
+          }),
+        )
+      : unwrap(
+          api.GET("/api/v1/privacy/requests/{id}/history", {
+            params: { path: { id }, query: { page, limit: 10 } },
+            signal,
+          }),
+        ),
+  confirm: (id: string, version: number, signal: AbortSignal | null = null) =>
+    unwrap(
+      api.POST("/api/v1/privacy/requests/{id}/confirm-scope", {
+        params: { path: { id } },
+        body: { version },
+        signal,
+      }),
+    ),
+  export: (id: string, signal: AbortSignal | null = null) =>
+    unwrap(
+      api.GET("/api/v1/privacy/requests/{id}/export", {
+        params: { path: { id } },
+        signal,
+      }),
+    ),
+  verify: (
+    id: string,
+    body: components["schemas"]["PrivacyVerifyInput"],
+    signal: AbortSignal | null = null,
+  ) =>
+    unwrap(
+      api.POST("/api/v1/privacy/admin/requests/{id}/verify", {
+        params: { path: { id } },
+        body,
+        signal,
+      }),
+    ),
+  decision: (
+    id: string,
+    body: components["schemas"]["PrivacyDecisionInput"],
+    signal: AbortSignal | null = null,
+  ) =>
+    unwrap(
+      api.POST("/api/v1/privacy/admin/requests/{id}/decision", {
+        params: { path: { id } },
+        body,
+        signal,
+      }),
+    ),
+  fulfill: (
+    id: string,
+    body: components["schemas"]["PrivacyFulfillInput"],
+    signal: AbortSignal | null = null,
+  ) =>
+    unwrap(
+      api.POST("/api/v1/privacy/admin/requests/{id}/fulfill", {
+        params: { path: { id } },
+        body,
+        signal,
+      }),
+    ),
+};
 export const notificationInbox = {
   list: (page: number, signal?: AbortSignal) =>
     unwrap(
@@ -305,11 +443,13 @@ async function unwrap<T>(
             ? "Không tìm thấy dữ liệu trong trung tâm đang chọn."
             : status === 409
               ? "Dữ liệu đã thay đổi hoặc bị trùng. Vui lòng kiểm tra lại."
-              : status === 422
-                ? "Thông tin chưa hợp lệ. Vui lòng kiểm tra các trường."
-                : status === 429
-                  ? "Quá nhiều yêu cầu. Vui lòng thử lại sau."
-                  : "Không thể kết nối dịch vụ. Vui lòng thử lại.";
+              : status === 410
+                ? "Bản xuất đã hết hạn hoặc nội dung đã được xóa theo chính sách."
+                : status === 422
+                  ? "Thông tin chưa hợp lệ. Vui lòng kiểm tra các trường."
+                  : status === 429
+                    ? "Quá nhiều yêu cầu. Vui lòng thử lại sau."
+                    : "Không thể kết nối dịch vụ. Vui lòng thử lại.";
     throw new ApiError(status, message);
   }
   return response.data;
