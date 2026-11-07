@@ -1,4 +1,5 @@
 "use client";
+import { focusAfterAction } from "../lib/focus-after-action";
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -506,6 +507,7 @@ function FutureTerms({ fee }: { fee: Fee }) {
             throw new Error(
               "Nhập số nguyên VND không âm trong giới hạn cho phép.",
             );
+          const focusOrigin = document.activeElement;
           lock.current = true;
           setBusy(true);
           setOutcome("");
@@ -523,7 +525,7 @@ function FutureTerms({ fee }: { fee: Fee }) {
               "Đã ghi nhận điều khoản tương lai; các chứng từ đã phát hành giữ nguyên.",
             );
             await cache.invalidateQueries({ queryKey: scope.key });
-            requestAnimationFrame(() => outcomeRef.current?.focus());
+            focusAfterAction(() => outcomeRef.current, focusOrigin);
           } catch (cause) {
             await cache.invalidateQueries({
               queryKey: [...scope.key, "detail", fee.id],

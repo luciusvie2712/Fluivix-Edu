@@ -1,4 +1,5 @@
 "use client";
+import { focusAfterAction } from "../lib/focus-after-action";
 import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
@@ -107,6 +108,7 @@ function ExportButton({
         disabled={busy}
         onClick={async () => {
           if (busy) return;
+          const focusOrigin = document.activeElement;
           const current = new AbortController();
           controller.current = current;
           setBusy(true);
@@ -133,7 +135,7 @@ function ExportButton({
                   ? cause.message
                   : "Chưa xuất được báo cáo.",
               );
-              requestAnimationFrame(() => errorRef.current?.focus());
+              focusAfterAction(() => errorRef.current, focusOrigin);
             }
           } finally {
             if (!current.signal.aborted) setBusy(false);

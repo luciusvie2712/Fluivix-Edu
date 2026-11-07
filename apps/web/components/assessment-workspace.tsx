@@ -15,6 +15,7 @@ import {
   text,
 } from "./operation-form";
 import { Button } from "./ui/button";
+import { focusAfterAction } from "../lib/focus-after-action";
 type Editor = components["schemas"]["GradeEditor"];
 type Row = components["schemas"]["GradeRow"];
 type ClassInfo = components["schemas"]["ClassView"];
@@ -414,6 +415,7 @@ function GradeSheet({
   };
   async function run(action: () => Promise<{ data: Editor }>, message: string) {
     if (lock.current) throw new Error("Đang xử lý thay đổi trước đó.");
+    const focusOrigin = document.activeElement;
     lock.current = true;
     setBusy(true);
     setOutcome("");
@@ -424,7 +426,7 @@ function GradeSheet({
       setRows(result.data.rows);
       setOutcome(message);
       await cache.invalidateQueries({ queryKey: scope.key });
-      requestAnimationFrame(() => outcomeRef.current?.focus());
+      focusAfterAction(() => outcomeRef.current, focusOrigin);
     } catch (cause) {
       await cache.invalidateQueries({ queryKey: [...scope.key, "editor", id] });
       throw cause;
@@ -440,6 +442,7 @@ function GradeSheet({
         !window.confirm("Bỏ các thay đổi chưa lưu và tải bảng điểm mới nhất?"))
     )
       return;
+    const focusOrigin = document.activeElement;
     lock.current = true;
     setBusy(true);
     setLoadError("");
@@ -448,7 +451,7 @@ function GradeSheet({
       setSnapshot(latest);
       setRows(latest.rows);
       setOutcome("Đã tải bảng điểm mới nhất.");
-      requestAnimationFrame(() => outcomeRef.current?.focus());
+      focusAfterAction(() => outcomeRef.current, focusOrigin);
     } catch (cause) {
       setLoadError(
         cause instanceof Error ? cause.message : "Chưa tải được bảng điểm.",

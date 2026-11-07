@@ -1,4 +1,5 @@
 "use client";
+import { focusAfterAction } from "../lib/focus-after-action";
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { notificationInbox, type NotificationPreferences } from "../lib/api";
@@ -56,6 +57,7 @@ function InboxView({ scope, canWrite }: { scope: string; canWrite: boolean }) {
   const rows = inbox.isError ? undefined : inbox.data;
   async function mutate(id?: string) {
     if (busy || !canWrite || (!id && !values)) return;
+    const focusOrigin = document.activeElement;
     const current = new AbortController();
     controller.current = current;
     setBusy(true);
@@ -81,7 +83,7 @@ function InboxView({ scope, canWrite }: { scope: string; canWrite: boolean }) {
             ? cause.message
             : "Chưa xác nhận được thay đổi.",
         );
-        requestAnimationFrame(() => errorRef.current?.focus());
+        focusAfterAction(() => errorRef.current, focusOrigin);
       }
     } finally {
       if (!current.signal.aborted) setBusy(false);

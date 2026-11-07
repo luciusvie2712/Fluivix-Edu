@@ -1,4 +1,5 @@
 "use client";
+import { focusAfterAction } from "../lib/focus-after-action";
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -580,6 +581,7 @@ function RecordPayment({ scope }: { scope: ReturnType<typeof useScope> }) {
             throw new Error(
               "Kiểm tra thời điểm nhận tiền và thông tin phân bổ.",
             );
+          const focusOrigin = document.activeElement;
           lock.current = true;
           setBusy(true);
           if (!intent.current)
@@ -615,7 +617,7 @@ function RecordPayment({ scope }: { scope: ReturnType<typeof useScope> }) {
               cache.invalidateQueries({ queryKey: ["invoices"] }),
               cache.invalidateQueries({ queryKey: ["receivables"] }),
             ]);
-            requestAnimationFrame(() => outcomeRef.current?.focus());
+            focusAfterAction(() => outcomeRef.current, focusOrigin);
           } catch (cause) {
             if (
               !(cause instanceof ApiError) ||
@@ -793,6 +795,7 @@ function ReceiptDetail({ id }: { id: string }) {
             label="Xác nhận đảo giao dịch"
             confirm="Tôi đã kiểm tra và xác nhận đảo toàn bộ giao dịch; công nợ sẽ được tính lại và lịch sử được giữ nguyên."
             action={async (data) => {
+              const focusOrigin = document.activeElement;
               try {
                 await payments.reverse(id, { reason: text(data, "reason") });
                 setOutcome(
@@ -812,7 +815,7 @@ function ReceiptDetail({ id }: { id: string }) {
                 cache.invalidateQueries({ queryKey: ["invoices"] }),
                 cache.invalidateQueries({ queryKey: ["receivables"] }),
               ]);
-              requestAnimationFrame(() => outcomeRef.current?.focus());
+              focusAfterAction(() => outcomeRef.current, focusOrigin);
             }}
           >
             <Reason />

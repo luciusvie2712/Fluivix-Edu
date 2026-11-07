@@ -7,6 +7,7 @@ import {
   type ReactNode,
 } from "react";
 import { Button } from "./ui/button";
+import { focusAfterAction } from "../lib/focus-after-action";
 
 export function OperationForm({
   children,
@@ -56,6 +57,7 @@ export function OperationForm({
           return;
         }
         const data = new FormData(e.currentTarget);
+        const focusOrigin = document.activeElement;
         setBusy(true);
         setError("");
         setSuccess(false);
@@ -70,7 +72,7 @@ export function OperationForm({
               ? cause.message
               : "Không thể lưu. Hãy thử lại.",
           );
-          requestAnimationFrame(() => errorRef.current?.focus());
+          focusAfterAction(() => errorRef.current, focusOrigin);
         } finally {
           setBusy(false);
         }

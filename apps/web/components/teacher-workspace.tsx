@@ -1,4 +1,5 @@
 "use client";
+import { focusAfterAction } from "../lib/focus-after-action";
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -310,6 +311,7 @@ export function TeacherDetail({ id }: { id: string }) {
     locked = busy || !scope.writable;
   async function mutate(action: () => Promise<unknown>) {
     if (busy) return;
+    const focusOrigin = document.activeElement;
     setBusy(true);
     setOutcome("");
     try {
@@ -317,7 +319,7 @@ export function TeacherDetail({ id }: { id: string }) {
       await cache.invalidateQueries({ queryKey: key });
       await cache.invalidateQueries({ queryKey: ["teaching", ...scope.key] });
       setOutcome("Đã lưu thay đổi giáo viên trên hệ thống và tải lại dữ liệu.");
-      requestAnimationFrame(() => outcomeRef.current?.focus());
+      focusAfterAction(() => outcomeRef.current, focusOrigin);
     } finally {
       setBusy(false);
     }

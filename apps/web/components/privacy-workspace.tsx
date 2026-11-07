@@ -1,4 +1,5 @@
 "use client";
+import { focusAfterAction } from "../lib/focus-after-action";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { components } from "@fluivix/api-client";
@@ -436,6 +437,7 @@ function Workspace({
     message: string,
   ) {
     if (busy) return;
+    const focusOrigin = document.activeElement;
     const current = new AbortController();
     controller.current = current;
     setBusy(true);
@@ -462,7 +464,7 @@ function Workspace({
           list.refetch(),
           ...(selected ? [detail.refetch(), history.refetch()] : []),
         ]);
-        requestAnimationFrame(() => errorRef.current?.focus());
+        focusAfterAction(() => errorRef.current, focusOrigin);
       }
     } finally {
       if (!current.signal.aborted) setBusy(false);

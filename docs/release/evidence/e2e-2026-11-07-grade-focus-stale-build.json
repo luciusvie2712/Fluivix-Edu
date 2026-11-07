@@ -1,0 +1,301 @@
+{
+  "config": {
+    "argv": [
+      "D:\\my-project\\fluivixedu\\.cache\\node-v24.22.2-win-x64\\node.exe",
+      "D:\\my-project\\fluivixedu\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "assessments.spec.ts"
+    ],
+    "configFile": "D:\\my-project\\fluivixedu\\playwright.config.ts",
+    "rootDir": "D:/my-project/fluivixedu/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/my-project/fluivixedu/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tenant-chromium",
+        "name": "tenant-chromium",
+        "testDir": "D:/my-project/fluivixedu/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\my-project\\fluivixedu\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "tenant-chromium",
+        "testDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "snapshotDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:3000",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "browserName": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "tenant-chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/release/evidence/e2e-2026-11-07-grade-focus-focused.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm exec tsx tooling/e2e-server.ts",
+      "url": "http://localhost:3000/login",
+      "timeout": 60000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "assessments.spec.ts",
+      "file": "assessments.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "assessment Web handles empty, read-only, missing and forbidden states",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11150,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T04:37:15.639Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8ea4daa14b82f1edf62d-ccf5fa631cf1e0d3ac5a",
+          "file": "assessments.spec.ts",
+          "line": 142,
+          "column": 5
+        },
+        {
+          "title": "assessment Web saves partial zero/max drafts, publishes and corrects with explicit confirmation and history",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 18145,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveValue\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Điểm AG17940262526072 · Học viên bảng điểm 2', { exact: true })\nExpected: \u001b[32m\"10\u001b[7m,00\u001b[27m\"\u001b[39m\nReceived: \u001b[31m\"10\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveValue\" getByLabel('Điểm AG17940262526072 · Học viên bảng điểm 2', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Điểm AG17940262526072 · Học viên bảng điểm 2', { exact: true })\u001b[22m\n\u001b[2m    13 × locator resolved to <input id=\"_r_9_\" value=\"10\" maxlength=\"7\" inputmode=\"decimal\" aria-invalid=\"false\" pattern=\"[0-9]{1,4}([.,][0-9]{1,2})?\"/>\u001b[22m\n\u001b[2m       - unexpected value \"10\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveValue\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Điểm AG17940262526072 · Học viên bảng điểm 2', { exact: true })\nExpected: \u001b[32m\"10\u001b[7m,00\u001b[27m\"\u001b[39m\nReceived: \u001b[31m\"10\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveValue\" getByLabel('Điểm AG17940262526072 · Học viên bảng điểm 2', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Điểm AG17940262526072 · Học viên bảng điểm 2', { exact: true })\u001b[22m\n\u001b[2m    13 × locator resolved to <input id=\"_r_9_\" value=\"10\" maxlength=\"7\" inputmode=\"decimal\" aria-invalid=\"false\" pattern=\"[0-9]{1,4}([.,][0-9]{1,2})?\"/>\u001b[22m\n\u001b[2m       - unexpected value \"10\"\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\assessments.spec.ts:256:28",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\assessments.spec.ts",
+                      "column": 28,
+                      "line": 256
+                    },
+                    "snippet": "  254 |     await releaseFramesBeforeInput(page, input(1));\n  255 |     await input(1).fill(\"10,00\");\n> 256 |     await expect(input(1)).toHaveValue(\"10,00\");\n      |                            ^\n  257 |     await expect(input(1)).toBeFocused();\n  258 |     await page\n  259 |       .getByRole(\"button\", { name: \"Lưu bản nháp\", exact: true })"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\assessments.spec.ts",
+                        "column": 28,
+                        "line": 256
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveValue\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByLabel('Điểm AG17940262526072 · Học viên bảng điểm 2', { exact: true })\nExpected: \u001b[32m\"10\u001b[7m,00\u001b[27m\"\u001b[39m\nReceived: \u001b[31m\"10\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveValue\" getByLabel('Điểm AG17940262526072 · Học viên bảng điểm 2', { exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByLabel('Điểm AG17940262526072 · Học viên bảng điểm 2', { exact: true })\u001b[22m\n\u001b[2m    13 × locator resolved to <input id=\"_r_9_\" value=\"10\" maxlength=\"7\" inputmode=\"decimal\" aria-invalid=\"false\" pattern=\"[0-9]{1,4}([.,][0-9]{1,2})?\"/>\u001b[22m\n\u001b[2m       - unexpected value \"10\"\u001b[22m\n\n\n  254 |     await releaseFramesBeforeInput(page, input(1));\n  255 |     await input(1).fill(\"10,00\");\n> 256 |     await expect(input(1)).toHaveValue(\"10,00\");\n      |                            ^\n  257 |     await expect(input(1)).toBeFocused();\n  258 |     await page\n  259 |       .getByRole(\"button\", { name: \"Lưu bản nháp\", exact: true })\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\assessments.spec.ts:256:28"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T04:37:29.812Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\assessments-assessment-Web-d0e52-it-confirmation-and-history-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\assessments-assessment-Web-d0e52-it-confirmation-and-history-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\assessments-assessment-Web-d0e52-it-confirmation-and-history-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\assessments.spec.ts",
+                    "column": 28,
+                    "line": 256
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "8ea4daa14b82f1edf62d-dd65d59dc537c09b68f5",
+          "file": "assessments.spec.ts",
+          "line": 214,
+          "column": 5
+        },
+        {
+          "title": "assessment concurrent Web editors retain unsaved input after a real version conflict",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8992,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T04:37:56.325Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8ea4daa14b82f1edf62d-2e0a40deadcc7d6aec38",
+          "file": "assessments.spec.ts",
+          "line": 325,
+          "column": 5
+        },
+        {
+          "title": "assessment directory and draft editor support narrow viewports, keyboard and reduced motion",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 15997,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T04:38:06.739Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8ea4daa14b82f1edf62d-d3f9aea130ba2a44e3a6",
+          "file": "assessments.spec.ts",
+          "line": 372,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-07T04:36:49.479Z",
+    "duration": 95011.046,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

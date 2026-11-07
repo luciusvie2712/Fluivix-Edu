@@ -1,4 +1,5 @@
 "use client";
+import { focusAfterAction } from "../lib/focus-after-action";
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -485,6 +486,7 @@ function InvoiceRun() {
             confirm="Tôi đã kiểm tra đúng kỳ, học viên, số tiền và hạn đóng; đồng ý phát hành chứng từ nội bộ."
             action={async () => {
               if (lock.current) throw new Error("Đang xử lý yêu cầu trước đó.");
+              const focusOrigin = document.activeElement;
               lock.current = true;
               setBusy(true);
               setError("");
@@ -506,7 +508,7 @@ function InvoiceRun() {
                   cache.invalidateQueries({ queryKey: scope.key }),
                   cache.invalidateQueries({ queryKey: ["receivables"] }),
                 ]);
-                requestAnimationFrame(() => outcomeRef.current?.focus());
+                focusAfterAction(() => outcomeRef.current, focusOrigin);
               } catch (cause) {
                 if (
                   !(cause instanceof ApiError) ||
@@ -653,6 +655,7 @@ export function InvoiceDetail({ id }: { id: string }) {
             disabled={!scope.writable}
             confirm="Tôi đã kiểm tra chứng từ và xác nhận hủy với lý do; lịch sử được giữ nguyên."
             action={async (data) => {
+              const focusOrigin = document.activeElement;
               await invoices.void(id, { reason: text(data, "reason") });
               setOutcome(
                 "Đã hủy chứng từ trên hệ thống; lịch sử và khoản phí gốc được giữ nguyên.",
@@ -661,7 +664,7 @@ export function InvoiceDetail({ id }: { id: string }) {
                 cache.invalidateQueries({ queryKey: scope.key }),
                 cache.invalidateQueries({ queryKey: ["receivables"] }),
               ]);
-              requestAnimationFrame(() => outcomeRef.current?.focus());
+              focusAfterAction(() => outcomeRef.current, focusOrigin);
             }}
           >
             <Reason />

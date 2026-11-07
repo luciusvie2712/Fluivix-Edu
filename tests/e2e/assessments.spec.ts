@@ -3,12 +3,59 @@ import { PrismaClient } from "@prisma/client";
 import { createRequire } from "node:module";
 import { mkdirSync } from "node:fs";
 import path from "node:path";
+import type { Locator } from "@playwright/test";
 import { reviewTaste } from "../../tooling/taste-review";
 
 const requireWeb = createRequire(path.resolve("apps/web/package.json"));
 const AxeBuilder = requireWeb("@axe-core/playwright")
   .default as typeof import("../../apps/web/node_modules/@axe-core/playwright").default;
 const tenantId = "10000000-0000-4000-8000-000000000001";
+type FocusProbeWindow = Window & {
+  gradeFocusProbe?: {
+    original: typeof requestAnimationFrame;
+    callbacks: FrameRequestCallback[];
+  };
+};
+async function holdFocusFrames(page: Page) {
+  await page.evaluate(() => {
+    const browser = window as FocusProbeWindow;
+    if (browser.gradeFocusProbe)
+      throw Error("Previous frame probe not released");
+    const probe = {
+      original: window.requestAnimationFrame.bind(window),
+      callbacks: [] as FrameRequestCallback[],
+    };
+    browser.gradeFocusProbe = probe;
+    window.requestAnimationFrame = (callback) => {
+      probe.callbacks.push(callback);
+      return 1000000 + probe.callbacks.length;
+    };
+  });
+}
+async function releaseFramesBeforeInput(page: Page, input: Locator) {
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          (window as FocusProbeWindow).gradeFocusProbe?.callbacks.length ?? 0,
+      ),
+    )
+    .toBeGreaterThan(0);
+  await input.evaluate((element) =>
+    element.addEventListener(
+      "beforeinput",
+      () => {
+        const browser = window as FocusProbeWindow;
+        const probe = browser.gradeFocusProbe;
+        if (!probe) throw Error("Expected actual queued focus frame");
+        window.requestAnimationFrame = probe.original;
+        delete browser.gradeFocusProbe;
+        for (const callback of probe.callbacks) callback(performance.now());
+      },
+      { once: true },
+    ),
+  );
+}
 function database() {
   const url = process.env.E2E_DATABASE_URL;
   if (
@@ -196,16 +243,18 @@ test("assessment Web saves partial zero/max drafts, publishes and corrects with 
     ).toBe(1);
     await input(1).fill("10.01");
     await expect(input(1)).toHaveAttribute("aria-invalid", "true");
-    await page
-      .getByRole("button", { name: "Lưu bản nháp", exact: true })
-      .click();
+    await holdFocusFrames(page);
+    await input(1).press("Enter");
     await expect(
       page.getByRole("alert").filter({ hasText: "Kiểm tra các ô điểm" }),
     ).toBeVisible();
     expect(
       await db.assessmentResult.count({ where: { assessmentId: id } }),
     ).toBe(1);
+    await releaseFramesBeforeInput(page, input(1));
     await input(1).fill("10,00");
+    await expect(input(1)).toHaveValue("10,00");
+    await expect(input(1)).toBeFocused();
     await page
       .getByRole("button", { name: "Lưu bản nháp", exact: true })
       .click();
@@ -231,11 +280,17 @@ test("assessment Web saves partial zero/max drafts, publishes and corrects with 
       correction.getByRole("button", { name: "Mở sửa kết quả", exact: true }),
     ).toBeDisabled();
     await correction.getByRole("checkbox").check();
+    // Release the actual late success callback during native text replacement.
+    // All writes and history assertions still use the actual API/database.
+    await holdFocusFrames(page);
     await correction
       .getByRole("button", { name: "Mở sửa kết quả", exact: true })
       .click();
     await expect(input(0)).toHaveValue("0.00");
+    await releaseFramesBeforeInput(page, input(0));
     await input(0).fill("8.25");
+    await expect(input(0)).toHaveValue("8.25");
+    await expect(input(0)).toBeFocused();
     await page
       .getByRole("button", { name: "Lưu bản nháp", exact: true })
       .click();
@@ -266,6 +321,87 @@ test("assessment Web saves partial zero/max drafts, publishes and corrects with 
     await db.$disconnect();
   }
 });
+
+for (const mode of ["no-preference", "reduce"] as const) {
+  test(`grade entry retains native decimal replacement, keyboard focus and readable layout (${mode})`, async ({
+    page,
+  }) => {
+    const db = database();
+    try {
+      const f = await fixture(db);
+      await page.emulateMedia({ reducedMotion: mode });
+      await login(page);
+      await create(page, f);
+      const student = f.students[0]!;
+      const input = page.getByLabel(
+        `Điểm ${student.studentCode} · ${student.fullName}`,
+        { exact: true },
+      );
+      await input.fill("0");
+      await holdFocusFrames(page);
+      await page
+        .getByRole("button", { name: "Lưu bản nháp", exact: true })
+        .click();
+      await expect(input).toHaveValue("0.00");
+      await releaseFramesBeforeInput(page, input);
+      await input.fill("8.25");
+      await expect(input).toHaveValue("8.25");
+      await expect(input).toBeFocused();
+      mkdirSync("docs/release/evidence/grade-focus", { recursive: true });
+      for (const width of [360, 768, 1024, 1440]) {
+        await page.setViewportSize({ width, height: 900 });
+        await input.focus();
+        await page.keyboard.press("Tab");
+        await expect(
+          page.getByLabel(
+            `Nhận xét / lý do ${student.studentCode} · ${student.fullName}`,
+            { exact: true },
+          ),
+        ).toBeFocused();
+        expect(
+          await page.evaluate(
+            () => document.documentElement.scrollWidth <= innerWidth,
+          ),
+        ).toBe(true);
+        expect(
+          (
+            await new AxeBuilder({ page })
+              .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
+              .analyze()
+          ).violations,
+        ).toEqual([]);
+        await reviewTaste(
+          page,
+          `docs/release/evidence/grade-focus/draft-${mode}-taste-${width}.json`,
+        );
+        await page.screenshot({
+          path: `docs/release/evidence/grade-focus/draft-${mode}-${width}.png`,
+          fullPage: true,
+        });
+      }
+      await page
+        .getByRole("button", { name: "Lưu bản nháp", exact: true })
+        .click();
+      await expect(input).toHaveValue("8.25");
+      await expect(
+        page.getByRole("button", { name: "Lưu bản nháp", exact: true }),
+      ).toBeDisabled();
+      const id = new URL(page.url()).pathname.split("/").at(-1)!;
+      const saved = await db.assessmentResult.findUniqueOrThrow({
+        where: {
+          tenantId_assessmentId_studentId: {
+            tenantId,
+            assessmentId: id,
+            studentId: student.id,
+          },
+        },
+      });
+      expect(saved.score?.toFixed(2)).toBe("8.25");
+    } finally {
+      await db.$disconnect();
+    }
+  });
+}
 
 test("assessment concurrent Web editors retain unsaved input after a real version conflict", async ({
   page,

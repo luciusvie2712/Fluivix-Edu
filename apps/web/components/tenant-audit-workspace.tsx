@@ -1,4 +1,5 @@
 "use client";
+import { focusAfterAction } from "../lib/focus-after-action";
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { tenantAudit, type TenantAuditQuery } from "../lib/api";
@@ -51,6 +52,7 @@ function AuditView({ scope, timezone }: { scope: string; timezone: string }) {
   const data = query.isError ? undefined : query.data?.data;
   async function download() {
     if (busy) return;
+    const focusOrigin = document.activeElement;
     const current = new AbortController();
     controller.current = current;
     setBusy(true);
@@ -75,7 +77,7 @@ function AuditView({ scope, timezone }: { scope: string; timezone: string }) {
         setExportError(
           e instanceof Error ? e.message : "Chưa xuất được nhật ký.",
         );
-        requestAnimationFrame(() => errorRef.current?.focus());
+        focusAfterAction(() => errorRef.current, focusOrigin);
       }
     } finally {
       if (!current.signal.aborted) setBusy(false);
