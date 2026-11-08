@@ -12150,6 +12150,182 @@
         "tags": ["students"]
       }
     },
+    "/api/v1/students/{studentId}/enrollments": {
+      "get": {
+        "operationId": "StudentHistoryController_enrollments",
+        "parameters": [
+          {
+            "name": "studentId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentEnrollmentHistoryResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["students"]
+      }
+    },
+    "/api/v1/students/{studentId}/attendance": {
+      "get": {
+        "operationId": "StudentHistoryController_attendance",
+        "parameters": [
+          {
+            "name": "studentId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "maxLength": 100, "type": "string" }
+          },
+          {
+            "name": "from",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          },
+          {
+            "name": "to",
+            "required": true,
+            "in": "query",
+            "schema": { "format": "date", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StudentAttendanceHistoryResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["students"]
+      }
+    },
     "/api/v1/platform/auth/login": {
       "post": {
         "operationId": "PlatformController_login",
@@ -17267,6 +17443,85 @@
           "reason": { "type": "string", "minLength": 10, "maxLength": 500 }
         },
         "required": ["version", "reason"]
+      },
+      "StudentEnrollmentHistoryView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "classId": { "type": "string" },
+          "classCode": { "type": "string" },
+          "className": { "type": "string" },
+          "classStatus": { "type": "string" },
+          "status": { "type": "string" },
+          "version": { "type": "number" },
+          "joinedAt": { "type": "string", "format": "date" },
+          "leftAt": { "type": "string", "format": "date", "nullable": true }
+        },
+        "required": [
+          "id",
+          "classId",
+          "classCode",
+          "className",
+          "classStatus",
+          "status",
+          "version",
+          "joinedAt",
+          "leftAt"
+        ]
+      },
+      "StudentEnrollmentHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StudentEnrollmentHistoryView"
+            }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "StudentAttendanceHistoryView": {
+        "type": "object",
+        "properties": {
+          "sessionId": { "type": "string" },
+          "classId": { "type": "string" },
+          "classCode": { "type": "string" },
+          "className": { "type": "string" },
+          "scheduledDate": { "type": "string", "format": "date" },
+          "startsAt": { "type": "string", "format": "date-time" },
+          "endsAt": { "type": "string", "format": "date-time" },
+          "status": {
+            "type": "string",
+            "enum": ["PRESENT", "LATE", "ABSENT_EXCUSED", "ABSENT_UNEXCUSED"]
+          }
+        },
+        "required": [
+          "sessionId",
+          "classId",
+          "classCode",
+          "className",
+          "scheduledDate",
+          "startsAt",
+          "endsAt",
+          "status"
+        ]
+      },
+      "StudentAttendanceHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StudentAttendanceHistoryView"
+            }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
       },
       "ChallengeView": {
         "type": "object",

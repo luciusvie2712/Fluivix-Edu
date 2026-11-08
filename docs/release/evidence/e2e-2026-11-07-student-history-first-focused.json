@@ -1,0 +1,449 @@
+{
+  "config": {
+    "argv": [
+      "D:\\my-project\\fluivixedu\\.cache\\node-v24.22.2-win-x64\\node.exe",
+      "D:\\my-project\\fluivixedu\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "student-history.spec.ts"
+    ],
+    "configFile": "D:\\my-project\\fluivixedu\\playwright.config.ts",
+    "rootDir": "D:/my-project/fluivixedu/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/my-project/fluivixedu/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tenant-chromium",
+        "name": "tenant-chromium",
+        "testDir": "D:/my-project/fluivixedu/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\my-project\\fluivixedu\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "tenant-chromium",
+        "testDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "snapshotDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:3000",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "browserName": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "tenant-chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/release/evidence/e2e-2026-11-07-student-history-first-focused.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm exec tsx tooling/e2e-server.ts",
+      "url": "http://localhost:3000/login",
+      "timeout": 60000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "student-history.spec.ts",
+      "file": "student-history.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "student history paginates and searches only the selected learner while keeping an unsaved profile across navigation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7593,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T08:59:11.126Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4db39cc7973c049fcc03-14cb31fdff68abb09525",
+          "file": "student-history.spec.ts",
+          "line": 189,
+          "column": 5
+        },
+        {
+          "title": "student profile selected accountant sees limited enrollment and actual finance without forbidden attendance grades or guardian fetches",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 3114,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('alert')\nExpected substring: \u001b[32m\"không được phép\"\u001b[39m\nError: strict mode violation: getByRole('alert') resolved to 2 elements:\n    1) <p role=\"alert\">Mục hồ sơ không tồn tại hoặc không được phép với …</p> aka getByText('Mục hồ sơ không tồn tại hoặc')\n    2) <div role=\"alert\" aria-live=\"assertive\" id=\"__next-route-announcer__\"></div> aka locator('[id=\"__next-route-announcer__\"]')\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('alert') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('alert')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('alert')\nExpected substring: \u001b[32m\"không được phép\"\u001b[39m\nError: strict mode violation: getByRole('alert') resolved to 2 elements:\n    1) <p role=\"alert\">Mục hồ sơ không tồn tại hoặc không được phép với …</p> aka getByText('Mục hồ sơ không tồn tại hoặc')\n    2) <div role=\"alert\" aria-live=\"assertive\" id=\"__next-route-announcer__\"></div> aka locator('[id=\"__next-route-announcer__\"]')\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('alert') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('alert')\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts:240:43",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                      "column": 43,
+                      "line": 240
+                    },
+                    "snippet": "  238 |     });\n  239 |     await open(page, f, \"attendance\");\n> 240 |     await expect(page.getByRole(\"alert\")).toContainText(\"không được phép\");\n      |                                           ^\n  241 |     await expect(nav(page).getByRole(\"link\")).toHaveCount(3);\n  242 |     await expect(\n  243 |       page.getByText(\"PRIVATE_SELECTED_HISTORY\", { exact: true }),"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                        "column": 43,
+                        "line": 240
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('alert')\nExpected substring: \u001b[32m\"không được phép\"\u001b[39m\nError: strict mode violation: getByRole('alert') resolved to 2 elements:\n    1) <p role=\"alert\">Mục hồ sơ không tồn tại hoặc không được phép với …</p> aka getByText('Mục hồ sơ không tồn tại hoặc')\n    2) <div role=\"alert\" aria-live=\"assertive\" id=\"__next-route-announcer__\"></div> aka locator('[id=\"__next-route-announcer__\"]')\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('alert') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('alert')\u001b[22m\n\n\n  238 |     });\n  239 |     await open(page, f, \"attendance\");\n> 240 |     await expect(page.getByRole(\"alert\")).toContainText(\"không được phép\");\n      |                                           ^\n  241 |     await expect(nav(page).getByRole(\"link\")).toHaveCount(3);\n  242 |     await expect(\n  243 |       page.getByText(\"PRIVATE_SELECTED_HISTORY\", { exact: true }),\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts:240:43"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T08:59:20.109Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-pr-a6271--grades-or-guardian-fetches-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-pr-a6271--grades-or-guardian-fetches-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-pr-a6271--grades-or-guardian-fetches-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                    "column": 43,
+                    "line": 240
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "4db39cc7973c049fcc03-bc4dbe4780704d19d7f6",
+          "file": "student-history.spec.ts",
+          "line": 227,
+          "column": 5
+        },
+        {
+          "title": "student attendance displays only actual finalized records and removes privileged reopened records",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 3312,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m201\u001b[39m\nReceived: \u001b[31m401\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m201\u001b[39m\nReceived: \u001b[31m401\u001b[39m\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts:305:30",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                      "column": 30,
+                      "line": 305
+                    },
+                    "snippet": "  303 |       },\n  304 |     );\n> 305 |     expect(created.status()).toBe(201);\n      |                              ^\n  306 |     const sessionId = (await created.json()).data.id as string;\n  307 |     const current = async () => {\n  308 |       const response = await api(page, token, `/sessions/${sessionId}`);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                        "column": 30,
+                        "line": 305
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m201\u001b[39m\nReceived: \u001b[31m401\u001b[39m\n\n  303 |       },\n  304 |     );\n> 305 |     expect(created.status()).toBe(201);\n      |                              ^\n  306 |     const sessionId = (await created.json()).data.id as string;\n  307 |     const current = async () => {\n  308 |       const response = await api(page, token, `/sessions/${sessionId}`);\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts:305:30"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T08:59:27.552Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-at-7507c-privileged-reopened-records-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-at-7507c-privileged-reopened-records-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-at-7507c-privileged-reopened-records-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                    "column": 30,
+                    "line": 305
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "4db39cc7973c049fcc03-073ac43be405e6e5b2c2",
+          "file": "student-history.spec.ts",
+          "line": 270,
+          "column": 5
+        },
+        {
+          "title": "student history shows transport errors and verified retry, read-only history, and offline save lock",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 4493,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Bạn đang ngoại tuyến.')\nExpected: visible\nError: strict mode violation: getByText('Bạn đang ngoại tuyến.') resolved to 2 elements:\n    1) <p role=\"alert\" class=\"notice\">Bạn đang ngoại tuyến. Dữ liệu đang hiển thị có th…</p> aka getByText('Bạn đang ngoại tuyến. Dữ liệu đang hiển thị có thể đã cũ; chờ kết nối lại trước')\n    2) <p role=\"status\">Bạn đang ngoại tuyến. Dữ liệu có thể đã cũ; kết n…</p> aka getByText('Bạn đang ngoại tuyến. Dữ liệu có thể đã cũ; kết nối lại để xác minh trước khi l')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByText('Bạn đang ngoại tuyến.') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Bạn đang ngoại tuyến.')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Bạn đang ngoại tuyến.')\nExpected: visible\nError: strict mode violation: getByText('Bạn đang ngoại tuyến.') resolved to 2 elements:\n    1) <p role=\"alert\" class=\"notice\">Bạn đang ngoại tuyến. Dữ liệu đang hiển thị có th…</p> aka getByText('Bạn đang ngoại tuyến. Dữ liệu đang hiển thị có thể đã cũ; chờ kết nối lại trước')\n    2) <p role=\"status\">Bạn đang ngoại tuyến. Dữ liệu có thể đã cũ; kết n…</p> aka getByText('Bạn đang ngoại tuyến. Dữ liệu có thể đã cũ; kết nối lại để xác minh trước khi l')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByText('Bạn đang ngoại tuyến.') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Bạn đang ngoại tuyến.')\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts:381:7",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                      "column": 7,
+                      "line": 381
+                    },
+                    "snippet": "  379 |     await expect(\n  380 |       page.getByText(\"Bạn đang ngoại tuyến.\", { exact: false }),\n> 381 |     ).toBeVisible();\n      |       ^\n  382 |     await context.setOffline(false);\n  383 |     await expect(page.getByLabel(\"Họ và tên\", { exact: true })).toBeEnabled();\n  384 |     await page.route("
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                        "column": 7,
+                        "line": 381
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Bạn đang ngoại tuyến.')\nExpected: visible\nError: strict mode violation: getByText('Bạn đang ngoại tuyến.') resolved to 2 elements:\n    1) <p role=\"alert\" class=\"notice\">Bạn đang ngoại tuyến. Dữ liệu đang hiển thị có th…</p> aka getByText('Bạn đang ngoại tuyến. Dữ liệu đang hiển thị có thể đã cũ; chờ kết nối lại trước')\n    2) <p role=\"status\">Bạn đang ngoại tuyến. Dữ liệu có thể đã cũ; kết n…</p> aka getByText('Bạn đang ngoại tuyến. Dữ liệu có thể đã cũ; kết nối lại để xác minh trước khi l')\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByText('Bạn đang ngoại tuyến.') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Bạn đang ngoại tuyến.')\u001b[22m\n\n\n  379 |     await expect(\n  380 |       page.getByText(\"Bạn đang ngoại tuyến.\", { exact: false }),\n> 381 |     ).toBeVisible();\n      |       ^\n  382 |     await context.setOffline(false);\n  383 |     await expect(page.getByLabel(\"Họ và tên\", { exact: true })).toBeEnabled();\n  384 |     await page.route(\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts:381:7"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T08:59:35.348Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-hi-faeb0-story-and-offline-save-lock-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-hi-faeb0-story-and-offline-save-lock-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-hi-faeb0-story-and-offline-save-lock-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                    "column": 7,
+                    "line": 381
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "4db39cc7973c049fcc03-aca3d4f7a95968f2ee45",
+          "file": "student-history.spec.ts",
+          "line": 368,
+          "column": 5
+        },
+        {
+          "title": "student history selected enrollment visual no-preference at four widths with keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 17105,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T08:59:43.490Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4db39cc7973c049fcc03-96fc3428a8bac4c0bddc",
+          "file": "student-history.spec.ts",
+          "line": 412,
+          "column": 7
+        },
+        {
+          "title": "student history selected enrollment visual reduce at four widths with keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 12809,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T09:00:01.730Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4db39cc7973c049fcc03-a02e1530d2851e212aaf",
+          "file": "student-history.spec.ts",
+          "line": 412,
+          "column": 7
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-07T08:58:38.190Z",
+    "duration": 98668.307,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  }
+}

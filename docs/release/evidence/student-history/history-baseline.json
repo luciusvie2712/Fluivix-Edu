@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-07",
+  "sourceCommit": "442cd7b503a08e16d7ee07766c3fef96474900a5",
+  "module": "Selected-student staff enrollment and published attendance history baseline",
+  "status": "REPRODUCED_MISSING_STAFF_HISTORY_ROUTES",
+  "releaseVerdict": "BLOCKED",
+  "scope": "Owned new synthetic database and real APIs; no worker/provider/customer database or.env write",
+  "studentDetailStatus": 200,
+  "actualSelectedStudentEnrollments": 1,
+  "enrollmentHistoryStatus": 404,
+  "publishedAttendanceHistoryStatus": 404,
+  "expectedHistoryStatus": 200
+}

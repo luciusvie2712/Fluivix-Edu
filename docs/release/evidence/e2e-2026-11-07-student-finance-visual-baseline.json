@@ -1,0 +1,275 @@
+{
+  "config": {
+    "argv": [
+      "D:\\my-project\\fluivixedu\\.cache\\node-v24.22.2-win-x64\\node.exe",
+      "D:\\my-project\\fluivixedu\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "student-history.spec.ts",
+      "--grep",
+      "student profile finance visual"
+    ],
+    "configFile": "D:\\my-project\\fluivixedu\\playwright.config.ts",
+    "rootDir": "D:/my-project/fluivixedu/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/my-project/fluivixedu/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tenant-chromium",
+        "name": "tenant-chromium",
+        "testDir": "D:/my-project/fluivixedu/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\my-project\\fluivixedu\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "tenant-chromium",
+        "testDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "snapshotDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:3000",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "browserName": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "tenant-chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/release/evidence/e2e-2026-11-07-student-finance-visual-baseline.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm exec tsx tooling/e2e-server.ts",
+      "url": "http://localhost:3000/login",
+      "timeout": 60000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "student-history.spec.ts",
+      "file": "student-history.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "student profile finance visual no-preference at four widths with real data keyboard and axe",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 4567,
+                  "error": {
+                    "message": "Error: VND must stay on one visual line at 360px\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m2\u001b[39m",
+                    "stack": "Error: VND must stay on one visual line at 360px\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m2\u001b[39m\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts:706:17",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                      "column": 17,
+                      "line": 706
+                    },
+                    "snippet": "  704 |                 lines,\n  705 |                 `VND must stay on one visual line at ${width}px`,\n> 706 |               ).toBe(1);\n      |                 ^\n  707 |             }\n  708 |             await expect(\n  709 |               page.getByRole(\"cell\", { name: \"Đã xác nhận\", exact: true }),"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                        "column": 17,
+                        "line": 706
+                      },
+                      "message": "Error: VND must stay on one visual line at 360px\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m2\u001b[39m\n\n  704 |                 lines,\n  705 |                 `VND must stay on one visual line at ${width}px`,\n> 706 |               ).toBe(1);\n      |                 ^\n  707 |             }\n  708 |             await expect(\n  709 |               page.getByRole(\"cell\", { name: \"Đã xác nhận\", exact: true }),\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts:706:17"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T09:32:34.701Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-pr-7e419--real-data-keyboard-and-axe-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-pr-7e419--real-data-keyboard-and-axe-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-pr-7e419--real-data-keyboard-and-axe-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                    "column": 17,
+                    "line": 706
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "4db39cc7973c049fcc03-279770ecf92101ab7e2a",
+          "file": "student-history.spec.ts",
+          "line": 650,
+          "column": 9
+        },
+        {
+          "title": "student profile finance visual reduce at four widths with real data keyboard and axe",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 3023,
+                  "error": {
+                    "message": "Error: VND must stay on one visual line at 360px\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m2\u001b[39m",
+                    "stack": "Error: VND must stay on one visual line at 360px\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m2\u001b[39m\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts:706:17",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                      "column": 17,
+                      "line": 706
+                    },
+                    "snippet": "  704 |                 lines,\n  705 |                 `VND must stay on one visual line at ${width}px`,\n> 706 |               ).toBe(1);\n      |                 ^\n  707 |             }\n  708 |             await expect(\n  709 |               page.getByRole(\"cell\", { name: \"Đã xác nhận\", exact: true }),"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                        "column": 17,
+                        "line": 706
+                      },
+                      "message": "Error: VND must stay on one visual line at 360px\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m1\u001b[39m\nReceived: \u001b[31m2\u001b[39m\n\n  704 |                 lines,\n  705 |                 `VND must stay on one visual line at ${width}px`,\n> 706 |               ).toBe(1);\n      |                 ^\n  707 |             }\n  708 |             await expect(\n  709 |               page.getByRole(\"cell\", { name: \"Đã xác nhận\", exact: true }),\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts:706:17"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T09:32:42.469Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-pr-1ca7d--real-data-keyboard-and-axe-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-pr-1ca7d--real-data-keyboard-and-axe-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-pr-1ca7d--real-data-keyboard-and-axe-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                    "column": 17,
+                    "line": 706
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "4db39cc7973c049fcc03-3a4db02188fcf452160b",
+          "file": "student-history.spec.ts",
+          "line": 650,
+          "column": 9
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-07T09:32:14.661Z",
+    "duration": 32931.54,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  }
+}

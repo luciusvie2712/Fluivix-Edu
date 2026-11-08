@@ -312,6 +312,10 @@ test("assessment Web saves partial zero/max drafts, publishes and corrects with 
     ).toBeVisible();
     expect(await db.gradeChange.count({ where: { assessmentId: id } })).toBe(3);
     await page.goto(`/app/students/${f.students[0]!.id}`);
+    await page
+      .getByRole("navigation", { name: "Các mục hồ sơ học viên" })
+      .getByRole("link", { name: "Điểm số", exact: true })
+      .click();
     await expect(
       panel(page, "Điểm đã công bố của học viên").getByRole("link", {
         name: f.title,

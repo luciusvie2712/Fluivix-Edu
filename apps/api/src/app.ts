@@ -23,6 +23,10 @@ import { ApiErrors, Envelope } from "./http";
 import type { ApiRequest } from "./http";
 import type { Response, NextFunction } from "express";
 import { StudentsController, StudentsService } from "./students";
+import {
+  StudentHistoryController,
+  StudentHistoryService,
+} from "./student-history";
 import { PlatformController } from "./platform.controller";
 import { PlatformService } from "./platform.service";
 import { PlatformTenantsController } from "./platform-tenants.controller";
@@ -80,6 +84,7 @@ import {
     MobileDashboardController,
     GuardianLinksController,
     StudentsController,
+    StudentHistoryController,
     PlatformController,
     PlatformTenantsController,
     TenantSubscriptionController,
@@ -106,6 +111,7 @@ import {
     GuardianLinksService,
     AccessGuard,
     StudentsService,
+    StudentHistoryService,
     PlatformService,
     PlatformTenantsService,
     PlatformAuditService,

@@ -2196,6 +2196,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/students/{studentId}/enrollments": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["StudentHistoryController_enrollments"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/students/{studentId}/attendance": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["StudentHistoryController_attendance"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/platform/auth/login": {
     parameters: {
       query?: never;
@@ -4365,6 +4397,43 @@ export interface components {
     DeactivateStudentDto: {
       version: number;
       reason: string;
+    };
+    StudentEnrollmentHistoryView: {
+      id: string;
+      classId: string;
+      classCode: string;
+      className: string;
+      classStatus: string;
+      status: string;
+      version: number;
+      /** Format: date */
+      joinedAt: string;
+      /** Format: date */
+      leftAt: string | null;
+    };
+    StudentEnrollmentHistoryResponse: {
+      data: components["schemas"]["StudentEnrollmentHistoryView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    StudentAttendanceHistoryView: {
+      sessionId: string;
+      classId: string;
+      classCode: string;
+      className: string;
+      /** Format: date */
+      scheduledDate: string;
+      /** Format: date-time */
+      startsAt: string;
+      /** Format: date-time */
+      endsAt: string;
+      /** @enum {string} */
+      status: "PRESENT" | "LATE" | "ABSENT_EXCUSED" | "ABSENT_UNEXCUSED";
+    };
+    StudentAttendanceHistoryResponse: {
+      data: components["schemas"]["StudentAttendanceHistoryView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
     };
     ChallengeView: {
       challengeToken: string;
@@ -14341,6 +14410,122 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["StudentDetailResponse"];
+        };
+      };
+    };
+  };
+  StudentHistoryController_enrollments: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        search?: string;
+      };
+      header?: never;
+      path: {
+        studentId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StudentEnrollmentHistoryResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  StudentHistoryController_attendance: {
+    parameters: {
+      query: {
+        page?: number;
+        limit?: number;
+        search?: string;
+        from: string;
+        to: string;
+      };
+      header?: never;
+      path: {
+        studentId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StudentAttendanceHistoryResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
     };

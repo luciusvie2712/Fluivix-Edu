@@ -1,0 +1,369 @@
+{
+  "config": {
+    "argv": [
+      "D:\\my-project\\fluivixedu\\.cache\\node-v24.22.2-win-x64\\node.exe",
+      "D:\\my-project\\fluivixedu\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "student-history.spec.ts"
+    ],
+    "configFile": "D:\\my-project\\fluivixedu\\playwright.config.ts",
+    "rootDir": "D:/my-project/fluivixedu/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/my-project/fluivixedu/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tenant-chromium",
+        "name": "tenant-chromium",
+        "testDir": "D:/my-project/fluivixedu/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\my-project\\fluivixedu\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "tenant-chromium",
+        "testDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "snapshotDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:3000",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "browserName": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "tenant-chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/release/evidence/e2e-2026-11-07-student-history-second-focused.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm exec tsx tooling/e2e-server.ts",
+      "url": "http://localhost:3000/login",
+      "timeout": 60000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "student-history.spec.ts",
+      "file": "student-history.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "student history paginates and searches only the selected learner while keeping an unsaved profile across navigation",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5659,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T09:01:45.419Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4db39cc7973c049fcc03-14cb31fdff68abb09525",
+          "file": "student-history.spec.ts",
+          "line": 209,
+          "column": 5
+        },
+        {
+          "title": "student profile selected accountant sees limited enrollment and actual finance without forbidden attendance grades or guardian fetches",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2722,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T09:01:51.847Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4db39cc7973c049fcc03-bc4dbe4780704d19d7f6",
+          "file": "student-history.spec.ts",
+          "line": 247,
+          "column": 5
+        },
+        {
+          "title": "student attendance displays only actual finalized records and removes privileged reopened records",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 1965,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m403\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m403\u001b[39m\n    at nativeToken (D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts:197:27)\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts:299:19",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                      "column": 27,
+                      "line": 197
+                    },
+                    "snippet": "  195 |     { data: { email: f.actor.email, password: \"Fluivix-Test-Password-2026\" } },\n  196 |   );\n> 197 |   expect(signed.status()).toBe(200);\n      |                           ^\n  198 |   const selected = await api(\n  199 |     page,\n  200 |     (await signed.json()).data.accessToken,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                        "column": 27,
+                        "line": 197
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m403\u001b[39m\n\n  195 |     { data: { email: f.actor.email, password: \"Fluivix-Test-Password-2026\" } },\n  196 |   );\n> 197 |   expect(signed.status()).toBe(200);\n      |                           ^\n  198 |   const selected = await api(\n  199 |     page,\n  200 |     (await signed.json()).data.accessToken,\n    at nativeToken (D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts:197:27)\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts:299:19"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T09:01:54.622Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-at-7507c-privileged-reopened-records-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-at-7507c-privileged-reopened-records-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\student-history-student-at-7507c-privileged-reopened-records-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\student-history.spec.ts",
+                    "column": 27,
+                    "line": 197
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "4db39cc7973c049fcc03-073ac43be405e6e5b2c2",
+          "file": "student-history.spec.ts",
+          "line": 292,
+          "column": 5
+        },
+        {
+          "title": "student history shows transport errors and verified retry, read-only history, and offline save lock",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3367,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T09:01:58.760Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4db39cc7973c049fcc03-aca3d4f7a95968f2ee45",
+          "file": "student-history.spec.ts",
+          "line": 391,
+          "column": 5
+        },
+        {
+          "title": "student history selected enrollment visual no-preference at four widths with keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10059,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T09:02:02.812Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4db39cc7973c049fcc03-96fc3428a8bac4c0bddc",
+          "file": "student-history.spec.ts",
+          "line": 437,
+          "column": 7
+        },
+        {
+          "title": "student history selected enrollment visual reduce at four widths with keyboard and axe",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8498,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-07T09:02:12.903Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4db39cc7973c049fcc03-a02e1530d2851e212aaf",
+          "file": "student-history.spec.ts",
+          "line": 437,
+          "column": 7
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-07T09:01:24.971Z",
+    "duration": 58117.993,
+    "expected": 5,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

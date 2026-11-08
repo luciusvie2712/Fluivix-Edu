@@ -1,0 +1,43 @@
+{
+  "status": "FAILED_NOT_ACCEPTED",
+  "observedAt": "2026-11-08T20:58:19.125043+07:00",
+  "report": "docs/release/evidence/e2e-2026-11-07-student-history-second-full.json",
+  "reportSha256": "6babc023894f960ba2d76568fa25d6499b67113f6563142dda82d054136eab4d",
+  "stats": {
+    "startTime": "2026-11-07T09:51:56.724Z",
+    "duration": 100924354.643,
+    "expected": 119,
+    "skipped": 0,
+    "unexpected": 2,
+    "flaky": 0
+  },
+  "failed": [
+    {
+      "file": "guardians.spec.ts",
+      "title": "guardian directory and detail remain accessible across widths and reduced motion",
+      "results": [
+        {
+          "status": "timedOut",
+          "durationMs": 5236758
+        }
+      ]
+    },
+    {
+      "file": "guardians.spec.ts",
+      "title": "guardian screens show empty, read-only, missing and forbidden states without stale profile data",
+      "results": [
+        {
+          "status": "timedOut",
+          "durationMs": 85000911
+        }
+      ]
+    }
+  ],
+  "sourceUnchangedWithinInterruptedRun": true,
+  "envUnchangedWithinInterruptedRun": true,
+  "sourceFiles": 408,
+  "observedInterruption": "30-second timeouts recorded after1.5h/23.6h elapsed across a long execution/time gap",
+  "completeOsSleepTimeline": "NOT_VERIFIED",
+  "recovery": "Retain original failures. Rerun failed guardian cases plus W05, then fresh complete159integration/121browser gate. No timeout/retry/assertion relaxation. Searchmaxlength aligned to existing100-character API bound.",
+  "releaseReadiness": "BLOCKED"
+}

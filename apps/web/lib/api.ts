@@ -1054,6 +1054,33 @@ export const studentDetail = (id: string, signal?: AbortSignal) =>
       ...(signal ? { signal } : {}),
     }),
   );
+export const studentHistory = {
+  enrollments: (
+    studentId: string,
+    page: number,
+    search: string,
+    signal?: AbortSignal,
+  ) =>
+    unwrap(
+      api.GET("/api/v1/students/{studentId}/enrollments", {
+        params: { path: { studentId }, query: { page, limit: 20, search } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+  attendance: (
+    studentId: string,
+    query: NonNullable<
+      paths["/api/v1/students/{studentId}/attendance"]["get"]["parameters"]["query"]
+    >,
+    signal?: AbortSignal,
+  ) =>
+    unwrap(
+      api.GET("/api/v1/students/{studentId}/attendance", {
+        params: { path: { studentId }, query },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
+};
 type GuardianDirectoryQuery = NonNullable<
   paths["/api/v1/guardians"]["get"]["parameters"]["query"]
 >;

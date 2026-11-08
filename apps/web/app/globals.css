@@ -746,6 +746,42 @@ body:has(.session-notice) .auth-layout {
 .room-title {
   overflow-wrap: anywhere;
 }
+.student-profile h2,
+.student-profile dd,
+.student-profile td {
+  overflow-wrap: anywhere;
+}
+.student-profile-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 24px 0;
+}
+.student-profile-nav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+}
+.student-profile-nav a[aria-current="page"] {
+  font-weight: 700;
+  text-decoration-thickness: 2px;
+}
+.student-profile .table-scroll table {
+  min-width: 660px;
+}
+.student-profile caption {
+  text-align: left;
+  padding-block: 16px;
+}
+.student-profile .student-money {
+  white-space: nowrap;
+  overflow-wrap: normal;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
 .centre-settings-grid table {
   min-width: 440px;
 }

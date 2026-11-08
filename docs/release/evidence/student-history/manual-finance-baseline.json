@@ -1,0 +1,43 @@
+{
+  "status": "REPRODUCED_MANUAL_VISUAL_FAILURE_OLD_SOURCE",
+  "date": "2026-11-07",
+  "scope": "Synthetic disposable browser fixtures only",
+  "sourceSha256": {
+    "apps/web/components/student-history.tsx": "9b6698cdcd5ec03186f6ef5658e5b226ecc032a67cd350820de885db360fb520",
+    "apps/web/app/globals.css": "872080cac2c3ad2921360442233da629629398c875b1b758f23cd3eacdb6defe"
+  },
+  "images": {
+    "docs/release/evidence/student-history/baseline-finance-wrap-768.png": "e7b90db6276b312e37b30f83e368b8a989fc688ac73d54e537bb74b126fd55a0",
+    "docs/release/evidence/student-history/baseline-finance-wrap-1024.png": "40eec794f9710e8fd2e6e9766634d5531af993e794942e9bde89154ad8656aef"
+  },
+  "findings": [
+    {
+      "viewport": 768,
+      "observed": "Exact integer VND display breaks between digit groups within invoice and receipt cells. Text content is correct but visual grouping is hard to read.",
+      "expected": "Whole VND values remain on one visual line, right aligned, inside the bounded table scroll area."
+    },
+    {
+      "viewport": [
+        768,
+        1024,
+        1440
+      ],
+      "observed": "Actual receipt status CONFIRMED is shown as untranslated server text.",
+      "expected": "Vietnamese confirmed status from the actual server value."
+    }
+  ],
+  "axeAndTasteWerePassing": true,
+  "regressionBaseline": {
+    "status": "REPRODUCED_REAL_DOM_RANGE_LINE_WRAP",
+    "report": "../e2e-2026-11-07-student-finance-visual-baseline.json",
+    "failed": 2,
+    "expectedVisualLines": 1,
+    "actualVisualLines": 2,
+    "viewport": 360,
+    "motionModes": [
+      "no-preference",
+      "reduce"
+    ]
+  },
+  "releaseReadiness": "BLOCKED"
+}

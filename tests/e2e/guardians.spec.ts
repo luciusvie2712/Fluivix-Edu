@@ -205,6 +205,17 @@ test("guardian directory and detail remain accessible across widths and reduced 
   page,
 }) => {
   await openGuardians(page);
+  const email = `guardian-visual-${Date.now()}@example.test`;
+  await page.getByLabel("Email phụ huynh", { exact: true }).fill(email);
+  await page
+    .getByRole("button", { name: "Ghi nhận hồ sơ", exact: true })
+    .click();
+  await expect(
+    page.getByRole("link", {
+      name: `Mở hồ sơ ${email} để ghi nhận quan hệ`,
+      exact: true,
+    }),
+  ).toBeVisible();
   mkdirSync("docs/release/evidence/guardians", { recursive: true });
   for (const width of [360, 768, 1024, 1440]) {
     await page.setViewportSize({ width, height: 900 });
@@ -236,8 +247,7 @@ test("guardian directory and detail remain accessible across widths and reduced 
     .toBeGreaterThan(0);
   await page
     .getByRole("region", { name: "Danh sách phụ huynh" })
-    .getByRole("link")
-    .first()
+    .getByRole("link", { name: email, exact: true })
     .click();
   await expect(
     page.getByRole("heading", { name: "Hồ sơ phụ huynh", exact: true }),

@@ -163,6 +163,8 @@ export default function StudentForm({
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Chưa thể lưu hồ sơ.");
       setConflict(cause instanceof ApiError && cause.status === 409);
+      if (cause instanceof ApiError && [401, 403, 404].includes(cause.status))
+        onReload?.();
     }
   }
   return (
