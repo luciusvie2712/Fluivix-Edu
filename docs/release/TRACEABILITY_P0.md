@@ -1,5 +1,25 @@
 # P0 traceability inventory
 
+## Current checkpoint — Teaching resource selection local PASS (2026-11-08)
+
+Local verification passed on frozen source: 66 unit tests, 30 mobile tests, 159 integration tests and 133 browser tests, with no skipped or flaky browser cases. Eight uncached builds and typechecks, tools TypeScript, real mobile API smoke, Expo SDK alignment, stable regeneration of 187 OpenAPI operations and the client, and offline frozen installation passed. Audit found 0 high, 0 critical, 4 moderate and 1 low findings.
+
+Existing scoped APIs now supply searched, paginated class and teacher selectors. A separate detail request verifies the current selection across pages; operational teachers require an active, ready account. Assignment, recurring preview/create/replacement, extra sessions and rescheduling preserve the existing transaction, conflict, assignment, capacity, version, roster, audit and notification rules. Staff can filter the calendar by class, teacher and room, including historical inactive resources. A selected teacher requests assigned classes and makes no general teacher or room directory requests. Transport errors remove cached calendar rows; actual membership revocation returns 403.
+
+The resource-filter disclosure keeps dates and results accessible on narrow screens. Civil dates remain on one line; lifecycle labels and change counts use Vietnamese. Native keyboard scrolling, focus, axe and 16 Taste reports passed, with 24 current responsive screenshots manually reviewed in normal and reduced motion. Prior failed focused reports and two rejected visual baselines remain available; no assertion, retry or timeout was weakened. No migration or permission policy changed, and published migrations 001..031 and the private environment remained unchanged.
+
+Evidence is local acceptance for this module. Commit, push and exact-SHA CI are pending. The calendar remains a scoped agenda; final day/week presentation review, authentication contract documentation, proposed reminders, reusable operations, dependency maintenance and final screen/FR/TC reconciliation remain. Release is BLOCKED by remaining technical work and external staging, legal/consent, UAT, signed physical devices, real push and offhost key-custody gates.
+
+Evidence: `evidence/teaching-selection/verification.json`. W05 exactCI proof retained in `evidence/ci-e128825-success-2026-11-08.json`.
+
+## Historical checkpoints
+
+## Current checkpoint — W05 exact CI verified (2026-11-08)
+
+W05 commite12882536eee56195c4fe16f7434dbeb851c382e is pushed to main. Exact CI42490137881/job128760511668 SUCCESS all30steps; actual job logs66unit/30mobile/159integration/realmobileAPI/121browserPASS(5.4m). Proof:evidence/ci-e128825-success-2026-11-08.json. This resolves preceding W05 remoteNOT_VERIFIED; complete frozen local159/121,32manually reviewed responsive normal/reduced images,187stableoperations and canonical current-actor histories remain in evidence/student-history. Published001..031/private.env unchanged. Remaining teaching resource selectors/calendar teacher filter, fee reminder proposed preset, reusable ops/M4, compatible dependency maintenance and actual staging/legal/UAT/signed-device/real-push/offhost-key-custody gates remain; releaseBLOCKED. Continue master work.
+
+## Historical checkpoints
+
 ## Current checkpoint — W05 local acceptance (2026-11-08)
 
 W05 selected-student histories and role-scoped profile navigation pass complete source-frozen local acceptance:159integration,121browser0skip/flaky,66unit/30mobile,8uncached builds/types/tools,actualmobileAPI smoke,SDK alignment,187stable OpenAPI/client operations,offline frozen install and0HIGH/CRITICAL audit. Actual paginated enrollment/finalized-roster attendance routes use canonical tenant reader and current post-lock actor. Profile overview/classes/attendance/grades/finance/guardians use actual APIs with selected-role gates, limited accountant fields, unsaved draft preservation, verified retry and access revocation. No new migration; published001..031/private.env unchanged. Prior442cd7b exactCI42354835993 SUCCESS all30steps/104browser. New W05 commit/exact-SHA remote CI pending. Remaining teaching selectors/calendar teacher filter, reminder proposal, reusable operations/M4, dependency maintenance and external release gates remain; release BLOCKED.
@@ -196,3 +216,8 @@ W05 selected-student histories and role-scoped profile navigation pass complete 
 - All project checks finished passing before an auxiliary PowerShell finally-cleanup hit a dynamic UInt32 binding error. The original failed cleanup record and wrapper exit1 are retained in localExecutionState; no explicit cleanup success is invented. The owner command exited and independent process enumeration found zero matching owners. Release of its thread-scoped request is labeled an inference from confirmed owner exit; direct global power inspection requires administrator and was unavailable. No power-plan/display setting was changed. This cache-only helper failure is separate from actual159/121 project test results.
 - Same single framed-sheet/blue/Arial16 direction. Applied ui-ux-pro-max labels/logical keyboard focus/deep-link navigation and design-taste-frontend actual-browser inspect/look-fix. All3sources/5skillIDs reverified: Taste6010f91a9935f1c167dfc500fb1a475681892e6b,ProMaxd14efff8ed1faa4187f004f79926f428c8074ec7,animationb6dba3eb759726845a44163ff0bad70dd9e7fbb6. Static pane content and inherited reduced-motion CSS preserve immediate operations; no new motion dependency.
 - Synthetic/local evidence does not establish staging deployment, backup key custody/restore rehearsal, legal/consent approval, centre UAT, signed physical iOS/Android build or actual push delivery. Reminder09:00 tenant-IANA,T-3/T+1/T+7,max3 remains a proposed disabled preset until actual owner enable, not fabricated prior numeric approval. Work continues on remaining master P0/M4 items.
+
+
+### W05 exact CI — PASS; release BLOCKED (2026-11-08)
+
+W05 commite12882536eee56195c4fe16f7434dbeb851c382e is pushed to main. Exact CI42490137881/job128760511668 SUCCESS all30steps; actual job logs66unit/30mobile/159integration/realmobileAPI/121browserPASS(5.4m). Proof:evidence/ci-e128825-success-2026-11-08.json. This resolves preceding W05 remoteNOT_VERIFIED; complete frozen local159/121,32manually reviewed responsive normal/reduced images,187stableoperations and canonical current-actor histories remain in evidence/student-history. Published001..031/private.env unchanged. Remaining teaching resource selectors/calendar teacher filter, fee reminder proposed preset, reusable ops/M4, compatible dependency maintenance and actual staging/legal/UAT/signed-device/real-push/offhost-key-custody gates remain; releaseBLOCKED. Continue master work.

@@ -777,8 +777,13 @@ export const teaching = {
         body,
       }),
     ),
-  calendar: (query: CalendarQuery) =>
-    unwrap(api.GET("/api/v1/schedule", { params: { query } })),
+  calendar: (query: CalendarQuery, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/schedule", {
+        params: { query },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
   classSessions: (id: string, query: CalendarQuery) =>
     unwrap(
       api.GET("/api/v1/classes/{id}/sessions", {

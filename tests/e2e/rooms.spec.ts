@@ -556,6 +556,9 @@ test("extra session and reschedule persist the chosen room and calendar filters 
     expect(change.oldSnapshot).toMatchObject({ roomId: second.id });
     expect(change.newSnapshot).toMatchObject({ roomId: first.id });
     await page.goto("/app/schedule");
+    await page
+      .getByText("Lọc lớp, giáo viên và phòng", { exact: true })
+      .click();
     await page.getByLabel("Lịch từ ngày", { exact: true }).fill("2030-06-04");
     await page.getByLabel("Lịch đến ngày", { exact: true }).fill("2030-06-04");
     await page

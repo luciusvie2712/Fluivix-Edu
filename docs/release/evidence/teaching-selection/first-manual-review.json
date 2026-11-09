@@ -1,0 +1,6 @@
+{
+  "status": "REJECTED_LAYOUT",
+  "image": "baseline-calendar-360-no-preference.png",
+  "sha256": "8738d55d8d84cd485655bccda32ed2fa1fcab098c36074e7c6070e7f8e8d8134",
+  "finding": "Despite zero Taste findings, all expanded resource pickers push actual calendar data far down the phone. Keep date range first and group resource filters in a native keyboard-accessible disclosure. Existing shell navigation is not redesigned in this slice."
+}

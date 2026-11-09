@@ -740,6 +740,21 @@ body:has(.session-notice) .auth-layout {
 .room-picker {
   min-width: 0;
 }
+.calendar-resource-filters {
+  margin: 16px 0;
+}
+.calendar-resource-filters > summary {
+  cursor: pointer;
+  min-height: 44px;
+  padding: 12px 0;
+}
+.calendar-table {
+  min-width: 660px;
+}
+.calendar-table th:first-child,
+.calendar-table td:first-child {
+  white-space: nowrap;
+}
 .room-directory table {
   min-width: 640px;
 }

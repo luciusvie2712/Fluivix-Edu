@@ -1,0 +1,6 @@
+{
+  "status": "REJECTED_DATE_LAYOUT",
+  "image": "baseline-date-wrap-360-no-preference.png",
+  "sha256": "d2e25b53ef49e9e4f2d4f1181ef8f1961d9568116e487e9bc3cfd31dffefb0d1",
+  "finding": "Actual populated calendar civil date wrapped at 360px; narrow capture also followed native animated ArrowRight probe. Final candidate uses non-wrapping date column and captures before actual keyboard-scroll probe. Full frozen acceptance and final manual review still pending."
+}

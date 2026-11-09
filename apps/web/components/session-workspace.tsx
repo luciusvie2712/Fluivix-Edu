@@ -16,6 +16,7 @@ import {
 } from "./operation-form";
 import { Button } from "./ui/button";
 import { RoomPicker } from "./room-picker";
+import { TeachingPicker } from "./teaching-picker";
 
 const statuses = {
   UNMARKED: "Chưa đánh dấu",
@@ -23,6 +24,13 @@ const statuses = {
   LATE: "Đi muộn",
   ABSENT_EXCUSED: "Vắng có phép",
   ABSENT_UNEXCUSED: "Vắng không phép",
+};
+const sessionStatuses: Record<string, string> = {
+  SCHEDULED: "Đã xếp lịch",
+  IN_PROGRESS: "Đang học",
+  COMPLETED: "Đã chốt",
+  CANCELLED: "Đã hủy",
+  REOPENED: "Đã mở lại",
 };
 const attendanceStatus = z.enum([
   "UNMARKED",
@@ -48,12 +56,8 @@ function CalendarDetail() {
   const [range, setRange] = useState({ from: today, to: today }),
     [page, setPage] = useState(1),
     [classId, setClassId] = useState(""),
-    [roomId, setRoomId] = useState("");
-  const classes = useQuery({
-    queryKey: ["teaching", ...scope.key, "calendar-classes"],
-    enabled: scope.allowed,
-    queryFn: () => teaching.classes(),
-  });
+    [roomId, setRoomId] = useState(""),
+    [teacherId, setTeacherId] = useState("");
   const result = useQuery({
     queryKey: [
       "teaching",
@@ -63,16 +67,21 @@ function CalendarDetail() {
       page,
       classId,
       roomId,
+      teacherId,
     ],
     enabled: scope.allowed,
-    queryFn: () =>
-      teaching.calendar({
-        ...range,
-        page,
-        limit: 20,
-        ...(classId ? { classId } : {}),
-        ...(roomId ? { roomId } : {}),
-      }),
+    queryFn: ({ signal }) =>
+      teaching.calendar(
+        {
+          ...range,
+          page,
+          limit: 20,
+          ...(classId ? { classId } : {}),
+          ...(roomId ? { roomId } : {}),
+          ...(scope.manage && teacherId ? { teacherId } : {}),
+        },
+        signal,
+      ),
   });
   if (!scope.allowed)
     return (
@@ -92,17 +101,6 @@ function CalendarDetail() {
           setPage(1);
         }}
       >
-        {scope.manage && (
-          <RoomPicker
-            label="Lọc phòng học"
-            emptyLabel="Mọi phòng trong phạm vi quyền"
-            includeInactive
-            onChange={(id) => {
-              setRoomId(id);
-              setPage(1);
-            }}
-          />
-        )}
         <div className="operations-grid">
           <Field
             label="Lịch từ ngày"
@@ -118,22 +116,49 @@ function CalendarDetail() {
             defaultValue={today}
             required
           />
-          <SelectField
-            label="Lọc lớp học"
-            value={classId}
-            onChange={(e) => {
-              setClassId(e.target.value);
-              setPage(1);
-            }}
-          >
-            <option value="">Mọi lớp trong phạm vi quyền</option>
-            {classes.data?.data.map((v) => (
-              <option key={v.id} value={v.id}>
-                {v.code} · {v.name}
-              </option>
-            ))}
-          </SelectField>
         </div>
+        <details className="calendar-resource-filters">
+          <summary>
+            {scope.manage ? "Lọc lớp, giáo viên và phòng" : "Lọc lớp học"}
+            {[classId, teacherId, roomId].filter(Boolean).length
+              ? " · Có bộ lọc đang áp dụng"
+              : ""}
+          </summary>
+          <div className="operations-grid">
+            <TeachingPicker
+              kind="class"
+              label="Lọc lớp học"
+              emptyLabel="Mọi lớp trong phạm vi quyền"
+              onChange={(id) => {
+                setClassId(id);
+                setPage(1);
+              }}
+            />
+            {scope.manage && (
+              <TeachingPicker
+                kind="teacher"
+                label="Lọc giáo viên"
+                includeInactive
+                emptyLabel="Mọi giáo viên trong phạm vi quyền"
+                onChange={(id) => {
+                  setTeacherId(id);
+                  setPage(1);
+                }}
+              />
+            )}
+            {scope.manage && (
+              <RoomPicker
+                label="Lọc phòng học"
+                emptyLabel="Mọi phòng trong phạm vi quyền"
+                includeInactive
+                onChange={(id) => {
+                  setRoomId(id);
+                  setPage(1);
+                }}
+              />
+            )}
+          </div>
+        </details>
       </OperationForm>
       {result.isPending && <p role="status">Đang tải lịch…</p>}
       {result.error && (
@@ -144,16 +169,21 @@ function CalendarDetail() {
           </Button>
         </p>
       )}
-      {result.data && (
+      {result.data && !result.isError && (
         <>
           <p>{result.data.page.total} buổi trong khoảng đã chọn.</p>
+          <p className="muted" id="calendar-scroll-help">
+            Trên màn hình hẹp, cuộn ngang bảng để xem đủ thông tin; dùng phím
+            mũi tên khi bảng được chọn.
+          </p>
           <div
             className="table-scroll"
             tabIndex={0}
             role="region"
             aria-label="Các buổi học"
+            aria-describedby="calendar-scroll-help"
           >
-            <table>
+            <table className="calendar-table">
               <thead>
                 <tr>
                   <th>Ngày</th>
@@ -178,7 +208,11 @@ function CalendarDetail() {
                     </td>
                     <td>{v.className}</td>
                     <td>{v.roomName ?? "Chưa xếp phòng"}</td>
-                    <td>{v.status}</td>
+                    <td>
+                      {sessionStatuses[v.status] ?? v.status}
+                      {v.changeCount > 0 &&
+                        ` · Đã đổi lịch ${v.changeCount} lần`}
+                    </td>
                     <td>
                       <Link href={`/app/sessions/${v.id}`}>
                         Mở buổi {v.scheduledDate}
@@ -402,8 +436,10 @@ function SessionDetail({ id }: { id: string }) {
             }
             confirm="Xác nhận đổi lịch; thông báo thay đổi được tạo sau khi hệ thống lưu thành công."
             action={async (data) => {
+              if (!scope.tenant)
+                throw new Error("Chưa xác minh múi giờ trung tâm.");
               const day = text(data, "day"),
-                zone = scope.tenant?.timezone ?? "UTC";
+                zone = scope.tenant.timezone;
               let startsAt: string, endsAt: string;
               try {
                 startsAt = wallClockUtc(
@@ -423,7 +459,7 @@ function SessionDetail({ id }: { id: string }) {
               }
               await teaching.reschedule(id, {
                 sessionVersion: s.version,
-                teacherId: s.teacherId,
+                teacherId: text(data, "teacherId"),
                 ...(text(data, "roomId")
                   ? { roomId: text(data, "roomId") }
                   : {}),
@@ -435,6 +471,13 @@ function SessionDetail({ id }: { id: string }) {
             }}
           >
             <Field label="Ngày học mới" name="day" type="date" required />
+            <TeachingPicker
+              kind="teacher"
+              label="Giáo viên cho buổi dời lịch"
+              name="teacherId"
+              initial={s.teacherId}
+              required
+            />
             <RoomPicker
               label="Phòng cho buổi dời lịch"
               initial={s.roomId ?? ""}

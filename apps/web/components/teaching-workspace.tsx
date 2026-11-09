@@ -16,6 +16,7 @@ import {
 import { Button } from "./ui/button";
 import { ClassAssessments } from "./assessment-workspace";
 import { RoomPicker } from "./room-picker";
+import { TeachingPicker } from "./teaching-picker";
 import { wallClockUtc } from "@fluivix/contracts";
 
 const academic = ["owner", "manager", "academic_staff"];
@@ -219,11 +220,6 @@ function ClassDetail({ id }: { id: string }) {
     enabled: scope.allowed,
     queryFn: () => teaching.roster(id, rosterPage),
   });
-  const teacherQuery = useQuery({
-    queryKey: ["teaching", ...scope.key, "teachers"],
-    enabled: scope.manage,
-    queryFn: ({ signal }) => teaching.teachers(1, "", signal, "ACTIVE"),
-  });
   const studentQuery = useQuery({
     queryKey: ["students", ...scope.key, "enrollment-search", studentSearch],
     enabled: scope.manage,
@@ -245,10 +241,6 @@ function ClassDetail({ id }: { id: string }) {
   if (!detail.data) return null;
   const cls = detail.data.data,
     disabled = !scope.writable || cls.status !== "ACTIVE";
-  const teachers =
-    teacherQuery.data?.data.filter(
-      (v) => v.status === "ACTIVE" && v.accountReady,
-    ) ?? [];
   return (
     <>
       <p>
@@ -453,18 +445,9 @@ function ClassDetail({ id }: { id: string }) {
       {scope.manage && (
         <section className="operation-panel">
           <h2>Phân công giáo viên</h2>
-          {teacherQuery.error && (
-            <p role="alert">{teacherQuery.error.message}</p>
-          )}
-          {!teacherQuery.isPending && !teachers.length && (
-            <p>
-              Chưa có hồ sơ giáo viên đang hoạt động. Tạo hồ sơ tại mục Giáo
-              viên trước khi phân công.
-            </p>
-          )}
           <OperationForm
             label="Phân công giáo viên"
-            disabled={disabled || !teachers.length}
+            disabled={disabled}
             action={async (data) => {
               await teaching.assign(id, {
                 teacherId: text(data, "teacherId"),
@@ -474,14 +457,12 @@ function ClassDetail({ id }: { id: string }) {
               await refresh();
             }}
           >
-            <SelectField label="Giáo viên phân công" name="teacherId" required>
-              <option value="">Chọn giáo viên</option>
-              {teachers.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.teacherCode} · {v.fullName}
-                </option>
-              ))}
-            </SelectField>
+            <TeachingPicker
+              kind="teacher"
+              label="Giáo viên phân công"
+              name="teacherId"
+              required
+            />
             <Field
               label="Phân công từ ngày"
               name="effectiveFrom"
@@ -503,14 +484,7 @@ function ClassDetail({ id }: { id: string }) {
           </OperationForm>
         </section>
       )}
-      {scope.manage && (
-        <RuleBuilder
-          id={id}
-          cls={cls}
-          teachers={teachers}
-          disabled={disabled}
-        />
-      )}
+      {scope.manage && <RuleBuilder id={id} cls={cls} disabled={disabled} />}
       {scope.manage && scope.tenant && (
         <section className="operation-panel">
           <h2>Buổi học bổ sung</h2>
@@ -520,7 +494,7 @@ function ClassDetail({ id }: { id: string }) {
           </p>
           <OperationForm
             label="Tạo buổi học bổ sung"
-            disabled={disabled || !teachers.length}
+            disabled={disabled}
             action={async (data) => {
               if (!scope.tenant)
                 throw new Error("Chưa xác minh múi giờ trung tâm.");
@@ -546,18 +520,12 @@ function ClassDetail({ id }: { id: string }) {
             }}
           >
             <div className="operations-grid">
-              <SelectField
+              <TeachingPicker
+                kind="teacher"
                 label="Giáo viên buổi bổ sung"
                 name="teacherId"
                 required
-              >
-                <option value="">Chọn giáo viên đã phân công</option>
-                {teachers.map((teacher) => (
-                  <option key={teacher.id} value={teacher.id}>
-                    {teacher.teacherCode} · {teacher.fullName}
-                  </option>
-                ))}
-              </SelectField>
+              />
               <RoomPicker label="Phòng cho buổi bổ sung" />
               <Field
                 label="Ngày học bổ sung"
@@ -589,12 +557,10 @@ function ClassDetail({ id }: { id: string }) {
 function RuleBuilder({
   id,
   cls,
-  teachers,
   disabled,
 }: {
   id: string;
   cls: components["schemas"]["ClassView"];
-  teachers: components["schemas"]["TeacherView"][];
   disabled: boolean;
 }) {
   const scope = useTeachingScope(),
@@ -632,7 +598,7 @@ function RuleBuilder({
       </p>
       <OperationForm
         label="Lưu quy tắc lịch"
-        disabled={disabled || !teachers.length}
+        disabled={disabled}
         previewLabel="Xem trước quy tắc chưa lưu"
         previewAction={async (data) => {
           setDraftPreview(null);
@@ -655,14 +621,12 @@ function RuleBuilder({
             setDraftPreview(null);
           }}
         >
-          <SelectField label="Giáo viên dạy lịch lặp" name="teacherId" required>
-            <option value="">Chọn giáo viên đã phân công</option>
-            {teachers.map((v) => (
-              <option key={v.id} value={v.id}>
-                {v.teacherCode} · {v.fullName}
-              </option>
-            ))}
-          </SelectField>
+          <TeachingPicker
+            kind="teacher"
+            label="Giáo viên dạy lịch lặp"
+            name="teacherId"
+            required
+          />
           <SelectField label="Ngày học trong tuần" name="weekday" required>
             {[
               "Thứ hai",
@@ -810,7 +774,6 @@ function RuleBuilder({
             id={id}
             cls={cls}
             rule={rule}
-            teachers={teachers}
             disabled={disabled}
             onReplaced={async (replacementId) => {
               setSelected(replacementId);
@@ -880,14 +843,12 @@ function RuleEditor({
   id,
   cls,
   rule,
-  teachers,
   disabled,
   onReplaced,
 }: {
   id: string;
   cls: components["schemas"]["ClassView"];
   rule: components["schemas"]["ScheduleRuleView"];
-  teachers: components["schemas"]["TeacherView"][];
   disabled: boolean;
   onReplaced: (id: string) => Promise<void>;
 }) {
@@ -936,23 +897,13 @@ function RuleEditor({
         }}
       >
         <div className="operations-grid">
-          <SelectField
+          <TeachingPicker
+            kind="teacher"
             label="Giáo viên lịch thay thế"
             name="teacherId"
-            defaultValue={rule.teacherId}
             required
-          >
-            {!teachers.some((v) => v.id === rule.teacherId) && (
-              <option value={rule.teacherId}>
-                Giáo viên hiện tại của quy tắc
-              </option>
-            )}
-            {teachers.map((v) => (
-              <option key={v.id} value={v.id}>
-                {v.teacherCode} · {v.fullName}
-              </option>
-            ))}
-          </SelectField>
+            initial={rule.teacherId}
+          />
           <RoomPicker
             label="Phòng cho lịch thay thế"
             initial={rule.roomId ?? ""}

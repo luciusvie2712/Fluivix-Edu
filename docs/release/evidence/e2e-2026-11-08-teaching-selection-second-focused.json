@@ -1,0 +1,686 @@
+{
+  "config": {
+    "argv": [
+      "D:\\my-project\\fluivixedu\\.cache\\node-v24.22.2-win-x64\\node.exe",
+      "D:\\my-project\\fluivixedu\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "teaching-selection.spec.ts",
+      "rooms.spec.ts",
+      "--grep",
+      "off-page|selected teacher|teaching selectors|extra session and reschedule persist|recurring rule preview, create"
+    ],
+    "configFile": "D:\\my-project\\fluivixedu\\playwright.config.ts",
+    "rootDir": "D:/my-project/fluivixedu/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/my-project/fluivixedu/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tenant-chromium",
+        "name": "tenant-chromium",
+        "testDir": "D:/my-project/fluivixedu/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\my-project\\fluivixedu\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "tenant-chromium",
+        "testDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "snapshotDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:3000",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "browserName": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "tenant-chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/release/evidence/e2e-2026-11-08-teaching-selection-second-focused.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm exec tsx tooling/e2e-server.ts",
+      "url": "http://localhost:3000/login",
+      "timeout": 60000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "rooms.spec.ts",
+      "file": "rooms.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "room picker searches and paginates actual rooms, retains an off-page selection and saves or clears a class default",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4258,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-08T14:56:24.193Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c60be36dadaf24e75fb7-11a2e0f626832150f4e3",
+          "file": "rooms.spec.ts",
+          "line": 361,
+          "column": 5
+        },
+        {
+          "title": "extra session and reschedule persist the chosen room and calendar filters return actual matching sessions",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3693,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-08T14:56:29.031Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c60be36dadaf24e75fb7-305a8f296b225299620f",
+          "file": "rooms.spec.ts",
+          "line": 463,
+          "column": 5
+        },
+        {
+          "title": "recurring rule preview, create and replacement save explicitly selected rooms through the real schedule workflow",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3747,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-08T14:56:32.753Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c60be36dadaf24e75fb7-12d88e5febee3719a1c9",
+          "file": "rooms.spec.ts",
+          "line": 583,
+          "column": 5
+        }
+      ]
+    },
+    {
+      "title": "teaching-selection.spec.ts",
+      "file": "teaching-selection.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "off-page teacher assignment and native verification retain selection through searched pages and reject an unready account",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4365,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-08T14:56:36.541Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "87264cf6e413a8797c3a-7f0f8ea2f7e3f46898e9",
+          "file": "teaching-selection.spec.ts",
+          "line": 221,
+          "column": 5
+        },
+        {
+          "title": "off-page teachers drive actual recurring preview, save and replacement with verified current metadata",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3983,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-08T14:56:40.941Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "87264cf6e413a8797c3a-2f5677af13399526c840",
+          "file": "teaching-selection.spec.ts",
+          "line": 331,
+          "column": 5
+        },
+        {
+          "title": "extra and rescheduled sessions use off-page assigned teachers, preserve history and feed class/teacher calendar filters",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4967,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-08T14:56:44.947Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "87264cf6e413a8797c3a-a2e6b63b42d3606fda34",
+          "file": "teaching-selection.spec.ts",
+          "line": 410,
+          "column": 5
+        },
+        {
+          "title": "selected teacher only queries assigned classes; calendar failure removes cached rows and real membership revocation denies refresh",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 2572,
+                  "error": {
+                    "message": "PrismaClientUnknownRequestError: \nInvalid `db.membership.update()` invocation in\nD:\\my-project\\fluivixedu\\tests\\e2e\\teaching-selection.spec.ts:562:25\n\n  559 await expect(\n  560   page.getByRole(\"link\", { name: \"Mở buổi 2030-06-03\", exact: true }),\n  561 ).toBeVisible();\n→ 562 await db.membership.update(\nError occurred during query execution:\nConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: \"23514\", message: \"last active owner cannot be removed\", severity: \"ERROR\", detail: None, column: None, hint: None }), transient: false })",
+                    "stack": "PrismaClientUnknownRequestError: \nInvalid `db.membership.update()` invocation in\nD:\\my-project\\fluivixedu\\tests\\e2e\\teaching-selection.spec.ts:562:25\n\n  559 await expect(\n  560   page.getByRole(\"link\", { name: \"Mở buổi 2030-06-03\", exact: true }),\n  561 ).toBeVisible();\n→ 562 await db.membership.update(\nError occurred during query execution:\nConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: \"23514\", message: \"last active owner cannot be removed\", severity: \"ERROR\", detail: None, column: None, hint: None }), transient: false })\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\teaching-selection.spec.ts:562:25\n    at ei.handleRequestError (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:237:13)\n    at ei.handleAndLogRequestError (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:174:12)\n    at ei.request (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:143:12)\n    at a (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\getPrismaClient.ts:833:24)\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\teaching-selection.spec.ts:562:5",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\teaching-selection.spec.ts",
+                      "column": 25,
+                      "line": 562
+                    },
+                    "snippet": "  560 |       page.getByRole(\"link\", { name: \"Mở buổi 2030-06-03\", exact: true }),\n  561 |     ).toBeVisible();\n> 562 |     await db.membership.update({\n      |                         ^\n  563 |       where: { tenantId_userId: { tenantId: f.tenant.id, userId: f.actor.id } },\n  564 |       data: { status: \"SUSPENDED\" },\n  565 |     });"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\teaching-selection.spec.ts",
+                        "column": 25,
+                        "line": 562
+                      },
+                      "message": "PrismaClientUnknownRequestError: \nInvalid `db.membership.update()` invocation in\nD:\\my-project\\fluivixedu\\tests\\e2e\\teaching-selection.spec.ts:562:25\n\n  559 await expect(\n  560   page.getByRole(\"link\", { name: \"Mở buổi 2030-06-03\", exact: true }),\n  561 ).toBeVisible();\n→ 562 await db.membership.update(\nError occurred during query execution:\nConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: \"23514\", message: \"last active owner cannot be removed\", severity: \"ERROR\", detail: None, column: None, hint: None }), transient: false })\n\n  560 |       page.getByRole(\"link\", { name: \"Mở buổi 2030-06-03\", exact: true }),\n  561 |     ).toBeVisible();\n> 562 |     await db.membership.update({\n      |                         ^\n  563 |       where: { tenantId_userId: { tenantId: f.tenant.id, userId: f.actor.id } },\n  564 |       data: { status: \"SUSPENDED\" },\n  565 |     });\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\teaching-selection.spec.ts:562:25\n    at ei.handleRequestError (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:237:13)\n    at ei.handleAndLogRequestError (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:174:12)\n    at ei.request (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\RequestHandler.ts:143:12)\n    at a (D:\\my-project\\fluivixedu\\node_modules\\.pnpm\\@prisma+client@6.19.3_prism_1d040ab5215f59f0e27ddee7f0cf082e\\node_modules\\@prisma\\client\\src\\runtime\\getPrismaClient.ts:833:24)\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\teaching-selection.spec.ts:562:5"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-08T14:56:49.943Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\teaching-selection-selecte-3336d-p-revocation-denies-refresh-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\teaching-selection-selecte-3336d-p-revocation-denies-refresh-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\teaching-selection-selecte-3336d-p-revocation-denies-refresh-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\teaching-selection.spec.ts",
+                    "column": 25,
+                    "line": 562
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "87264cf6e413a8797c3a-a0d87af4c8551e7e8aa0",
+          "file": "teaching-selection.spec.ts",
+          "line": 508,
+          "column": 5
+        },
+        {
+          "title": "teaching selectors preserve keyboard, real counts and readable responsive layout 360 no-preference",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7378,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-08T14:56:54.301Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "87264cf6e413a8797c3a-a5fc815ba0cc65410464",
+          "file": "teaching-selection.spec.ts",
+          "line": 583,
+          "column": 9
+        },
+        {
+          "title": "teaching selectors preserve keyboard, real counts and readable responsive layout 768 no-preference",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6241,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-08T14:57:02.292Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "87264cf6e413a8797c3a-07640dcde5e2fd1eb1f3",
+          "file": "teaching-selection.spec.ts",
+          "line": 583,
+          "column": 9
+        },
+        {
+          "title": "teaching selectors preserve keyboard, real counts and readable responsive layout 1024 no-preference",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5911,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-08T14:57:08.559Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "87264cf6e413a8797c3a-4911654c2f9affbcfb42",
+          "file": "teaching-selection.spec.ts",
+          "line": 583,
+          "column": 9
+        },
+        {
+          "title": "teaching selectors preserve keyboard, real counts and readable responsive layout 1440 no-preference",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6174,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-08T14:57:14.498Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "87264cf6e413a8797c3a-76478a4ed2553ad904f4",
+          "file": "teaching-selection.spec.ts",
+          "line": 583,
+          "column": 9
+        },
+        {
+          "title": "teaching selectors preserve keyboard, real counts and readable responsive layout 360 reduce",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6298,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-08T14:57:20.697Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "87264cf6e413a8797c3a-5ab85ed8f58cb4dbe0f4",
+          "file": "teaching-selection.spec.ts",
+          "line": 583,
+          "column": 9
+        },
+        {
+          "title": "teaching selectors preserve keyboard, real counts and readable responsive layout 768 reduce",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5705,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-08T14:57:27.019Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "87264cf6e413a8797c3a-05607332e4f2b99640f6",
+          "file": "teaching-selection.spec.ts",
+          "line": 583,
+          "column": 9
+        },
+        {
+          "title": "teaching selectors preserve keyboard, real counts and readable responsive layout 1024 reduce",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6337,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-08T14:57:32.747Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "87264cf6e413a8797c3a-0cf6305fce2a657d19cb",
+          "file": "teaching-selection.spec.ts",
+          "line": 583,
+          "column": 9
+        },
+        {
+          "title": "teaching selectors preserve keyboard, real counts and readable responsive layout 1440 reduce",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5786,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-08T14:57:39.106Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "87264cf6e413a8797c3a-98871b4e1b6ac1ae1536",
+          "file": "teaching-selection.spec.ts",
+          "line": 583,
+          "column": 9
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-08T14:56:07.849Z",
+    "duration": 98289.24399999999,
+    "expected": 14,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}
