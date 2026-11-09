@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-09",
+  "firstFocusedBrowser": {
+    "command": "pnpm exec tsx tooling/e2e-runner.ts calendar-period.spec.ts",
+    "passed": 12,
+    "failed": 1,
+    "report": "../e2e-2026-11-09-calendar-period-first-focused.json",
+    "failedScenario": "Today and centre switch",
+    "observed": "The test hard-navigated immediately after clicking centre choice, before actual switch completion and verified new context. Private trace shows browser switch-context status-1/cancelled and subsequent refresh401; final screen login.",
+    "repair": "Await actual switch-context200, /app/students URL and verified new-centre banner before a deliberate hard navigation. Keep original scope/date/read-only assertions, timeout and retry policy.",
+    "privateTraceRetained": true
+  },
+  "manualBeforeRepair": {
+    "status": "REJECTED",
+    "evidence": "rejected-baseline/manual-finding.json",
+    "repair": "Scoped local spacing and shorter caption/help only; add actual first-row top+44<=viewport assertion and preserve native44px inputs, font16 and horizontal-table keyboard guidance."
+  },
+  "toolingBeforeAnyBrowser": {
+    "firstCheck": "TypeScript rejected implicit teacher/room/class arrays (TS7034/TS7005); browsers NOT_RUN",
+    "secondCheck": "TypeScript rejected unproven indexed array resources (TS2532); browsers NOT_RUN",
+    "repair": "Typed arrays and runtime-validated two-resource tuples; strict checks retained",
+    "subsequentToolsTypeScript": "PASS"
+  },
+  "status": "REPAIRS_VERIFIED_FRESH_FULL_FROZEN_GATE",
+  "secondFocused": {
+    "passed": 41,
+    "failed": 0,
+    "duration": "4.5m",
+    "report": "../e2e-2026-11-09-calendar-period-second-focused.json",
+    "attribution": "Passed41 cases before subsequent manual cancellation-label repair; retained historical source evidence, not reused as final-source acceptance."
+  },
+  "manualSemanticFinding": {
+    "evidence": "first-partial-gate.json",
+    "sourceCause": "Both cancellation and rescheduling increment changeCount. An active changed session is rescheduled; a terminal cancelled session must display cancellation without falsely treating its cancellation as a reschedule.",
+    "repair": "Only calendar presentation filters the reschedule badge on CANCELLED rows; status, immutable snapshots, counter, API, audit and all business transitions remain unchanged. Added exact cancelled-row negative and rescheduled-row positive assertions."
+  },
+  "thirdFocused": {
+    "passed": 13,
+    "failed": 0,
+    "duration": "1.6m",
+    "report": "../e2e-2026-11-09-calendar-period-third-focused.json",
+    "rootUnit": 89,
+    "manualCurrentImages": 16
+  }
+}

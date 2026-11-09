@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-09",
+  "status": "ABORTED_NOT_ACCEPTED",
+  "wrapperExitCode": 1,
+  "cause": "Manual review observed a cancellation-only row labelled rescheduled because existing changeCount increments for both cancellation and rescheduling. Stop before source repair and run a fresh complete gate.",
+  "observedCompletedStages": {
+    "uncachedBuilds": 8,
+    "uncachedTypechecks": 8,
+    "toolsTypeScript": "PASS",
+    "unit": 89,
+    "mobile": 30,
+    "actualMobileApi": "PASS",
+    "expoAlignment": "PASS"
+  },
+  "integration": "INTERRUPTED_NOT_ACCEPTED",
+  "fullBrowser": "NOT_RUN",
+  "sourceUnchangedBeforeAbort": true,
+  "rejectedImage": {
+    "path": "docs/release/evidence/calendar-period/rejected-baseline/week-768-count-label-before.png",
+    "sha256": "3f6c224123beeb4638c8b14592ec6127ba9975d6769e34fbb4e78cbfe65121ac"
+  },
+  "repairScope": "Calendar cancelled variant shows actual cancelled state without misclassifying cancellation as rescheduling; retain reschedule count label on active rescheduled sessions. All actual history/counters remain immutable."
+}

@@ -1,0 +1,88 @@
+{
+  "date": "2026-11-09",
+  "method": "Individually viewed all16 current-source real browser PNGs from the third focused13PASS run through view_image. Final full-suite PNGs must match reviewed byte hashes or receive another individual review. All16 final full-suite PNGs were subsequently verified byte-identical to the individually viewed current-source copies.",
+  "findings": "PASS: first record visible at360x900; native focus and44px date controls; no page overflow/overlap; clear selected centre/timezone and actual applied period; Vietnamese output dates; cancelled-only row has only cancelled state, active rescheduled row retains actual change label; Day1/Week3 counts come from actual API; reduced motion retains all controls.",
+  "images": [
+    {
+      "path": "docs/release/evidence/calendar-period/day-1024-no-preference.png",
+      "sha256": "5e28184ecb6c32c192abb69292f3098446976e8cbd93cd6bdae2ea256504bc01",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/calendar-period/day-1024-reduce.png",
+      "sha256": "5e28184ecb6c32c192abb69292f3098446976e8cbd93cd6bdae2ea256504bc01",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/calendar-period/day-1440-no-preference.png",
+      "sha256": "a5e2de537e6624d5efa715bd026752aff72a01b061d43e032eb84edae245f6a8",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/calendar-period/day-1440-reduce.png",
+      "sha256": "a5e2de537e6624d5efa715bd026752aff72a01b061d43e032eb84edae245f6a8",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/calendar-period/day-360-no-preference.png",
+      "sha256": "9ef098ff595a9748bb75d9e0cf2f3a9d2a3ecff7c7d5f1ba060e6c002c95c210",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/calendar-period/day-360-reduce.png",
+      "sha256": "9ef098ff595a9748bb75d9e0cf2f3a9d2a3ecff7c7d5f1ba060e6c002c95c210",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/calendar-period/day-768-no-preference.png",
+      "sha256": "09c36fca0b9ea344dd21519155ca3f50c63c3f0c9216df4970f71dad05c6868b",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/calendar-period/day-768-reduce.png",
+      "sha256": "09c36fca0b9ea344dd21519155ca3f50c63c3f0c9216df4970f71dad05c6868b",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/calendar-period/week-1024-no-preference.png",
+      "sha256": "629f1c662cc2780c7014a91107e095b0efe351806ef06b19b4b68af67462138b",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/calendar-period/week-1024-reduce.png",
+      "sha256": "629f1c662cc2780c7014a91107e095b0efe351806ef06b19b4b68af67462138b",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/calendar-period/week-1440-no-preference.png",
+      "sha256": "41fc477f50a7cb3f47b954c1f253e5cf2652e1b709740252f6ea41221758d24b",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/calendar-period/week-1440-reduce.png",
+      "sha256": "41fc477f50a7cb3f47b954c1f253e5cf2652e1b709740252f6ea41221758d24b",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/calendar-period/week-360-no-preference.png",
+      "sha256": "8e78ba1f6a6dcada0833fe6253396bd00956997abfe2d89bdc64b4de6328db39",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/calendar-period/week-360-reduce.png",
+      "sha256": "8e78ba1f6a6dcada0833fe6253396bd00956997abfe2d89bdc64b4de6328db39",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/calendar-period/week-768-no-preference.png",
+      "sha256": "c391e17f8bb4590095825145277569aa7504dc5194374e64eb3f2a9c826e0fbb",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/calendar-period/week-768-reduce.png",
+      "sha256": "c391e17f8bb4590095825145277569aa7504dc5194374e64eb3f2a9c826e0fbb",
+      "status": "PASS"
+    }
+  ],
+  "finalFullSuiteBytesMatched": true
+}

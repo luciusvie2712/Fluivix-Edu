@@ -1,5 +1,19 @@
 # API contract coverage
 
+## Current checkpoint — Calendar periods local PASS (2026-11-09)
+
+Calendar Day/Week/Custom navigation now uses real scoped scheduling data with Monday-first local-date periods, centre-IANA Today, strict inline date/range validation, exact applied-range captions and Vietnamese output dates. Class/teacher/room selections survive period movement while result pagination resets. Cancelled rows no longer incorrectly label cancellation as rescheduling; active reschedules retain their badge. Backend policies, counters, immutable history, confirmations, API and migrations remain unchanged. Fresh second frozen acceptance passed89unit/30mobile/161integration/157browser with0skip/flaky,8uncached builds/types/tools,actualmobileAPI,Expo alignment,stable187-operation contracts,offline frozeninstall,skills/inventory and audit0HIGH/CRITICAL (4MODERATE/1LOW). All16current browser images were individually reviewed across4widths/bothmotionmodes with final-byte equality,axe0/Taste0 and firstrecord/44px/keyboard checks. Failed12/1firstfocus, genuinely rejected phone/cancellation images, historical41focus and voluntarily interrupted first full gate remain accurately retained; only final13focus and complete second full source are accepted. Prior e6c8767 exactCI passed30steps with decoded matching counts. New module commit/exactCI pending. WholeW10/session-history remains PARTIAL until the separate scoped history slice; remaining reminders/ops/dependencies/external staging/legal/UAT/devices/push/custody gates keep releaseBLOCKED.
+
+Evidence: `evidence/calendar-period/verification.json`.
+
+## Historical checkpoints
+
+## Current checkpoint — Compact navigation exact CI PASS (2026-11-09)
+
+Exact main commit e6c87672f52df4c85d3984ea382bbbe98840c91a passed all30 CI steps in run42558583184/job128969733481. Independently decoded logs confirm70unit/30mobile/161integration/144browser(6.7m), matching the frozen local gate and14manually reviewed current images. Audit0HIGH/CRITICAL/4MODERATE/1LOW. Proof:evidence/ci-e6c8767-success-2026-11-09.json. Compact navigation is delivered; release remains BLOCKED. Calendar day/week controls are now IN_PROGRESS and are not accepted as complete. Reminder preset, remaining operations/dependencies, full traceability and external release gates continue.
+
+## Historical checkpoints
+
 ## Current checkpoint — Compact navigation local PASS (2026-11-09)
 
 Tenant navigation now folds behind a labelled native menu button at widths up to1024px, so operational content appears in the first viewport. Desktop links stay visible. Keyboard close/return, resize recovery, current resource directory, route/context resets and unsaved student draft retention are verified against the real API. Existing role routes, read-only/offline messages and logout remain operational. No API, schema, migration or native UI changed. The same framed-sheet/blue/Arial16 design and all3 verified UI skill sources were applied;14 current browser images across360/768/1024/1440 and both motion preferences were individually reviewed, with0axe violations and0Taste findings. Fresh frozen acceptance passed70unit/30mobile/161integration/144browser with0skip/flaky,8uncached builds/typechecks, tools TypeScript, mobileAPI, Expo alignment, stable187-operation contract generation, frozen install, skills/inventory and audit0HIGH/CRITICAL (4MODERATE/1LOW remain). Prior4d561bf exactCI passed all30steps with independently decoded matching counts. New module commit/exactCI pending; releaseBLOCKED. Calendar day/week, reminders, operations/dependencies and external approvals remain tracked.

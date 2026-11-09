@@ -17,6 +17,8 @@ import {
 import { Button } from "./ui/button";
 import { RoomPicker } from "./room-picker";
 import { TeachingPicker } from "./teaching-picker";
+import { CalendarPeriodControls } from "./calendar-period-controls";
+import { centreCalendarDay, calendarDateLabel } from "../lib/calendar-period";
 
 const statuses = {
   UNMARKED: "Chưa đánh dấu",
@@ -39,20 +41,13 @@ const attendanceStatus = z.enum([
   "ABSENT_EXCUSED",
   "ABSENT_UNEXCUSED",
 ]);
-const localDay = (zone: string) =>
-  new Intl.DateTimeFormat("en-CA", {
-    timeZone: zone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
 export function CalendarWorkspace() {
   const scope = useTeachingScope();
   return <CalendarDetail key={scope.key.join(":")} />;
 }
 function CalendarDetail() {
   const scope = useTeachingScope(),
-    today = localDay(scope.tenant?.timezone ?? "UTC");
+    today = centreCalendarDay(scope.tenant?.timezone ?? "UTC");
   const [range, setRange] = useState({ from: today, to: today }),
     [page, setPage] = useState(1),
     [classId, setClassId] = useState(""),
@@ -93,30 +88,14 @@ function CalendarDetail() {
       <p className="muted">
         Ngày và giờ theo {scope.tenant?.timezone}; tối đa 93 ngày mỗi lần xem.
       </p>
-      <OperationForm
-        label="Xem lịch"
-        successMessage="Đã áp dụng bộ lọc lịch."
-        action={async (data) => {
-          setRange({ from: text(data, "from"), to: text(data, "to") });
+      <CalendarPeriodControls
+        appliedRange={range}
+        timezone={scope.tenant?.timezone ?? "UTC"}
+        onApply={(next) => {
+          setRange(next);
           setPage(1);
         }}
       >
-        <div className="operations-grid">
-          <Field
-            label="Lịch từ ngày"
-            name="from"
-            type="date"
-            defaultValue={today}
-            required
-          />
-          <Field
-            label="Lịch đến ngày"
-            name="to"
-            type="date"
-            defaultValue={today}
-            required
-          />
-        </div>
         <details className="calendar-resource-filters">
           <summary>
             {scope.manage ? "Lọc lớp, giáo viên và phòng" : "Lọc lớp học"}
@@ -159,7 +138,11 @@ function CalendarDetail() {
             )}
           </div>
         </details>
-      </OperationForm>
+      </CalendarPeriodControls>
+      <p role="status" className="muted">
+        Đã áp dụng: {calendarDateLabel(range.from)} –{" "}
+        {calendarDateLabel(range.to)}.
+      </p>
       {result.isPending && <p role="status">Đang tải lịch…</p>}
       {result.error && (
         <p role="alert">
@@ -173,8 +156,7 @@ function CalendarDetail() {
         <>
           <p>{result.data.page.total} buổi trong khoảng đã chọn.</p>
           <p className="muted" id="calendar-scroll-help">
-            Trên màn hình hẹp, cuộn ngang bảng để xem đủ thông tin; dùng phím
-            mũi tên khi bảng được chọn.
+            Cuộn ngang để xem đủ cột; dùng phím mũi tên khi chọn bảng.
           </p>
           <div
             className="table-scroll"
@@ -197,7 +179,7 @@ function CalendarDetail() {
               <tbody>
                 {result.data.data.map((v) => (
                   <tr key={v.id}>
-                    <td>{v.scheduledDate}</td>
+                    <td>{calendarDateLabel(v.scheduledDate)}</td>
                     <td>
                       {new Intl.DateTimeFormat("vi-VN", {
                         timeZone: scope.tenant?.timezone,
@@ -210,12 +192,13 @@ function CalendarDetail() {
                     <td>{v.roomName ?? "Chưa xếp phòng"}</td>
                     <td>
                       {sessionStatuses[v.status] ?? v.status}
-                      {v.changeCount > 0 &&
+                      {v.status !== "CANCELLED" &&
+                        v.changeCount > 0 &&
                         ` · Đã đổi lịch ${v.changeCount} lần`}
                     </td>
                     <td>
                       <Link href={`/app/sessions/${v.id}`}>
-                        Mở buổi {v.scheduledDate}
+                        Mở buổi {calendarDateLabel(v.scheduledDate)}
                       </Link>
                     </td>
                   </tr>

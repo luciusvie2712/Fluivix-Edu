@@ -1,0 +1,23 @@
+{
+  "date": "2026-11-09",
+  "status": "APPLIED_VERIFIED_LOCAL",
+  "direction": "Existing single framed-sheet/blue/Arial16 seed1920114305; no redraw",
+  "sourceShas": {
+    "ui-ux-pro-max": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+    "design-taste-frontend": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+    "web-animation-skills": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6"
+  },
+  "proMaxQuery": "date range validation --domain ux",
+  "decisions": [
+    "Default day/week use one native date anchor; custom view preserves explicit from/to",
+    "Date navigation updates applied range and page1 without remounting resource pickers",
+    "Unapplied edits retain an explicit accurate applied-range caption",
+    "Monday-first local calendar arithmetic, never assumes local days24h",
+    "Today derives from verified centre IANA zone",
+    "dd/MM/yyyy visible date/action labels; actual API continues ISO",
+    "All existing scope/version/confirmation/roster and history persistence unchanged",
+    "44px native controls override smaller optional Taste chrome guidance",
+    "Immediate native state; preserve inherited reduced motion; no month grid/dragdrop/P1 engine"
+  ],
+  "verification": "19helpercases/89rootunit/30mobile/161integration/157browserPASS;16actualmanualimages/axe0/Taste0; full frozen source and final reviewed byte match verified"
+}

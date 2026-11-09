@@ -559,6 +559,7 @@ test("extra session and reschedule persist the chosen room and calendar filters 
     await page
       .getByText("Lọc lớp, giáo viên và phòng", { exact: true })
       .click();
+    await page.getByLabel("Xem theo", { exact: true }).selectOption("range");
     await page.getByLabel("Lịch từ ngày", { exact: true }).fill("2030-06-04");
     await page.getByLabel("Lịch đến ngày", { exact: true }).fill("2030-06-04");
     await page
@@ -574,7 +575,7 @@ test("extra session and reschedule persist the chosen room and calendar filters 
       .getByLabel("Lọc phòng học", { exact: true })
       .selectOption(first.id);
     await expect(
-      page.getByRole("link", { name: "Mở buổi 2030-06-04", exact: true }),
+      page.getByRole("link", { name: "Mở buổi 04/06/2030", exact: true }),
     ).toBeVisible();
   } finally {
     await db.$disconnect();

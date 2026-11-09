@@ -397,11 +397,15 @@ async function teachingJourney(
       .getByRole("status"),
   ).toBeVisible();
   await page.getByRole("link", { name: "Lịch buổi học", exact: true }).click();
+  await page.getByLabel("Xem theo", { exact: true }).selectOption("range");
   await page.getByLabel("Lịch từ ngày", { exact: true }).fill(fixtureDay(0));
   await page.getByLabel("Lịch đến ngày", { exact: true }).fill(fixtureDay(29));
   await page.getByRole("button", { name: "Xem lịch", exact: true }).click();
   await page
-    .getByRole("link", { name: `Mở buổi ${fixtureDay(1)}`, exact: true })
+    .getByRole("link", {
+      name: `Mở buổi ${fixtureDay(1).split("-").reverse().join("/")}`,
+      exact: true,
+    })
     .click();
   await expect(page).toHaveURL(/\/app\/sessions\/[a-f0-9-]+$/);
   const firstSession = await f.db.classSession.findUniqueOrThrow({

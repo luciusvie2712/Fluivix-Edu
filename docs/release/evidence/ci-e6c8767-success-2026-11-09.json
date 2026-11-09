@@ -1,0 +1,217 @@
+{
+  "headSha": "e6c87672f52df4c85d3984ea382bbbe98840c91a",
+  "branch": "main",
+  "runId": 42558583184,
+  "url": "https://github.com/luciusvie2712/Fluivix-Edu/actions/runs/42558583184",
+  "status": "completed",
+  "conclusion": "success",
+  "updatedAt": "2026-11-09T04:02:32Z",
+  "jobs": [
+    {
+      "id": 128969733481,
+      "name": "identity",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 42558583184,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Run mkdir -p .agents/skills && cp -R .ci-taste/skills/taste-skill .agents/skills/design-taste-frontend",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 5
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 6
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 7
+        },
+        {
+          "name": "Run pnpm install --frozen-lockfile",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Run pnpm db:generate",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        },
+        {
+          "name": "Run pnpm --filter @fluivix/server-crypto build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10
+        },
+        {
+          "name": "Run pnpm lint",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 11
+        },
+        {
+          "name": "Run pnpm format:check",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 12
+        },
+        {
+          "name": "Run pnpm typecheck",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 13
+        },
+        {
+          "name": "Run pnpm test",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 14
+        },
+        {
+          "name": "Run pnpm --filter @fluivix/mobile test",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 15
+        },
+        {
+          "name": "Run pnpm build",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 16
+        },
+        {
+          "name": "Run pnpm openapi:generate && pnpm client:generate",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 17
+        },
+        {
+          "name": "Run git diff --exit-code -- apps/api/openapi.json packages/api-client/src/schema.d.ts",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 18
+        },
+        {
+          "name": "Run pnpm test:integration",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19
+        },
+        {
+          "name": "Run pnpm test:mobile:api",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20
+        },
+        {
+          "name": "Run pnpm exec playwright install --with-deps chromium",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21
+        },
+        {
+          "name": "Run pnpm test:e2e",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 22
+        },
+        {
+          "name": "Run pnpm audit --audit-level=high",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 23
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 24
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 44
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 45
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 46
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 47
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 48
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 49
+        }
+      ]
+    }
+  ],
+  "countsAttribution": "Decoded GitHub job logs independently confirm70unit/30mobile/161integration/144browser; all30steps SUCCESS.",
+  "verifiedLogLines": [
+    "2026-11-09T03:51:30.5925436Z > prettier --check apps packages tooling tests *.json *.yaml *.yml",
+    "2026-11-09T03:52:08.2152820Z  Test Files  16 passed (16)",
+    "2026-11-09T03:52:08.2154011Z       Tests  70 passed (70)",
+    "2026-11-09T03:52:08.2158410Z    Duration  1.41s (import 52%, tests 24%, transform 20%, worker 4%)",
+    "2026-11-09T03:52:26.8771584Z Test Suites: 7 passed, 7 total",
+    "2026-11-09T03:52:26.8772088Z Tests:       30 passed, 30 total",
+    "2026-11-09T03:55:17.1437735Z  Test Files  1 passed (1)",
+    "2026-11-09T03:55:17.1438218Z       Tests  161 passed (161)",
+    "2026-11-09T03:55:17.1438972Z    Duration  94.79s (tests 99%)",
+    "2026-11-09T03:55:50.0280119Z Running 144 tests using 1 worker",
+    "2026-11-09T04:02:25.6168222Z   144 passed (6.7m)",
+    "2026-11-09T04:02:26.5634218Z Severity: 1 low | 4 moderate"
+  ],
+  "releaseReadiness": "BLOCKED"
+}

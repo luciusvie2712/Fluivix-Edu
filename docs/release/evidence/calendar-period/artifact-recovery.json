@@ -1,0 +1,10 @@
+{
+  "date": "2026-11-09",
+  "status": "RECOVERED",
+  "projectFullGateExitCode": 0,
+  "originalBookkeepingHelperExitCode": 1,
+  "originalFailure": "OSError22 opening docs/release/evidence/teaching-selection/calendar-1024-reduce.png for wb during historical-artifact restoration; cause not determined",
+  "observedBeforeRecovery": "File and first private backup both intact with equal PNG bytes; no product source affected",
+  "recovery": "Non-overwriting first backups; reopen existing files r+b with bounded retries; verify every restored byte against actual HEAD; incremental private manifest",
+  "verifiedArtifacts": 207
+}

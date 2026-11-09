@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-09",
+  "status": "REJECTED_MANUAL_PHONE_DENSITY",
+  "observed": "At360x900 the first visible viewport reaches the table header while the first record is below the fold. Preserve44px controls,16px text and bounded horizontal scrolling; reduce only local spacing and repetitive help/caption text.",
+  "images": [
+    {
+      "path": "docs/release/evidence/calendar-period/rejected-baseline/week-360-no-preference.png",
+      "sha256": "e6f582bb0bc96bb24ed00a3c7f216674a14e7971ef34c9e3c0451c39e081aeb9"
+    },
+    {
+      "path": "docs/release/evidence/calendar-period/rejected-baseline/day-360-no-preference.png",
+      "sha256": "350ef87d8cbe54be49895d83476f353403a6ca39dc063d37358fa13565e58e60"
+    }
+  ]
+}

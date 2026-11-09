@@ -1,0 +1,90 @@
+{
+  "date": "2026-11-09",
+  "status": "PASS_LOCAL_FULL_FROZEN_GATE",
+  "releaseReadiness": "BLOCKED",
+  "baseCommit": "e6c87672f52df4c85d3984ea382bbbe98840c91a",
+  "features": [
+    "Native Day/Week/Custom controls with Monday-first period movement",
+    "Centre-IANA Today, strict calendar-date/leap/year/DST arithmetic and Vietnamese date labels",
+    "Explicit applied query range and no misleading requests for invalid/unapplied edits",
+    "Real class/teacher/room filters retained with result page reset",
+    "Current cancellation and active rescheduling variants accurately differentiated",
+    "Native44px controls, keyboard focus and first calendar record in initial viewport"
+  ],
+  "tests": {
+    "unit": 89,
+    "mobile": 30,
+    "integration": 161,
+    "browser": 157,
+    "browserSkipped": 0,
+    "browserFlaky": 0,
+    "currentFocusedBrowser": 13,
+    "priorFocused41": "Historical before subsequent variant-label repair; not reused as current acceptance",
+    "uncachedBuilds": 8,
+    "uncachedTypechecks": 8,
+    "toolsTypeScript": "PASS",
+    "realMobileApi": "PASS",
+    "expoAlignment": "PASS",
+    "openapiClient": "187operations STABLE",
+    "offlineFrozenInstall": "PASS",
+    "uiSkillSources": 3,
+    "uiSkillIds": 5,
+    "audit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    }
+  },
+  "visual": {
+    "imagesIndividuallyReviewed": 16,
+    "widths": [
+      360,
+      768,
+      1024,
+      1440
+    ],
+    "motion": [
+      "no-preference",
+      "reduce"
+    ],
+    "surfaces": [
+      "day",
+      "week"
+    ],
+    "axeViolations": 0,
+    "tasteFindings": 0,
+    "manual": "manual-visual-review.json",
+    "finalFullSuiteByteMatch": true,
+    "rejectedBeforeRepair": [
+      "rejected-baseline/manual-finding.json",
+      "first-partial-gate.json"
+    ]
+  },
+  "sourcePaths": [
+    "apps/web/lib/calendar-period.ts",
+    "apps/web/components/calendar-period-controls.tsx",
+    "apps/web/components/session-workspace.tsx",
+    "apps/web/app/globals.css",
+    "tests/unit/calendar-period.test.ts",
+    "tests/e2e/calendar-period.spec.ts",
+    "tests/e2e/rooms.spec.ts",
+    "tests/e2e/teaching-selection.spec.ts",
+    "tests/e2e/teaching.spec.ts"
+  ],
+  "sourceFrozen": true,
+  "privateEnvironmentUnchanged": true,
+  "apiSchemaMigrations": "No API/DTO/migration change;187operations/001..031 stable",
+  "priorExactCI": "ci-e6c8767-success-2026-11-09.json",
+  "moduleCommitAndExactCI": "PENDING",
+  "historicalFailures": "focused-recovery.json; first full gate explicitly ABORTED_NOT_ACCEPTED and not reused",
+  "remaining": "Session change-history API/UI is a separate executable P0 gap; do not mark wholeW10/teaching history DONE. Reminders, ops/M4, dependencies and actual external release gates remain.",
+  "artifactBookkeeping": {
+    "status": "RECOVERED",
+    "evidence": "artifact-recovery.json",
+    "originalHelperExitCode": 1,
+    "projectFullGateExitCode": 0,
+    "verifiedHistoricalArtifacts": 207
+  }
+}

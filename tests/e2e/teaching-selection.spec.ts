@@ -488,6 +488,7 @@ test("extra and rescheduled sessions use off-page assigned teachers, preserve hi
     await page
       .getByLabel("Lọc giáo viên", { exact: true })
       .selectOption(f.target.id);
+    await page.getByLabel("Xem theo", { exact: true }).selectOption("range");
     await page.getByLabel("Lịch từ ngày", { exact: true }).fill("2030-06-04");
     await page.getByLabel("Lịch đến ngày", { exact: true }).fill("2030-06-04");
     await page.getByRole("button", { name: "Xem lịch", exact: true }).click();
@@ -498,7 +499,7 @@ test("extra and rescheduled sessions use off-page assigned teachers, preserve hi
     ).toBeVisible();
     await page.getByLabel("Lọc giáo viên", { exact: true }).selectOption("");
     await expect(
-      page.getByRole("link", { name: "Mở buổi 2030-06-04", exact: true }),
+      page.getByRole("link", { name: "Mở buổi 04/06/2030", exact: true }),
     ).toBeVisible();
     await expect(
       page.getByRole("region", { name: "Các buổi học", exact: true }),
@@ -539,11 +540,12 @@ test("selected teacher only queries assigned classes; calendar failure removes c
     await expect(
       picker(page, "Lọc lớp học").getByText(/1 kết quả/),
     ).toBeVisible();
+    await page.getByLabel("Xem theo", { exact: true }).selectOption("range");
     await page.getByLabel("Lịch từ ngày", { exact: true }).fill("2030-06-03");
     await page.getByLabel("Lịch đến ngày", { exact: true }).fill("2030-06-03");
     await page.getByRole("button", { name: "Xem lịch", exact: true }).click();
     await expect(
-      page.getByRole("link", { name: "Mở buổi 2030-06-03", exact: true }),
+      page.getByRole("link", { name: "Mở buổi 03/06/2030", exact: true }),
     ).toBeVisible();
     const pattern = "**/api/v1/schedule?*";
     await page.route(pattern, (route) => route.abort("failed"));
@@ -560,7 +562,7 @@ test("selected teacher only queries assigned classes; calendar failure removes c
     await page.unroute(pattern);
     await page.getByRole("button", { name: "Thử lại", exact: true }).click();
     await expect(
-      page.getByRole("link", { name: "Mở buổi 2030-06-03", exact: true }),
+      page.getByRole("link", { name: "Mở buổi 03/06/2030", exact: true }),
     ).toBeVisible();
     // Preserve the real last-owner invariant while revoking this selected teacher.
     const otherOwner = await db.user.findUniqueOrThrow({
@@ -615,6 +617,9 @@ for (const mode of ["no-preference", "reduce"] as const)
         await page.emulateMedia({ reducedMotion: mode });
         await login(page, f);
         await page
+          .getByLabel("Xem theo", { exact: true })
+          .selectOption("range");
+        await page
           .getByLabel("Lịch từ ngày", { exact: true })
           .fill("2030-06-03");
         await page
@@ -624,7 +629,7 @@ for (const mode of ["no-preference", "reduce"] as const)
           .getByRole("button", { name: "Xem lịch", exact: true })
           .click();
         await expect(
-          page.getByRole("link", { name: "Mở buổi 2030-06-03", exact: true }),
+          page.getByRole("link", { name: "Mở buổi 03/06/2030", exact: true }),
         ).toBeVisible();
         await expect(
           picker(page, "Lọc lớp học").getByText(/26 kết quả/),
