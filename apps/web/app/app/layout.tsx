@@ -1,6 +1,6 @@
 "use client";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { TenantNavigation } from "../../components/tenant-navigation";
 import {
   useEffect,
   useState,
@@ -33,6 +33,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   const session = useSession();
   const [logoutError, setLogoutError] = useState("");
   const router = useRouter();
+  const pathname = usePathname();
   const online = useSyncExternalStore(
     subscribeNetwork,
     networkSnapshot,
@@ -54,62 +55,16 @@ export default function Layout({ children }: { children: ReactNode }) {
   )?.tenant;
   return (
     <div className="shell">
-      <aside className="sidebar">
-        <Link className="wordmark" href="/app/students">
-          Fluivix<span>Edu</span>
-        </Link>
-        <nav aria-label="Điều hướng trung tâm">
-          {["owner", "manager", "academic_staff", "accountant"].includes(
-            session.me.activeRole ?? "",
-          ) && (
-            <>
-              <Link href="/app/dashboard">Tổng quan trung tâm</Link>
-              <Link href="/app/reports">Báo cáo trung tâm</Link>
-            </>
-          )}
-          <Link href="/app/students">Học viên</Link>
-          {["owner", "manager", "academic_staff", "teacher"].includes(
-            session.me.activeRole ?? "",
-          ) && <Link href="/app/classes">Lớp học và lịch học</Link>}
-          {["owner", "manager", "academic_staff", "teacher"].includes(
-            session.me.activeRole ?? "",
-          ) && <Link href="/app/schedule">Lịch buổi học</Link>}
-          <Link href="/app/account">Tài khoản và phiên</Link>
-          <Link href="/app/notifications">Thông báo</Link>
-          <Link href="/app/privacy">Quyền riêng tư</Link>
-          {["owner", "manager", "accountant"].includes(
-            session.me.activeRole ?? "",
-          ) && <Link href="/app/audit">Nhật ký hoạt động</Link>}
-          {["owner", "manager", "accountant"].includes(
-            session.me.activeRole ?? "",
-          ) && <Link href="/app/finance/invoices">Chứng từ học phí</Link>}
-          {["owner", "manager", "accountant"].includes(
-            session.me.activeRole ?? "",
-          ) && <Link href="/app/finance/payments">Thu tiền và phiếu thu</Link>}
-          {["owner", "accountant"].includes(session.me.activeRole ?? "") && (
-            <Link href="/app/finance/receivables">Công nợ học phí</Link>
-          )}
-          {["owner", "accountant"].includes(session.me.activeRole ?? "") && (
-            <Link href="/app/finance/fee-plans">Biểu phí</Link>
-          )}
-          {["owner", "manager", "academic_staff"].includes(
-            session.me.activeRole ?? "",
-          ) && <Link href="/app/assessments">Đầu điểm và kết quả</Link>}
-          {["owner", "manager", "academic_staff"].includes(
-            session.me.activeRole ?? "",
-          ) && <Link href="/app/teachers">Giáo viên</Link>}
-          {["owner", "manager", "academic_staff"].includes(
-            session.me.activeRole ?? "",
-          ) && <Link href="/app/guardians">Phụ huynh và quan hệ</Link>}
-          {["owner", "manager"].includes(session.me.activeRole ?? "") && (
-            <Link href="/app/staff">Nhân sự và quyền</Link>
-          )}
-          {["owner", "manager"].includes(session.me.activeRole ?? "") && (
-            <Link href="/app/settings">Gói dịch vụ</Link>
-          )}
-          <Link href="/tenant/select">Đổi trung tâm / vai trò</Link>
-        </nav>
-      </aside>
+      <TenantNavigation
+        key={[
+          session.me.id,
+          session.me.activeTenantId,
+          session.me.activeRole,
+          pathname,
+        ].join(":")}
+        role={session.me.activeRole ?? null}
+        pathname={pathname}
+      />
       <header className="topbar">
         <span>
           {tenant?.name} ·{" "}

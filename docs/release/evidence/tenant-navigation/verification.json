@@ -1,0 +1,74 @@
+{
+  "date": "2026-11-09",
+  "status": "PASS_LOCAL_FULL_FROZEN_GATE",
+  "releaseReadiness": "BLOCKED",
+  "baseCommit": "4d561bf0e90a69f68d6477373f9fea617ba8da7b",
+  "features": [
+    "Native compact menu initially closed at <=1024px; desktop navigation always visible",
+    "Keyboard Enter/Space/Tab/Escape, close focus return and focused-link resize recovery",
+    "Route/identity/tenant/role key resets compact menu without remounting page forms",
+    "Current route and child resource route identify their directory with aria-current",
+    "All existing role conditions, authenticated routes, read-only/offline notices and logout retained"
+  ],
+  "scope": {
+    "schema": "UNCHANGED migrations001..031",
+    "api": "UNCHANGED187 operations",
+    "source": [
+      "apps/web/app/app/layout.tsx",
+      "apps/web/app/globals.css",
+      "apps/web/components/tenant-navigation.tsx",
+      "tests/e2e/tenant-navigation.spec.ts"
+    ]
+  },
+  "tests": {
+    "unit": 70,
+    "mobile": 30,
+    "integration": 161,
+    "browser": 144,
+    "browserSkipped": 0,
+    "browserFlaky": 0,
+    "newFocusedBrowser": 11,
+    "uncachedBuilds": 8,
+    "uncachedTypechecks": 8,
+    "toolsTypeScript": "PASS",
+    "realMobileApiSmoke": "PASS",
+    "expoSdkAlignment": "PASS",
+    "openapiClientRegeneration": "STABLE",
+    "offlineFrozenInstall": "PASS",
+    "aiPackInventory": "49screens/30TC inventory only",
+    "uiSkillSources": 3,
+    "uiSkillIds": 5,
+    "audit": {
+      "info": 0,
+      "low": 1,
+      "moderate": 4,
+      "high": 0,
+      "critical": 0
+    }
+  },
+  "visual": {
+    "actualBrowser": "Chromium with actual compiled API and production Next, isolated synthetic PostgreSQL",
+    "widths": [
+      360,
+      768,
+      1024,
+      1440
+    ],
+    "motion": [
+      "no-preference",
+      "reduce"
+    ],
+    "imagesManuallyReviewed": 14,
+    "axeViolations": 0,
+    "tasteFindings": 0,
+    "manualEvidence": "manual-visual-review.json"
+  },
+  "sourceFrozen": true,
+  "privateEnvironmentUnchanged": true,
+  "priorExactCI": "ci-4d561bf-success-2026-11-09.json",
+  "moduleCommitAndCI": "PENDING",
+  "limitations": [
+    "Calendar day/week affordances remain a separate next slice",
+    "No physical mobile-device, real push, legal/consent/UAT or staging/offhost custody approval is inferred"
+  ]
+}

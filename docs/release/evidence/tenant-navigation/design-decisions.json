@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-09",
+  "status": "APPLIED_PENDING_REAL_BROWSER_ACCEPTANCE",
+  "designDirection": "Existing single framed-sheet, blue accent, Arial16 Vietnamese; seed1920114305; no redraw",
+  "screenQuestion": "Can staff reach the current operational page immediately on a narrow viewport and open the role-scoped menu when needed?",
+  "objects": [
+    "Verified tenant name",
+    "Selected role",
+    "Current route",
+    "Existing role-permitted links",
+    "Offline/read-only messages",
+    "Current operational form and unsaved draft"
+  ],
+  "proMax": {
+    "sourceSha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+    "query": "navigation menu keyboard focus --domain ux",
+    "appliedGuidance": [
+      "Logical keyboard order",
+      "Visible focus states",
+      "Focus not obscured; distinguish enhancedAAA fromAA"
+    ]
+  },
+  "taste": {
+    "sourceSha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+    "scope": "App-screen phone navigation folds; actual four-width browser review required"
+  },
+  "motion": {
+    "sourceSha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+    "skillIds": [
+      "accessible-animation",
+      "micro-interaction",
+      "60fps-animation"
+    ],
+    "decision": "Native immediate disclosure; no new motion dependency, transform/opacity animation or navigation delay. Preserve inherited reduced-motion handling."
+  },
+  "verification": "Product applied after exact previous CI SUCCESS; current focused and frozen verification pending"
+}

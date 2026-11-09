@@ -356,6 +356,24 @@ input[aria-invalid="true"] {
   grid-row: 1 / -1;
   padding: 24px 16px;
 }
+.sidebar-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.navigation-toggle {
+  display: none;
+}
+.sidebar nav[hidden] {
+  display: none;
+}
+.sidebar nav a[aria-current="page"] {
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
 .sidebar nav {
   display: grid;
   gap: 8px;
@@ -562,7 +580,14 @@ body:has(.session-notice) .auth-layout {
     padding: 16px;
   }
   .sidebar .wordmark {
-    margin-bottom: 12px;
+    margin-bottom: 0;
+  }
+  .navigation-toggle {
+    display: inline-flex;
+    min-height: 44px;
+  }
+  .sidebar nav:not([hidden]) {
+    margin-top: 16px;
   }
   .sidebar nav {
     display: flex;

@@ -1,5 +1,19 @@
 # Current-session test results
 
+## Current checkpoint — Compact navigation local PASS (2026-11-09)
+
+Tenant navigation now folds behind a labelled native menu button at widths up to1024px, so operational content appears in the first viewport. Desktop links stay visible. Keyboard close/return, resize recovery, current resource directory, route/context resets and unsaved student draft retention are verified against the real API. Existing role routes, read-only/offline messages and logout remain operational. No API, schema, migration or native UI changed. The same framed-sheet/blue/Arial16 design and all3 verified UI skill sources were applied;14 current browser images across360/768/1024/1440 and both motion preferences were individually reviewed, with0axe violations and0Taste findings. Fresh frozen acceptance passed70unit/30mobile/161integration/144browser with0skip/flaky,8uncached builds/typechecks, tools TypeScript, mobileAPI, Expo alignment, stable187-operation contract generation, frozen install, skills/inventory and audit0HIGH/CRITICAL (4MODERATE/1LOW remain). Prior4d561bf exactCI passed all30steps with independently decoded matching counts. New module commit/exactCI pending; releaseBLOCKED. Calendar day/week, reminders, operations/dependencies and external approvals remain tracked.
+
+Evidence: `evidence/tenant-navigation/verification.json`.
+
+## Historical checkpoints
+
+## Current checkpoint — Authentication contract exact CI PASS (2026-11-09)
+
+Exact commit 4d561bf0e90a69f68d6477373f9fea617ba8da7b on main passed all 30 CI steps in run 42553724861/job128954712573. Decoded job logs confirm 70 unit, 30 mobile, 161 integration and 133 browser tests (7.2m); audit has 0 HIGH/CRITICAL, 4 MODERATE and 1 LOW. This independently matches the completed local frozen gate. Proof: evidence/ci-4d561bf-success-2026-11-09.json. Release remains BLOCKED by the outstanding P0/M4 and external staging, legal, device and push gates. The next slice addresses compact tenant navigation; it has no accepted result yet.
+
+## Historical checkpoints
+
 ## Current checkpoint — Authentication contract local PASS (2026-11-09)
 
 Authentication transport documentation now matches the existing runtime: protected tenant endpoints use bearer access, platform endpoints use their separate platformBearer scheme, credential exchanges remain public to bearer authentication, and browser/platform refresh operations require their distinct HttpOnly cookies. Read-only web-session verification requires access AND its matching refresh cookie. Existing native transport restrictions, browser Origin/CSRF rules and unauthorized error envelopes are documented. Guards, service authorization, token storage, DTO schemas, paths and all187 operation IDs remain unchanged.

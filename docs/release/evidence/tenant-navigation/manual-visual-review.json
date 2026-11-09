@@ -1,0 +1,78 @@
+{
+  "date": "2026-11-09",
+  "method": "Individually viewed14 captured browser PNGs through view_image; final full-suite PNGs must match the reviewed byte hashes or receive another individual review. All14 final full-suite PNGs were subsequently verified byte-identical to the individually reviewed copies.",
+  "findings": "Readable Vietnamese labels and current directory underline; no clipping/overlap/page overflow; compact closed content appears in first viewport; open menu remains reachable in document flow; desktop sidebar and tenant context remain clear. Normal/reduced pairs are byte-identical for this immediate static disclosure.",
+  "images": [
+    {
+      "path": "docs/release/evidence/tenant-navigation/1024-no-preference-closed.png",
+      "sha256": "e5dea58df8e1e098818cdbf7b00f125ebb9622df5041264e03f724cdbe637134",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/tenant-navigation/1024-no-preference-open.png",
+      "sha256": "254be86c149b0e8036651ddb4ee6577f93dcfdfbcbce57425ef44c90ba2f0cbb",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/tenant-navigation/1024-reduce-closed.png",
+      "sha256": "e5dea58df8e1e098818cdbf7b00f125ebb9622df5041264e03f724cdbe637134",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/tenant-navigation/1024-reduce-open.png",
+      "sha256": "254be86c149b0e8036651ddb4ee6577f93dcfdfbcbce57425ef44c90ba2f0cbb",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/tenant-navigation/1440-no-preference-desktop.png",
+      "sha256": "ba8f212d489af868721b58afd7102286ed34c90d065d0b59c99caee911a6af18",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/tenant-navigation/1440-reduce-desktop.png",
+      "sha256": "ba8f212d489af868721b58afd7102286ed34c90d065d0b59c99caee911a6af18",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/tenant-navigation/360-no-preference-closed.png",
+      "sha256": "8275ca5042960ee6e55dcbe63ba893856a32f179ad89700867b84de614277e87",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/tenant-navigation/360-no-preference-open.png",
+      "sha256": "c12f28499ca6bed3e850da47f77bc3f0dcc941d2da1a47882c1d3ae12e517259",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/tenant-navigation/360-reduce-closed.png",
+      "sha256": "8275ca5042960ee6e55dcbe63ba893856a32f179ad89700867b84de614277e87",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/tenant-navigation/360-reduce-open.png",
+      "sha256": "c12f28499ca6bed3e850da47f77bc3f0dcc941d2da1a47882c1d3ae12e517259",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/tenant-navigation/768-no-preference-closed.png",
+      "sha256": "1d0f640b59cb6210bf8effa7370ba8962af8b61dae1428ac263d82ed08046216",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/tenant-navigation/768-no-preference-open.png",
+      "sha256": "08a7f7dfc9572684982e4d60411da01e70f1ac626e3ac50c23bc62abc4ed7c6d",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/tenant-navigation/768-reduce-closed.png",
+      "sha256": "1d0f640b59cb6210bf8effa7370ba8962af8b61dae1428ac263d82ed08046216",
+      "status": "PASS"
+    },
+    {
+      "path": "docs/release/evidence/tenant-navigation/768-reduce-open.png",
+      "sha256": "08a7f7dfc9572684982e4d60411da01e70f1ac626e3ac50c23bc62abc4ed7c6d",
+      "status": "PASS"
+    }
+  ],
+  "finalFullSuiteBytesMatched": true
+}
