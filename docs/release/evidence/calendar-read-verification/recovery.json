@@ -1,0 +1,34 @@
+{
+  "date": "2026-11-09",
+  "status": "REPAIR_VERIFIED_FULL_FROZEN_LOCAL_GATE",
+  "baseCommit": "0881f4059946dfc048de984cea95109dd90e2a33",
+  "failedCI": "../ci-0881f40-failed-2026-11-09.json",
+  "rootCause": "Calendar date submission shared a native form with resource pickers. A selected room pending its real detail response has custom validity and prevents native submit, leaving the previously applied dates unchanged. CI trace shows only current-day schedule reads despite both date inputs being 2030-06-04.",
+  "repair": "Keep the date form and all native date validation; render auto-applied resource filters outside the date form. Existing RoomPicker verification and mutation forms remain unchanged.",
+  "regression": "Hold the actual successful room detail response, assert the picker remains invalid, apply the chosen date, assert actual matching session is visible while room verification remains pending, then release the real response. No fabricated response data, timeout increase, retry, or removed assertion.",
+  "baselines": [
+    {
+      "report": "../e2e-2026-11-09-calendar-read-verification-baseline.json",
+      "result": "1 FAIL",
+      "note": "Also exposed a route cleanup race; cleanup corrected by awaiting fulfillment before unroute."
+    },
+    {
+      "report": "../e2e-2026-11-09-calendar-read-verification-baseline-cleanup.json",
+      "result": "1 FAIL",
+      "note": "Only expected date-caption failure; real backend response cleanup completes."
+    }
+  ],
+  "sourcePaths": [
+    "apps/web/components/calendar-period-controls.tsx",
+    "tests/e2e/calendar-period.spec.ts"
+  ],
+  "fullFrozenGate": "verification.json",
+  "releaseReadiness": "BLOCKED",
+  "focusedBrowser": {
+    "report": "../e2e-2026-11-09-calendar-read-verification-fixed-focused.json",
+    "passed": 27,
+    "failed": 0,
+    "skipped": 0,
+    "flaky": 0
+  }
+}

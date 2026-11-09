@@ -52,127 +52,129 @@ export function CalendarPeriodControls({
     "aria-describedby": error ? errorId : undefined,
   } as const;
   return (
-    <form
-      aria-label="Bộ lọc lịch"
-      onSubmit={(event) => {
-        event.preventDefault();
-        if (!draft || !validCalendarRange(draft)) {
-          setError(invalidRange);
-          return;
-        }
-        setError("");
-        onApply(draft);
-      }}
-    >
-      <fieldset className="operation-fields">
-        <div className="calendar-period-controls">
-          <SelectField
-            label="Xem theo"
-            value={view}
-            onChange={(event) => {
-              const selected = event.target.value;
-              if (
-                selected !== "day" &&
-                selected !== "week" &&
-                selected !== "range"
-              )
-                return;
-              if (selected === "range") setCustom(draft ?? appliedRange);
-              else if (view === "range") setAnchor(custom.from);
-              setView(selected);
-              setError("");
-            }}
-          >
-            <option value="day">Ngày</option>
-            <option value="week">Tuần</option>
-            <option value="range">Khoảng ngày</option>
-          </SelectField>
-          {view !== "range" && (
-            <Field
-              label={view === "week" ? "Ngày trong tuần" : "Ngày xem lịch"}
-              {...dateProps}
-              value={anchor}
+    <>
+      <form
+        aria-label="Bộ lọc lịch"
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (!draft || !validCalendarRange(draft)) {
+            setError(invalidRange);
+            return;
+          }
+          setError("");
+          onApply(draft);
+        }}
+      >
+        <fieldset className="operation-fields">
+          <div className="calendar-period-controls">
+            <SelectField
+              label="Xem theo"
+              value={view}
               onChange={(event) => {
-                setAnchor(event.target.value);
-                setError("");
-              }}
-            />
-          )}
-        </div>
-        {view === "range" && (
-          <div className="operations-grid">
-            <Field
-              label="Lịch từ ngày"
-              {...dateProps}
-              value={custom.from}
-              onChange={(event) => {
-                setCustom({ ...custom, from: event.target.value });
-                setError("");
-              }}
-            />
-            <Field
-              label="Lịch đến ngày"
-              {...dateProps}
-              value={custom.to}
-              onChange={(event) => {
-                setCustom({ ...custom, to: event.target.value });
-                setError("");
-              }}
-            />
-          </div>
-        )}
-        <div
-          className="calendar-period-actions"
-          role="group"
-          aria-label="Di chuyển khoảng lịch"
-        >
-          <Button
-            type="button"
-            variant="outline"
-            aria-label="Xem khoảng lịch trước"
-            disabled={!previous}
-            onClick={() => previous && apply(previous)}
-          >
-            Trước
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              const selected = view === "week" ? "week" : "day";
-              const period = calendarPeriod(
-                centreCalendarDay(timezone),
-                selected,
-              );
-              if (period) {
+                const selected = event.target.value;
+                if (
+                  selected !== "day" &&
+                  selected !== "week" &&
+                  selected !== "range"
+                )
+                  return;
+                if (selected === "range") setCustom(draft ?? appliedRange);
+                else if (view === "range") setAnchor(custom.from);
                 setView(selected);
-                apply(period);
-              }
-            }}
+                setError("");
+              }}
+            >
+              <option value="day">Ngày</option>
+              <option value="week">Tuần</option>
+              <option value="range">Khoảng ngày</option>
+            </SelectField>
+            {view !== "range" && (
+              <Field
+                label={view === "week" ? "Ngày trong tuần" : "Ngày xem lịch"}
+                {...dateProps}
+                value={anchor}
+                onChange={(event) => {
+                  setAnchor(event.target.value);
+                  setError("");
+                }}
+              />
+            )}
+          </div>
+          {view === "range" && (
+            <div className="operations-grid">
+              <Field
+                label="Lịch từ ngày"
+                {...dateProps}
+                value={custom.from}
+                onChange={(event) => {
+                  setCustom({ ...custom, from: event.target.value });
+                  setError("");
+                }}
+              />
+              <Field
+                label="Lịch đến ngày"
+                {...dateProps}
+                value={custom.to}
+                onChange={(event) => {
+                  setCustom({ ...custom, to: event.target.value });
+                  setError("");
+                }}
+              />
+            </div>
+          )}
+          <div
+            className="calendar-period-actions"
+            role="group"
+            aria-label="Di chuyển khoảng lịch"
           >
-            Hôm nay
-          </Button>
-          <Button
-            type="button"
-            variant="outline"
-            aria-label="Xem khoảng lịch sau"
-            disabled={!next}
-            onClick={() => next && apply(next)}
-          >
-            Sau
-          </Button>
-        </div>
-        {error && (
-          <p role="alert" id={errorId} className="field-error">
-            {error}
+            <Button
+              type="button"
+              variant="outline"
+              aria-label="Xem khoảng lịch trước"
+              disabled={!previous}
+              onClick={() => previous && apply(previous)}
+            >
+              Trước
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                const selected = view === "week" ? "week" : "day";
+                const period = calendarPeriod(
+                  centreCalendarDay(timezone),
+                  selected,
+                );
+                if (period) {
+                  setView(selected);
+                  apply(period);
+                }
+              }}
+            >
+              Hôm nay
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              aria-label="Xem khoảng lịch sau"
+              disabled={!next}
+              onClick={() => next && apply(next)}
+            >
+              Sau
+            </Button>
+          </div>
+          {error && (
+            <p role="alert" id={errorId} className="field-error">
+              {error}
+            </p>
+          )}
+          <Button type="submit">Xem lịch</Button>
+          <p className="muted calendar-period-help">
+            Tuần tính từ thứ Hai. Đổi lựa chọn rồi nhấn Xem lịch.
           </p>
-        )}
-        {children}
-        <Button type="submit">Xem lịch</Button>
-        <p className="muted calendar-period-help">
-          Tuần tính từ thứ Hai. Đổi lựa chọn rồi nhấn Xem lịch.
-        </p>
-      </fieldset>
-    </form>
+        </fieldset>
+      </form>
+      {children}
+    </>
   );
 }

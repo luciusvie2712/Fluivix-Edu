@@ -1,0 +1,105 @@
+{
+  "status": "PASS",
+  "method": "Individually viewed all 16 actual focused-run production browser screenshots via view_image; verified final full-suite image bytes exactly match those inspected.",
+  "images": [
+    {
+      "path": "docs/release/evidence/calendar-read-verification/day-1024-no-preference.png",
+      "sha256": "9328c278fc7942a4d795ad56ec74053c7a26cca93509f99b9f496c7238fdef04",
+      "manualReview": "PASS: individually viewed actual focused-run image; date controls and apply action clear, native focus, visible first row, table scroll, correct cancellation/reschedule labels."
+    },
+    {
+      "path": "docs/release/evidence/calendar-read-verification/day-1024-reduce.png",
+      "sha256": "9328c278fc7942a4d795ad56ec74053c7a26cca93509f99b9f496c7238fdef04",
+      "manualReview": "PASS: individually viewed actual focused-run image; date controls and apply action clear, native focus, visible first row, table scroll, correct cancellation/reschedule labels."
+    },
+    {
+      "path": "docs/release/evidence/calendar-read-verification/day-1440-no-preference.png",
+      "sha256": "93317ea52f5afa1b33a45d5aad5b38bf62de7f5dce70200b5a2dd12b3ea6eba9",
+      "manualReview": "PASS: individually viewed actual focused-run image; date controls and apply action clear, native focus, visible first row, table scroll, correct cancellation/reschedule labels."
+    },
+    {
+      "path": "docs/release/evidence/calendar-read-verification/day-1440-reduce.png",
+      "sha256": "93317ea52f5afa1b33a45d5aad5b38bf62de7f5dce70200b5a2dd12b3ea6eba9",
+      "manualReview": "PASS: individually viewed actual focused-run image; date controls and apply action clear, native focus, visible first row, table scroll, correct cancellation/reschedule labels."
+    },
+    {
+      "path": "docs/release/evidence/calendar-read-verification/day-360-no-preference.png",
+      "sha256": "2226a02d6c34b7d80e81a6249ddfe5109899eb12537f378407ef5b5d559a7130",
+      "manualReview": "PASS: individually viewed actual focused-run image; date controls and apply action clear, native focus, visible first row, table scroll, correct cancellation/reschedule labels."
+    },
+    {
+      "path": "docs/release/evidence/calendar-read-verification/day-360-reduce.png",
+      "sha256": "2226a02d6c34b7d80e81a6249ddfe5109899eb12537f378407ef5b5d559a7130",
+      "manualReview": "PASS: individually viewed actual focused-run image; date controls and apply action clear, native focus, visible first row, table scroll, correct cancellation/reschedule labels."
+    },
+    {
+      "path": "docs/release/evidence/calendar-read-verification/day-768-no-preference.png",
+      "sha256": "27c2cd715677869afe323301a120403ac5a9b5c9041e6ceb330f8657434814a7",
+      "manualReview": "PASS: individually viewed actual focused-run image; date controls and apply action clear, native focus, visible first row, table scroll, correct cancellation/reschedule labels."
+    },
+    {
+      "path": "docs/release/evidence/calendar-read-verification/day-768-reduce.png",
+      "sha256": "27c2cd715677869afe323301a120403ac5a9b5c9041e6ceb330f8657434814a7",
+      "manualReview": "PASS: individually viewed actual focused-run image; date controls and apply action clear, native focus, visible first row, table scroll, correct cancellation/reschedule labels."
+    },
+    {
+      "path": "docs/release/evidence/calendar-read-verification/week-1024-no-preference.png",
+      "sha256": "ccc6e2eb7b98eb2359bddc2d3a047bcffa0a8d0f659ed3d1ae827987972be273",
+      "manualReview": "PASS: individually viewed actual focused-run image; date controls and apply action clear, native focus, visible first row, table scroll, correct cancellation/reschedule labels."
+    },
+    {
+      "path": "docs/release/evidence/calendar-read-verification/week-1024-reduce.png",
+      "sha256": "ccc6e2eb7b98eb2359bddc2d3a047bcffa0a8d0f659ed3d1ae827987972be273",
+      "manualReview": "PASS: individually viewed actual focused-run image; date controls and apply action clear, native focus, visible first row, table scroll, correct cancellation/reschedule labels."
+    },
+    {
+      "path": "docs/release/evidence/calendar-read-verification/week-1440-no-preference.png",
+      "sha256": "d023d2d4269df28b3c0bf9aa6e8944f6238928c0e2ff9e79b19663d9cf84d161",
+      "manualReview": "PASS: individually viewed actual focused-run image; date controls and apply action clear, native focus, visible first row, table scroll, correct cancellation/reschedule labels."
+    },
+    {
+      "path": "docs/release/evidence/calendar-read-verification/week-1440-reduce.png",
+      "sha256": "d023d2d4269df28b3c0bf9aa6e8944f6238928c0e2ff9e79b19663d9cf84d161",
+      "manualReview": "PASS: individually viewed actual focused-run image; date controls and apply action clear, native focus, visible first row, table scroll, correct cancellation/reschedule labels."
+    },
+    {
+      "path": "docs/release/evidence/calendar-read-verification/week-360-no-preference.png",
+      "sha256": "11c1f9b3ed5914f4c2a869e91b225200d458813678de4db7d8746faa13c6f823",
+      "manualReview": "PASS: individually viewed actual focused-run image; date controls and apply action clear, native focus, visible first row, table scroll, correct cancellation/reschedule labels."
+    },
+    {
+      "path": "docs/release/evidence/calendar-read-verification/week-360-reduce.png",
+      "sha256": "11c1f9b3ed5914f4c2a869e91b225200d458813678de4db7d8746faa13c6f823",
+      "manualReview": "PASS: individually viewed actual focused-run image; date controls and apply action clear, native focus, visible first row, table scroll, correct cancellation/reschedule labels."
+    },
+    {
+      "path": "docs/release/evidence/calendar-read-verification/week-768-no-preference.png",
+      "sha256": "673a5ad3eabbd06e3eb6249abb6bdb24d132b7b9ca62708c31fc2ac296209f5e",
+      "manualReview": "PASS: individually viewed actual focused-run image; date controls and apply action clear, native focus, visible first row, table scroll, correct cancellation/reschedule labels."
+    },
+    {
+      "path": "docs/release/evidence/calendar-read-verification/week-768-reduce.png",
+      "sha256": "673a5ad3eabbd06e3eb6249abb6bdb24d132b7b9ca62708c31fc2ac296209f5e",
+      "manualReview": "PASS: individually viewed actual focused-run image; date controls and apply action clear, native focus, visible first row, table scroll, correct cancellation/reschedule labels."
+    }
+  ],
+  "widths": [
+    360,
+    768,
+    1024,
+    1440
+  ],
+  "views": [
+    "day",
+    "week"
+  ],
+  "motion": [
+    "no-preference",
+    "reduce"
+  ],
+  "axeViolations": 0,
+  "tasteFindings": 0,
+  "keyboardAnd44pxTargets": "PASS",
+  "firstRecordIn900pxViewport": "PASS",
+  "nativeBrowserLocale": "en-US native date input display; ISO date values and Vietnamese applied captions/session dates independently verified"
+}

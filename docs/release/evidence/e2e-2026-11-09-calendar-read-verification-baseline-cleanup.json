@@ -1,0 +1,201 @@
+{
+  "config": {
+    "argv": [
+      "D:\\my-project\\fluivixedu\\.cache\\node-v24.22.2-win-x64\\node.exe",
+      "D:\\my-project\\fluivixedu\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "calendar-period.spec.ts",
+      "--grep",
+      "date filtering applies while real room verification is pending"
+    ],
+    "configFile": "D:\\my-project\\fluivixedu\\playwright.config.ts",
+    "rootDir": "D:/my-project/fluivixedu/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/my-project/fluivixedu/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tenant-chromium",
+        "name": "tenant-chromium",
+        "testDir": "D:/my-project/fluivixedu/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\my-project\\fluivixedu\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "tenant-chromium",
+        "testDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "snapshotDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:3000",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "browserName": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "tenant-chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/release/evidence/e2e-2026-11-09-calendar-read-verification-baseline-cleanup.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm exec tsx tooling/e2e-server.ts",
+      "url": "http://localhost:3000/login",
+      "timeout": 60000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "calendar-period.spec.ts",
+      "file": "calendar-period.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "date filtering applies while real room verification is pending",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 10039,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('status').filter({ hasText: 'Đã áp dụng' })\nExpected: \u001b[32m\"Đã áp dụng: 0\u001b[7m3\u001b[27m/11/20\u001b[7m30\u001b[27m – 0\u001b[7m3\u001b[27m/11/20\u001b[7m30\u001b[27m.\"\u001b[39m\nReceived: \u001b[31m\"Đã áp dụng: 0\u001b[7m9\u001b[27m/11/20\u001b[7m26\u001b[27m – 0\u001b[7m9\u001b[27m/11/20\u001b[7m26\u001b[27m.\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" getByRole('status').filter({ hasText: 'Đã áp dụng' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('status').filter({ hasText: 'Đã áp dụng' })\u001b[22m\n\u001b[2m    14 × locator resolved to <p role=\"status\" class=\"muted\">…</p>\u001b[22m\n\u001b[2m       - unexpected value \"Đã áp dụng: 09/11/2026 – 09/11/2026.\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('status').filter({ hasText: 'Đã áp dụng' })\nExpected: \u001b[32m\"Đã áp dụng: 0\u001b[7m3\u001b[27m/11/20\u001b[7m30\u001b[27m – 0\u001b[7m3\u001b[27m/11/20\u001b[7m30\u001b[27m.\"\u001b[39m\nReceived: \u001b[31m\"Đã áp dụng: 0\u001b[7m9\u001b[27m/11/20\u001b[7m26\u001b[27m – 0\u001b[7m9\u001b[27m/11/20\u001b[7m26\u001b[27m.\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" getByRole('status').filter({ hasText: 'Đã áp dụng' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('status').filter({ hasText: 'Đã áp dụng' })\u001b[22m\n\u001b[2m    14 × locator resolved to <p role=\"status\" class=\"muted\">…</p>\u001b[22m\n\u001b[2m       - unexpected value \"Đã áp dụng: 09/11/2026 – 09/11/2026.\"\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\calendar-period.spec.ts:333:7",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\calendar-period.spec.ts",
+                      "column": 7,
+                      "line": 333
+                    },
+                    "snippet": "  331 |     await expect(\n  332 |       page.getByRole(\"status\").filter({ hasText: \"Đã áp dụng\" }),\n> 333 |     ).toHaveText(\"Đã áp dụng: 03/11/2030 – 03/11/2030.\");\n      |       ^\n  334 |     await expect(\n  335 |       page.getByRole(\"link\", { name: \"Mở buổi 03/11/2030\", exact: true }),\n  336 |     ).toBeVisible();"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\calendar-period.spec.ts",
+                        "column": 7,
+                        "line": 333
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('status').filter({ hasText: 'Đã áp dụng' })\nExpected: \u001b[32m\"Đã áp dụng: 0\u001b[7m3\u001b[27m/11/20\u001b[7m30\u001b[27m – 0\u001b[7m3\u001b[27m/11/20\u001b[7m30\u001b[27m.\"\u001b[39m\nReceived: \u001b[31m\"Đã áp dụng: 0\u001b[7m9\u001b[27m/11/20\u001b[7m26\u001b[27m – 0\u001b[7m9\u001b[27m/11/20\u001b[7m26\u001b[27m.\"\u001b[39m\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" getByRole('status').filter({ hasText: 'Đã áp dụng' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('status').filter({ hasText: 'Đã áp dụng' })\u001b[22m\n\u001b[2m    14 × locator resolved to <p role=\"status\" class=\"muted\">…</p>\u001b[22m\n\u001b[2m       - unexpected value \"Đã áp dụng: 09/11/2026 – 09/11/2026.\"\u001b[22m\n\n\n  331 |     await expect(\n  332 |       page.getByRole(\"status\").filter({ hasText: \"Đã áp dụng\" }),\n> 333 |     ).toHaveText(\"Đã áp dụng: 03/11/2030 – 03/11/2030.\");\n      |       ^\n  334 |     await expect(\n  335 |       page.getByRole(\"link\", { name: \"Mở buổi 03/11/2030\", exact: true }),\n  336 |     ).toBeVisible();\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\calendar-period.spec.ts:333:7"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T05:32:36.269Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\calendar-period-date-filte-5eb97-oom-verification-is-pending-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\calendar-period-date-filte-5eb97-oom-verification-is-pending-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\calendar-period-date-filte-5eb97-oom-verification-is-pending-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\calendar-period.spec.ts",
+                    "column": 7,
+                    "line": 333
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "cce12b8fb63a846bed96-c5dd2b36e6bdda45998d",
+          "file": "calendar-period.spec.ts",
+          "line": 295,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-09T05:32:17.113Z",
+    "duration": 31843.229999999996,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "date": "2026-11-09",
+  "status": "PASS_LOCAL_FULL_FROZEN_GATE",
+  "releaseReadiness": "BLOCKED",
+  "baseCommit": "0881f4059946dfc048de984cea95109dd90e2a33",
+  "sourcePaths": [
+    "apps/web/components/calendar-period-controls.tsx",
+    "tests/e2e/calendar-period.spec.ts"
+  ],
+  "tests": {
+    "unit": 89,
+    "mobile": 30,
+    "integration": 161,
+    "browser": 158,
+    "focusedBrowser": 27,
+    "skipped": 0,
+    "flaky": 0
+  },
+  "commands": "Isolated fresh database; prisma validate/generate; lint; format; turbo build --force (8 build tasks); turbo typecheck --force; tools tsc; root/mobile tests; actual mobile API smoke; Expo install --check; full integration; OpenAPI/client generation; offline frozen install; audit; AI inventory and all 3 skill sources; full real-browser suite; private source/environment byte verification before/after.",
+  "fullBrowserStats": {
+    "startTime": "2026-11-09T05:45:33.533Z",
+    "duration": 981291.649,
+    "expected": 158,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "sourceFrozen": true,
+  "privateEnvironmentUnchanged": true,
+  "contract": {
+    "clientSha256": "3BA0334974209F3C8950F0B7B6735467042A76D2235A76B2D1A83B7D081B2741",
+    "openapiSha256": "4FA132050352F042F59D70139EC4EAC8013666208843F2677D2CB94D54A45ECE",
+    "stable": true,
+    "operations": 187
+  },
+  "audit": {
+    "info": 0,
+    "low": 1,
+    "moderate": 4,
+    "high": 0,
+    "critical": 0
+  },
+  "visual": {
+    "individuallyReviewedImages": 16,
+    "fullSuiteMatchesReviewedBytes": true,
+    "axe": 0,
+    "taste": 0
+  },
+  "historicalEvidence": {
+    "regressionArtifactsArchivedPrivately": 225,
+    "restoredExactHEADBytes": true
+  },
+  "skills": [
+    {
+      "source": "taste-skill",
+      "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+      "installed": "design-taste-frontend",
+      "verifiedFiles": 38,
+      "status": "PASS"
+    },
+    {
+      "source": "ui-ux-pro-max-skill",
+      "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+      "installed": "ui-ux-pro-max",
+      "verifiedFiles": 73,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "accessible-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "micro-interaction",
+      "verifiedFiles": 4,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "60fps-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    }
+  ],
+  "priorCI": "../ci-0881f40-failed-2026-11-09.json",
+  "rootCauseAndRedGreen": "recovery.json",
+  "moduleCommitAndExactCI": "PENDING",
+  "externalGates": "Actual staging, business/legal/consent UAT, signed physical mobile builds, real push and off-host backup key custody remain BLOCKED."
+}

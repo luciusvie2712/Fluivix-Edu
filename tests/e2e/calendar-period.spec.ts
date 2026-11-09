@@ -292,6 +292,60 @@ const rows = (page: Page) =>
     .getByRole("region", { name: "Các buổi học", exact: true })
     .locator("tbody tr");
 
+test("date filtering applies while real room verification is pending", async ({
+  page,
+}) => {
+  const f = await fixture(page);
+  await f.login();
+  await page.getByLabel("Xem theo", { exact: true }).selectOption("range");
+  await page.getByLabel("Lịch từ ngày", { exact: true }).fill("2030-11-03");
+  await page.getByLabel("Lịch đến ngày", { exact: true }).fill("2030-11-03");
+  await page.locator(".calendar-resource-filters > summary").click();
+  let release!: () => void;
+  const held = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  let finish!: () => void;
+  const finished = new Promise<void>((resolve) => {
+    finish = resolve;
+  });
+  const detailPath = `**/api/v1/rooms/${f.rooms[0].id}`;
+  await page.route(detailPath, async (route) => {
+    try {
+      const response = await route.fetch();
+      expect(response.status()).toBe(200);
+      await held;
+      await route.fulfill({ response });
+    } finally {
+      finish();
+    }
+  });
+  const room = page.getByLabel("Lọc phòng học", { exact: true });
+  try {
+    await room.selectOption(f.rooms[0].id);
+    await expect(room).toHaveJSProperty(
+      "validationMessage",
+      "Chọn lại phòng đang sử dụng sau khi xác minh thông tin.",
+    );
+    await page.getByRole("button", { name: "Xem lịch", exact: true }).click();
+    await expect(
+      page.getByRole("status").filter({ hasText: "Đã áp dụng" }),
+    ).toHaveText("Đã áp dụng: 03/11/2030 – 03/11/2030.");
+    await expect(
+      page.getByRole("link", { name: "Mở buổi 03/11/2030", exact: true }),
+    ).toBeVisible();
+    await expect(rows(page)).toHaveCount(1);
+    await expect(room).toHaveJSProperty(
+      "validationMessage",
+      "Chọn lại phòng đang sử dụng sau khi xác minh thông tin.",
+    );
+  } finally {
+    release();
+    await finished;
+    await page.unroute(detailPath);
+  }
+});
+
 test("day and Monday-first week show real DST dates, cancelled/rescheduled states and the authorized session detail", async ({
   page,
 }) => {
