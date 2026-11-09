@@ -1,0 +1,173 @@
+{
+  "date": "2026-11-09",
+  "status": "PASS_LOCAL_FULL_FROZEN_GATE",
+  "baseCommit": "458c845a54c84ef017e809c6f5769fe25117868e",
+  "sourcePaths": [
+    "apps/api/openapi.json",
+    "apps/api/src/app.ts",
+    "apps/api/src/fee-reminder-predicates.ts",
+    "apps/api/src/fee-reminder-window.ts",
+    "apps/api/src/fee-reminders.dto.ts",
+    "apps/api/src/fee-reminders.ts",
+    "apps/api/src/notification-policy.ts",
+    "apps/api/src/report-queries.ts",
+    "apps/api/src/security.ts",
+    "apps/mobile/__tests__/notification-subjects.test.tsx",
+    "apps/mobile/components/inbox.tsx",
+    "apps/mobile/lib/notifications.ts",
+    "apps/web/app/globals.css",
+    "apps/web/components/fee-reminders.tsx",
+    "apps/web/components/invoice-workspace.tsx",
+    "apps/web/components/notification-workspace.tsx",
+    "apps/web/lib/api.ts",
+    "apps/worker/src/fee-reminder-jobs.ts",
+    "apps/worker/src/main.ts",
+    "apps/worker/src/notification-access.ts",
+    "apps/worker/src/notification-claims.ts",
+    "apps/worker/src/notification-jobs.ts",
+    "apps/worker/src/notifications.ts",
+    "infra/prisma/migrations/202611090033_fee_reminders/migration.sql",
+    "infra/prisma/schema.prisma",
+    "packages/api-client/src/schema.d.ts",
+    "tests/e2e/fee-reminders.spec.ts",
+    "tests/e2e/teaching.spec.ts",
+    "tests/integration/auth-contract-cases.ts",
+    "tests/integration/fee-reminder-cases.ts",
+    "tests/integration/identity.test.ts",
+    "tests/integration/report-cases.ts",
+    "tests/unit/fee-reminder-window.test.ts",
+    "tests/unit/openapi-authentication.test.ts"
+  ],
+  "releaseReadiness": "BLOCKED",
+  "tests": {
+    "unit": 118,
+    "mobile": 32,
+    "integration": 227,
+    "browser": 191,
+    "focusedReminderAndAuthIntegration": 45,
+    "focusedReminderInvoiceInboxBrowser": 25,
+    "protectedGETRoutes": 107,
+    "actualUnauthorizedGETRequests": 214,
+    "skipped": 0,
+    "flaky": 0
+  },
+  "browserStats": {
+    "startTime": "2026-11-09T14:59:20.932Z",
+    "duration": 1336786.934,
+    "expected": 191,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "commands": "Fresh owned integration and browser databases; schema validate/generate, lint/format, all8 uncached builds/types/tools,118unit/32mobile/realmobileAPI/Expo,227integration,193 stableOpenAPI/client,offline frozeninstall,audit,all3UI skill sources/inventory,191realbrowser,source/environmentbyteproof before/after,all24actualfinalimagesindividuallyobserved.",
+  "sourceFrozen": true,
+  "privateEnvironmentUnchanged": true,
+  "contract": {
+    "clientSha256": "BF7A303EF2D5257175BAC26D026C4D0F66D54B89F66778A997FC132AD218F72B",
+    "openapiSha256": "54B410E0A34DEFA71E486B70BC7C479BFE47B4D938639BA02ECD17E270ECBCD2",
+    "stable": true,
+    "operations": 193
+  },
+  "audit": {
+    "info": 0,
+    "low": 1,
+    "moderate": 4,
+    "high": 0,
+    "critical": 0
+  },
+  "policy": {
+    "initial": "DISABLED; actualowner must review and confirm in product",
+    "fixedPreset": "P0_09H_3_1_7_V1",
+    "localWindow": "09:00 inclusive..09:15 exclusive, actualcentreIANA",
+    "stages": [
+      "BEFORE_3",
+      "AFTER_1",
+      "AFTER_7"
+    ],
+    "maximumStagesPerInvoice": 3,
+    "childDayBatch": true,
+    "noCatchUp": true,
+    "lateInvoiceOrEnable": "Must exist/enable no later than localwindowstart",
+    "pause": "Paid/void/hold/pendingreconciliation/policy/consent/link/preferences/currentidentity/subscription checked beforegeneration,claim and lockedHTTP handoff",
+    "providerOutcome": "SENDING durable before separatelockedhandoff; uncertainty becomesUNKNOWN, no automatic duplicate",
+    "data": "Generic opaque notificationID only inpush, current debt from live authenticatedfinanceAPI"
+  },
+  "schema": {
+    "migrations": 33,
+    "published001Through032ExactBytesUnchanged": true,
+    "invoiceLedgerUnchanged": true,
+    "immutablePolicyHoldBatchStageHistory": true,
+    "tenantCompositeForeignKeysAndMax3Checks": "Actual PostgreSQL negative cases",
+    "migration033Sha256": "4e4d1ed14abd914f7da03bebbcee12b096f99cd72a359ba391b1f9b7b7c8f207"
+  },
+  "visual": {
+    "individuallyReviewedFinalImages": 24,
+    "surfaces": [
+      "overview",
+      "policy",
+      "hold"
+    ],
+    "widths": [
+      360,
+      768,
+      1024,
+      1440
+    ],
+    "bothMotionModes": true,
+    "axeViolations": 0,
+    "tasteFindings": 0,
+    "actualTimestampsKept": true,
+    "overview": "Wait actualinvoice and fee selects; no loadingplaceholder substituted"
+  },
+  "native": "32Jest tests plus realAPIsmoke; signedphysicaldeviceUI and actualpush NOTVERIFIED",
+  "historicalArtifacts": {
+    "archivedPrivately": 252,
+    "restoredExactHEADBytes": true
+  },
+  "skills": [
+    {
+      "source": "taste-skill",
+      "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+      "installed": "design-taste-frontend",
+      "verifiedFiles": 38,
+      "status": "PASS"
+    },
+    {
+      "source": "ui-ux-pro-max-skill",
+      "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+      "installed": "ui-ux-pro-max",
+      "verifiedFiles": 73,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "accessible-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "micro-interaction",
+      "verifiedFiles": 4,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "60fps-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    }
+  ],
+  "recovery": "recovery.json",
+  "priorCI": "../ci-458c845-success-2026-11-09.json",
+  "newModuleCommitAndExactCI": "PENDING",
+  "externalGates": "Actual staging/legal/privacy/consent/UAT approvals,signedphysicalmobile,realpush,offhostbackupkeycustody remainBLOCKED",
+  "privateSecretScan": {
+    "status": "PASS",
+    "scope": "Added text in reviewed source/release evidence only; sensitive private environment values >=12characters checked without printing/saving values or hashes",
+    "filesChecked": 92
+  }
+}

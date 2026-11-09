@@ -74,6 +74,7 @@ export function categoryEnabled(
       return pref?.attendance ?? true;
     case "GRADE_PUBLISHED":
       return pref?.grades ?? true;
+    case "FEE_REMINDER":
     case "INVOICE_ISSUED":
     case "PAYMENT_RECORDED":
       return pref?.finance ?? true;

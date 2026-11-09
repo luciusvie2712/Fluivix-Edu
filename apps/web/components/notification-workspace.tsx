@@ -12,6 +12,7 @@ const titles: Record<string, string> = {
   ATTENDANCE_FINALIZED_ABSENT: "Có cập nhật chuyên cần",
   GRADE_PUBLISHED: "Kết quả đã được công bố",
   INVOICE_ISSUED: "Có chứng từ học phí mới",
+  FEE_REMINDER: "Nhắc kiểm tra học phí",
   PAYMENT_RECORDED: "Trung tâm đã ghi nhận khoản thu",
 };
 const statuses: Record<string, string> = {

@@ -1,0 +1,147 @@
+{
+  "status": "PASS",
+  "method": "Each final production browser image is individually viewed after the complete full gate; actual immutable API creation times remain unchanged.",
+  "images": [
+    {
+      "path": "docs/release/evidence/reminders/hold-1024-no-preference.png",
+      "sha256": "7ce7c14da9085504c71b1f129260bc4a265148d3c22f5a4a3dd3862f66995b85",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/hold-1024-reduce.png",
+      "sha256": "b4df0d6bcec53e8fec2b33bc6159c789282fa89e46abd7852a7e079e7f35372c",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/hold-1440-no-preference.png",
+      "sha256": "c4a0c9f578f43aadbc43d8e2843f7b18ddd8b76c4f5cab554b4a0a4c3410e50e",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/hold-1440-reduce.png",
+      "sha256": "61a6378936c7c4d7723ee381944ef1e543c1e6314774d3512ab02b43e0e1f1c9",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/hold-360-no-preference.png",
+      "sha256": "574407aefe6822e219fd88e5df0e0d6c17a02c21f73f70259f383314e7d4cbc1",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/hold-360-reduce.png",
+      "sha256": "cb7748d47965ee301da35f3803bfd392f91d9096903799e48fc94909f50d6702",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/hold-768-no-preference.png",
+      "sha256": "b6a235840e7cb732518e9781514333defb660ec088f22ad6aa3432d5ef40a3e6",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/hold-768-reduce.png",
+      "sha256": "66917d460176ec5fc02137777a7ca7a4c9cab37723fa4bdd4662d1b414240eea",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/overview-1024-no-preference.png",
+      "sha256": "d8145f08f3f690cfec78f29a63abef1e291706323bb7939b0af50ff43fe882f4",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/overview-1024-reduce.png",
+      "sha256": "51e59ff8683387e7154f713f1c330e1fc0066b933f22dc50d8179acf62e350ea",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/overview-1440-no-preference.png",
+      "sha256": "ab7f7900430e7e0612ee39b60506d3f85e65828c58b4f2a62dd5e4df6bdbd608",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/overview-1440-reduce.png",
+      "sha256": "018733afa03c7922a1f05a6710296d559e5e353a31f17ecd31233ff7d3f62857",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/overview-360-no-preference.png",
+      "sha256": "57eef5ff4c83e7c60a6ca0553868ac3d22d15620476c76ab17b8bc525928bbaf",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/overview-360-reduce.png",
+      "sha256": "85bbd604c5d6a10ceda0b97eb44aed0b40c840bf9ae8aa99756b94369d2ea3c7",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/overview-768-no-preference.png",
+      "sha256": "846c00ab0ba0ca63e9bbed8d69c768906263431cd01d97a135de07a7fb644d82",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/overview-768-reduce.png",
+      "sha256": "48af20d9ea8b8a113ef2fa813f6ddb414e987f8b7b6e1fea3292562ba6731797",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/policy-1024-no-preference.png",
+      "sha256": "4784c7e58744f4c0f67b8e4fedefd3a8779016174ef3f46f1cb5a8b9ed7c1624",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/policy-1024-reduce.png",
+      "sha256": "204df23b114a1312db1385ffd0ed2d6fc25da641c099dd6519c6bdc692d72a7e",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/policy-1440-no-preference.png",
+      "sha256": "e1b4e6991d1262fbe279338b561f57bcda42a8f240201615fc8d0744ecddbfe0",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/policy-1440-reduce.png",
+      "sha256": "98b39183046e10e52a339c2805c4e35d485387e628478d3b09badade3c1608be",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/policy-360-no-preference.png",
+      "sha256": "13f683ff233faf38ac7739d241b555a36efabf36f4b865d31f6ca37d70a223b8",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/policy-360-reduce.png",
+      "sha256": "6dfe9452146fc1a1b55485594734234c86d1df1dbefa712f9728dbe70b845ff6",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/policy-768-no-preference.png",
+      "sha256": "f4436869a38c80a80eed65e96353051b106e2f793d76d019fb16bc50b0df6e46",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/reminders/policy-768-reduce.png",
+      "sha256": "74fca2d604af4153e71c34965b448ef3060bb0b1b033da38bcc2a314129124e4",
+      "reviewed": true
+    }
+  ],
+  "surfaces": [
+    "overview",
+    "policy",
+    "hold"
+  ],
+  "widths": [
+    360,
+    768,
+    1024,
+    1440
+  ],
+  "motion": [
+    "no-preference",
+    "reduce"
+  ],
+  "axeViolations": 0,
+  "tasteFindings": 0,
+  "keyboard": "Native44px disclosure, explicit confirmation, persistent guarded pagination preserves keyboard focus/review drafts; real conflicting writes, lost responses, error/retry, revocation and tenant abort verified.",
+  "dataOrigin": "Isolated synthetic resources modified through production APIs; real event creation timestamps were never rewritten or mocked.",
+  "rendering": "Overview captures are900px browser viewports. History captures are full native element images; the tool may scale tall panels for display while original PNG bytes remain unchanged.",
+  "focusedFullByteEquality": "Not assumed: actual event timestamps differ; all24 FINAL full-suite images were individually inspected instead."
+}

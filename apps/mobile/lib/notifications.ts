@@ -10,9 +10,15 @@ export async function openNotification(
       params: { path: { id } },
     }),
   );
-  if (!["session", "assessment", "invoice", "payment"].includes(n.entityType))
+  if (
+    !["session", "assessment", "invoice", "payment", "reminder"].includes(
+      n.entityType,
+    )
+  )
     throw new Error("Loại nội dung thông báo chưa được hỗ trợ.");
   const role = session.me?.activeRole;
+  if (n.entityType === "reminder" && role !== "guardian")
+    throw new Error("Chọn vai trò phụ huynh để mở nhắc học phí.");
   if (role === "guardian") {
     const subjectId =
       session.child && n.subjectStudentIds.includes(session.child.id)
@@ -29,7 +35,9 @@ export async function openNotification(
     router.replace(
       n.entityType === "assessment"
         ? "/(guardian)/grades"
-        : n.entityType === "invoice" || n.entityType === "payment"
+        : n.entityType === "invoice" ||
+            n.entityType === "payment" ||
+            n.entityType === "reminder"
           ? "/(guardian)/finance"
           : "/(guardian)/schedule",
     );

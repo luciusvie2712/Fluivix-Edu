@@ -977,3 +977,78 @@ model PlatformAudit {
   @@index([createdAt])
   @@map("platform_audit")
 }
+
+
+model FeeReminderPolicy {
+ tenantId String @id @map("tenant_id") @db.Uuid
+ enabled Boolean @default(false)
+ version Int
+ enabledSince DateTime? @map("enabled_since") @db.Timestamptz
+ approvedBy String? @map("approved_by") @db.Uuid
+ approvedAt DateTime? @map("approved_at") @db.Timestamptz
+ approvalRef String? @map("approval_ref") @db.VarChar(200)
+ updatedBy String @map("updated_by") @db.Uuid
+ updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+ @@map("fee_reminder_policies")
+}
+model FeeReminderPolicyEvent {
+ id String @id @default(uuid()) @db.Uuid
+ tenantId String @map("tenant_id") @db.Uuid
+ version Int
+ enabled Boolean
+ reason String @db.VarChar(500)
+ approvalRef String? @map("approval_ref") @db.VarChar(200)
+ actorId String @map("actor_id") @db.Uuid
+ createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+ @@unique([tenantId,version])
+ @@map("fee_reminder_policy_events")
+}
+model InvoiceReminderHold {
+ tenantId String @map("tenant_id") @db.Uuid
+ invoiceId String @map("invoice_id") @db.Uuid
+ held Boolean
+ category String? @db.VarChar(30)
+ version Int
+ updatedBy String @map("updated_by") @db.Uuid
+ updatedAt DateTime @default(now()) @map("updated_at") @db.Timestamptz
+ @@id([tenantId,invoiceId])
+ @@map("invoice_reminder_holds")
+}
+model InvoiceReminderHoldEvent {
+ id String @id @default(uuid()) @db.Uuid
+ tenantId String @map("tenant_id") @db.Uuid
+ invoiceId String @map("invoice_id") @db.Uuid
+ held Boolean
+ category String? @db.VarChar(30)
+ version Int
+ reason String @db.VarChar(500)
+ actorId String @map("actor_id") @db.Uuid
+ createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+ @@unique([tenantId,invoiceId,version])
+ @@map("invoice_reminder_hold_events")
+}
+model FeeReminderBatch {
+ id String @id @default(uuid()) @db.Uuid
+ tenantId String @map("tenant_id") @db.Uuid
+ studentId String @map("student_id") @db.Uuid
+ localDay DateTime @map("local_day") @db.Date
+ timezone String @db.VarChar(80)
+ policyVersion Int @map("policy_version")
+ windowStartsAt DateTime @map("window_starts_at") @db.Timestamptz
+ windowEndsAt DateTime @map("window_ends_at") @db.Timestamptz
+ createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+ @@unique([tenantId,id,studentId])
+ @@unique([tenantId,studentId,localDay])
+ @@map("fee_reminder_batches")
+}
+model FeeReminderStage {
+ tenantId String @map("tenant_id") @db.Uuid
+ invoiceId String @map("invoice_id") @db.Uuid
+ studentId String @map("student_id") @db.Uuid
+ stage String @db.VarChar(20)
+ batchId String @map("batch_id") @db.Uuid
+ createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+ @@id([tenantId,invoiceId,stage])
+ @@index([tenantId,batchId],map:"fee_reminder_stages_batch_idx")
+ @@map("fee_reminder_stages")
+}

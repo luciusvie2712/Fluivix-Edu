@@ -901,3 +901,21 @@ body:has(.session-notice) .auth-layout {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+.reminder-panel summary {
+  min-height: 44px;
+  padding-block: 10px;
+  cursor: pointer;
+}
+.reminder-panel {
+  overflow-wrap: anywhere;
+}
+.invoice-list-filter .field:last-of-type {
+  margin-bottom: 16px;
+}
+.reminder-panel button[aria-disabled="true"] {
+  color: var(--color-muted);
+  border-color: var(--color-border);
+  background: transparent;
+  cursor: not-allowed;
+}

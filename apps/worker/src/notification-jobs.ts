@@ -6,13 +6,14 @@ export async function processNotificationJob(
   db: PrismaClient,
   eventId: string,
   request: typeof fetch = fetch,
+  clock: () => Date = () => new Date(),
 ) {
   let failure:
     | "PUSH_RETRY_EXHAUSTED"
     | "PUSH_RETRYABLE_REJECTION"
     | "NOTIFICATION_DELIVERY_FAILED";
   try {
-    await deliverDomainEvent(db, eventId, request);
+    await deliverDomainEvent(db, eventId, request, clock);
     return;
   } catch (cause) {
     // Redis failedReason/stacktrace must not retain raw Prisma/provider data.

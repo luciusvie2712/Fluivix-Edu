@@ -16,6 +16,7 @@ import {
   text,
 } from "./operation-form";
 import { Button } from "./ui/button";
+import { ReminderPolicyPanel, InvoiceReminderPanel } from "./fee-reminders";
 type Preview = components["schemas"]["InvoicePreviewView"];
 type Run = components["schemas"]["InvoiceRunInput"];
 type Option = components["schemas"]["InvoiceFeeOptionView"];
@@ -94,7 +95,18 @@ const denied = (
 );
 
 export function InvoicesWorkspace() {
-  const scope = useScope();
+  const scope = useScope(),
+    cache = useQueryClient();
+  const [reminderDenial, setReminderDenial] = useState<{
+    scope: string;
+    message: string;
+  } | null>(null);
+  const reminderBlocked = reminderDenial?.scope === scope.key.join(":");
+  function onReminderDenied(error: ApiError) {
+    setReminderDenial({ scope: scope.key.join(":"), message: error.message });
+    void cache.cancelQueries({ queryKey: scope.key });
+    cache.removeQueries({ queryKey: scope.key });
+  }
   const [page, setPage] = useState(1),
     [search, setSearch] = useState(""),
     [status, setStatus] = useState<
@@ -117,7 +129,7 @@ export function InvoicesWorkspace() {
       period,
       selectedFee?.id,
     ],
-    enabled: scope.allowed && !invalidRange,
+    enabled: scope.allowed && !invalidRange && !reminderBlocked,
     queryFn: ({ signal }) =>
       invoices.list(
         {
@@ -134,6 +146,12 @@ export function InvoicesWorkspace() {
       ),
   });
   if (!scope.allowed) return denied;
+  if (reminderBlocked)
+    return (
+      <p role="alert">
+        {reminderDenial?.message} Tải lại trang để xác minh quyền.
+      </p>
+    );
   return (
     <>
       <h1>Chứng từ học phí</h1>
@@ -196,15 +214,17 @@ export function InvoicesWorkspace() {
             }}
           />
         </div>
-        <FeePicker
-          label="Lọc chứng từ theo biểu phí/lớp"
-          includeArchived
-          selected={selectedFee}
-          select={(f) => {
-            setSelectedFee(f);
-            setPage(1);
-          }}
-        />
+        <div className="invoice-list-filter">
+          <FeePicker
+            label="Lọc chứng từ theo biểu phí/lớp"
+            includeArchived
+            selected={selectedFee}
+            select={(f) => {
+              setSelectedFee(f);
+              setPage(1);
+            }}
+          />
+        </div>
         {invalidRange ? (
           <p role="alert">Ngày bắt đầu không được sau ngày kết thúc.</p>
         ) : list.isPending ? (
@@ -246,6 +266,7 @@ export function InvoicesWorkspace() {
           </>
         )}
       </section>
+      <ReminderPolicyPanel onDenied={onReminderDenied} />
       <InvoiceRun />
     </>
   );
@@ -560,28 +581,44 @@ function InvoiceRun() {
   );
 }
 export function InvoiceDetail({ id }: { id: string }) {
+  const [reminderDenial, setReminderDenial] = useState<{
+    scope: string;
+    message: string;
+  } | null>(null);
   const scope = useScope(),
     cache = useQueryClient(),
     [itemPage, setItemPage] = useState(1),
     [historyPage, setHistoryPage] = useState(1);
+  const reminderBlocked = reminderDenial?.scope === scope.key.join(":");
+  function onReminderDenied(error: ApiError) {
+    setReminderDenial({ scope: scope.key.join(":"), message: error.message });
+    void cache.cancelQueries({ queryKey: scope.key });
+    cache.removeQueries({ queryKey: scope.key });
+  }
   const query = useQuery({
     queryKey: [...scope.key, "detail", id],
-    enabled: scope.allowed,
+    enabled: scope.allowed && !reminderBlocked,
     queryFn: ({ signal }) => invoices.detail(id, signal),
   });
   const items = useQuery({
     queryKey: [...scope.key, "items", id, itemPage],
-    enabled: scope.allowed,
+    enabled: scope.allowed && !reminderBlocked,
     queryFn: ({ signal }) => invoices.items(id, itemPage, signal),
   });
   const history = useQuery({
     queryKey: [...scope.key, "history", id, historyPage],
-    enabled: scope.allowed,
+    enabled: scope.allowed && !reminderBlocked,
     queryFn: ({ signal }) => invoices.history(id, historyPage, signal),
   });
   const [outcome, setOutcome] = useState("");
   const outcomeRef = useRef<HTMLParagraphElement>(null);
   if (!scope.allowed) return denied;
+  if (reminderBlocked)
+    return (
+      <p role="alert">
+        {reminderDenial?.message} Tải lại trang để xác minh quyền.
+      </p>
+    );
   if (query.isPending) return <p role="status">Đang tải chứng từ…</p>;
   if (query.error)
     return <Failure error={query.error} retry={() => void query.refetch()} />;
@@ -708,6 +745,7 @@ export function InvoiceDetail({ id }: { id: string }) {
           </>
         )}
       </section>
+      <InvoiceReminderPanel id={id} onDenied={onReminderDenied} />
     </>
   );
 }

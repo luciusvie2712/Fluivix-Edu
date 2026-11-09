@@ -14,7 +14,7 @@ export function authContractCases(getBase: () => string) {
   describe("all documented private GET routes enforce real HTTP authentication", () => {
     for (const credential of ["absent", "malformed"] as const) {
       it(`rejects ${credential} bearer credentials before exposing scoped resources`, async () => {
-        expect(reads).toHaveLength(104);
+        expect(reads).toHaveLength(107);
         const uuid = randomUUID();
         for (const [path, methods] of reads) {
           const concrete = path.replace(/\{[^}]+\}/g, uuid);

@@ -1,0 +1,777 @@
+{
+  "config": {
+    "argv": [
+      "D:\\my-project\\fluivixedu\\.cache\\node-v24.22.2-win-x64\\node.exe",
+      "D:\\my-project\\fluivixedu\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "tests/e2e/fee-reminders.spec.ts"
+    ],
+    "configFile": "D:\\my-project\\fluivixedu\\playwright.config.ts",
+    "rootDir": "D:/my-project/fluivixedu/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/my-project/fluivixedu/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tenant-chromium",
+        "name": "tenant-chromium",
+        "testDir": "D:/my-project/fluivixedu/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\my-project\\fluivixedu\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "tenant-chromium",
+        "testDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "snapshotDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:3000",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "browserName": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "tenant-chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/release/evidence/e2e-2026-11-09-reminders-second-focused.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm exec tsx tooling/e2e-server.ts",
+      "url": "http://localhost:3000/login",
+      "timeout": 60000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "fee-reminders.spec.ts",
+      "file": "fee-reminders.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "reminder Web loads the actual disabled preset on demand and confirms owner enable/pause with real history",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8658,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:15:50.090Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-b689624cb8785f6f827d",
+          "file": "fee-reminders.spec.ts",
+          "line": 391,
+          "column": 5
+        },
+        {
+          "title": "accountant reminder hold confirms pending reconciliation and resume without changing an issued invoice",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4900,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:16:00.055Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-5c0c05eff3d9cd31a98c",
+          "file": "fee-reminders.spec.ts",
+          "line": 448,
+          "column": 5
+        },
+        {
+          "title": "real reminder policy conflict preserves the entered review until explicit verified reload",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 9086,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('details.reminder-panel').getByRole('alert')\nExpected substring: \u001b[32m\"VERSION_CONFLICT\"\u001b[39m\nReceived string:    \u001b[31m\"Dữ liệu đã thay đổi hoặc bị trùng. Vui lòng kiểm tra lại.\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" locator('details.reminder-panel').getByRole('alert') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('details.reminder-panel').getByRole('alert')\u001b[22m\n\u001b[2m    14 × locator resolved to <p role=\"alert\" tabindex=\"-1\" class=\"field-error\">Dữ liệu đã thay đổi hoặc bị trùng. Vui lòng kiểm …</p>\u001b[22m\n\u001b[2m       - unexpected value \"Dữ liệu đã thay đổi hoặc bị trùng. Vui lòng kiểm tra lại.\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('details.reminder-panel').getByRole('alert')\nExpected substring: \u001b[32m\"VERSION_CONFLICT\"\u001b[39m\nReceived string:    \u001b[31m\"Dữ liệu đã thay đổi hoặc bị trùng. Vui lòng kiểm tra lại.\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" locator('details.reminder-panel').getByRole('alert') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('details.reminder-panel').getByRole('alert')\u001b[22m\n\u001b[2m    14 × locator resolved to <p role=\"alert\" tabindex=\"-1\" class=\"field-error\">Dữ liệu đã thay đổi hoặc bị trùng. Vui lòng kiểm …</p>\u001b[22m\n\u001b[2m       - unexpected value \"Dữ liệu đã thay đổi hoặc bị trùng. Vui lòng kiểm tra lại.\"\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\fee-reminders.spec.ts:513:38",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\fee-reminders.spec.ts",
+                      "column": 38,
+                      "line": 513
+                    },
+                    "snippet": "  511 |     reason,\n  512 |   );\n> 513 |   await expect(p.getByRole(\"alert\")).toContainText(\"VERSION_CONFLICT\");\n      |                                      ^\n  514 |   await p\n  515 |     .getByRole(\"button\", {\n  516 |       name: \"Tải lại cấu hình và bỏ bản nhập\","
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\fee-reminders.spec.ts",
+                        "column": 38,
+                        "line": 513
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('details.reminder-panel').getByRole('alert')\nExpected substring: \u001b[32m\"VERSION_CONFLICT\"\u001b[39m\nReceived string:    \u001b[31m\"Dữ liệu đã thay đổi hoặc bị trùng. Vui lòng kiểm tra lại.\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" locator('details.reminder-panel').getByRole('alert') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('details.reminder-panel').getByRole('alert')\u001b[22m\n\u001b[2m    14 × locator resolved to <p role=\"alert\" tabindex=\"-1\" class=\"field-error\">Dữ liệu đã thay đổi hoặc bị trùng. Vui lòng kiểm …</p>\u001b[22m\n\u001b[2m       - unexpected value \"Dữ liệu đã thay đổi hoặc bị trùng. Vui lòng kiểm tra lại.\"\u001b[22m\n\n\n  511 |     reason,\n  512 |   );\n> 513 |   await expect(p.getByRole(\"alert\")).toContainText(\"VERSION_CONFLICT\");\n      |                                      ^\n  514 |   await p\n  515 |     .getByRole(\"button\", {\n  516 |       name: \"Tải lại cấu hình và bỏ bản nhập\",\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\fee-reminders.spec.ts:513:38"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:16:04.999Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\fee-reminders-real-reminde-7480b-il-explicit-verified-reload-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\fee-reminders-real-reminde-7480b-il-explicit-verified-reload-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\fee-reminders-real-reminde-7480b-il-explicit-verified-reload-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\fee-reminders.spec.ts",
+                    "column": 38,
+                    "line": 513
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-cd96e8ed386be3735ea8",
+          "file": "fee-reminders.spec.ts",
+          "line": 485,
+          "column": 5
+        },
+        {
+          "title": "a real failed reminder refresh hides cached state and verified retry retains an unsaved review",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4555,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:16:17.022Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-d89e04865a4dca732796",
+          "file": "fee-reminders.spec.ts",
+          "line": 525,
+          "column": 5
+        },
+        {
+          "title": "a truly committed reminder change with a lost HTTP response is verified without a second PATCH",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3987,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:16:22.231Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-3276f3490ff151d3d47e",
+          "file": "fee-reminders.spec.ts",
+          "line": 562,
+          "column": 5
+        },
+        {
+          "title": "actual membership revocation through reminder403 removes the parent invoice editor and private cache",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4343,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:16:26.273Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-f54297def3a0170fe42a",
+          "file": "fee-reminders.spec.ts",
+          "line": 622,
+          "column": 5
+        },
+        {
+          "title": "selected manager does not fetch reminders, accountant cannot configure, and read-only keeps real history without writes",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4855,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:16:30.657Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-6854ed9ec434c3771b83",
+          "file": "fee-reminders.spec.ts",
+          "line": 668,
+          "column": 5
+        },
+        {
+          "title": "policy history paginates actual21 decisions while preserving the current review and keyboard focus",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8103,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:16:35.546Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-2c8e858b6a69fa77cf9b",
+          "file": "fee-reminders.spec.ts",
+          "line": 707,
+          "column": 5
+        },
+        {
+          "title": "invoice hold history paginates actual21 decisions without changing its current hold draft",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9502,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:16:43.689Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-fafd2f6d2ef47447f33f",
+          "file": "fee-reminders.spec.ts",
+          "line": 733,
+          "column": 5
+        },
+        {
+          "title": "centre switch aborts delayed real reminder bytes and rejects the previous invoice deep link",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4787,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:16:53.227Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-149dbd57a76ca49e5c73",
+          "file": "fee-reminders.spec.ts",
+          "line": 756,
+          "column": 5
+        },
+        {
+          "title": "reminder policy and invoice real history visual accessibility 360 no-preference",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9950,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:16:58.052Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-768adc2a92db6ca8d4d5",
+          "file": "fee-reminders.spec.ts",
+          "line": 857,
+          "column": 9
+        },
+        {
+          "title": "reminder policy and invoice real history visual accessibility 768 no-preference",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7804,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:17:08.041Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-314c916d574727509491",
+          "file": "fee-reminders.spec.ts",
+          "line": 857,
+          "column": 9
+        },
+        {
+          "title": "reminder policy and invoice real history visual accessibility 1024 no-preference",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 7913,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:17:15.882Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-1a66798e7517807f1b89",
+          "file": "fee-reminders.spec.ts",
+          "line": 857,
+          "column": 9
+        },
+        {
+          "title": "reminder policy and invoice real history visual accessibility 1440 no-preference",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8697,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:17:23.828Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-e45243e011d17075ef7f",
+          "file": "fee-reminders.spec.ts",
+          "line": 857,
+          "column": 9
+        },
+        {
+          "title": "reminder policy and invoice real history visual accessibility 360 reduce",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 8809,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:17:32.557Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-efe113ae35f1568a53ff",
+          "file": "fee-reminders.spec.ts",
+          "line": 857,
+          "column": 9
+        },
+        {
+          "title": "reminder policy and invoice real history visual accessibility 768 reduce",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 9308,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:17:41.397Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-e31691008f71acf95573",
+          "file": "fee-reminders.spec.ts",
+          "line": 857,
+          "column": 9
+        },
+        {
+          "title": "reminder policy and invoice real history visual accessibility 1024 reduce",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11036,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:17:50.740Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-0bc94ee266b97ec3ac2b",
+          "file": "fee-reminders.spec.ts",
+          "line": 857,
+          "column": 9
+        },
+        {
+          "title": "reminder policy and invoice real history visual accessibility 1440 reduce",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 10608,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T13:18:01.814Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c3a6bca275fd03dc4bf2-5c8e6b37059d9d841ae6",
+          "file": "fee-reminders.spec.ts",
+          "line": 857,
+          "column": 9
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-09T13:15:23.771Z",
+    "duration": 170562.846,
+    "expected": 17,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

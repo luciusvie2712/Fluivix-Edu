@@ -320,12 +320,35 @@ async function teachingJourney(
   await expect(
     page.getByRole("cell", { name: "Học viên kiểm thử A", exact: true }),
   ).toBeVisible();
-  await page
-    .getByLabel("Giáo viên phân công", { exact: true })
-    .selectOption({ label: "WEB-TEACHER · Giáo viên kiểm thử Web" });
+  const assignedTeacher = await f.db.teacher.findFirstOrThrow({
+    where: { tenantId: f.tenant.id, teacherCode: "WEB-TEACHER" },
+  });
+  const classId = new URL(page.url()).pathname.split("/").at(-1)!;
+  const assignmentPicker = page.getByLabel("Giáo viên phân công", {
+    exact: true,
+  });
+  const verifiedTeacher = page.waitForResponse(
+    (response) =>
+      response.url() ===
+        `${testOrigins.api}/api/v1/teachers/${assignedTeacher.id}` &&
+      response.request().method() === "GET" &&
+      response.status() === 200,
+  );
+  await assignmentPicker.selectOption({
+    label: "WEB-TEACHER · Giáo viên kiểm thử Web",
+  });
+  await verifiedTeacher;
+  await expect(assignmentPicker).toHaveJSProperty("validationMessage", "");
+  const assigned = page.waitForResponse(
+    (response) =>
+      response.url() ===
+        `${testOrigins.api}/api/v1/classes/${classId}/teachers` &&
+      response.request().method() === "POST",
+  );
   await page
     .getByRole("button", { name: "Phân công giáo viên", exact: true })
     .click();
+  expect((await assigned).status()).toBe(201);
   await expect(
     page
       .locator("form")
@@ -335,11 +358,28 @@ async function teachingJourney(
           exact: true,
         }),
       })
-      .getByRole("status"),
+      .getByRole("status")
+      .filter({ hasText: "Đã lưu thay đổi trên hệ thống." }),
   ).toBeVisible();
+  const savedAssignment = await f.db.classTeacher.findFirstOrThrow({
+    where: {
+      tenantId: f.tenant.id,
+      classId,
+      teacherId: assignedTeacher.id,
+    },
+  });
+  expect(savedAssignment.effectiveFrom.toISOString().slice(0, 10)).toBe(
+    fixtureDay(0),
+  );
+  expect(savedAssignment.effectiveTo?.toISOString().slice(0, 10)).toBe(
+    fixtureDay(60),
+  );
   await page
     .getByLabel("Giáo viên dạy lịch lặp", { exact: true })
     .selectOption({ label: "WEB-TEACHER · Giáo viên kiểm thử Web" });
+  await expect(
+    page.getByLabel("Giáo viên dạy lịch lặp", { exact: true }),
+  ).toHaveJSProperty("validationMessage", "");
   await page
     .getByLabel("Ngày học trong tuần", { exact: true })
     .selectOption("1");

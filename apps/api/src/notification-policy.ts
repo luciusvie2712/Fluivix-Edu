@@ -45,6 +45,9 @@ export function notificationSubjectsSql(): Prisma.Sql {
         WHERE a.tenant_id=n.tenant_id AND a.id=n.entity_id AND a.status='PUBLISHED'
           AND a.published_at IS NOT NULL AND r.student_id=s.id
       )) OR
+      (n.recipient_role='guardian' AND n.type='FEE_REMINDER' AND n.entity_type='reminder' AND EXISTS (
+        SELECT 1 FROM fee_reminder_batches b WHERE b.tenant_id=n.tenant_id AND b.id=n.entity_id AND b.student_id=s.id
+      )) OR
       (n.recipient_role='guardian' AND n.type='INVOICE_ISSUED' AND n.entity_type='invoice' AND EXISTS (
         SELECT 1 FROM invoices i WHERE i.tenant_id=n.tenant_id AND i.id=n.entity_id
           AND i.student_id=s.id AND i.billing_state IN ('ISSUED','VOID')

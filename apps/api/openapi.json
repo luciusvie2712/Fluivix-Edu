@@ -9277,6 +9277,369 @@
         "tags": ["finance"]
       }
     },
+    "/api/v1/finance/reminder-policy": {
+      "get": {
+        "operationId": "FeeRemindersController_policy",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReminderPolicyResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance-reminders"]
+      },
+      "patch": {
+        "operationId": "FeeRemindersController_update",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ReminderPolicyInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReminderPolicyResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance-reminders"]
+      }
+    },
+    "/api/v1/finance/reminder-policy/history": {
+      "get": {
+        "operationId": "FeeRemindersController_history",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReminderPolicyHistoryResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance-reminders"]
+      }
+    },
+    "/api/v1/invoices/{id}/reminders": {
+      "get": {
+        "operationId": "FeeRemindersController_invoice",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 1, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReminderInvoiceResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance-reminders"]
+      }
+    },
+    "/api/v1/invoices/{id}/reminder-hold": {
+      "patch": {
+        "operationId": "FeeRemindersController_hold",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ReminderHoldInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReminderInvoiceResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["finance-reminders"]
+      }
+    },
     "/api/v1/notifications": {
       "get": {
         "operationId": "NotificationsController_list",
@@ -16981,6 +17344,194 @@
           "meta": { "$ref": "#/components/schemas/MetaDto" }
         },
         "required": ["data", "meta"]
+      },
+      "ReminderPresetView": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string" },
+          "localStart": { "type": "string" },
+          "localEnd": { "type": "string" },
+          "maxStagesPerInvoice": { "type": "number" },
+          "offsets": { "type": "array", "items": { "type": "number" } },
+          "catchUp": { "type": "boolean" }
+        },
+        "required": [
+          "code",
+          "localStart",
+          "localEnd",
+          "maxStagesPerInvoice",
+          "offsets",
+          "catchUp"
+        ]
+      },
+      "ReminderPolicyView": {
+        "type": "object",
+        "properties": {
+          "enabled": { "type": "boolean" },
+          "version": { "type": "number" },
+          "timezone": { "type": "string" },
+          "preset": { "$ref": "#/components/schemas/ReminderPresetView" },
+          "enabledSince": { "type": "string", "nullable": true },
+          "approvedBy": { "type": "string", "nullable": true },
+          "approvedAt": { "type": "string", "nullable": true },
+          "approvalRef": { "type": "string", "nullable": true }
+        },
+        "required": [
+          "enabled",
+          "version",
+          "timezone",
+          "preset",
+          "enabledSince",
+          "approvedBy",
+          "approvedAt",
+          "approvalRef"
+        ]
+      },
+      "ReminderPolicyResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/ReminderPolicyView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "ReminderPolicyEventView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "version": { "type": "number" },
+          "enabled": { "type": "boolean" },
+          "reason": { "type": "string" },
+          "approvalRef": { "type": "string", "nullable": true },
+          "actorId": { "type": "string" },
+          "createdAt": { "type": "string" }
+        },
+        "required": [
+          "id",
+          "version",
+          "enabled",
+          "reason",
+          "approvalRef",
+          "actorId",
+          "createdAt"
+        ]
+      },
+      "ReminderPolicyHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReminderPolicyEventView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
+      },
+      "ReminderPolicyInput": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number", "minimum": 0 },
+          "enabled": { "type": "boolean" },
+          "confirmed": { "type": "boolean" },
+          "reason": { "type": "string" },
+          "approvalRef": { "type": "string" }
+        },
+        "required": ["version", "enabled", "confirmed", "reason"]
+      },
+      "ReminderStageView": {
+        "type": "object",
+        "properties": {
+          "stage": {
+            "type": "string",
+            "enum": ["BEFORE_3", "AFTER_1", "AFTER_7"]
+          },
+          "batchId": { "type": "string" },
+          "localDay": { "type": "string" },
+          "timezone": { "type": "string" },
+          "createdAt": { "type": "string" },
+          "inboxRecipients": { "type": "number" },
+          "deliveryStatuses": { "type": "array", "items": { "type": "string" } }
+        },
+        "required": [
+          "stage",
+          "batchId",
+          "localDay",
+          "timezone",
+          "createdAt",
+          "inboxRecipients",
+          "deliveryStatuses"
+        ]
+      },
+      "ReminderHoldEventView": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "version": { "type": "number" },
+          "held": { "type": "boolean" },
+          "category": { "type": "string", "nullable": true },
+          "reason": { "type": "string" },
+          "actorId": { "type": "string" },
+          "createdAt": { "type": "string" }
+        },
+        "required": [
+          "id",
+          "version",
+          "held",
+          "category",
+          "reason",
+          "actorId",
+          "createdAt"
+        ]
+      },
+      "ReminderInvoiceView": {
+        "type": "object",
+        "properties": {
+          "invoiceId": { "type": "string" },
+          "held": { "type": "boolean" },
+          "category": { "type": "string", "nullable": true },
+          "version": { "type": "number" },
+          "stages": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReminderStageView" }
+          },
+          "events": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ReminderHoldEventView" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" }
+        },
+        "required": [
+          "invoiceId",
+          "held",
+          "category",
+          "version",
+          "stages",
+          "events",
+          "page"
+        ]
+      },
+      "ReminderInvoiceResponse": {
+        "type": "object",
+        "properties": {
+          "data": { "$ref": "#/components/schemas/ReminderInvoiceView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "meta"]
+      },
+      "ReminderHoldInput": {
+        "type": "object",
+        "properties": {
+          "version": { "type": "number", "minimum": 0 },
+          "held": { "type": "boolean" },
+          "confirmed": { "type": "boolean" },
+          "category": {
+            "type": "string",
+            "enum": ["MANUAL", "PENDING_RECONCILIATION"]
+          },
+          "reason": { "type": "string" }
+        },
+        "required": ["version", "held", "confirmed", "reason"]
       },
       "NotificationDeliveryStatusView": {
         "type": "object",

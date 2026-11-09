@@ -1221,3 +1221,31 @@ export const deactivateStudent = (
       body,
     }),
   );
+
+export const feeReminders = {
+  policy: (signal: AbortSignal) =>
+    unwrap(api.GET("/api/v1/finance/reminder-policy", { signal })),
+  policyHistory: (page: number, signal: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/finance/reminder-policy/history", {
+        signal,
+        params: { query: { page, limit: 20 } },
+      }),
+    ),
+  updatePolicy: (body: components["schemas"]["ReminderPolicyInput"]) =>
+    unwrap(api.PATCH("/api/v1/finance/reminder-policy", { body })),
+  invoice: (id: string, page: number, signal: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/invoices/{id}/reminders", {
+        signal,
+        params: { path: { id }, query: { page, limit: 20 } },
+      }),
+    ),
+  hold: (id: string, body: components["schemas"]["ReminderHoldInput"]) =>
+    unwrap(
+      api.PATCH("/api/v1/invoices/{id}/reminder-hold", {
+        body,
+        params: { path: { id } },
+      }),
+    ),
+};

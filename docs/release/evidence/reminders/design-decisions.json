@@ -1,0 +1,48 @@
+{
+  "status": "APPLIED_VERIFIED_LOCAL_FULL",
+  "direction": "Existing FluivixEdu framed-sheet/blue/Arial16, seed1920114305; no redraw or new screenID.",
+  "scope": "W18 invoice directory fixed-policy disclosure and invoice detail hold/history; existing guardian mobile inbox/finance navigation.",
+  "skills": [
+    {
+      "source": "taste-skill",
+      "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+      "installed": "design-taste-frontend",
+      "verifiedFiles": 38,
+      "status": "PASS"
+    },
+    {
+      "source": "ui-ux-pro-max-skill",
+      "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+      "installed": "ui-ux-pro-max",
+      "verifiedFiles": 73,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "accessible-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "micro-interaction",
+      "verifiedFiles": 4,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "60fps-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    }
+  ],
+  "research": "Actual UIProMax UX query confirmation/destructive actions/form accessibility returned confirmation dialogs, confirmation messages and associated labels. Apply explicit native unchecked confirmation and validated server outcomes.",
+  "precedence": "Immediate financial/access finalization and existing focusAfterAction take precedence over suggestions to avoid instant state changes. Native details44px, existing reduced-motion CSS, no new animation dependency.",
+  "data": "Real generated-client API reads/writes, lazy disclosure, identity/tenant/role keys and AbortSignal; parent invoice UI cleared on actual401/403/404. Current ledger remains authoritative, no amounts in provider payload.",
+  "states": "InitialOFF from actual policy GET; loading/empty/error, draft-preserving transport retry, explicit reload/discard, versionconflict, offline guard, readOnly, revocation and validated outcomes. New browser verification pending.",
+  "plannedVisual": "Production browser4widths360/768/1024/1440 and2motion; observe final images and rawAxe/Taste reports before acceptance. No prior module image substitution.",
+  "finalFullManualReview": "All24actualfinalproductionbrowserimagesindividuallyobserved andhashesverified; actualtimestampsunchanged."
+}

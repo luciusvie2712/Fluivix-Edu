@@ -1,8 +1,10 @@
+import { reminderBatchReady } from "../../api/dist/fee-reminder-predicates";
 import { PrismaClient, Prisma, type Role } from "@prisma/client";
 import { openToken } from "@fluivix/server-crypto";
 import { z } from "zod";
 import {
   claimPushDelivery,
+  handoffReminderPush,
   retryPush,
   sendAttemptWhere,
 } from "./notification-claims";
@@ -17,6 +19,7 @@ export const DOMAIN_EVENTS = [
   "ATTENDANCE_FINALIZED_ABSENT",
   "GRADE_PUBLISHED",
   "INVOICE_ISSUED",
+  "FEE_REMINDER",
   "PAYMENT_RECORDED",
 ];
 type Tx = Prisma.TransactionClient;
@@ -36,6 +39,7 @@ async function recipients(
     aggregateId: string;
     eventVersion: number;
   },
+  now = new Date(),
 ) {
   if (!event.tenantId) return null;
   const tenantId = event.tenantId,
@@ -105,6 +109,15 @@ async function recipients(
         select: { studentId: true },
       })
     ).map((v) => v.studentId);
+  } else if (event.eventType === "FEE_REMINDER") {
+    if (!(await reminderBatchReady(tx, tenantId, event.aggregateId, now)))
+      return null;
+    const batch = await tx.feeReminderBatch.findFirst({
+      where: { tenantId, id: event.aggregateId },
+    });
+    if (!batch) return null;
+    ids = [batch.studentId];
+    entityType = "reminder";
   } else if (event.eventType === "INVOICE_ISSUED") {
     const i = await tx.invoice.findFirst({
       where: { tenantId, id: event.aggregateId, billingState: "ISSUED" },
@@ -124,7 +137,10 @@ async function recipients(
     where: { tenantId, id: { in: ids } },
     select: { id: true, userId: true },
   }))
-    if (student.userId && !["invoice", "payment"].includes(entityType))
+    if (
+      student.userId &&
+      !["invoice", "payment", "reminder"].includes(entityType)
+    )
       rows.push({
         userId: student.userId,
         role: "student",
@@ -152,6 +168,7 @@ export async function deliverDomainEvent(
   db: PrismaClient,
   eventId: string,
   request: typeof fetch = fetch,
+  clock: () => Date = () => new Date(),
 ) {
   await db.$transaction(async (tx) => {
     await tx.$queryRaw`SELECT id FROM outbox_events WHERE id=${eventId}::uuid FOR UPDATE`;
@@ -161,7 +178,7 @@ export async function deliverDomainEvent(
     if (event.processedAt) return;
     if (event.tenantId)
       await tx.$queryRaw`SELECT id FROM tenants WHERE id=${event.tenantId}::uuid FOR SHARE`;
-    const targets = await recipients(tx, event);
+    const targets = await recipients(tx, event, clock());
     if (targets && event.tenantId)
       for (const r of targets.rows) {
         await tx.$queryRaw`SELECT id FROM tenant_memberships WHERE tenant_id=${event.tenantId}::uuid AND user_id=${r.userId}::uuid FOR SHARE`;
@@ -238,28 +255,42 @@ export async function deliverDomainEvent(
     },
   });
   for (const delivery of deliveries) {
-    const prepared = await claimPushDelivery(db, delivery);
+    const prepared = await claimPushDelivery(db, delivery, clock);
     if (!prepared) continue;
     const { n, device, attempt } = prepared;
     const where = sendAttemptWhere(delivery.id, attempt, device.version);
-    try {
-      const response = await request("https://exp.host/--/api/v2/push/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(process.env.EXPO_ACCESS_TOKEN
-            ? { Authorization: `Bearer ${process.env.EXPO_ACCESS_TOKEN}` }
-            : {}),
-        },
-        body: JSON.stringify({
-          to: openToken(device.tokenEncrypted),
-          title: "FluivixEdu",
-          body: "Bạn có thông báo mới.",
-          data: { notificationId: n.id },
-          channelId: "default",
-        }),
-        signal: AbortSignal.timeout(10000),
+    // Claim verification can itself cross09:15; never begin a late HTTP send.
+    if (prepared.reminderDeadline && clock() >= prepared.reminderDeadline) {
+      await db.pushDelivery.updateMany({
+        where,
+        data: { status: "SUPPRESSED", nextAttemptAt: null },
       });
+      continue;
+    }
+    try {
+      const send = () =>
+        request("https://exp.host/--/api/v2/push/send", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(process.env.EXPO_ACCESS_TOKEN
+              ? { Authorization: `Bearer ${process.env.EXPO_ACCESS_TOKEN}` }
+              : {}),
+          },
+          body: JSON.stringify({
+            to: openToken(device.tokenEncrypted),
+            title: "FluivixEdu",
+            body: "Bạn có thông báo mới.",
+            data: { notificationId: n.id },
+            channelId: "default",
+          }),
+          signal: AbortSignal.timeout(10000),
+        });
+      const response =
+        n.type === "FEE_REMINDER"
+          ? await handoffReminderPush(db, delivery.id, prepared, send, clock)
+          : await send();
+      if (!response) continue;
       if (response.status === 429 || response.status >= 500) {
         await retryPush(
           db,

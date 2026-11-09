@@ -96,3 +96,40 @@ it("rejects an unknown deep-link entity instead of falling back to a schedule", 
   expect(mockSession.selectChild).not.toHaveBeenCalled();
   expect(router.replace).not.toHaveBeenCalled();
 });
+
+it("opens a reminder only after the current guardian child profile is authorized and uses live finance", async () => {
+  mockSession.client.api.GET.mockResolvedValueOnce(
+    reply({
+      ...note,
+      entityType: "reminder",
+      entityId: "opaque-reminder-batch",
+      subjectStudentIds: ["child-b"],
+    }),
+  ).mockResolvedValueOnce(
+    reply({ id: "child-b", fullName: "Synthetic authorized reminder child" }),
+  );
+  await openNotification(useSession(), "opaque-note");
+  expect(mockSession.client.api.GET).toHaveBeenNthCalledWith(
+    2,
+    "/api/v1/mobile/guardian/students/{id}/profile",
+    { params: { path: { id: "child-b" } } },
+  );
+  expect(mockSession.selectChild).toHaveBeenCalledWith({
+    id: "child-b",
+    fullName: "Synthetic authorized reminder child",
+  });
+  expect(router.replace).toHaveBeenCalledWith("/(guardian)/finance");
+});
+it("does not fall back to a schedule for a reminder under a non-guardian role", async () => {
+  mockSession.me.activeRole = "student";
+  mockSession.client.api.GET.mockResolvedValueOnce(
+    reply({ ...note, entityType: "reminder" }),
+  );
+  await expect(openNotification(useSession(), "opaque-note")).rejects.toThrow(
+    "vai trò phụ huynh",
+  );
+  expect(mockSession.client.api.GET).toHaveBeenCalledTimes(1);
+  expect(mockSession.selectChild).not.toHaveBeenCalled();
+  expect(router.push).not.toHaveBeenCalled();
+  expect(router.replace).not.toHaveBeenCalled();
+});

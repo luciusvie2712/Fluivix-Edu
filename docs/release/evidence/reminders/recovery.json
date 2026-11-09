@@ -1,0 +1,228 @@
+{
+  "status": "LOCAL_FULL_GATE_PASS_WITH_RETAINED_PRIOR_FAILURES",
+  "date": "2026-11-09",
+  "firstFocusedIntegration": {
+    "passed": 21,
+    "failed": 4,
+    "intentionallyFiltered": 184,
+    "report": "../integration-2026-11-09-reminders-first-focused.json"
+  },
+  "repairs": [
+    "Policy/hold upsert INSERT branch invoked BEFORE INSERT version1 guard even on conflict; replace with explicit create or update after canonical tenant lock/current version lookup. Keep database version trigger unchanged.",
+    "Push fixture registered a device but omitted explicit push preference opt-in; add actual preferences API call. Keep production default push OFF unchanged."
+  ],
+  "otherEarlierCorrections": [
+    "Initial Prisma model closing brace missing, corrected before migration apply.",
+    "Audit field names aligned to actual existing actorUserId/resourceId/metadata schema; strict tenant optional type fixed.",
+    "Windows default text decoding corrupted newly edited strings; narrow UTF8 repair and exact app.ts message patches. Full app restore was auto-review rejected; no full restore executed.",
+    "Root test cannot import undeclared @fluivix/contracts; use actual relative contract source import."
+  ],
+  "verifiedSoFar": [
+    "Prisma schema validate/client generate PASS",
+    "33 actual migrations deployed on fresh owned reminder_schema database",
+    "API/worker/tooling TypeScript builds PASS before first focus",
+    "8 calendar unit cases PASS",
+    "193 actualOpenAPI operations/client generated; full auth sweep pending"
+  ],
+  "pending": "New module commit/push and exact newSHA CI; whole master operations/dependency and external gates remain.",
+  "secondFocusedIntegration": {
+    "passed": 33,
+    "failed": 0,
+    "intentionallyFiltered": 184,
+    "report": "../integration-2026-11-09-reminders-second-focused.json",
+    "includes": "Actual Redis/BullMQ, accepted/UNKNOWN outcomes, existing pending push claims rechecked after paid/hold/pause/consent/link/window changes."
+  },
+  "subsequentChange": "Stream complete child groups through500-row keyset pages atomically instead of excluding groups over500; new501-invoice regression and fresh34-case focused gate pending.",
+  "mobileUnit": {
+    "passed": 32,
+    "failed": 0,
+    "scope": "Jest component/helper tests only, not physical device verification"
+  },
+  "thirdFocusedIntegration": {
+    "passed": 37,
+    "failed": 0,
+    "intentionallyFiltered": 182,
+    "report": "../integration-2026-11-09-reminders-third-focused.json",
+    "scope": "35 reminder cases incl501-invoice keyset batch and noHTTP when claim crosses09:15;2protectedGET sweeps=214actual401requests/107routes."
+  },
+  "rootUnit": {
+    "passed": 118,
+    "failed": 0,
+    "skipped": 0
+  },
+  "firstBrowserStartup": {
+    "status": "FAILED_BEFORE_ANY_TEST",
+    "cause": "Owned Redis container was recreated/restarted externally at loopback6379, previous test override6385 no longer bound. Guard refused unavailableRedis; no test/assertion started.",
+    "repair": "Inspectactualcontainerport andredisPONG, useownedloopback6379 withper-testuniquequeueprefix, freshbrowserDB; no.env write/noexistingPostgreSQLuse/noflush.",
+    "fullProductionBuild": "API/worker/web and toolingtypecheck PASS before startup."
+  },
+  "secondBrowserFocused": {
+    "passed": 17,
+    "failed": 1,
+    "report": "../e2e-2026-11-09-reminders-second-focused.json",
+    "failure": "New test expectedinternalVERSION_CONFLICT instead of actual shared409Vietnamese response; real409 and unchangeddraft assertions passed. Correct exactusercopy, retainall409/draft/reloadchecks.",
+    "visual": "8visualcases/AxePASS; rawTaste2WARNpolicy1440panel-void43px. No acceptance until measuredandfixed."
+  },
+  "fourthFocusedIntegration": {
+    "passed": 45,
+    "failed": 0,
+    "intentionallyFiltered": 182,
+    "report": "../integration-2026-11-09-reminders-fourth-focused.json",
+    "scope": "43reminder+2auth, including current paid/hold/pause/consent/link/preference/window after durableSENDING and actual payment waiting on held tenant lock during provider handoff; all original UNKNOWN/retry cases retained."
+  },
+  "browserSpacingRepair": "Measured43px gap after FeePicker to first invoice row (Y599..642); scoped lastfilterfield margin-bottom16px instead24px. Actual rawTaste confirmation pending.",
+  "thirdBrowserFocused": {
+    "passed": 25,
+    "failed": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "report": "../e2e-2026-11-09-reminders-third-focused.json",
+    "rawTaste": {
+      "reports": 16,
+      "findings": 0
+    },
+    "manualObserved": [
+      "overview1440normal stillloading tooearly, notfinalbusinessstate",
+      "policy1440normal readable, actualhistory",
+      "hold360normal readable controls/currentstage/history"
+    ],
+    "followUp": "Visual setup now waits actual invoice link and both real fee selects before overview capture; no forcedsleep or mockeddata. Correct copy to inclusive09:00. Finalfullimages mustbe individually observed aftercompletegate."
+  },
+  "fourthBrowserFocused": {
+    "passed": 25,
+    "failed": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "report": "../e2e-2026-11-09-reminders-fourth-focused.json",
+    "rawTasteReports": 16,
+    "rawTasteFindings": 0,
+    "manual": "Actualoverview1440normal viewed: realinvoice, balance and realfee selects loaded, no placeholdercapture. Finalfullall24manual stillpending."
+  },
+  "firstFullIntegration": {
+    "passed": 225,
+    "failed": 2,
+    "skipped": 0,
+    "report": "../integration-2026-11-09-reminders-first-full-failed.json",
+    "failure": "Existing report plan/export limit test exceeded unchanged30000ms. Following IANA test observed wrong selected owner context while prior timed-out asynchronous test had not finished restoring its shared token. No release acceptance.",
+    "diagnosis": "Direct read-only production report queries on retained5001-class fixture took116ms attendance/68ms enrollments. Thus oversized export aggregation not yet proven cause; no speculative source fix. New fresh reminder+report diagnostic database logs only slowSQL for root-cause inspection.",
+    "state": "ROOT_CAUSE_INVESTIGATION"
+  },
+  "reportDiagnostic": {
+    "passed": 49,
+    "failed": 0,
+    "intentionallyFiltered": 178,
+    "report": "../integration-2026-11-09-reminders-report-diagnosis.json",
+    "previousTimeoutCaseMs": 3936,
+    "followingIANACaseMs": 419,
+    "sqlOver1000ms": 0,
+    "sourceChanges": false,
+    "conclusion": "Original timeout not reproduced by43realreminder+6report cases on fresh ownedDB. Do not claim rootcause fixed. Preserve failedreport and require secondcompletefreshgate with slowquery logging."
+  },
+  "secondFullRuntimeObservation": {
+    "scope": "Read-only snapshot during second227-case integration run; no user apps stopped or resource changes",
+    "physicalMemoryGiB": 15.19,
+    "freeMemoryGiB": 2.76,
+    "ownedPostgresCPUPercent": 12.23,
+    "ownedPostgresMemoryMiB": 234,
+    "ownedRedisMemoryMiB": 14.66,
+    "inference": "Resource snapshot alone does not prove the cause of the previous timeout."
+  },
+  "secondFullIntegration": {
+    "passed": 225,
+    "failed": 2,
+    "skipped": 0,
+    "report": "../integration-2026-11-09-reminders-second-full-failed.json",
+    "actualSlowQueryMs": 48060.261,
+    "actualSlowOperation": "reportEnrollments export class row aggregation/sort at5001 scoped classes before existing5000-row service guard",
+    "queryParametersAndPlans": "Retained privately, not published",
+    "plannerCause": "NOT_PROVEN; current custom/generic EXPLAIN plans after run differ from unknown originalexecutionplan, so do not invent a cache/JIT rootcause."
+  },
+  "boundedExportRepair": {
+    "status": "REPAIR_VERIFIED_FOCUSED49_AND_COMPLETE_FULL227_191_PASS",
+    "changedPaths": [
+      "apps/api/src/report-queries.ts",
+      "tests/integration/report-cases.ts"
+    ],
+    "behavior": "Validate scopedtotal>5000 before building/sorting class export rows, within same repeatable-read transaction. Existing service guards, auth/scope/feature checks and limit5000 stay intact. Both attendance/enrollment exports use bound.",
+    "test": "Keepactual5001fixture/422/noauditassertions; also actualclass-filtered exports200,row1,CSVcode,traceboundauditclassId/rowCount under same5001globalclasses.",
+    "timeoutsRetries": "UNCHANGED",
+    "additionalSourcePathsReviewed": 2
+  },
+  "reportRepairFocused": {
+    "passed": 49,
+    "failed": 0,
+    "intentionallyFiltered": 178,
+    "report": "../integration-2026-11-09-reminders-report-repair.json"
+  },
+  "thirdFullIntegration": {
+    "passed": 227,
+    "failed": 0,
+    "skipped": 0,
+    "report": "../integration-2026-11-09-reminders-full.json",
+    "reportRepairCases": [
+      {
+        "name": "operational reporting from actual scoped PostgreSQL data report plan flags remain independent and bounded exports reject oversized scopes without audit success",
+        "status": "passed",
+        "durationMs": 4405
+      },
+      {
+        "name": "operational reporting from actual scoped PostgreSQL data named IANA tenant calendars share DST daily buckets and reject raw offsets independently in SQL",
+        "status": "passed",
+        "durationMs": 441
+      }
+    ],
+    "source": "33reviewedpaths frozen across fullbuild/tests/contracts and now191browser",
+    "sqlOver1000ms": 0,
+    "slowSQLObservation": "Exact report start/end UTC window, owned PostgreSQL1000ms database-level logging; raw SQL/parameters retained privately.",
+    "reportVersion": "Earlier227-case report at this path was superseded by fourthfull. Prior observed counts/timings remain in this record; the current path now contains fourthfull output."
+  },
+  "firstFullBrowser": {
+    "passed": 190,
+    "failed": 1,
+    "skipped": 0,
+    "flaky": 0,
+    "duration": "23.5m",
+    "report": "../e2e-2026-11-09-reminders-first-full-failed.json",
+    "all18Reminders": "PASS;16rawTaste0;24imagesnotacceptedfinalmanualbecausefullgatefailed",
+    "failure": "Existing teachingJourney accepted anyrole=status, including pending teacher verification, as assignment success. Trace has noPOST/classes/:id/teachers, then realpreviewPOST422 VALIDATION_ERROR: teacher not assigned across full schedule range.",
+    "repair": "Wait realselectedteacher detail200 and nativevalidity, assert actualassignmentPOST201 and exactsuccess status plus scopedDBassignment. Preserve5sessions/0conflict/draft/finalize/revision assertions and application guards.",
+    "privateTrace": ".cache/reminders-first-full-teaching-trace",
+    "state": "REPAIR_VERIFIED_BY_FOCUSED3_AND_COMPLETE_SECOND_FULL191_PASS"
+  },
+  "teachingRepairFocused": {
+    "passed": 3,
+    "failed": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "report": "../e2e-2026-11-09-reminders-teaching-repair-focused.json",
+    "actualAssignment": "GET200/nativevalidity/POST201/exactsuccess/scopedDBdatecoverage allPASS; original5preview/finalize/revisionassertions intact",
+    "duration": "1.5m"
+  },
+  "fourthFullIntegration": {
+    "passed": 227,
+    "failed": 0,
+    "skipped": 0,
+    "report": "../integration-2026-11-09-reminders-full.json",
+    "sourcePaths": 34,
+    "reportRepairCases": [
+      {
+        "name": "operational reporting from actual scoped PostgreSQL data report plan flags remain independent and bounded exports reject oversized scopes without audit success",
+        "status": "passed",
+        "durationMs": 3879
+      },
+      {
+        "name": "operational reporting from actual scoped PostgreSQL data named IANA tenant calendars share DST daily buckets and reject raw offsets independently in SQL",
+        "status": "passed",
+        "durationMs": 455
+      }
+    ],
+    "slowSQLObservation": {
+      "fromUTC": "2026-11-09T14:51:51.903000Z",
+      "untilUTC": "2026-11-09T14:58:44.844368Z",
+      "sqlOver1000ms": 0,
+      "durationMs": [],
+      "rawSQLAndParameters": "Retained privately"
+    }
+  },
+  "fullFrozenGate": "verification.json"
+}

@@ -33,6 +33,12 @@ const rate = (numerator: number, denominator: number) =>
         (BigInt(numerator) * 10000n + BigInt(denominator) / 2n) /
           BigInt(denominator),
       );
+function requireBoundedClassExport(total: number) {
+  if (total > 5000)
+    throw new UnprocessableEntityException(
+      "Báo cáo vượt 5.000 dòng. Lọc lớp hoặc thu hẹp khoảng ngày trước khi xuất.",
+    );
+}
 export function selectedClasses(s: ReportScope, q: ReportQuery) {
   const where = [Prisma.sql`c.tenant_id=${s.tenant}::uuid`];
   if (q.classId) where.push(Prisma.sql`c.id=${q.classId}::uuid`);
@@ -167,6 +173,7 @@ export async function reportAttendance(
     coalesce(sum(roster),0)::text AS roster,coalesce(sum(present),0)::text AS present,coalesce(sum(late),0)::text AS late,
     coalesce(sum(excused),0)::text AS excused,coalesce(sum(unexcused),0)::text AS unexcused FROM stats`);
   const total = reportCount(totals[0]!.total);
+  if (mode === "export") requireBoundedClassExport(total);
   const rows =
     mode === "summary"
       ? []
@@ -205,6 +212,10 @@ export async function reportEnrollments(
   >(Prisma.sql`${scope} SELECT
     (SELECT count(*)::text FROM selected_classes) AS total,(SELECT count(*)::text FROM enrollment_overlap) AS enrollments,
     (SELECT count(DISTINCT student_id)::text FROM enrollment_overlap) AS students`);
+  const total = reportCount(totals[0]!.total);
+  // Reject oversized exports before materializing/sorting their class rows.
+  // The count and rows share the caller's repeatable-read tenant scope.
+  if (exporting) requireBoundedClassExport(total);
   const rows = await tx.$queryRaw<
     {
       id: string;
@@ -218,7 +229,6 @@ export async function reportEnrollments(
     SELECT c.id,c.code,c.name,c.status,count(e.id)::text AS enrollments,count(DISTINCT e.student_id)::text AS students
     FROM selected_classes c LEFT JOIN enrollment_overlap e ON e.tenant_id=c.tenant_id AND e.class_id=c.id
     GROUP BY c.id,c.code,c.name,c.status ORDER BY c.code,c.id LIMIT ${exporting ? 5001 : q.limit} OFFSET ${exporting ? 0 : financialOffset(q)}`);
-  const total = reportCount(totals[0]!.total);
   return {
     enrollmentCount: reportCount(totals[0]!.enrollments),
     studentCount: reportCount(totals[0]!.students),

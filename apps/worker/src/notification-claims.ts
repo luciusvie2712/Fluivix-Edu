@@ -1,3 +1,4 @@
+import { reminderBatchReady } from "../../api/dist/fee-reminder-predicates";
 import { Prisma, type PrismaClient, type PushDelivery } from "@prisma/client";
 import {
   authorizedNotificationSubjects,
@@ -9,6 +10,7 @@ import {
 export async function claimPushDelivery(
   db: PrismaClient,
   delivery: PushDelivery,
+  clock: () => Date = () => new Date(),
 ) {
   return db.$transaction(
     async (tx) => {
@@ -32,6 +34,21 @@ export async function claimPushDelivery(
         });
         return null;
       };
+      if (
+        n.type === "FEE_REMINDER" &&
+        (n.entityType !== "reminder" ||
+          !(await reminderBatchReady(tx, n.tenantId, n.entityId, clock())))
+      )
+        return suppress("SUPPRESSED");
+      const reminderBatch =
+        n.type === "FEE_REMINDER"
+          ? await tx.feeReminderBatch.findFirst({
+              where: { tenantId: n.tenantId, id: n.entityId },
+              select: { windowEndsAt: true },
+            })
+          : null;
+      if (n.type === "FEE_REMINDER" && !reminderBatch)
+        return suppress("SUPPRESSED");
       const initial = await tx.devicePushToken.findUniqueOrThrow({
         where: { id: delivery.deviceId },
       });
@@ -118,9 +135,89 @@ export async function claimPushDelivery(
         where: { id: delivery.id },
         select: { attempts: true },
       });
-      return { n, device, attempt: state.attempts };
+      return {
+        n,
+        device,
+        attempt: state.attempts,
+        reminderDeadline: reminderBatch?.windowEndsAt ?? null,
+      };
     },
     { timeout: 15000 },
+  );
+}
+
+type PreparedPush = NonNullable<Awaited<ReturnType<typeof claimPushDelivery>>>;
+// SENDING is already durable before this second transaction. A database/HTTP
+// failure after possible handoff therefore remains UNKNOWN, never PENDING.
+// Keep current finance, relationship, consent and device locks until handoff.
+export async function handoffReminderPush(
+  db: PrismaClient,
+  deliveryId: string,
+  prepared: PreparedPush,
+  send: () => Promise<Response>,
+  clock: () => Date = () => new Date(),
+) {
+  const { n, device, attempt } = prepared;
+  return db.$transaction(
+    async (tx) => {
+      await tx.$queryRaw`SELECT id FROM tenants WHERE id=${n.tenantId}::uuid FOR SHARE`;
+      await tx.$queryRaw`SELECT id FROM tenant_memberships WHERE tenant_id=${n.tenantId}::uuid AND user_id=${n.recipientUserId}::uuid FOR SHARE`;
+      const sessions = await tx.$queryRaw<
+        { id: string }[]
+      >`SELECT s.id FROM auth_sessions s JOIN users u ON u.id=s.user_id
+    WHERE s.user_id=${n.recipientUserId}::uuid AND s.family_id=${device.familyId}::uuid
+      AND s.client_type='MOBILE' AND s.revoked_at IS NULL AND s.consumed_at IS NULL
+      AND s.expires_at>now() AND u.status='ACTIVE' FOR SHARE OF s,u`;
+      await tx.$queryRaw`SELECT id FROM device_push_tokens WHERE id=${device.id}::uuid FOR UPDATE`;
+      await tx.$queryRaw`SELECT user_id FROM notification_preferences WHERE tenant_id=${n.tenantId}::uuid AND user_id=${n.recipientUserId}::uuid FOR SHARE`;
+      await tx.$queryRaw`SELECT id FROM notification_deliveries WHERE id=${deliveryId}::uuid AND tenant_id=${n.tenantId}::uuid FOR UPDATE`;
+      const where = {
+        id: deliveryId,
+        tenantId: n.tenantId,
+        canonical: true,
+        status: "SENDING",
+        attempts: attempt,
+        deviceVersion: device.version,
+      };
+      if (!(await tx.pushDelivery.findFirst({ where, select: { id: true } })))
+        return null;
+      const currentDevice = await tx.devicePushToken.findUnique({
+        where: { id: device.id },
+      });
+      const pref = await tx.notificationPreference.findUnique({
+        where: {
+          tenantId_userId: { tenantId: n.tenantId, userId: n.recipientUserId },
+        },
+      });
+      const allowed =
+        sessions.length > 0 &&
+        currentDevice?.status === "ACTIVE" &&
+        currentDevice.version === device.version &&
+        currentDevice.userId === n.recipientUserId &&
+        currentDevice.familyId === device.familyId &&
+        pref?.pushEnabled &&
+        categoryEnabled(n.type, pref) &&
+        (await notificationAuthorized(tx, n)) &&
+        (await consentFor(
+          tx,
+          n,
+          await authorizedNotificationSubjects(tx, n),
+        )) &&
+        (await reminderBatchReady(tx, n.tenantId, n.entityId, clock()));
+      if (
+        !allowed ||
+        !prepared.reminderDeadline ||
+        clock() >= prepared.reminderDeadline
+      ) {
+        await tx.pushDelivery.updateMany({
+          where,
+          data: { status: "SUPPRESSED", nextAttemptAt: null },
+        });
+        return null;
+      }
+      return send();
+    },
+    { isolationLevel: "ReadCommitted", timeout: 15000 },
   );
 }
 

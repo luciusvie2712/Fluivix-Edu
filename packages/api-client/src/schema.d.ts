@@ -1656,6 +1656,70 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/finance/reminder-policy": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["FeeRemindersController_policy"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["FeeRemindersController_update"];
+    trace?: never;
+  };
+  "/api/v1/finance/reminder-policy/history": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["FeeRemindersController_history"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/invoices/{id}/reminders": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["FeeRemindersController_invoice"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/invoices/{id}/reminder-hold": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["FeeRemindersController_hold"];
+    trace?: never;
+  };
   "/api/v1/notifications": {
     parameters: {
       query?: never;
@@ -4055,6 +4119,89 @@ export interface components {
     PaymentReceiptResponse: {
       data: components["schemas"]["PaymentReceiptView"];
       meta: components["schemas"]["MetaDto"];
+    };
+    ReminderPresetView: {
+      code: string;
+      localStart: string;
+      localEnd: string;
+      maxStagesPerInvoice: number;
+      offsets: number[];
+      catchUp: boolean;
+    };
+    ReminderPolicyView: {
+      enabled: boolean;
+      version: number;
+      timezone: string;
+      preset: components["schemas"]["ReminderPresetView"];
+      enabledSince: string | null;
+      approvedBy: string | null;
+      approvedAt: string | null;
+      approvalRef: string | null;
+    };
+    ReminderPolicyResponse: {
+      data: components["schemas"]["ReminderPolicyView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    ReminderPolicyEventView: {
+      id: string;
+      version: number;
+      enabled: boolean;
+      reason: string;
+      approvalRef: string | null;
+      actorId: string;
+      createdAt: string;
+    };
+    ReminderPolicyHistoryResponse: {
+      data: components["schemas"]["ReminderPolicyEventView"][];
+      page: components["schemas"]["PageView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    ReminderPolicyInput: {
+      version: number;
+      enabled: boolean;
+      confirmed: boolean;
+      reason: string;
+      approvalRef?: string;
+    };
+    ReminderStageView: {
+      /** @enum {string} */
+      stage: "BEFORE_3" | "AFTER_1" | "AFTER_7";
+      batchId: string;
+      localDay: string;
+      timezone: string;
+      createdAt: string;
+      inboxRecipients: number;
+      deliveryStatuses: string[];
+    };
+    ReminderHoldEventView: {
+      id: string;
+      version: number;
+      held: boolean;
+      category: string | null;
+      reason: string;
+      actorId: string;
+      createdAt: string;
+    };
+    ReminderInvoiceView: {
+      invoiceId: string;
+      held: boolean;
+      category: string | null;
+      version: number;
+      stages: components["schemas"]["ReminderStageView"][];
+      events: components["schemas"]["ReminderHoldEventView"][];
+      page: components["schemas"]["PageView"];
+    };
+    ReminderInvoiceResponse: {
+      data: components["schemas"]["ReminderInvoiceView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    ReminderHoldInput: {
+      version: number;
+      held: boolean;
+      confirmed: boolean;
+      /** @enum {string} */
+      category?: "MANUAL" | "PENDING_RECONCILIATION";
+      reason: string;
     };
     NotificationDeliveryStatusView: {
       /** @description Provider status; SENT means provider handoff, not device display. RETRY_EXHAUSTED projects a retained legacy pending row with five attempts. */
@@ -12064,6 +12211,319 @@ export interface operations {
         };
       };
       429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  FeeRemindersController_policy: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReminderPolicyResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  FeeRemindersController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReminderPolicyInput"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReminderPolicyResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  FeeRemindersController_history: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReminderPolicyHistoryResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  FeeRemindersController_invoice: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReminderInvoiceResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  FeeRemindersController_hold: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ReminderHoldInput"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ReminderInvoiceResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
         headers: {
           [name: string]: unknown;
         };

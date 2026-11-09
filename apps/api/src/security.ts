@@ -35,6 +35,7 @@ export async function verifyAccess(
 }
 export const permissions = {
   owner: [
+    "finance.reminder.configure",
     "notification.read",
     "privacy.self",
     "privacy.manage",
@@ -66,6 +67,7 @@ export const permissions = {
     "finance.report.read",
     "guardian.manage",
     "finance.fee.write",
+    "finance.reminder.manage",
   ],
   manager: [
     "notification.read",
@@ -118,6 +120,7 @@ export const permissions = {
     "finance.payment.write",
     "finance.report.read",
     "finance.fee.write",
+    "finance.reminder.manage",
   ],
   teacher: [
     "privacy.self",

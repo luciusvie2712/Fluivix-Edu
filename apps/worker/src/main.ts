@@ -1,3 +1,4 @@
+import { enqueueFeeReminderPage } from "./fee-reminder-jobs";
 import { PrismaClient } from "@prisma/client";
 import { Queue, UnrecoverableError, Worker } from "bullmq";
 import { z } from "zod";
@@ -136,6 +137,7 @@ async function main() {
     await db.$disconnect();
     throw new Error("MAIL_WORKER_NOT_READY", { cause });
   }
+  let reminderCursor: string | undefined;
   let dispatching = false;
   let lastImportSweep = 0;
   async function dispatch() {
@@ -181,6 +183,8 @@ async function main() {
             removeOnFail: false,
           },
         );
+      const reminders = await enqueueFeeReminderPage(db, reminderCursor);
+      reminderCursor = reminders.cursor;
       await enqueueNotificationPage(db, notificationQueue);
       await checkPushReceipts(db);
     } catch {

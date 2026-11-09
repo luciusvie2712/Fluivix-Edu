@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { FeeRemindersController, FeeRemindersService } from "./fee-reminders";
 import { Module, ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import type { NestExpressApplication } from "@nestjs/platform-express";
@@ -78,6 +79,7 @@ import {
     RoomsController,
     GradesController,
     FinanceController,
+    FeeRemindersController,
     NotificationsController,
     PrivacyController,
     PrivacyAdminController,
@@ -104,6 +106,7 @@ import {
     RoomsService,
     GradesService,
     FinanceService,
+    FeeRemindersService,
     NotificationsService,
     PrivacyService,
     PrivacyRequestsService,

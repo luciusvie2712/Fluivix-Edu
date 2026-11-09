@@ -826,6 +826,27 @@ export function reportCases(
             },
           }),
         ).toBe(0);
+        const selected = await db.educationClass.findFirstOrThrow({
+          where: { tenantId: large },
+          orderBy: { code: "asc" },
+          select: { id: true, code: true },
+        });
+        for (const kind of ["attendance", "enrollments"]) {
+          const scoped = await api(
+            `/reports/${kind}/export?${range}&classId=${selected.id}`,
+          );
+          expect(scoped.status).toBe(200);
+          expect(scoped.body.data.rowCount).toBe(1);
+          expect(scoped.body.data.csv).toContain(selected.code);
+          const recorded = await db.auditLog.findFirstOrThrow({
+            where: { tenantId: large, traceId: scoped.body.meta.traceId },
+          });
+          expect(recorded.action).toBe(`report.${kind}.exported`);
+          expect(recorded.metadata).toMatchObject({
+            classId: selected.id,
+            rowCount: 1,
+          });
+        }
       } finally {
         tokens.owner = original;
       }
