@@ -448,9 +448,12 @@ model SessionChange {
  sessionId String @map("session_id") @db.Uuid
  oldSnapshot Json @map("old_snapshot")
  newSnapshot Json @map("new_snapshot")
+ // Computed by the custom SQL migration; Prisma omits this field on creation.
+ changeType String @default(dbgenerated()) @map("change_type") @db.VarChar(20)
  reason String @db.VarChar(500)
  actorId String @map("actor_id") @db.Uuid
  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+ @@index([tenantId,sessionId,createdAt(sort: Desc),id(sort: Desc)], map: "session_changes_history_idx")
  @@map("session_changes")
 }
 

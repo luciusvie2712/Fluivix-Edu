@@ -916,6 +916,28 @@ export function teachingCases(
           })
         ).status,
       ).toBe("CANCELLED");
+      const cancelledSessionHistory = await api(
+        `/sessions/${rows[4]!.id}/changes`,
+      );
+      expect(cancelledSessionHistory.status).toBe(200);
+      expect(cancelledSessionHistory.body.data).toHaveLength(1);
+      expect(cancelledSessionHistory.body.data[0]).toMatchObject({
+        changeType: "CANCELLED",
+        reason: replacementInput.reason,
+        actorId: ownerId,
+        before: { status: "SCHEDULED", version: 1 },
+        after: { status: "CANCELLED", version: 2 },
+      });
+      expect(
+        (
+          await api(
+            `/sessions/${rows[4]!.id}/changes`,
+            "GET",
+            undefined,
+            teacherToken,
+          )
+        ).status,
+      ).toBe(200);
       expect(
         (
           await db.classSession.findUniqueOrThrow({

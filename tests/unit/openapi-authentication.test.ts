@@ -55,7 +55,7 @@ describe("generated authentication transport contract", () => {
     });
   });
   it("requires the actual access scheme for every protected operation and documents unauthorized errors", () => {
-    expect(operations).toHaveLength(187);
+    expect(operations).toHaveLength(188);
     for (const { path, operation } of operations) {
       if (
         bodyCredentials.has(path) ||

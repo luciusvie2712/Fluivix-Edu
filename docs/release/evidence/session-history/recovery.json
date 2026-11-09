@@ -1,0 +1,122 @@
+{
+  "status": "ALL_REPAIRS_VERIFIED_FRESH_THIRD_COMPLETE_FROZEN_GATE",
+  "baseCommit": "41f8cdd6de25d844b271e966d47ba96a9fccb3bd",
+  "priorExactCI": "../ci-41f8cdd-success-2026-11-09.json",
+  "observedRepairs": [
+    {
+      "phase": "first API build",
+      "status": "FAILED_TS2322",
+      "cause": "Inferred mutable return object widened changeType to string",
+      "repair": "Explicit checked return type; no assertion or TypeScript suppression; subsequent API build PASS"
+    },
+    {
+      "phase": "first snapshot unit suite",
+      "status": "FAILED_DISCOVERY_ZERO_TESTS",
+      "cause": "Root test imported an undeclared root Nest dependency",
+      "repair": "Use structural HTTP422 boundary assertion; API module resolves its own declared dependency; subsequent21focused and110full unit PASS"
+    },
+    {
+      "phase": "first focused integration",
+      "passed": 21,
+      "failed": 1,
+      "filteredOut": 161,
+      "cause": "New test expected400 for query validation; existing global API contract is422",
+      "repair": "Retain invalid-query checks and align expected status with actual shared ValidationPipe contract; second focused22PASS/0FAIL,161intentionallyfiltered"
+    }
+  ],
+  "schemaProofs": [
+    "generated-column-probe.json",
+    "upgrade-031-to-032.json"
+  ],
+  "contract": {
+    "operations": 188,
+    "newReadRoute": "GET /api/v1/sessions/:id/changes",
+    "clientGenerated": true
+  },
+  "browserFocused": {
+    "report": "../e2e-2026-11-09-session-history-third-focused.json",
+    "passed": 44,
+    "failed": 0,
+    "flaky": 0,
+    "skipped": 0
+  },
+  "fullFrozenGate": "verification.json",
+  "visualPolicy": "Actual creation times from real API mutations remain unmodified. Final full-suite captures must be individually reviewed; focused/full image byte equality is not assumed when timestamps differ.",
+  "releaseReadiness": "BLOCKED",
+  "browserFocusedFailures": [
+    {
+      "report": "../e2e-2026-11-09-session-history-first-focused.json",
+      "passed": 5,
+      "failed": 10,
+      "causes": [
+        "Native disabled pagination button lost focus on last page",
+        "New disclosure summary target24px",
+        "Readonly permission assertion also matched Next route announcer"
+      ],
+      "repairs": [
+        "Persistent guarded aria-disabled buttons preserve keyboard focus",
+        "Scoped44px disclosure target",
+        "Specific semantic alert selector; same denial expectation"
+      ]
+    },
+    {
+      "report": "../e2e-2026-11-09-session-history-second-focused.json",
+      "passed": 33,
+      "failed": 11,
+      "causes": [
+        "Eight cancellation visual cases found duplicate before/after region landmark names",
+        "Three existing teaching cases expected English status labels after Vietnamese localization"
+      ],
+      "repairsPending": [
+        "Unique snapshot region names including stored version",
+        "Keep status/version assertions with equivalent localized labels"
+      ]
+    }
+  ],
+  "latestIntegrationFocused": {
+    "report": "../integration-2026-11-09-session-history-fourth-focused.json",
+    "passed": 24,
+    "failed": 0,
+    "filteredOut": 160,
+    "includes": "23history cases plus originalTC027 with newhistory assertions for real recurring cancellation"
+  },
+  "firstCompleteGate": "first-partial-gate.json",
+  "inventoryRepair": {
+    "protectedGETs": 104,
+    "realUnauthorizedChecks": 208,
+    "focusedReport": "../integration-2026-11-09-session-history-auth-focused.json",
+    "passed": 2,
+    "failed": 0,
+    "filteredOut": 182
+  },
+  "spacingRepair": {
+    "priorFullBrowserReport": "../e2e-2026-11-09-session-history-resumed-full.json",
+    "priorFullBrowserResult": "173PASS,0skip/flaky; exact source/env stable; all24 original full images individually observed",
+    "acceptance": "NOT_FINAL_ACCEPTANCE: strict evidence finalizer rejected two real Taste WARN findings. No Taste reports or assertions edited.",
+    "finding": "panel-void68px for rescheduled1440 in both motion modes, caused by stacked snapshot/list/footer margins",
+    "sourceRepair": "Scoped session-history list and snapshot dl margin-bottom0; retain existing toolbar24px and item16px spacing, focus/targets unchanged",
+    "rawReports": "pre-spacing-taste-reports/",
+    "next": "Focused15 E2E plus16 raw Taste reports must pass, then fresh complete third frozen gate and all24 new final manual observations.",
+    "firstFocusedResult": "15browserPASS; strict raw Taste review still found2 panel-void44px WARNs. Original reports retained first-spacing-taste-reports/. Narrow remaining toolbar top margin24px reduced to16px, preserving44px targets and keyboard focus; repeat15cases.",
+    "domDiagnosis": {
+      "status": "MEASURED_REAL_BROWSER",
+      "remainingGap": 44,
+      "afterOwnedPagerBottomY": 796,
+      "nextPanelRuleY": 840,
+      "cause": "Toolbar bottom margin24px plus details panel padding20px; previous margin-top change did not address this remaining band.",
+      "repair": "Scoped toolbar margin16px0, retaining16px action separation and44px native targets.",
+      "diagnostic": "Cache-only copied case kept all assertions, logged unmodified Taste void coordinates and real DOM neighbors; diagnostic1PASS, no canonical test or inspector changes.",
+      "secondFocusedResult": "15browserPASS; two44px warnings retained second-spacing-taste-reports/, not final acceptance."
+    },
+    "finalFocusedResult": {
+      "report": "../e2e-2026-11-09-session-history-spacing-final-focused.json",
+      "browser": 15,
+      "failed": 0,
+      "skipped": 0,
+      "flaky": 0,
+      "rawTasteReports": 16,
+      "rawTasteFindings": 0,
+      "manual": "Actual1440px rescheduled final-focused image viewed after report verification; comparison readable and pager spacing compact. All24 FINAL full-gate images still need fresh individual observations."
+    }
+  }
+}

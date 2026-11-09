@@ -19,6 +19,11 @@ import { Db } from "./db";
 import { tenantDate } from "./students";
 import type { Claims } from "./security";
 import { lockTenantActor } from "./tenant-actor";
+import { lockTenantReader } from "./tenant-reader";
+import {
+  parseSessionHistory,
+  sessionHistoryIntegrityError,
+} from "./session-history-snapshot";
 import { Paged } from "./http";
 import {
   assertQuota,
@@ -47,6 +52,8 @@ import {
   WithdrawInput,
   ScheduleRuleReplacement,
   SchedulePreview,
+  SessionHistoryQuery,
+  SessionHistoryEntry,
 } from "./teaching.dto";
 type Tx = Prisma.TransactionClient;
 type TenantScope = Pick<Claims, "tenantId">;
@@ -1706,6 +1713,100 @@ export class TeachingService {
   async sessionDetail(c: Claims, id: string) {
     return this.db.$transaction(async (tx) =>
       this.sessionView(tx, await this.authorizedSession(tx, c, id)),
+    );
+  }
+  async sessionChanges(c: Claims, id: string, q: SessionHistoryQuery) {
+    const skip = (q.page - 1) * q.limit;
+    if (!Number.isSafeInteger(skip) || skip > 2147483647)
+      throw new UnprocessableEntityException("Số trang không hợp lệ.");
+    return this.db.$transaction(
+      async (tx) => {
+        await lockTenantReader(
+          tx,
+          c,
+          c.role === "teacher" ? "teaching.read.assigned" : "teaching.read",
+        );
+        await this.authorizedSession(tx, c, id);
+        const where = { tenantId: c.tenantId!, sessionId: id };
+        const total = await tx.sessionChange.count({ where });
+        const rows = await tx.sessionChange.findMany({
+          where,
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+          skip,
+          take: q.limit,
+          select: {
+            id: true,
+            oldSnapshot: true,
+            newSnapshot: true,
+            changeType: true,
+            reason: true,
+            actorId: true,
+            createdAt: true,
+          },
+        });
+        const changes = rows.map(parseSessionHistory);
+        const snapshots = changes.flatMap((v) => [v.before, v.after]);
+        const teacherIds = [...new Set(snapshots.map((v) => v.teacherId))];
+        const roomIds = [
+          ...new Set(snapshots.flatMap((v) => (v.roomId ? [v.roomId] : []))),
+        ];
+        const actorIds = [...new Set(rows.map((v) => v.actorId))];
+        const [teachers, rooms, actors] = await Promise.all([
+          tx.teacher.findMany({
+            where: { tenantId: c.tenantId!, id: { in: teacherIds } },
+            select: { id: true, fullName: true },
+          }),
+          tx.room.findMany({
+            where: { tenantId: c.tenantId!, id: { in: roomIds } },
+            select: { id: true, name: true },
+          }),
+          tx.membership.findMany({
+            where: { tenantId: c.tenantId!, userId: { in: actorIds } },
+            select: { userId: true, user: { select: { displayName: true } } },
+          }),
+        ]);
+        if (
+          teachers.length !== teacherIds.length ||
+          rooms.length !== roomIds.length ||
+          actors.length !== actorIds.length
+        )
+          return sessionHistoryIntegrityError();
+        const teacherNames = new Map(teachers.map((v) => [v.id, v.fullName]));
+        const roomNames = new Map(rooms.map((v) => [v.id, v.name]));
+        const actorNames = new Map(
+          actors.map((v) => [v.userId, v.user.displayName]),
+        );
+        function labeled(value: (typeof snapshots)[number]) {
+          const teacherName = teacherNames.get(value.teacherId);
+          const roomName = value.roomId ? roomNames.get(value.roomId) : null;
+          if (teacherName === undefined || roomName === undefined)
+            return sessionHistoryIntegrityError();
+          return { ...value, teacherName, roomName };
+        }
+        const entries: SessionHistoryEntry[] = rows.map((row, i) => {
+          const change = changes[i],
+            actorDisplayName = actorNames.get(row.actorId);
+          if (!change || actorDisplayName === undefined)
+            return sessionHistoryIntegrityError();
+          return {
+            id: row.id,
+            changeType: change.changeType,
+            before: labeled(change.before),
+            after: labeled(change.after),
+            reason: row.reason,
+            actorId: row.actorId,
+            actorDisplayName,
+            createdAt: row.createdAt.toISOString(),
+          };
+        });
+        return new Paged(entries, {
+          page: q.page,
+          limit: q.limit,
+          total,
+          totalPages: Math.ceil(total / q.limit),
+        });
+      },
+      { isolationLevel: "ReadCommitted" },
     );
   }
   async classSessions(c: Claims, classId: string, q: ScheduleQuery) {

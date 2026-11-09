@@ -119,7 +119,7 @@ test("a delayed real lesson response cannot overwrite a newer lesson from anothe
     await route.fulfill({ response: old });
   });
   await page.goto(testOrigins.web + `/app/sessions/${session.id}`);
-  await expect(page.getByText(/SCHEDULED.*Phiên bản 2/)).toBeVisible();
+  await expect(page.getByText(/Đã xếp lịch.*Phiên bản 2/)).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Lưu nháp điểm danh", exact: true }),
   ).toBeEnabled();
@@ -158,7 +158,7 @@ test("a delayed real lesson response cannot overwrite a newer lesson from anothe
     .getByLabel("Bài tập giao", { exact: true })
     .fill("Bài tập sau khi đối chiếu phiên bản");
   await page.getByRole("button", { name: "Lưu nhật ký", exact: true }).click();
-  await expect(page.getByText(/SCHEDULED.*Phiên bản 3/)).toBeVisible();
+  await expect(page.getByText(/Đã xếp lịch.*Phiên bản 3/)).toBeVisible();
   const stored = (await api("GET", `/sessions/${session.id}/lesson-report`))
     .data;
   expect(stored.lessonSummary).toBe(externalSummary);
@@ -428,7 +428,7 @@ async function teachingJourney(
   await page
     .getByRole("button", { name: "Lưu nháp điểm danh", exact: true })
     .click();
-  await expect(page.getByText(/IN_PROGRESS.*Phiên bản 2/)).toBeVisible();
+  await expect(page.getByText(/Đang học.*Phiên bản 2/)).toBeVisible();
   await page
     .getByRole("checkbox", {
       name: "Tôi xác nhận điểm danh đã lưu trên hệ thống và đồng ý công bố.",
@@ -437,7 +437,7 @@ async function teachingJourney(
   await page
     .getByRole("button", { name: "Chốt điểm danh", exact: true })
     .click();
-  await expect(page.getByText(/COMPLETED.*Phiên bản 3/)).toBeVisible();
+  await expect(page.getByText(/Đã chốt.*Phiên bản 3/)).toBeVisible();
   const sessionUrl = page.url();
   await page
     .getByRole("link", { name: "Lớp vận hành Web kiểm thử", exact: true })
@@ -533,7 +533,7 @@ test("Web class enrollment, recurring preview/generation, real calendar, draft a
   try {
     const sessionUrl = await teachingJourney(page, await teachingFixture(db));
     await page.goto(sessionUrl);
-    await expect(page.getByText(/COMPLETED.*Phiên bản 3/)).toBeVisible();
+    await expect(page.getByText(/Đã chốt.*Phiên bản 3/)).toBeVisible();
     mkdirSync("docs/release/evidence/visual", { recursive: true });
     for (const width of [360, 768, 1024, 1440]) {
       await page.setViewportSize({ width, height: 900 });

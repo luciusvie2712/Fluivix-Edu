@@ -1,0 +1,10 @@
+{
+  "date": "2026-11-09",
+  "status": "ABORTED_NOT_ACCEPTED",
+  "stagesBeforeBrowser": "110 unit,30 mobile,184 integration and remaining pre-browser full-gate commands passed on frozen source.",
+  "browser": "173 cases started. Case6 assessment responsive/keyboard/reduced-motion exceeded unchanged30000ms timeout. The run was interrupted with Ctrl+C; shell ended without a complete JSON browser report or observed final exit code.",
+  "resourceObservation": "Shared Windows host had753MB free of15556MB at earlier observation. Resource contention is suspected, not proven as the sole cause.",
+  "preservation": "Partial test-results including failure trace copied privately; no user processes stopped.",
+  "recovery": "Use supported explicit local disposable Docker E2E database to avoid an additional embedded PostgreSQL server. Keep all assertions, timeout30000ms and retries0. Re-run failed case then all173 cases.",
+  "accepted": false
+}

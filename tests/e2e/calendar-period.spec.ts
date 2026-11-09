@@ -404,9 +404,9 @@ test("day and Monday-first week show real DST dates, cancelled/rescheduled state
     new RegExp(`/app/sessions/${f.sessions.monday!.id}$`),
   );
   await expect(
-    page.getByRole("heading", { name: "Buổi học 2030-10-30", exact: true }),
+    page.getByRole("heading", { name: "Buổi học 30/10/2030", exact: true }),
   ).toBeVisible();
-  await expect(page.getByText(/1 lần thay lịch/)).toBeVisible();
+  await expect(page.getByText(/1 thay đổi khi tải buổi học/)).toBeVisible();
 });
 
 test("period changes retain actual class teacher room filters and reset a 25-session result page", async ({

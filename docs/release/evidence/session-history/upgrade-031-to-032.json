@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "baselineMigrations": 31,
+  "finalMigrations": 32,
+  "allOriginalMigrationChecksumsUnchanged": true,
+  "legacyHistoryRows": 2,
+  "legacyHistoryBytesUnchanged": true,
+  "derivedKinds": [
+    "RESCHEDULED",
+    "CANCELLED"
+  ],
+  "appendOnlyTriggerEnabled": true,
+  "updateDeleteRejected": true,
+  "crossTenantActorForeignKeyRejected": "23503",
+  "pagingIndexValid": true
+}

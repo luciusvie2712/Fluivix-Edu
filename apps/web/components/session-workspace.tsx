@@ -1,11 +1,13 @@
 "use client";
 import Link from "next/link";
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { wallClockUtc } from "@fluivix/contracts";
 import { z } from "zod";
 import type { components } from "@fluivix/api-client";
-import { teaching } from "../lib/api";
+import { ApiError, teaching } from "../lib/api";
+import { sessionStatuses } from "../lib/session-status";
+import { SessionChangeHistory } from "./session-change-history";
 import { useTeachingScope } from "./teaching-workspace";
 import {
   Field,
@@ -26,13 +28,6 @@ const statuses = {
   LATE: "Đi muộn",
   ABSENT_EXCUSED: "Vắng có phép",
   ABSENT_UNEXCUSED: "Vắng không phép",
-};
-const sessionStatuses: Record<string, string> = {
-  SCHEDULED: "Đã xếp lịch",
-  IN_PROGRESS: "Đang học",
-  COMPLETED: "Đã chốt",
-  CANCELLED: "Đã hủy",
-  REOPENED: "Đã mở lại",
 };
 const attendanceStatus = z.enum([
   "UNMARKED",
@@ -242,22 +237,43 @@ function SessionDetail({ id }: { id: string }) {
     [lessonDirty, setLessonDirty] = useState(false);
   const [revision, setRevision] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
+  const [denied, setDenied] = useState<ApiError | null>(null);
+  const [userId, tenantId, role] = scope.key;
+  useEffect(() => {
+    if (!denied) return;
+    const queryKey = ["teaching", userId, tenantId, role];
+    void cache.cancelQueries({ queryKey });
+    cache.removeQueries({ queryKey });
+  }, [cache, denied, userId, tenantId, role]);
   const result = useQuery({
     queryKey: ["teaching", ...scope.key, "session", id],
-    enabled: scope.allowed,
+    enabled: scope.allowed && !denied,
     queryFn: () => teaching.attendance(id),
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });
   const lesson = useQuery({
     queryKey: ["teaching", ...scope.key, "lesson", id],
-    enabled: scope.allowed,
+    enabled: scope.allowed && !denied,
     queryFn: () => teaching.lesson(id),
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });
   if (!scope.allowed)
     return <p role="alert">Vai trò hiện tại không có quyền xem buổi học.</p>;
+  if (denied)
+    return (
+      <div role="alert">
+        <p>Quyền truy cập buổi học đã thay đổi. {denied.message}</p>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => window.location.reload()}
+        >
+          Kiểm tra lại quyền truy cập
+        </Button>
+      </div>
+    );
   if (result.isPending) return <p role="status">Đang tải buổi học…</p>;
   if (result.error)
     return (
@@ -271,6 +287,17 @@ function SessionDetail({ id }: { id: string }) {
   if (!result.data) return null;
   const model = result.data.data,
     s = model.session;
+  const timezone = scope.tenant?.timezone ?? "UTC";
+  const start = new Date(s.startsAt),
+    end = new Date(s.endsAt);
+  const clock = new Intl.DateTimeFormat("vi-VN", {
+    timeZone: timezone,
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23",
+  });
+  const startDay = centreCalendarDay(timezone, start),
+    endDay = centreCalendarDay(timezone, end);
   const lessonVersion = lesson.data?.data.sessionVersion;
   const writable = scope.tenant?.status !== "READ_ONLY" && !refreshing,
     locked = ["COMPLETED", "CANCELLED"].includes(s.status);
@@ -291,22 +318,34 @@ function SessionDetail({ id }: { id: string }) {
         <Link href="/app/schedule">Lịch học</Link> /{" "}
         <Link href={`/app/classes/${s.classId}`}>{s.className}</Link>
       </p>
-      <h1>Buổi học {s.scheduledDate}</h1>
+      <h1>Buổi học {calendarDateLabel(s.scheduledDate)}</h1>
       {refreshing && (
         <p role="status">
           Đang đồng bộ dữ liệu buổi học; chờ hoàn tất trước khi sửa.
         </p>
       )}
       <p>
-        {s.className} · {s.status} · Phiên bản {s.version} · {s.changeCount} lần
-        thay lịch
+        {s.className} · {sessionStatuses[s.status] ?? s.status} · Phiên bản{" "}
+        {s.version} · {s.changeCount} thay đổi khi tải buổi học
+      </p>
+      <p>
+        Giờ trung tâm: {clock.format(start)} – {clock.format(end)}
+        {startDay !== endDay ? ` (${calendarDateLabel(endDay)})` : ""} ·{" "}
+        {s.roomName ?? "Không chỉ định phòng"}
       </p>
       {locked && (
         <p className="notice">
-          Buổi đã khóa hoặc hủy. Điểm danh và nhật ký chỉ được sửa sau khi người
-          có quyền mở lại.
+          {s.status === "CANCELLED"
+            ? "Buổi đã hủy. Không thể sửa điểm danh hoặc nhật ký của buổi này."
+            : "Buổi đã khóa. Điểm danh và nhật ký chỉ được sửa sau khi người có quyền mở lại."}
         </p>
       )}
+      <SessionChangeHistory
+        id={id}
+        scope={scope.key}
+        onDenied={setDenied}
+        version={s.version}
+      />
       <AttendanceEditor
         key={`${s.version}:${revision}`}
         id={id}

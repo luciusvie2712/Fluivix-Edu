@@ -1,0 +1,1035 @@
+{
+  "config": {
+    "argv": [
+      "D:\\my-project\\fluivixedu\\.cache\\node-v24.22.2-win-x64\\node.exe",
+      "D:\\my-project\\fluivixedu\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "session-history.spec.ts"
+    ],
+    "configFile": "D:\\my-project\\fluivixedu\\playwright.config.ts",
+    "rootDir": "D:/my-project/fluivixedu/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/my-project/fluivixedu/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tenant-chromium",
+        "name": "tenant-chromium",
+        "testDir": "D:/my-project/fluivixedu/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\my-project\\fluivixedu\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "tenant-chromium",
+        "testDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "snapshotDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:3000",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "browserName": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "tenant-chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/release/evidence/e2e-2026-11-09-session-history-first-focused.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm exec tsx tooling/e2e-server.ts",
+      "url": "http://localhost:3000/login",
+      "timeout": 60000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "session-history.spec.ts",
+      "file": "session-history.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "session change history loads on demand and shows actual DST reschedule and cancellation snapshots",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4836,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T06:51:45.173Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d7ab63376c5db4412f8e-627f2e4018ed5d851b28",
+          "file": "session-history.spec.ts",
+          "line": 278,
+          "column": 5
+        },
+        {
+          "title": "empty history and real transport retry keep an unsaved lesson while hiding failed history data",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3753,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T06:51:51.072Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d7ab63376c5db4412f8e-661e9b6497904b28c0dc",
+          "file": "session-history.spec.ts",
+          "line": 338,
+          "column": 5
+        },
+        {
+          "title": "actual 25-change history paginates and preserves keyboard focus and an unsaved lesson",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 11002,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.session-change-history').getByRole('button', { name: 'Lịch sử sau', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" locator('.session-change-history').getByRole('button', { name: 'Lịch sử sau', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.session-change-history').getByRole('button', { name: 'Lịch sử sau', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button disabled type=\"button\" class=\"button button-outline\">Lịch sử sau</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.session-change-history').getByRole('button', { name: 'Lịch sử sau', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" locator('.session-change-history').getByRole('button', { name: 'Lịch sử sau', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.session-change-history').getByRole('button', { name: 'Lịch sử sau', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button disabled type=\"button\" class=\"button button-outline\">Lịch sử sau</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:389:22",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                      "column": 22,
+                      "line": 389
+                    },
+                    "snippet": "  387 |   await page.keyboard.press(\"Enter\");\n  388 |   await expect(entries(page)).toHaveCount(5);\n> 389 |   await expect(next).toBeFocused();\n      |                      ^\n  390 |   await expect(history(page)).toContainText(\"Trang lịch sử 2 / 2\");\n  391 |   await expect(entries(page).first()).toHaveAccessibleName(\n  392 |     \"Đổi lịch buổi học, phiên bản 6\","
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                        "column": 22,
+                        "line": 389
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  locator('.session-change-history').getByRole('button', { name: 'Lịch sử sau', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" locator('.session-change-history').getByRole('button', { name: 'Lịch sử sau', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.session-change-history').getByRole('button', { name: 'Lịch sử sau', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button disabled type=\"button\" class=\"button button-outline\">Lịch sử sau</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n\n  387 |   await page.keyboard.press(\"Enter\");\n  388 |   await expect(entries(page)).toHaveCount(5);\n> 389 |   await expect(next).toBeFocused();\n      |                      ^\n  390 |   await expect(history(page)).toContainText(\"Trang lịch sử 2 / 2\");\n  391 |   await expect(entries(page).first()).toHaveAccessibleName(\n  392 |     \"Đổi lịch buổi học, phiên bản 6\",\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:389:22"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T06:51:54.874Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-actual-25--016d9-focus-and-an-unsaved-lesson-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-actual-25--016d9-focus-and-an-unsaved-lesson-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-actual-25--016d9-focus-and-an-unsaved-lesson-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                    "column": 22,
+                    "line": 389
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d7ab63376c5db4412f8e-28ec1c4098a3db210591",
+          "file": "session-history.spec.ts",
+          "line": 373,
+          "column": 5
+        },
+        {
+          "title": "real teacher reassignment denied by history clears the parent roster lesson editor and old cached history",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 6877,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T06:52:08.300Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d7ab63376c5db4412f8e-45f61500929fb9b9d7fd",
+          "file": "session-history.spec.ts",
+          "line": 405,
+          "column": 5
+        },
+        {
+          "title": "real membership suspension clears cached history and the parent editor after an actual history 403",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5706,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T06:52:15.901Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d7ab63376c5db4412f8e-348c65e47c50ce401919",
+          "file": "session-history.spec.ts",
+          "line": 449,
+          "column": 5
+        },
+        {
+          "title": "READ_ONLY session history remains readable while financial-role context cannot inherit its cached rows",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 3964,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('alert')\nExpected substring: \u001b[32m\"Vai trò hiện tại không có quyền xem buổi học.\"\u001b[39m\nError: strict mode violation: getByRole('alert') resolved to 2 elements:\n    1) <p role=\"alert\">Vai trò hiện tại không có quyền xem buổi học.</p> aka getByText('Vai trò hiện tại không có quy')\n    2) <div role=\"alert\" aria-live=\"assertive\" id=\"__next-route-announcer__\"></div> aka locator('[id=\"__next-route-announcer__\"]')\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('alert') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('alert')\u001b[22m\n\u001b[2m    2 × locator resolved to <div role=\"alert\" aria-live=\"assertive\" id=\"__next-route-announcer__\"></div>\u001b[22m\n\u001b[2m      - unexpected value \"\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('alert')\nExpected substring: \u001b[32m\"Vai trò hiện tại không có quyền xem buổi học.\"\u001b[39m\nError: strict mode violation: getByRole('alert') resolved to 2 elements:\n    1) <p role=\"alert\">Vai trò hiện tại không có quyền xem buổi học.</p> aka getByText('Vai trò hiện tại không có quy')\n    2) <div role=\"alert\" aria-live=\"assertive\" id=\"__next-route-announcer__\"></div> aka locator('[id=\"__next-route-announcer__\"]')\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('alert') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('alert')\u001b[22m\n\u001b[2m    2 × locator resolved to <div role=\"alert\" aria-live=\"assertive\" id=\"__next-route-announcer__\"></div>\u001b[22m\n\u001b[2m      - unexpected value \"\"\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:525:41",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                      "column": 41,
+                      "line": 525
+                    },
+                    "snippet": "  523 |   await expect(page.getByRole(\"banner\")).toContainText(\"Kế toán\");\n  524 |   await page.goto(`/app/sessions/${f.session.id}`);\n> 525 |   await expect(page.getByRole(\"alert\")).toContainText(\n      |                                         ^\n  526 |     \"Vai trò hiện tại không có quyền xem buổi học.\",\n  527 |   );\n  528 |   await expect(entries(page)).toHaveCount(0);"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                        "column": 41,
+                        "line": 525
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('alert')\nExpected substring: \u001b[32m\"Vai trò hiện tại không có quyền xem buổi học.\"\u001b[39m\nError: strict mode violation: getByRole('alert') resolved to 2 elements:\n    1) <p role=\"alert\">Vai trò hiện tại không có quyền xem buổi học.</p> aka getByText('Vai trò hiện tại không có quy')\n    2) <div role=\"alert\" aria-live=\"assertive\" id=\"__next-route-announcer__\"></div> aka locator('[id=\"__next-route-announcer__\"]')\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" getByRole('alert') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('alert')\u001b[22m\n\u001b[2m    2 × locator resolved to <div role=\"alert\" aria-live=\"assertive\" id=\"__next-route-announcer__\"></div>\u001b[22m\n\u001b[2m      - unexpected value \"\"\u001b[22m\n\n\n  523 |   await expect(page.getByRole(\"banner\")).toContainText(\"Kế toán\");\n  524 |   await page.goto(`/app/sessions/${f.session.id}`);\n> 525 |   await expect(page.getByRole(\"alert\")).toContainText(\n      |                                         ^\n  526 |     \"Vai trò hiện tại không có quyền xem buổi học.\",\n  527 |   );\n  528 |   await expect(entries(page)).toHaveCount(0);\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:525:41"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T06:52:21.640Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-READ-ONLY--e87bc-not-inherit-its-cached-rows-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-READ-ONLY--e87bc-not-inherit-its-cached-rows-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-READ-ONLY--e87bc-not-inherit-its-cached-rows-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                    "column": 41,
+                    "line": 525
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d7ab63376c5db4412f8e-ad274a864037176ccc92",
+          "file": "session-history.spec.ts",
+          "line": 490,
+          "column": 5
+        },
+        {
+          "title": "centre switch aborts actual delayed history bytes and the old session deep link stays private",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4200,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T06:52:27.968Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d7ab63376c5db4412f8e-c17d3634798abf563d0e",
+          "file": "session-history.spec.ts",
+          "line": 531,
+          "column": 5
+        },
+        {
+          "title": "session history real snapshots visual and accessibility 360 no-preference",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 3159,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:662:9",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                      "column": 9,
+                      "line": 662
+                    },
+                    "snippet": "  660 |       expect(\n  661 |         await summary.evaluate((el) => el.getBoundingClientRect().height),\n> 662 |       ).toBeGreaterThanOrEqual(44);\n      |         ^\n  663 |       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  664 |       await reviewTaste(\n  665 |         page,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                        "column": 9,
+                        "line": 662
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m\n\n  660 |       expect(\n  661 |         await summary.evaluate((el) => el.getBoundingClientRect().height),\n> 662 |       ).toBeGreaterThanOrEqual(44);\n      |         ^\n  663 |       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  664 |       await reviewTaste(\n  665 |         page,\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:662:9"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T06:52:32.811Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-48a39-ssibility-360-no-preference-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-48a39-ssibility-360-no-preference-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-48a39-ssibility-360-no-preference-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                    "column": 9,
+                    "line": 662
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d7ab63376c5db4412f8e-d01b782fd9c15bf76c9b",
+          "file": "session-history.spec.ts",
+          "line": 635,
+          "column": 9
+        },
+        {
+          "title": "session history real snapshots visual and accessibility 768 no-preference",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 3200,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:662:9",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                      "column": 9,
+                      "line": 662
+                    },
+                    "snippet": "  660 |       expect(\n  661 |         await summary.evaluate((el) => el.getBoundingClientRect().height),\n> 662 |       ).toBeGreaterThanOrEqual(44);\n      |         ^\n  663 |       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  664 |       await reviewTaste(\n  665 |         page,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                        "column": 9,
+                        "line": 662
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m\n\n  660 |       expect(\n  661 |         await summary.evaluate((el) => el.getBoundingClientRect().height),\n> 662 |       ).toBeGreaterThanOrEqual(44);\n      |         ^\n  663 |       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  664 |       await reviewTaste(\n  665 |         page,\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:662:9"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T06:52:38.063Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-0aa47-ssibility-768-no-preference-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-0aa47-ssibility-768-no-preference-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-0aa47-ssibility-768-no-preference-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                    "column": 9,
+                    "line": 662
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d7ab63376c5db4412f8e-dfd2a9968ae01449ea8e",
+          "file": "session-history.spec.ts",
+          "line": 635,
+          "column": 9
+        },
+        {
+          "title": "session history real snapshots visual and accessibility 1024 no-preference",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 3824,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:662:9",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                      "column": 9,
+                      "line": 662
+                    },
+                    "snippet": "  660 |       expect(\n  661 |         await summary.evaluate((el) => el.getBoundingClientRect().height),\n> 662 |       ).toBeGreaterThanOrEqual(44);\n      |         ^\n  663 |       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  664 |       await reviewTaste(\n  665 |         page,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                        "column": 9,
+                        "line": 662
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m\n\n  660 |       expect(\n  661 |         await summary.evaluate((el) => el.getBoundingClientRect().height),\n> 662 |       ).toBeGreaterThanOrEqual(44);\n      |         ^\n  663 |       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  664 |       await reviewTaste(\n  665 |         page,\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:662:9"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T06:52:44.059Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-748b3-sibility-1024-no-preference-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-748b3-sibility-1024-no-preference-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-748b3-sibility-1024-no-preference-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                    "column": 9,
+                    "line": 662
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d7ab63376c5db4412f8e-d15adbdf908334bef924",
+          "file": "session-history.spec.ts",
+          "line": 635,
+          "column": 9
+        },
+        {
+          "title": "session history real snapshots visual and accessibility 1440 no-preference",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 4355,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:662:9",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                      "column": 9,
+                      "line": 662
+                    },
+                    "snippet": "  660 |       expect(\n  661 |         await summary.evaluate((el) => el.getBoundingClientRect().height),\n> 662 |       ).toBeGreaterThanOrEqual(44);\n      |         ^\n  663 |       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  664 |       await reviewTaste(\n  665 |         page,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                        "column": 9,
+                        "line": 662
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m\n\n  660 |       expect(\n  661 |         await summary.evaluate((el) => el.getBoundingClientRect().height),\n> 662 |       ).toBeGreaterThanOrEqual(44);\n      |         ^\n  663 |       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  664 |       await reviewTaste(\n  665 |         page,\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:662:9"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T06:52:50.588Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-fbe64-sibility-1440-no-preference-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-fbe64-sibility-1440-no-preference-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-fbe64-sibility-1440-no-preference-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                    "column": 9,
+                    "line": 662
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d7ab63376c5db4412f8e-124661bf384605182603",
+          "file": "session-history.spec.ts",
+          "line": 635,
+          "column": 9
+        },
+        {
+          "title": "session history real snapshots visual and accessibility 360 reduce",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 3566,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:662:9",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                      "column": 9,
+                      "line": 662
+                    },
+                    "snippet": "  660 |       expect(\n  661 |         await summary.evaluate((el) => el.getBoundingClientRect().height),\n> 662 |       ).toBeGreaterThanOrEqual(44);\n      |         ^\n  663 |       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  664 |       await reviewTaste(\n  665 |         page,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                        "column": 9,
+                        "line": 662
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m\n\n  660 |       expect(\n  661 |         await summary.evaluate((el) => el.getBoundingClientRect().height),\n> 662 |       ).toBeGreaterThanOrEqual(44);\n      |         ^\n  663 |       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  664 |       await reviewTaste(\n  665 |         page,\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:662:9"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T06:52:57.884Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-06cc5-nd-accessibility-360-reduce-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-06cc5-nd-accessibility-360-reduce-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-06cc5-nd-accessibility-360-reduce-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                    "column": 9,
+                    "line": 662
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d7ab63376c5db4412f8e-c1e59b03b1227b3f0029",
+          "file": "session-history.spec.ts",
+          "line": 635,
+          "column": 9
+        },
+        {
+          "title": "session history real snapshots visual and accessibility 768 reduce",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 3869,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:662:9",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                      "column": 9,
+                      "line": 662
+                    },
+                    "snippet": "  660 |       expect(\n  661 |         await summary.evaluate((el) => el.getBoundingClientRect().height),\n> 662 |       ).toBeGreaterThanOrEqual(44);\n      |         ^\n  663 |       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  664 |       await reviewTaste(\n  665 |         page,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                        "column": 9,
+                        "line": 662
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m\n\n  660 |       expect(\n  661 |         await summary.evaluate((el) => el.getBoundingClientRect().height),\n> 662 |       ).toBeGreaterThanOrEqual(44);\n      |         ^\n  663 |       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  664 |       await reviewTaste(\n  665 |         page,\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:662:9"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T06:53:04.435Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-32a83-nd-accessibility-768-reduce-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-32a83-nd-accessibility-768-reduce-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-32a83-nd-accessibility-768-reduce-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                    "column": 9,
+                    "line": 662
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d7ab63376c5db4412f8e-e1d04e7b2b66bda2a86a",
+          "file": "session-history.spec.ts",
+          "line": 635,
+          "column": 9
+        },
+        {
+          "title": "session history real snapshots visual and accessibility 1024 reduce",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 3928,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:662:9",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                      "column": 9,
+                      "line": 662
+                    },
+                    "snippet": "  660 |       expect(\n  661 |         await summary.evaluate((el) => el.getBoundingClientRect().height),\n> 662 |       ).toBeGreaterThanOrEqual(44);\n      |         ^\n  663 |       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  664 |       await reviewTaste(\n  665 |         page,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                        "column": 9,
+                        "line": 662
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m\n\n  660 |       expect(\n  661 |         await summary.evaluate((el) => el.getBoundingClientRect().height),\n> 662 |       ).toBeGreaterThanOrEqual(44);\n      |         ^\n  663 |       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  664 |       await reviewTaste(\n  665 |         page,\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:662:9"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T06:53:11.726Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-73704-d-accessibility-1024-reduce-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-73704-d-accessibility-1024-reduce-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-73704-d-accessibility-1024-reduce-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                    "column": 9,
+                    "line": 662
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d7ab63376c5db4412f8e-e684ae2e7b70807c4bf3",
+          "file": "session-history.spec.ts",
+          "line": 635,
+          "column": 9
+        },
+        {
+          "title": "session history real snapshots visual and accessibility 1440 reduce",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 9,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 3581,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:662:9",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                      "column": 9,
+                      "line": 662
+                    },
+                    "snippet": "  660 |       expect(\n  661 |         await summary.evaluate((el) => el.getBoundingClientRect().height),\n> 662 |       ).toBeGreaterThanOrEqual(44);\n      |         ^\n  663 |       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  664 |       await reviewTaste(\n  665 |         page,"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                        "column": 9,
+                        "line": 662
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBeGreaterThanOrEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nExpected: >= \u001b[32m44\u001b[39m\nReceived:    \u001b[31m24\u001b[39m\n\n  660 |       expect(\n  661 |         await summary.evaluate((el) => el.getBoundingClientRect().height),\n> 662 |       ).toBeGreaterThanOrEqual(44);\n      |         ^\n  663 |       expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);\n  664 |       await reviewTaste(\n  665 |         page,\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts:662:9"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T06:53:18.437Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-e68fa-d-accessibility-1440-reduce-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-e68fa-d-accessibility-1440-reduce-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\session-history-session-hi-e68fa-d-accessibility-1440-reduce-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\session-history.spec.ts",
+                    "column": 9,
+                    "line": 662
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "d7ab63376c5db4412f8e-129877e0e71b2bb5d960",
+          "file": "session-history.spec.ts",
+          "line": 635,
+          "column": 9
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-09T06:51:23.604Z",
+    "duration": 120477.867,
+    "expected": 5,
+    "skipped": 0,
+    "unexpected": 10,
+    "flaky": 0
+  }
+}

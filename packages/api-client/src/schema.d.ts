@@ -696,6 +696,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/sessions/{id}/changes": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TeachingController_sessionChanges"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/teachers": {
     parameters: {
       query?: never;
@@ -3163,6 +3179,47 @@ export interface components {
     };
     SessionResponse: {
       data: components["schemas"]["TeachingSessionView"];
+      meta: components["schemas"]["MetaDto"];
+    };
+    SessionHistorySnapshot: {
+      /** Format: date-time */
+      startsAt: string;
+      /** Format: date-time */
+      endsAt: string;
+      /** Format: date */
+      scheduledDate: string;
+      /** Format: uuid */
+      teacherId: string;
+      teacherName: string;
+      /** Format: uuid */
+      roomId: string | null;
+      roomName: string | null;
+      /** @enum {string} */
+      status:
+        | "SCHEDULED"
+        | "IN_PROGRESS"
+        | "COMPLETED"
+        | "REOPENED"
+        | "CANCELLED";
+      version: number;
+    };
+    SessionHistoryEntry: {
+      /** Format: uuid */
+      id: string;
+      /** @enum {string} */
+      changeType: "RESCHEDULED" | "CANCELLED";
+      before: components["schemas"]["SessionHistorySnapshot"];
+      after: components["schemas"]["SessionHistorySnapshot"];
+      reason: string;
+      /** Format: uuid */
+      actorId: string;
+      actorDisplayName: string;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    SessionHistoryResponse: {
+      data: components["schemas"]["SessionHistoryEntry"][];
+      page: components["schemas"]["PageView"];
       meta: components["schemas"]["MetaDto"];
     };
     TeacherView: {
@@ -7158,6 +7215,70 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["SessionResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      409: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+      422: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
+    };
+  };
+  TeachingController_sessionChanges: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+      };
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SessionHistoryResponse"];
         };
       };
       401: {

@@ -28,6 +28,8 @@ import { tenantSettingsCases } from "./tenant-settings-cases";
 import { roomsCases } from "./rooms-cases";
 import { roomLifecycleCases } from "./room-lifecycle-cases";
 import { studentHistoryCases } from "./student-history-cases";
+import { sessionHistoryCases } from "./session-history-cases";
+import { sessionHistoryUpgradeCase } from "./session-history-upgrade-case";
 import { authContractCases } from "./auth-contract-cases";
 import { requireTestRedis, testRedisUrl } from "../../tooling/test-redis";
 
@@ -134,6 +136,15 @@ roomLifecycleCases(
 );
 describe("staff student history API", () => {
   studentHistoryCases(
+    () => base,
+    () => db,
+    password,
+    () => hashPassword(password),
+  );
+});
+describe("scoped session change history API", () => {
+  sessionHistoryUpgradeCase();
+  sessionHistoryCases(
     () => base,
     () => db,
     password,

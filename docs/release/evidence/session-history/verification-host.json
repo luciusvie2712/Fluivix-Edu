@@ -1,0 +1,26 @@
+{
+  "date": "2026-11-09",
+  "status": "OBSERVED_DURING_VERIFICATION",
+  "operatingSystem": "Windows",
+  "totalMemoryMB": 15556,
+  "freeMemoryMBAtObservation": 753,
+  "observation": "Host memory pressure with other active applications; uncached typechecks slowed from prior25s toabout97s. No user process stopped, no timeout or assertion changed.",
+  "limit": "Verification runtimes on this shared host are not production load/SLA measurements.",
+  "additionalObservations": [
+    {
+      "freeMemoryMB": 1364,
+      "cpuLoadPercent": 100,
+      "logicalProcessors": 16,
+      "time": "After Docker-focused failure; only system aggregates recorded"
+    }
+  ],
+  "resourceFocusedResult": {
+    "report": "../e2e-2026-11-09-session-history-resource-focused.json",
+    "status": "FAIL_TIMEOUT",
+    "limitMilliseconds": 30000,
+    "durationSeconds": 34.8,
+    "observedOperation": "page.screenshot after repeated real Axe and responsive captures",
+    "rootCauseLimit": "Shared resource saturation observed; no failed product assertion established. Docker database alone did not resolve it."
+  },
+  "nextAttempt": "Fresh Docker database; temporary AboveNormal priority scoped to descendant Node/Edge test processes only, removed when processes exit; no timeout/assertion/retry changes."
+}

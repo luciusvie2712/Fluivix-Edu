@@ -1,0 +1,159 @@
+{
+  "date": "2026-11-09",
+  "status": "PASS_LOCAL_FULL_FROZEN_GATE",
+  "baseCommit": "41f8cdd6de25d844b271e966d47ba96a9fccb3bd",
+  "sourcePaths": [
+    "apps/api/openapi.json",
+    "apps/api/src/session-history-snapshot.ts",
+    "apps/api/src/teaching.controller.ts",
+    "apps/api/src/teaching.dto.ts",
+    "apps/api/src/teaching.service.ts",
+    "apps/web/app/globals.css",
+    "apps/web/components/session-change-history.tsx",
+    "apps/web/components/session-workspace.tsx",
+    "apps/web/lib/api.ts",
+    "apps/web/lib/session-status.ts",
+    "infra/prisma/schema.prisma",
+    "infra/prisma/migrations/202611090032_session_history/migration.sql",
+    "packages/api-client/src/schema.d.ts",
+    "tests/e2e/calendar-period.spec.ts",
+    "tests/e2e/session-history.spec.ts",
+    "tests/e2e/teaching.spec.ts",
+    "tests/integration/identity.test.ts",
+    "tests/integration/session-history-cases.ts",
+    "tests/integration/session-history-upgrade-case.ts",
+    "tests/integration/teaching-cases.ts",
+    "tests/integration/auth-contract-cases.ts",
+    "tests/unit/openapi-authentication.test.ts",
+    "tests/unit/session-history-snapshot.test.ts"
+  ],
+  "releaseReadiness": "BLOCKED",
+  "tests": {
+    "unit": 110,
+    "mobile": 30,
+    "integration": 184,
+    "browser": 173,
+    "focusedBrowser": 44,
+    "finalSpacingFocusedBrowser": 15,
+    "finalSpacingFocusedTasteReports": 16,
+    "focusedHistoryAndRecurringIntegration": 24,
+    "focusedAuthSweeps": 2,
+    "protectedGETRoutes": 104,
+    "actualUnauthorizedGETRequests": 208,
+    "skipped": 0,
+    "flaky": 0
+  },
+  "browserStats": {
+    "startTime": "2026-11-09T09:18:43.651Z",
+    "duration": 1294752.08,
+    "expected": 173,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "commands": "Fresh owned third-full integration database plus separate fresh owned Docker browser database; all stages executed again after the spacing repair on identical frozen source; prisma validate/generate; lint/format; all8 uncached builds/typechecks/tools; complete unit/mobile suites; real mobile API smoke; Expo dependency alignment; complete PostgreSQL integration; stable OpenAPI/client regeneration; offline frozen install; audit; all3 skill sources and inventory validator; complete real-browser suite; source/environment byte verification before/after; individual24 final-image manual review.",
+  "sourceFrozen": true,
+  "privateEnvironmentUnchanged": true,
+  "contract": {
+    "clientSha256": "F3B22BAAE9E6C28E5ED5B8AF8CFC12194DEF56EDD58A03EF0A38974C2E31580C",
+    "openapiSha256": "DB24040C65BFE801BE0C8E3F98EDD2F1EFF20284397D073275FEFB4AB8964089",
+    "stable": true,
+    "operations": 188
+  },
+  "audit": {
+    "info": 0,
+    "low": 1,
+    "moderate": 4,
+    "high": 0,
+    "critical": 0
+  },
+  "schema": {
+    "migrations": 32,
+    "published001Through031ExactBytesUnchanged": true,
+    "migration032Sha256": "ecba3151ac31f03eacf65f2361823fdf77e78979ad7deb6e2922f1ec99c56885",
+    "generatedKind": "Immutable status facts; actual PostgreSQL17/Prisma6 omit/read probe; no history DML backfill or disabled append-only trigger",
+    "actorTenantForeignKey": "Verified with actual23503 rejection",
+    "upgrade": "upgrade-031-to-032.json plus tracked actual31migration replay integration case",
+    "unexpectedLegacyData": "Unknown transitions or invalid tenant actors fail closed; no actual production/staging legacy data inspection is claimed"
+  },
+  "visual": {
+    "individuallyReviewedFinalImages": 24,
+    "surfaces": [
+      "overview",
+      "rescheduled",
+      "cancelled"
+    ],
+    "widths": [
+      360,
+      768,
+      1024,
+      1440
+    ],
+    "bothMotionModes": true,
+    "axeViolations": 0,
+    "tasteFindings": 0,
+    "actualTimestampsKept": true,
+    "focusedFullByteEqualityNotAssumed": true
+  },
+  "historicalArtifacts": {
+    "archivedPrivately": 225,
+    "restoredExactHEADBytes": true
+  },
+  "skills": [
+    {
+      "source": "taste-skill",
+      "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+      "installed": "design-taste-frontend",
+      "verifiedFiles": 38,
+      "status": "PASS"
+    },
+    {
+      "source": "ui-ux-pro-max-skill",
+      "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+      "installed": "ui-ux-pro-max",
+      "verifiedFiles": 73,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "accessible-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "micro-interaction",
+      "verifiedFiles": 4,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "60fps-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    }
+  ],
+  "priorCI": "../ci-41f8cdd-success-2026-11-09.json",
+  "historicalFailures": [
+    "pre-spacing-taste-reports/",
+    "first-spacing-taste-reports/",
+    "second-spacing-taste-reports/",
+    "recovery.json",
+    "first-partial-gate.json",
+    "second-browser-interrupted.json",
+    "pre-spacing-manual-visual-review.json"
+  ],
+  "gateRecovery": {
+    "exitCode": 0,
+    "status": "PASS_ALL_STAGES_FRESH_THIRD_FULL_FROZEN_GATE",
+    "browserReport": "docs/release/evidence/e2e-2026-11-09-session-history-third-full.json",
+    "preBrowser": "Fresh third full gate passed build/typecheck/tools/lint/format/110unit/30mobile/mobileAPI/Expo/184integration/188stablecontracts/offlineinstall/audit/skills/inventory All source and environment bytes verified identical before/after every stage and complete173 browser run.",
+    "interruptedAttempt": "docs/release/evidence/session-history/second-browser-interrupted.json",
+    "noTimeoutAssertionRetryChanges": true
+  },
+  "newModuleCommitAndExactCI": "PENDING",
+  "externalGates": "Actual staging, business/legal/privacy/consent approvals, signed physical mobile devices, real push and off-host backup key custody remain BLOCKED."
+}

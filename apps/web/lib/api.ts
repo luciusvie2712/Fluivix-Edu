@@ -586,6 +586,13 @@ export const teaching = {
     unwrap(
       api.GET("/api/v1/sessions/{id}/attendance", { params: { path: { id } } }),
     ),
+  changes: (id: string, page = 1, signal?: AbortSignal) =>
+    unwrap(
+      api.GET("/api/v1/sessions/{id}/changes", {
+        params: { path: { id }, query: { page, limit: 20 } },
+        ...(signal ? { signal } : {}),
+      }),
+    ),
   saveAttendance: (
     id: string,
     body: components["schemas"]["AttendanceDraft"],

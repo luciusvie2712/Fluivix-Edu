@@ -3159,6 +3159,95 @@
         "tags": ["teaching"]
       }
     },
+    "/api/v1/sessions/{id}/changes": {
+      "get": {
+        "operationId": "TeachingController_sessionChanges",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 2147483647,
+              "default": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionHistoryResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "403": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "409": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["teaching"]
+      }
+    },
     "/api/v1/teachers": {
       "get": {
         "operationId": "TeachingController_teachers",
@@ -15187,6 +15276,78 @@
           "meta": { "$ref": "#/components/schemas/MetaDto" }
         },
         "required": ["data", "meta"]
+      },
+      "SessionHistorySnapshot": {
+        "type": "object",
+        "properties": {
+          "startsAt": { "type": "string", "format": "date-time" },
+          "endsAt": { "type": "string", "format": "date-time" },
+          "scheduledDate": { "type": "string", "format": "date" },
+          "teacherId": { "type": "string", "format": "uuid" },
+          "teacherName": { "type": "string" },
+          "roomId": { "type": "string", "format": "uuid", "nullable": true },
+          "roomName": { "type": "string", "nullable": true },
+          "status": {
+            "type": "string",
+            "enum": [
+              "SCHEDULED",
+              "IN_PROGRESS",
+              "COMPLETED",
+              "REOPENED",
+              "CANCELLED"
+            ]
+          },
+          "version": { "type": "number" }
+        },
+        "required": [
+          "startsAt",
+          "endsAt",
+          "scheduledDate",
+          "teacherId",
+          "teacherName",
+          "roomId",
+          "roomName",
+          "status",
+          "version"
+        ]
+      },
+      "SessionHistoryEntry": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "changeType": {
+            "type": "string",
+            "enum": ["RESCHEDULED", "CANCELLED"]
+          },
+          "before": { "$ref": "#/components/schemas/SessionHistorySnapshot" },
+          "after": { "$ref": "#/components/schemas/SessionHistorySnapshot" },
+          "reason": { "type": "string", "maxLength": 500 },
+          "actorId": { "type": "string", "format": "uuid" },
+          "actorDisplayName": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        },
+        "required": [
+          "id",
+          "changeType",
+          "before",
+          "after",
+          "reason",
+          "actorId",
+          "actorDisplayName",
+          "createdAt"
+        ]
+      },
+      "SessionHistoryResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SessionHistoryEntry" }
+          },
+          "page": { "$ref": "#/components/schemas/PageView" },
+          "meta": { "$ref": "#/components/schemas/MetaDto" }
+        },
+        "required": ["data", "page", "meta"]
       },
       "TeacherView": {
         "type": "object",

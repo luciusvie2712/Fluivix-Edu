@@ -1,0 +1,150 @@
+{
+  "status": "OBSERVED_BEFORE_SPACING_REPAIR_NOT_FINAL_ACCEPTANCE",
+  "method": "Each final production browser image is individually viewed after the complete full gate; actual immutable API creation times remain unchanged.",
+  "images": [
+    {
+      "path": "docs/release/evidence/session-history/cancelled-1024-no-preference.png",
+      "sha256": "d4acabdb2a9e234d419c7086b353e4ff7329097b7330a1fed7151ba81f6e53ae",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/cancelled-1024-reduce.png",
+      "sha256": "069eb00bc3541993dee38fc7c8154a1fd51b9b849ac998a85f854e4afc191683",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/cancelled-1440-no-preference.png",
+      "sha256": "3b17bb1a70073e2fbdd86a8897867e902d9e010b1fa275a3d29a1a3565a02aa2",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/cancelled-1440-reduce.png",
+      "sha256": "7948648cc376f5f4071bd0740d9d4fcd49c04958813b73d586b7bd17ed62b488",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/cancelled-360-no-preference.png",
+      "sha256": "674b9d5a64c641dd96bb69234f6587516961c0745915c23f99070d928cbb4e71",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/cancelled-360-reduce.png",
+      "sha256": "c36b914556aa2c32271c903855a6c1463981114638500c701673a7bb0d2976fe",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/cancelled-768-no-preference.png",
+      "sha256": "7fb479dbe347e6696d9f1aede5b48a94e1e3399d68546a4652daf7a4d3f7f73b",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/cancelled-768-reduce.png",
+      "sha256": "dab7d0fe84bfed7dba7f13925c7b8ccbe0a795eee47c0fe0a8e15657f0ca0e2b",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/overview-1024-no-preference.png",
+      "sha256": "6d13611d2d078b4003365ad85929d50f79c1dde85a16fd2459ed813bc1ffa23a",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/overview-1024-reduce.png",
+      "sha256": "6d13611d2d078b4003365ad85929d50f79c1dde85a16fd2459ed813bc1ffa23a",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/overview-1440-no-preference.png",
+      "sha256": "12e2d7ebe1dc3c1cb818f7c70c2706ba515d74bc6506c12a6273144ff86af05b",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/overview-1440-reduce.png",
+      "sha256": "12e2d7ebe1dc3c1cb818f7c70c2706ba515d74bc6506c12a6273144ff86af05b",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/overview-360-no-preference.png",
+      "sha256": "4074f2363625dfd1dca41701722c717105b05b037d8770b1a45b56b28ab6a640",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/overview-360-reduce.png",
+      "sha256": "4074f2363625dfd1dca41701722c717105b05b037d8770b1a45b56b28ab6a640",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/overview-768-no-preference.png",
+      "sha256": "08a4dd82a12484a46fd96881a4e2b03890c601a2aa1827fc7dab776b977db8d8",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/overview-768-reduce.png",
+      "sha256": "08a4dd82a12484a46fd96881a4e2b03890c601a2aa1827fc7dab776b977db8d8",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/rescheduled-1024-no-preference.png",
+      "sha256": "6c65ab6365c6aa4e6853a68c35be9f0555d8b021e2d40998ea7daa07a76d8435",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/rescheduled-1024-reduce.png",
+      "sha256": "933f316dd0ebbe4325f5628c9d36084169cd8535d6287842737e0e214bc8a250",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/rescheduled-1440-no-preference.png",
+      "sha256": "fbbfb21072ddc67780279b71e29d2a7791dddf396bccefad6e11f1d0d432ea33",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/rescheduled-1440-reduce.png",
+      "sha256": "4605e1eeecf8eaceb9eb5165d5a21ec56b9532258da1f28d2241c737129c4dc5",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/rescheduled-360-no-preference.png",
+      "sha256": "115d9eaebde2d4fa6f7acef2cecb69e04fb40ad841d3b3b7cf3854298521fe6a",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/rescheduled-360-reduce.png",
+      "sha256": "12761b95a12a6776f0736b74ffa417b1b5d507f542cc3b6f7eccd294010329ff",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/rescheduled-768-no-preference.png",
+      "sha256": "ef2d5a5559c77f2186b0e0a40f30a47bcc5ec09901e7b154b254733e4bec94d7",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/rescheduled-768-reduce.png",
+      "sha256": "4d6ec19ab9f5d92945e6c6d6d15ca0479721c2f0b02f88b18ce775baa58c8840",
+      "reviewed": true
+    }
+  ],
+  "surfaces": [
+    "overview",
+    "rescheduled",
+    "cancelled"
+  ],
+  "widths": [
+    360,
+    768,
+    1024,
+    1440
+  ],
+  "motion": [
+    "no-preference",
+    "reduce"
+  ],
+  "axeViolations": 0,
+  "tasteFindings": 2,
+  "keyboard": "Native44px disclosure, persistent guarded aria-disabled pagination retains focus, current-context/abort/denial and draft-preserving retry verified by actual browser tests.",
+  "dataOrigin": "Isolated synthetic resources modified through production APIs; real event creation timestamps were never rewritten or mocked.",
+  "rendering": "Overview captures are900px browser viewports. History captures are full native element images; the tool may scale tall panels for display while original PNG bytes remain unchanged.",
+  "focusedFullByteEquality": "Not assumed: actual event timestamps differ; all24 FINAL full-suite images were individually inspected instead.",
+  "tasteFindingSeverity": "WARN",
+  "followUp": "Two actual1440px panel-void68px warnings retained in original Taste reports. Remove stacked list/snapshot margins; repeat focused and complete frozen verification then all24 final manual observations.",
+  "imageHashScope": "These are original pre-spacing capture hashes, not the subsequent replacement final images. Original bytes are preserved privately."
+}

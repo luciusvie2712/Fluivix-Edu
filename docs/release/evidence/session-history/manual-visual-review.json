@@ -1,0 +1,147 @@
+{
+  "status": "PASS",
+  "method": "Each final production browser image is individually viewed after the complete full gate; actual immutable API creation times remain unchanged.",
+  "images": [
+    {
+      "path": "docs/release/evidence/session-history/cancelled-1024-no-preference.png",
+      "sha256": "5483244c945df311f499b1b13b6311a5a6ba51a68e2164a44af5cf0bef4acbbf",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/cancelled-1024-reduce.png",
+      "sha256": "c17a442db049ac8b9042c58865b661d4a47ebaad88acbea1666de74d0f07e518",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/cancelled-1440-no-preference.png",
+      "sha256": "a5ca900c8247f5bf021bdae50517cb5ff361a499dc9746c9d09cfe6e9bdab7f9",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/cancelled-1440-reduce.png",
+      "sha256": "53f50ce1f398ec78fb6a8c04b6d9f64a084a08727f957c8d1ae268971d361781",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/cancelled-360-no-preference.png",
+      "sha256": "bff8d140c24d141d88a2961e4b49a35e5b9b754c444b5f211cfb841cb35d33d0",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/cancelled-360-reduce.png",
+      "sha256": "a2fe5c4a5f771ad1b1e4382d963db02a75e910b26148d7a364724c6d6edb8542",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/cancelled-768-no-preference.png",
+      "sha256": "a4d1a0fced5841c6f278cb1d60811f47aa75056e81c49b89b3b3acaca49f621f",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/cancelled-768-reduce.png",
+      "sha256": "4008851d8a9333e96954f541e563ec1ab651b2c3826210ffe3553d4e1d11088f",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/overview-1024-no-preference.png",
+      "sha256": "6d13611d2d078b4003365ad85929d50f79c1dde85a16fd2459ed813bc1ffa23a",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/overview-1024-reduce.png",
+      "sha256": "6d13611d2d078b4003365ad85929d50f79c1dde85a16fd2459ed813bc1ffa23a",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/overview-1440-no-preference.png",
+      "sha256": "12e2d7ebe1dc3c1cb818f7c70c2706ba515d74bc6506c12a6273144ff86af05b",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/overview-1440-reduce.png",
+      "sha256": "12e2d7ebe1dc3c1cb818f7c70c2706ba515d74bc6506c12a6273144ff86af05b",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/overview-360-no-preference.png",
+      "sha256": "4074f2363625dfd1dca41701722c717105b05b037d8770b1a45b56b28ab6a640",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/overview-360-reduce.png",
+      "sha256": "4074f2363625dfd1dca41701722c717105b05b037d8770b1a45b56b28ab6a640",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/overview-768-no-preference.png",
+      "sha256": "08a4dd82a12484a46fd96881a4e2b03890c601a2aa1827fc7dab776b977db8d8",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/overview-768-reduce.png",
+      "sha256": "08a4dd82a12484a46fd96881a4e2b03890c601a2aa1827fc7dab776b977db8d8",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/rescheduled-1024-no-preference.png",
+      "sha256": "aa360d0cad15c98404c3aecf6f3c6eed7496628d3f3336ee86b575dae83b44b2",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/rescheduled-1024-reduce.png",
+      "sha256": "f2adfb1f73026048b5b386a297866d314e7c22110f73f0a01eec5230f26368eb",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/rescheduled-1440-no-preference.png",
+      "sha256": "44a7ed55abf08c26ccecceebb7e83ed84ddad1634fa68f78f6a271eef8ca24ae",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/rescheduled-1440-reduce.png",
+      "sha256": "20f92e0d6b544a8171e36dd7ab5e6fe8fb66cd855ce86e438d8c5d1e404ee62a",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/rescheduled-360-no-preference.png",
+      "sha256": "b4fec8daa27b8c4d4f5f6700572339046bf8b3423dc1cdbaf286162d1bfb52d5",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/rescheduled-360-reduce.png",
+      "sha256": "16493adfd3998b466c5a070a7a83b2225c0acbdd2432b2388b329228d99d950d",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/rescheduled-768-no-preference.png",
+      "sha256": "4a03c4fe66d960dcd8a86b8100fd8500be5221a22076675cc92246ce7b85a5d2",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/session-history/rescheduled-768-reduce.png",
+      "sha256": "bf71ee386a7a19fd7b6a0674063aea4731fc4791bcb20965848841b1d4eaf153",
+      "reviewed": true
+    }
+  ],
+  "surfaces": [
+    "overview",
+    "rescheduled",
+    "cancelled"
+  ],
+  "widths": [
+    360,
+    768,
+    1024,
+    1440
+  ],
+  "motion": [
+    "no-preference",
+    "reduce"
+  ],
+  "axeViolations": 0,
+  "tasteFindings": 0,
+  "keyboard": "Native44px disclosure, persistent guarded aria-disabled pagination retains focus, current-context/abort/denial and draft-preserving retry verified by actual browser tests.",
+  "dataOrigin": "Isolated synthetic resources modified through production APIs; real event creation timestamps were never rewritten or mocked.",
+  "rendering": "Overview captures are900px browser viewports. History captures are full native element images; the tool may scale tall panels for display while original PNG bytes remain unchanged.",
+  "focusedFullByteEquality": "Not assumed: actual event timestamps differ; all24 FINAL full-suite images were individually inspected instead."
+}

@@ -44,6 +44,8 @@ import {
   ScheduleQuery,
   SessionInput,
   SessionResponse,
+  SessionHistoryQuery,
+  SessionHistoryResponse,
   SessionsListResponse,
   TeacherAssignmentInput,
   TeacherInput,
@@ -155,6 +157,16 @@ export class TeachingController {
   @ApiOkResponse({ type: SessionResponse })
   sessionDetail(@Req() r: ApiRequest, @Param("id", ParseUUIDPipe) id: string) {
     return this.service.sessionDetail(requestClaims(r), id);
+  }
+  @Get("sessions/:id/changes")
+  @TenantPermission("teaching.read", "teaching.read.assigned")
+  @ApiOkResponse({ type: SessionHistoryResponse })
+  sessionChanges(
+    @Req() r: ApiRequest,
+    @Param("id", ParseUUIDPipe) id: string,
+    @Query() q: SessionHistoryQuery,
+  ) {
+    return this.service.sessionChanges(requestClaims(r), id, q);
   }
   @Get("teachers")
   @TenantPermission("teaching.manage")

@@ -1,0 +1,34 @@
+{
+  "status": "FAILED_NOT_ACCEPTED",
+  "exitCode": 1,
+  "phase": "integration",
+  "passedBeforeStop": [
+    "Prisma validate/generate",
+    "lint/format",
+    "8uncachedbuilds",
+    "8uncachedtypechecks/tools",
+    "110unit",
+    "30mobile",
+    "actualmobileAPI",
+    "Expo alignment",
+    "source/environment byte proof"
+  ],
+  "integration": {
+    "report": "../integration-2026-11-09-session-history-full.json",
+    "passed": 182,
+    "failed": 2,
+    "pending": 0
+  },
+  "rootCause": "Exact private GET inventory remained103 after new protected history GET made actual104. Both auth sweeps stopped at the stale size assertion.",
+  "repair": "Increase explicit inventory104; preserve all real absent/malformed bearer HTTP401 and no-data checks for all208 requests.",
+  "notReached": [
+    "finalOpenAPI/client regeneration",
+    "offline frozen install",
+    "audit",
+    "finalskills/inventory",
+    "full browser suite"
+  ],
+  "source": "Private first-full snapshot retained; environment digest never published",
+  "freshSecondFull": "PENDING",
+  "releaseReadiness": "BLOCKED"
+}

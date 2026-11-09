@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "databaseVersion": "17.6",
+  "prismaVersion": "6.19.3",
+  "legacyRowsUnchanged": true,
+  "appendOnlyTriggerKeptEnabled": true,
+  "legacyClassification": "CANCELLED",
+  "ormCreateOmittingGeneratedField": [
+    "RESCHEDULED",
+    "CANCELLED"
+  ],
+  "explicitGeneratedWritesRejected": "428C9",
+  "unknownTransitionRejected": "23502",
+  "updatesAndDeletesRejected": "P0001",
+  "finalRows": 3,
+  "primarySources": [
+    "https://www.postgresql.org/docs/17/ddl-generated-columns.html",
+    "https://www.prisma.io/docs/orm/v6/reference/prisma-schema-reference"
+  ],
+  "limitation": "Actual isolated Prisma client create/read compatibility proven; custom SQL migration required, no claim that Prisma schema defaults fully represent GENERATED ALWAYS."
+}

@@ -311,6 +311,54 @@ export class SessionResponse {
   @ApiProperty({ type: TeachingSessionView }) data!: TeachingSessionView;
   @ApiProperty({ type: MetaDto }) meta!: MetaDto;
 }
+export class SessionHistoryQuery {
+  @ApiPropertyOptional({ minimum: 1, maximum: 2147483647, default: 1 })
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(2147483647)
+  page: number = 1;
+  @ApiPropertyOptional({ minimum: 1, maximum: 100, default: 20 })
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  limit: number = 20;
+}
+export class SessionHistorySnapshot {
+  @ApiProperty({ format: "date-time" }) startsAt!: string;
+  @ApiProperty({ format: "date-time" }) endsAt!: string;
+  @ApiProperty({ format: "date" }) scheduledDate!: string;
+  @ApiProperty({ format: "uuid" }) teacherId!: string;
+  @ApiProperty() teacherName!: string;
+  @ApiProperty({ type: String, format: "uuid", nullable: true }) roomId!:
+    | string
+    | null;
+  @ApiProperty({ type: String, nullable: true }) roomName!: string | null;
+  @ApiProperty({
+    enum: ["SCHEDULED", "IN_PROGRESS", "COMPLETED", "REOPENED", "CANCELLED"],
+  })
+  status!: string;
+  @ApiProperty() version!: number;
+}
+export class SessionHistoryEntry {
+  @ApiProperty({ format: "uuid" }) id!: string;
+  @ApiProperty({ enum: ["RESCHEDULED", "CANCELLED"] }) changeType!:
+    | "RESCHEDULED"
+    | "CANCELLED";
+  @ApiProperty({ type: SessionHistorySnapshot })
+  before!: SessionHistorySnapshot;
+  @ApiProperty({ type: SessionHistorySnapshot }) after!: SessionHistorySnapshot;
+  @ApiProperty({ maxLength: 500 }) reason!: string;
+  @ApiProperty({ format: "uuid" }) actorId!: string;
+  @ApiProperty() actorDisplayName!: string;
+  @ApiProperty({ format: "date-time" }) createdAt!: string;
+}
+export class SessionHistoryResponse {
+  @ApiProperty({ type: [SessionHistoryEntry] }) data!: SessionHistoryEntry[];
+  @ApiProperty({ type: PageView }) page!: PageView;
+  @ApiProperty({ type: MetaDto }) meta!: MetaDto;
+}
 export class SessionsListResponse {
   @ApiProperty({ type: [TeachingSessionView] }) data!: TeachingSessionView[];
   @ApiProperty({ type: PageView }) page!: PageView;
