@@ -1,0 +1,249 @@
+{
+  "date": "2026-11-09",
+  "status": "PASS_LOCAL_FULL_FROZEN_GATE",
+  "baseCommit": "5473b63507a879e69e9c42ed6ad17b4c97c2f9ac",
+  "sourcePaths": [
+    "apps/api/openapi.json",
+    "apps/api/package.json",
+    "apps/api/src/platform-health.ts",
+    "apps/api/src/worker-consumer-state.ts",
+    "apps/api/src/worker-health.ts",
+    "apps/api/src/worker-heartbeat.ts",
+    "apps/api/src/worker-telemetry-config.ts",
+    "apps/platform/app/globals.css",
+    "apps/platform/app/platform/system-health/page.tsx",
+    "apps/worker/src/main.ts",
+    "apps/worker/src/redis.ts",
+    "packages/api-client/src/schema.d.ts",
+    "pnpm-lock.yaml",
+    "tests/e2e/fixtures.ts",
+    "tests/e2e/operations.spec.ts",
+    "tests/e2e/platform.spec.ts",
+    "tests/e2e/rate-limit.spec.ts",
+    "tests/integration/identity.test.ts",
+    "tests/integration/platform-cases.ts",
+    "tests/integration/worker-health-cases.ts",
+    "tooling/e2e-server.ts"
+  ],
+  "releaseReadiness": "BLOCKED",
+  "tests": {
+    "unit": 118,
+    "mobile": 32,
+    "integration": 233,
+    "browser": 202,
+    "focusedTelemetryAndMFAIntegration": 7,
+    "focusedOperationsPlatformRateBrowser": 18,
+    "protectedGETRoutes": 107,
+    "actualUnauthorizedGETRequests": 214,
+    "skipped": 0,
+    "flaky": 0
+  },
+  "browserStats": {
+    "startTime": "2026-11-09T16:23:49.958Z",
+    "duration": 1145049.012,
+    "expected": 202,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "sourceFrozen": true,
+  "privateEnvironmentUnchanged": true,
+  "all33PublishedMigrationsExactBytesUnchanged": true,
+  "schemaChanged": false,
+  "contract": {
+    "clientSha256": "6BCAB817013C5E9612E6FF1E86604B72FC27C9364C9F4810719368EAC7A8F17A",
+    "openapiSha256": "98E5CC63137A3FACE2B0666D1C467BA98A4DF6537D71CCDFF0942EA44401EE46",
+    "stable": true,
+    "operations": 193
+  },
+  "audit": {
+    "info": 0,
+    "low": 1,
+    "moderate": 4,
+    "high": 0,
+    "critical": 0
+  },
+  "worker": {
+    "queues": [
+      "identity-mail",
+      "domain-notifications",
+      "schedule-generation"
+    ],
+    "source": "Actualcompiledproductionworker/RedisserverTIME/regularandblockingclientreadiness/monotonicdispatchsuccessage",
+    "heartbeatIntervalMs": 5000,
+    "freshMs": 15000,
+    "ttlMs": 20000,
+    "dispatchStaleMs": 20000,
+    "registryRetentionMs": 86400000,
+    "maximumInstanceReads": 101,
+    "maximumPayloadChars": 4096,
+    "apiDeadlineMs": 2500,
+    "states": [
+      "NOT_CONFIGURED",
+      "INVALID_CONFIGURATION",
+      "UNREACHABLE",
+      "MISSING",
+      "STALE",
+      "DEGRADED",
+      "HEALTHY"
+    ],
+    "privacy": "Onlyaggregatecounts; nojobpayloads/workerhostnames/usernames/instanceIDs/credentials inresponse",
+    "scope": "Sharedvalidatedqueueprefix; noFLUSHoruserprocessstop; testterminationonlyownedChildProcess",
+    "providerDelivery": "Notestablishedbyqueuecounts/workerreadiness",
+    "thresholds": "Currenttechnicaldefaults, notanapprovedSLA orhistoricaluptime guarantee"
+  },
+  "ui": {
+    "screen": "Existingplatformsystem-health undercurrentdistinctMFA",
+    "actualAPI": "Generatedclient realAPI; AbortSignal cancelsdelayedhealthGETonlogout; transporterrorshidecache; verifiedretryrestoresactualtimestamp",
+    "focus": "Guardedaria-disabled/busy refreshpreservesnativekeyboardfocus",
+    "layout": "2summary/3queuecolumnsdesktop,1columnnarrow;exactnumericcountsandmissingdataseparate",
+    "finalIndividuallyReviewedImages": 8,
+    "widths": [
+      360,
+      768,
+      1024,
+      1440
+    ],
+    "bothMotionModes": true,
+    "axeViolations": 0,
+    "tasteFindings": 0
+  },
+  "rateLimits": "Before-scenarioisolatedtestcountercleanup includesplatformnamespace; actualtenantandplatform10x401/11th429assertionsPASS, noresetduringtestorproductionlimitweakening",
+  "historicalArtifacts": {
+    "archivedPrivately": 276,
+    "restoredExactHEADBytes": true
+  },
+  "skills": [
+    {
+      "source": "taste-skill",
+      "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+      "installed": "design-taste-frontend",
+      "verifiedFiles": 38,
+      "status": "PASS"
+    },
+    {
+      "source": "ui-ux-pro-max-skill",
+      "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+      "installed": "ui-ux-pro-max",
+      "verifiedFiles": 73,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "accessible-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "micro-interaction",
+      "verifiedFiles": 4,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "60fps-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    }
+  ],
+  "recovery": "recovery.json",
+  "priorCI": "../ci-5473b63-success-2026-11-09.json",
+  "newModuleCommitAndExactCI": "PENDING",
+  "limitations": "Operationalstatussnapshot only; externalalertdelivery/history,SLA,actualstaginglegalprivacyconsentUAT,signedphysicalmobile/realpush/offhostbackupkeycustody remainunverified. Existingworkersignalhandlersregisterafterinitialdispatch; no newstartupgracefulshutdownclaim.",
+  "commands": [
+    {
+      "command": "prisma validate --schema infra/prisma/schema.prisma",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm db:generate",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm lint",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm format:check",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm exec turbo run build --force",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm exec turbo run typecheck --force",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm exec tsc -p tsconfig.tools.json",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm test --reporter=json --outputFile=.cache/operations-unit-full.json",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm --filter @fluivix/mobile test --json --outputFile=../../.cache/operations-mobile-full.json",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm test:mobile:api",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm --filter @fluivix/mobile exec expo install --check",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm test:integration --reporter=json --outputFile=docs/release/evidence/integration-2026-11-09-operations-full.json",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm openapi:generate",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm client:generate",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm install --frozen-lockfile --offline",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm audit --json (0 HIGH/CRITICAL; retained 4 MODERATE/1 LOW)",
+      "status": "PASS"
+    },
+    {
+      "command": "python scripts/validate_ai_pack.py",
+      "status": "PASS"
+    },
+    {
+      "command": "verify installed skill source bytes and pinned SHAs",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm test:e2e (202 actual cases, production servers, fresh database)",
+      "status": "PASS"
+    },
+    {
+      "command": "verify all source and private environment bytes before/after",
+      "status": "PASS"
+    },
+    {
+      "command": "individually inspect all8 final browser images and verify hashes",
+      "status": "PASS"
+    }
+  ],
+  "privateSecretScan": {
+    "status": "PASS",
+    "scope": "Added text in reviewed source/release evidence; private environment sensitive values >=12characters checked without printing/saving values or hashes",
+    "filesChecked": 58
+  },
+  "postGateRecovery": "See recovery.json; all raw source and private environment bytes match the passing frozen gate exactly after repairing an accidental evidence-script write."
+}

@@ -1,4 +1,5 @@
 import { feeReminderCases } from "./fee-reminder-cases";
+import { workerHealthCases } from "./worker-health-cases";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import EmbeddedPostgres from "../../tooling/test-postgres";
 import { PrismaClient } from "@prisma/client";
@@ -51,6 +52,7 @@ const studentA = randomUUID(),
   studentB = randomUUID();
 const password = randomBytes(24).toString("base64url");
 authContractCases(() => base);
+workerHealthCases();
 feeReminderCases(
   () => base,
   () => db,

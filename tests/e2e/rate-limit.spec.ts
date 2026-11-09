@@ -22,3 +22,30 @@ test("real login throttling rejects the eleventh request without weakening produ
   });
   expect(blocked.status()).toBe(429);
 });
+
+test("real platform login throttling still rejects the eleventh request within an isolated scenario", async ({
+  request,
+}) => {
+  const data = {
+    email: `platform-rate-${randomUUID()}@example.test`,
+    password: "Synthetic-wrong-password-2026",
+  };
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const result = await request.post(
+      testOrigins.api + "/api/v1/platform/auth/login",
+      {
+        headers: { Origin: testOrigins.platform },
+        data,
+      },
+    );
+    expect(result.status()).toBe(401);
+  }
+  const blocked = await request.post(
+    testOrigins.api + "/api/v1/platform/auth/login",
+    {
+      headers: { Origin: testOrigins.platform },
+      data,
+    },
+  );
+  expect(blocked.status()).toBe(429);
+});

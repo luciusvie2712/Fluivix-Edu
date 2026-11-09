@@ -18990,6 +18990,84 @@
         },
         "required": ["data", "page", "meta"]
       },
+      "OperationalQueueView": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": [
+              "identity-mail",
+              "domain-notifications",
+              "schedule-generation"
+            ]
+          },
+          "consumers": {
+            "type": "string",
+            "enum": ["RUNNING", "DISABLED", "UNAVAILABLE"]
+          },
+          "runningWorkers": { "type": "number" },
+          "disabledWorkers": { "type": "number" },
+          "paused": { "type": "boolean" },
+          "waiting": { "type": "number" },
+          "active": { "type": "number" },
+          "delayed": { "type": "number" },
+          "failed": { "type": "number" },
+          "prioritized": { "type": "number" },
+          "waitingChildren": { "type": "number" },
+          "completed": { "type": "number" }
+        },
+        "required": [
+          "name",
+          "consumers",
+          "runningWorkers",
+          "disabledWorkers",
+          "paused",
+          "waiting",
+          "active",
+          "delayed",
+          "failed",
+          "prioritized",
+          "waitingChildren",
+          "completed"
+        ]
+      },
+      "WorkerHealthView": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "NOT_CONFIGURED",
+              "INVALID_CONFIGURATION",
+              "UNREACHABLE",
+              "MISSING",
+              "STALE",
+              "DEGRADED",
+              "HEALTHY"
+            ]
+          },
+          "freshWorkers": { "type": "number", "nullable": true },
+          "staleWorkers": { "type": "number", "nullable": true },
+          "invalidWorkers": { "type": "number", "nullable": true },
+          "lastHeartbeatAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "queues": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/OperationalQueueView" }
+          }
+        },
+        "required": [
+          "status",
+          "freshWorkers",
+          "staleWorkers",
+          "invalidWorkers",
+          "lastHeartbeatAt",
+          "queues"
+        ]
+      },
       "HealthView": {
         "type": "object",
         "properties": {
@@ -19003,7 +19081,19 @@
             "format": "date-time"
           },
           "uncertainMailDeliveries": { "type": "number" },
-          "workerHeartbeat": { "type": "string", "enum": ["NOT_CONFIGURED"] }
+          "workerHeartbeat": {
+            "type": "string",
+            "enum": [
+              "NOT_CONFIGURED",
+              "INVALID_CONFIGURATION",
+              "UNREACHABLE",
+              "MISSING",
+              "STALE",
+              "DEGRADED",
+              "HEALTHY"
+            ]
+          },
+          "worker": { "$ref": "#/components/schemas/WorkerHealthView" }
         },
         "required": [
           "checkedAt",
@@ -19012,7 +19102,8 @@
           "pendingOutboxEvents",
           "oldestPendingEventAt",
           "uncertainMailDeliveries",
-          "workerHeartbeat"
+          "workerHeartbeat",
+          "worker"
         ]
       },
       "HealthResponse": {

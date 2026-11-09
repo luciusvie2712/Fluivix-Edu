@@ -170,8 +170,21 @@ test("platform enrollment, persisted MFA session, recovery re-enrollment and log
     new Date(actualHealth.data.checkedAt).toLocaleString("vi-VN"),
   );
   await expect(page.getByRole("status")).toContainText(
-    "Chưa cấu hình heartbeat worker",
+    "Worker đang hoạt động; chưa thấy dấu hiệu bất thường",
   );
+  expect(actualHealth.data.workerHeartbeat).toBe("HEALTHY");
+  expect(actualHealth.data.worker.freshWorkers).toBeGreaterThanOrEqual(1);
+  expect(actualHealth.data.worker.queues).toHaveLength(3);
+  expect(
+    actualHealth.data.worker.queues.find(
+      (q) => q.name === "schedule-generation",
+    )?.consumers,
+  ).toBe("DISABLED");
+  await expect(
+    page.getByText("Tác vụ đang được tắt trong cấu hình worker.", {
+      exact: true,
+    }),
+  ).toBeVisible();
   for (const route of ["system-health", "support-access"]) {
     if (route === "support-access") {
       await page

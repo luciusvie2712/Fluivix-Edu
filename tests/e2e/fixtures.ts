@@ -29,6 +29,13 @@ export const test = base.extend<{ rateLimitIsolation: void }>({
             .update("login-ip:" + ip)
             .digest("hex"),
         );
+        keys.push(
+          ...["127.0.0.1", "::ffff:127.0.0.1", "::1"].map((ip) =>
+            createHash("sha256")
+              .update("platform-login-ip:" + ip)
+              .digest("hex"),
+          ),
+        );
         const users = await db.query<{ email: string }>(
           "SELECT email FROM users",
         );
@@ -36,6 +43,16 @@ export const test = base.extend<{ rateLimitIsolation: void }>({
           ...users.rows.map(({ email }) =>
             createHash("sha256")
               .update("login-account:" + email.trim().toLowerCase())
+              .digest("hex"),
+          ),
+        );
+        const platformUsers = await db.query<{ email: string }>(
+          "SELECT email FROM platform_users",
+        );
+        keys.push(
+          ...platformUsers.rows.map(({ email }) =>
+            createHash("sha256")
+              .update("platform-login-account:" + email.trim().toLowerCase())
               .digest("hex"),
           ),
         );

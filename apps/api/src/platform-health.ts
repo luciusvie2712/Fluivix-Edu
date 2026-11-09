@@ -12,6 +12,40 @@ import { Db } from "./db";
 import { PlatformService } from "./platform.service";
 import type { ApiRequest } from "./http";
 import { MetaDto } from "./response.dto";
+import {
+  readWorkerHealth,
+  workerHealthStatuses,
+  type WorkerHealthStatus,
+} from "./worker-health";
+import {
+  operationalQueues,
+  type OperationalQueue,
+} from "./worker-telemetry-config";
+export class OperationalQueueView {
+  @ApiProperty({ enum: [...operationalQueues] }) name!: OperationalQueue;
+  @ApiProperty({ enum: ["RUNNING", "DISABLED", "UNAVAILABLE"] })
+  consumers!: "RUNNING" | "DISABLED" | "UNAVAILABLE";
+  @ApiProperty() runningWorkers!: number;
+  @ApiProperty() disabledWorkers!: number;
+  @ApiProperty() paused!: boolean;
+  @ApiProperty() waiting!: number;
+  @ApiProperty() active!: number;
+  @ApiProperty() delayed!: number;
+  @ApiProperty() failed!: number;
+  @ApiProperty() prioritized!: number;
+  @ApiProperty() waitingChildren!: number;
+  @ApiProperty() completed!: number;
+}
+export class WorkerHealthView {
+  @ApiProperty({ enum: [...workerHealthStatuses] }) status!: WorkerHealthStatus;
+  @ApiProperty({ type: Number, nullable: true }) freshWorkers!: number | null;
+  @ApiProperty({ type: Number, nullable: true }) staleWorkers!: number | null;
+  @ApiProperty({ type: Number, nullable: true }) invalidWorkers!: number | null;
+  @ApiProperty({ type: String, nullable: true, format: "date-time" })
+  lastHeartbeatAt!: string | null;
+  @ApiProperty({ type: [OperationalQueueView] })
+  queues!: OperationalQueueView[];
+}
 export class HealthView {
   @ApiProperty({ format: "date-time" }) checkedAt!: string;
   @ApiProperty() apiProcessUptimeSeconds!: number;
@@ -20,7 +54,9 @@ export class HealthView {
   @ApiProperty({ type: String, nullable: true, format: "date-time" })
   oldestPendingEventAt!: string | null;
   @ApiProperty() uncertainMailDeliveries!: number;
-  @ApiProperty({ enum: ["NOT_CONFIGURED"] }) workerHeartbeat!: "NOT_CONFIGURED";
+  @ApiProperty({ enum: [...workerHealthStatuses] })
+  workerHeartbeat!: WorkerHealthStatus;
+  @ApiProperty({ type: WorkerHealthView }) worker!: WorkerHealthView;
 }
 export class HealthResponse {
   @ApiProperty({ type: HealthView }) data!: HealthView;
@@ -56,6 +92,7 @@ export class PlatformHealthController {
         ],
         { isolationLevel: "RepeatableRead" },
       );
+    const worker = await readWorkerHealth();
     return {
       checkedAt: new Date().toISOString(),
       apiProcessUptimeSeconds: Math.floor(process.uptime()),
@@ -63,7 +100,8 @@ export class PlatformHealthController {
       pendingOutboxEvents,
       oldestPendingEventAt: oldest?.createdAt.toISOString() ?? null,
       uncertainMailDeliveries,
-      workerHeartbeat: "NOT_CONFIGURED" as const,
+      workerHeartbeat: worker.status,
+      worker,
     };
   }
 }

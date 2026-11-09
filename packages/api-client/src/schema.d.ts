@@ -4892,6 +4892,39 @@ export interface components {
       page: components["schemas"]["PageView"];
       meta: components["schemas"]["MetaDto"];
     };
+    OperationalQueueView: {
+      /** @enum {string} */
+      name: "identity-mail" | "domain-notifications" | "schedule-generation";
+      /** @enum {string} */
+      consumers: "RUNNING" | "DISABLED" | "UNAVAILABLE";
+      runningWorkers: number;
+      disabledWorkers: number;
+      paused: boolean;
+      waiting: number;
+      active: number;
+      delayed: number;
+      failed: number;
+      prioritized: number;
+      waitingChildren: number;
+      completed: number;
+    };
+    WorkerHealthView: {
+      /** @enum {string} */
+      status:
+        | "NOT_CONFIGURED"
+        | "INVALID_CONFIGURATION"
+        | "UNREACHABLE"
+        | "MISSING"
+        | "STALE"
+        | "DEGRADED"
+        | "HEALTHY";
+      freshWorkers: number | null;
+      staleWorkers: number | null;
+      invalidWorkers: number | null;
+      /** Format: date-time */
+      lastHeartbeatAt: string | null;
+      queues: components["schemas"]["OperationalQueueView"][];
+    };
     HealthView: {
       /** Format: date-time */
       checkedAt: string;
@@ -4902,7 +4935,15 @@ export interface components {
       oldestPendingEventAt: string | null;
       uncertainMailDeliveries: number;
       /** @enum {string} */
-      workerHeartbeat: "NOT_CONFIGURED";
+      workerHeartbeat:
+        | "NOT_CONFIGURED"
+        | "INVALID_CONFIGURATION"
+        | "UNREACHABLE"
+        | "MISSING"
+        | "STALE"
+        | "DEGRADED"
+        | "HEALTHY";
+      worker: components["schemas"]["WorkerHealthView"];
     };
     HealthResponse: {
       data: components["schemas"]["HealthView"];

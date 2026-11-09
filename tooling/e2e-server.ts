@@ -46,6 +46,9 @@ async function run() {
   await seed(db, "Fluivix-Test-Password-2026");
   await seedTeachingForE2E(db);
   await db.$disconnect();
+  // API and production worker must inspect the same isolated Redis namespace.
+  process.env.REDIS_URL = testRedisUrl();
+  process.env.QUEUE_PREFIX = "fluivixedu-e2e-" + randomUUID();
   const { createApp } = await import("../apps/api/dist/app.js");
   const app = await createApp();
   await app.listen(testPorts.api, "127.0.0.1");
@@ -56,8 +59,6 @@ async function run() {
       // This suite tests manual preview/commit deterministically; rolling jobs
       // have their own real Redis/PostgreSQL integration case.
       SCHEDULE_GENERATION_ENABLED: "false",
-      REDIS_URL: testRedisUrl(),
-      QUEUE_PREFIX: "fluivixedu-e2e-" + randomUUID(),
     },
     stdio: "inherit",
     windowsHide: true,

@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "method": "Each final production browser image is individually viewed after the complete full gate; actual immutable API creation times remain unchanged.",
+  "images": [
+    {
+      "path": "docs/release/evidence/operations/health-1024-no-preference.png",
+      "sha256": "8d69a342c78bfb890e2b9166234df42efdb44383c61411d555a7cd5e177298fe",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/operations/health-1024-reduce.png",
+      "sha256": "79eecfcc09378bfa784c4a848c156679b592aa8b9b17042b22fb5fde90dc1c03",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/operations/health-1440-no-preference.png",
+      "sha256": "6111a280b11fdfffea6e37151c616dd70ff27cf7a11f8344976834b77603de56",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/operations/health-1440-reduce.png",
+      "sha256": "29275cc7aa4f6739e86ba67c65097693f95d842b8c8f3f9c6c8fb0792cdfef7e",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/operations/health-360-no-preference.png",
+      "sha256": "0cbc017fe1d0b52ab2ce37f6b3e2ca16b55cff7189bf053f56352e9879603ee3",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/operations/health-360-reduce.png",
+      "sha256": "cf45eadff392425a43ad320eea02b5e84d2c915a4f509f0f378c5be8f1026f21",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/operations/health-768-no-preference.png",
+      "sha256": "46216a260b8f5651b579138f6c6c1975524061c1cf1643224f5efaf5d784972d",
+      "reviewed": true
+    },
+    {
+      "path": "docs/release/evidence/operations/health-768-reduce.png",
+      "sha256": "9cf99fa2f33e7d1008781a0dce0bd5b0f11b041145cb5fc0633d94e410c5f13b",
+      "reviewed": true
+    }
+  ],
+  "surfaces": [
+    "health"
+  ],
+  "widths": [
+    360,
+    768,
+    1024,
+    1440
+  ],
+  "motion": [
+    "no-preference",
+    "reduce"
+  ],
+  "axeViolations": 0,
+  "tasteFindings": 0,
+  "keyboard": "Native44px refresh preserves keyboard focus usingguardedaria-disabled; realtransporterror hidesmetrics and verifiedretry restores them; logoutcancelsdelayedactualhealthbytes.",
+  "dataOrigin": "Actualproductionworker/Redisqueues and PostgreSQL behind realplatformMFA; timestamps andmetrics never rewritten ormocked.",
+  "rendering": "Fullproductionbrowserpage imagesat4widths2motion; tools mayscale tallnativeimagesfor display, originalbytes unchanged.",
+  "focusedFullByteEquality": "Not assumed: actual event timestamps differ; all8 FINAL full-suite images were individually inspected instead."
+}

@@ -1,4 +1,7 @@
 import { enqueueFeeReminderPage } from "./fee-reminder-jobs";
+import { WorkerHeartbeat } from "../../api/dist/worker-heartbeat";
+import { observeWorkerConsumer } from "../../api/dist/worker-consumer-state";
+import { workerQueuePrefix } from "../../api/dist/worker-telemetry-config";
 import { PrismaClient } from "@prisma/client";
 import { Queue, UnrecoverableError, Worker } from "bullmq";
 import { z } from "zod";
@@ -24,10 +27,7 @@ async function main() {
   const connection = redisConnection(process.env.REDIS_URL);
   const db = new PrismaClient();
   await db.$connect();
-  const prefix = z
-    .string()
-    .regex(/^[a-zA-Z0-9_-]{1,100}$/)
-    .parse(process.env.QUEUE_PREFIX ?? "fluivixedu");
+  const prefix = workerQueuePrefix(process.env.QUEUE_PREFIX);
   const scheduleGenerationEnabled =
     z
       .enum(["true", "false"])
@@ -138,11 +138,30 @@ async function main() {
     throw new Error("MAIL_WORKER_NOT_READY", { cause });
   }
   let reminderCursor: string | undefined;
+  const [mailState, notificationState, scheduleState] = await Promise.all([
+    observeWorkerConsumer(worker),
+    observeWorkerConsumer(notificationWorker),
+    observeWorkerConsumer(scheduleWorker),
+  ]);
+  const heartbeat = new WorkerHeartbeat(process.env.REDIS_URL, prefix, () => ({
+    "identity-mail": mailState(),
+    "domain-notifications": notificationState(),
+    "schedule-generation": scheduleGenerationEnabled
+      ? scheduleState()
+      : "DISABLED",
+  }));
   let dispatching = false;
+  let stopping = false;
+  let dispatchDone: Promise<void> = Promise.resolve();
   let lastImportSweep = 0;
   async function dispatch() {
-    if (dispatching) return;
+    if (dispatching || stopping) return;
     dispatching = true;
+    heartbeat.beginDispatch();
+    let finish!: () => void;
+    dispatchDone = new Promise<void>((resolve) => {
+      finish = resolve;
+    });
     try {
       if (
         scheduleGenerationEnabled &&
@@ -187,26 +206,44 @@ async function main() {
       reminderCursor = reminders.cursor;
       await enqueueNotificationPage(db, notificationQueue);
       await checkPushReceipts(db);
+      heartbeat.endDispatch(true);
     } catch {
+      heartbeat.endDispatch(false);
       console.error(JSON.stringify({ code: "MAIL_DISPATCH_FAILED" }));
     } finally {
       dispatching = false;
+      finish();
     }
   }
   await dispatch();
+  await heartbeat.start();
   const timer = setInterval(() => void dispatch(), 1000);
+  let stopPromise: Promise<void> | undefined;
   async function stop() {
-    clearInterval(timer);
-    await worker.close();
-    await notificationWorker.close();
-    await notificationQueue.close();
-    await scheduleWorker.close();
-    await scheduleQueue.close();
-    await queue.close();
-    await db.$disconnect();
+    stopPromise ??= (async () => {
+      stopping = true;
+      clearInterval(timer);
+      await heartbeat.stop().catch(() => {
+        console.error(JSON.stringify({ code: "WORKER_HEARTBEAT_STOP_FAILED" }));
+      });
+      await dispatchDone;
+      await worker.close();
+      await notificationWorker.close();
+      await notificationQueue.close();
+      await scheduleWorker.close();
+      await scheduleQueue.close();
+      await queue.close();
+      await db.$disconnect();
+    })();
+    return stopPromise;
   }
-  process.on("SIGINT", () => void stop());
-  process.on("SIGTERM", () => void stop());
+  const onSignal = () =>
+    void stop().catch(() => {
+      console.error(JSON.stringify({ code: "WORKER_SHUTDOWN_FAILED" }));
+      process.exitCode = 1;
+    });
+  process.on("SIGINT", onSignal);
+  process.on("SIGTERM", onSignal);
 }
 void main().catch(() => {
   console.error(JSON.stringify({ code: "WORKER_STARTUP_FAILED" }));

@@ -34,7 +34,8 @@ button,
 select {
   cursor: pointer;
 }
-button:disabled {
+button:disabled,
+button[aria-disabled="true"] {
   cursor: not-allowed;
   opacity: 0.7;
 }
@@ -156,7 +157,7 @@ input[aria-invalid="true"] {
       transform var(--motion-press) ease-out,
       opacity var(--motion-feedback) ease-out;
   }
-  .button:active:not(:disabled) {
+  .button:active:not(:disabled):not([aria-disabled="true"]) {
     transform: scale(0.98);
   }
 }
@@ -420,6 +421,57 @@ th {
 .form-section {
   margin-top: 32px;
   max-width: 880px;
+}
+
+.health-summary-grid,
+.worker-queues {
+  display: grid;
+  gap: 24px;
+  align-items: start;
+}
+.health-summary-grid > *,
+.worker-queues > * {
+  min-width: 0;
+}
+.platform-sheet .system-health dl.health-stats {
+  margin-bottom: 0;
+}
+.worker-queues {
+  margin-top: 24px;
+}
+.worker-queues > .form-section {
+  margin-top: 0;
+}
+.worker-queues h3 {
+  font-weight: 600;
+}
+.platform-sheet .worker-queues dl.health-stats {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+}
+.platform-sheet .worker-queues dl.health-stats dd {
+  margin: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.queue-retention-note {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+@media (min-width: 1000px) {
+  .health-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .worker-queues {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .platform-sheet .system-health dl.health-stats {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .platform-sheet .worker-queues dl.health-stats {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
 }
 .form-grid {
   display: grid;

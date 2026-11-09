@@ -1,0 +1,1038 @@
+{
+  "config": {
+    "argv": [
+      "D:\\my-project\\fluivixedu\\.cache\\node-v24.22.2-win-x64\\node.exe",
+      "D:\\my-project\\fluivixedu\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "tests/e2e/operations.spec.ts",
+      "tests/e2e/platform.spec.ts"
+    ],
+    "configFile": "D:\\my-project\\fluivixedu\\playwright.config.ts",
+    "rootDir": "D:/my-project/fluivixedu/tests/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "D:/my-project/fluivixedu/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "tenant-chromium",
+        "name": "tenant-chromium",
+        "testDir": "D:/my-project/fluivixedu/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "D:\\my-project\\fluivixedu\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "tenant-chromium",
+        "testDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "snapshotDir": "D:\\my-project\\fluivixedu\\tests\\e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:3000",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "browserName": "chromium",
+          "channel": "msedge"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "tenant-chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "docs/release/evidence/e2e-2026-11-09-operations-first-focused.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": {
+      "command": "pnpm exec tsx tooling/e2e-server.ts",
+      "url": "http://localhost:3000/login",
+      "timeout": 60000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "operations.spec.ts",
+      "file": "operations.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "operational health real transport failure hides cached metrics and verified retry restores them",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 5501,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T15:59:10.496Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4f8fd72df7d8ab107a64-d7bf83380c3393c2f761",
+          "file": "operations.spec.ts",
+          "line": 74,
+          "column": 5
+        },
+        {
+          "title": "platform logout aborts delayed actual health bytes and prevents cached telemetry returning",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4271,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T15:59:16.797Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "4f8fd72df7d8ab107a64-55948263e12e4de04346",
+          "file": "operations.spec.ts",
+          "line": 107,
+          "column": 5
+        },
+        {
+          "title": "real worker queue health visual accessibility 360 no-preference",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 9481,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts:200:29",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                      "column": 29,
+                      "line": 200
+                    },
+                    "snippet": "  198 |       const actual = await (await response).json();\n  199 |       await expect(refresh).toBeEnabled();\n> 200 |       await expect(refresh).toBeFocused();\n      |                             ^\n  201 |       expect(actual.data.worker.queues).toHaveLength(3);\n  202 |       await expect(page.getByTestId(\"health-checked-at\")).toHaveText(\n  203 |         new Date(actual.data.checkedAt).toLocaleString(\"vi-VN\"),"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                        "column": 29,
+                        "line": 200
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n\n  198 |       const actual = await (await response).json();\n  199 |       await expect(refresh).toBeEnabled();\n> 200 |       await expect(refresh).toBeFocused();\n      |                             ^\n  201 |       expect(actual.data.worker.queues).toHaveLength(3);\n  202 |       await expect(page.getByTestId(\"health-checked-at\")).toHaveText(\n  203 |         new Date(actual.data.checkedAt).toLocaleString(\"vi-VN\"),\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts:200:29"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T15:59:21.109Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-739fb-ssibility-360-no-preference-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-739fb-ssibility-360-no-preference-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-739fb-ssibility-360-no-preference-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                    "column": 29,
+                    "line": 200
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "4f8fd72df7d8ab107a64-ede76486b7b261485dee",
+          "file": "operations.spec.ts",
+          "line": 161,
+          "column": 9
+        },
+        {
+          "title": "real worker queue health visual accessibility 768 no-preference",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 10959,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts:200:29",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                      "column": 29,
+                      "line": 200
+                    },
+                    "snippet": "  198 |       const actual = await (await response).json();\n  199 |       await expect(refresh).toBeEnabled();\n> 200 |       await expect(refresh).toBeFocused();\n      |                             ^\n  201 |       expect(actual.data.worker.queues).toHaveLength(3);\n  202 |       await expect(page.getByTestId(\"health-checked-at\")).toHaveText(\n  203 |         new Date(actual.data.checkedAt).toLocaleString(\"vi-VN\"),"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                        "column": 29,
+                        "line": 200
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n\n  198 |       const actual = await (await response).json();\n  199 |       await expect(refresh).toBeEnabled();\n> 200 |       await expect(refresh).toBeFocused();\n      |                             ^\n  201 |       expect(actual.data.worker.queues).toHaveLength(3);\n  202 |       await expect(page.getByTestId(\"health-checked-at\")).toHaveText(\n  203 |         new Date(actual.data.checkedAt).toLocaleString(\"vi-VN\"),\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts:200:29"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T15:59:33.303Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-34c3a-ssibility-768-no-preference-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-34c3a-ssibility-768-no-preference-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-34c3a-ssibility-768-no-preference-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                    "column": 29,
+                    "line": 200
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "4f8fd72df7d8ab107a64-ea912694c317456ba869",
+          "file": "operations.spec.ts",
+          "line": 161,
+          "column": 9
+        },
+        {
+          "title": "real worker queue health visual accessibility 1024 no-preference",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 10217,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts:200:29",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                      "column": 29,
+                      "line": 200
+                    },
+                    "snippet": "  198 |       const actual = await (await response).json();\n  199 |       await expect(refresh).toBeEnabled();\n> 200 |       await expect(refresh).toBeFocused();\n      |                             ^\n  201 |       expect(actual.data.worker.queues).toHaveLength(3);\n  202 |       await expect(page.getByTestId(\"health-checked-at\")).toHaveText(\n  203 |         new Date(actual.data.checkedAt).toLocaleString(\"vi-VN\"),"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                        "column": 29,
+                        "line": 200
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n\n  198 |       const actual = await (await response).json();\n  199 |       await expect(refresh).toBeEnabled();\n> 200 |       await expect(refresh).toBeFocused();\n      |                             ^\n  201 |       expect(actual.data.worker.queues).toHaveLength(3);\n  202 |       await expect(page.getByTestId(\"health-checked-at\")).toHaveText(\n  203 |         new Date(actual.data.checkedAt).toLocaleString(\"vi-VN\"),\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts:200:29"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T15:59:47.467Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-f1d81-sibility-1024-no-preference-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-f1d81-sibility-1024-no-preference-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-f1d81-sibility-1024-no-preference-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                    "column": 29,
+                    "line": 200
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "4f8fd72df7d8ab107a64-2c436b5944b122f570b2",
+          "file": "operations.spec.ts",
+          "line": 161,
+          "column": 9
+        },
+        {
+          "title": "real worker queue health visual accessibility 1440 no-preference",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 9943,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts:200:29",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                      "column": 29,
+                      "line": 200
+                    },
+                    "snippet": "  198 |       const actual = await (await response).json();\n  199 |       await expect(refresh).toBeEnabled();\n> 200 |       await expect(refresh).toBeFocused();\n      |                             ^\n  201 |       expect(actual.data.worker.queues).toHaveLength(3);\n  202 |       await expect(page.getByTestId(\"health-checked-at\")).toHaveText(\n  203 |         new Date(actual.data.checkedAt).toLocaleString(\"vi-VN\"),"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                        "column": 29,
+                        "line": 200
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n\n  198 |       const actual = await (await response).json();\n  199 |       await expect(refresh).toBeEnabled();\n> 200 |       await expect(refresh).toBeFocused();\n      |                             ^\n  201 |       expect(actual.data.worker.queues).toHaveLength(3);\n  202 |       await expect(page.getByTestId(\"health-checked-at\")).toHaveText(\n  203 |         new Date(actual.data.checkedAt).toLocaleString(\"vi-VN\"),\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts:200:29"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T16:00:00.544Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-ac55c-sibility-1440-no-preference-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-ac55c-sibility-1440-no-preference-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-ac55c-sibility-1440-no-preference-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                    "column": 29,
+                    "line": 200
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "4f8fd72df7d8ab107a64-b5a9f721d916217be1ef",
+          "file": "operations.spec.ts",
+          "line": 161,
+          "column": 9
+        },
+        {
+          "title": "real worker queue health visual accessibility 360 reduce",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 11376,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts:200:29",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                      "column": 29,
+                      "line": 200
+                    },
+                    "snippet": "  198 |       const actual = await (await response).json();\n  199 |       await expect(refresh).toBeEnabled();\n> 200 |       await expect(refresh).toBeFocused();\n      |                             ^\n  201 |       expect(actual.data.worker.queues).toHaveLength(3);\n  202 |       await expect(page.getByTestId(\"health-checked-at\")).toHaveText(\n  203 |         new Date(actual.data.checkedAt).toLocaleString(\"vi-VN\"),"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                        "column": 29,
+                        "line": 200
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n\n  198 |       const actual = await (await response).json();\n  199 |       await expect(refresh).toBeEnabled();\n> 200 |       await expect(refresh).toBeFocused();\n      |                             ^\n  201 |       expect(actual.data.worker.queues).toHaveLength(3);\n  202 |       await expect(page.getByTestId(\"health-checked-at\")).toHaveText(\n  203 |         new Date(actual.data.checkedAt).toLocaleString(\"vi-VN\"),\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts:200:29"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T16:00:13.608Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-07052-al-accessibility-360-reduce-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-07052-al-accessibility-360-reduce-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-07052-al-accessibility-360-reduce-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                    "column": 29,
+                    "line": 200
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "4f8fd72df7d8ab107a64-02038c0d0f23878b9443",
+          "file": "operations.spec.ts",
+          "line": 161,
+          "column": 9
+        },
+        {
+          "title": "real worker queue health visual accessibility 768 reduce",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 11317,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts:200:29",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                      "column": 29,
+                      "line": 200
+                    },
+                    "snippet": "  198 |       const actual = await (await response).json();\n  199 |       await expect(refresh).toBeEnabled();\n> 200 |       await expect(refresh).toBeFocused();\n      |                             ^\n  201 |       expect(actual.data.worker.queues).toHaveLength(3);\n  202 |       await expect(page.getByTestId(\"health-checked-at\")).toHaveText(\n  203 |         new Date(actual.data.checkedAt).toLocaleString(\"vi-VN\"),"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                        "column": 29,
+                        "line": 200
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n\n  198 |       const actual = await (await response).json();\n  199 |       await expect(refresh).toBeEnabled();\n> 200 |       await expect(refresh).toBeFocused();\n      |                             ^\n  201 |       expect(actual.data.worker.queues).toHaveLength(3);\n  202 |       await expect(page.getByTestId(\"health-checked-at\")).toHaveText(\n  203 |         new Date(actual.data.checkedAt).toLocaleString(\"vi-VN\"),\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts:200:29"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T16:00:28.240Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-c119e-al-accessibility-768-reduce-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-c119e-al-accessibility-768-reduce-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-c119e-al-accessibility-768-reduce-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                    "column": 29,
+                    "line": 200
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "4f8fd72df7d8ab107a64-defd8ea18acd18ffc734",
+          "file": "operations.spec.ts",
+          "line": 161,
+          "column": 9
+        },
+        {
+          "title": "real worker queue health visual accessibility 1024 reduce",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 9422,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts:200:29",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                      "column": 29,
+                      "line": 200
+                    },
+                    "snippet": "  198 |       const actual = await (await response).json();\n  199 |       await expect(refresh).toBeEnabled();\n> 200 |       await expect(refresh).toBeFocused();\n      |                             ^\n  201 |       expect(actual.data.worker.queues).toHaveLength(3);\n  202 |       await expect(page.getByTestId(\"health-checked-at\")).toHaveText(\n  203 |         new Date(actual.data.checkedAt).toLocaleString(\"vi-VN\"),"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                        "column": 29,
+                        "line": 200
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n\n  198 |       const actual = await (await response).json();\n  199 |       await expect(refresh).toBeEnabled();\n> 200 |       await expect(refresh).toBeFocused();\n      |                             ^\n  201 |       expect(actual.data.worker.queues).toHaveLength(3);\n  202 |       await expect(page.getByTestId(\"health-checked-at\")).toHaveText(\n  203 |         new Date(actual.data.checkedAt).toLocaleString(\"vi-VN\"),\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts:200:29"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T16:00:42.830Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-54350-l-accessibility-1024-reduce-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-54350-l-accessibility-1024-reduce-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-54350-l-accessibility-1024-reduce-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                    "column": 29,
+                    "line": 200
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "4f8fd72df7d8ab107a64-2f94fa3dde81614faf70",
+          "file": "operations.spec.ts",
+          "line": 161,
+          "column": 9
+        },
+        {
+          "title": "real worker queue health visual accessibility 1440 reduce",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 9147,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts:200:29",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                      "column": 29,
+                      "line": 200
+                    },
+                    "snippet": "  198 |       const actual = await (await response).json();\n  199 |       await expect(refresh).toBeEnabled();\n> 200 |       await expect(refresh).toBeFocused();\n      |                             ^\n  201 |       expect(actual.data.worker.queues).toHaveLength(3);\n  202 |       await expect(page.getByTestId(\"health-checked-at\")).toHaveText(\n  203 |         new Date(actual.data.checkedAt).toLocaleString(\"vi-VN\"),"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                        "column": 29,
+                        "line": 200
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeFocused\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator:  getByRole('button', { name: 'Kiểm tra lại', exact: true })\nExpected: focused\nReceived: inactive\nTimeout:  5000ms\n\nCall log:\n\u001b[2m  - Expect \"toBeFocused\" getByRole('button', { name: 'Kiểm tra lại', exact: true }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Kiểm tra lại', exact: true })\u001b[22m\n\u001b[2m    14 × locator resolved to <button class=\"button button-outline\">Kiểm tra lại</button>\u001b[22m\n\u001b[2m       - unexpected value \"inactive\"\u001b[22m\n\n\n  198 |       const actual = await (await response).json();\n  199 |       await expect(refresh).toBeEnabled();\n> 200 |       await expect(refresh).toBeFocused();\n      |                             ^\n  201 |       expect(actual.data.worker.queues).toHaveLength(3);\n  202 |       await expect(page.getByTestId(\"health-checked-at\")).toHaveText(\n  203 |         new Date(actual.data.checkedAt).toLocaleString(\"vi-VN\"),\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts:200:29"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T16:00:55.068Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-980f9-l-accessibility-1440-reduce-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-980f9-l-accessibility-1440-reduce-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\operations-real-worker-que-980f9-l-accessibility-1440-reduce-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\operations.spec.ts",
+                    "column": 29,
+                    "line": 200
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "4f8fd72df7d8ab107a64-36b770dc1d97aa016dff",
+          "file": "operations.spec.ts",
+          "line": 161,
+          "column": 9
+        }
+      ]
+    },
+    {
+      "title": "platform.spec.ts",
+      "file": "platform.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "platform enrollment, persisted MFA session, recovery re-enrollment and logout",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 90000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 6411,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('heading', { name: 'Thiết lập xác thực hai bước' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('heading', { name: 'Thiết lập xác thực hai bước' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('heading', { name: 'Thiết lập xác thực hai bước' })\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('heading', { name: 'Thiết lập xác thực hai bước' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('heading', { name: 'Thiết lập xác thực hai bước' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('heading', { name: 'Thiết lập xác thực hai bước' })\u001b[22m\n\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\platform.spec.ts:27:5",
+                    "location": {
+                      "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\platform.spec.ts",
+                      "column": 5,
+                      "line": 27
+                    },
+                    "snippet": "  25 |   await expect(\n  26 |     page.getByRole(\"heading\", { name: \"Thiết lập xác thực hai bước\" }),\n> 27 |   ).toBeVisible();\n     |     ^\n  28 |   const secret = (await page.locator(\".secret code\").textContent())!;\n  29 |   await page\n  30 |     .getByLabel(\"Mã xác minh\")"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\platform.spec.ts",
+                        "column": 5,
+                        "line": 27
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('heading', { name: 'Thiết lập xác thực hai bước' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" getByRole('heading', { name: 'Thiết lập xác thực hai bước' }) with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('heading', { name: 'Thiết lập xác thực hai bước' })\u001b[22m\n\n\n  25 |   await expect(\n  26 |     page.getByRole(\"heading\", { name: \"Thiết lập xác thực hai bước\" }),\n> 27 |   ).toBeVisible();\n     |     ^\n  28 |   const secret = (await page.locator(\".secret code\").textContent())!;\n  29 |   await page\n  30 |     .getByLabel(\"Mã xác minh\")\n    at D:\\my-project\\fluivixedu\\tests\\e2e\\platform.spec.ts:27:5"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T16:01:06.975Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\platform-platform-enrollme-1125d-ry-re-enrollment-and-logout-tenant-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\platform-platform-enrollme-1125d-ry-re-enrollment-and-logout-tenant-chromium\\error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "D:\\my-project\\fluivixedu\\test-results\\platform-platform-enrollme-1125d-ry-re-enrollment-and-logout-tenant-chromium\\trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "D:\\my-project\\fluivixedu\\tests\\e2e\\platform.spec.ts",
+                    "column": 5,
+                    "line": 27
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "310f5d38cd89ad55ea3f-2952ebab7db773bb457a",
+          "file": "platform.spec.ts",
+          "line": 12,
+          "column": 5
+        },
+        {
+          "title": "platform login accessibility 360",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 9,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3237,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T16:01:16.193Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "310f5d38cd89ad55ea3f-e719c8e319ef07eafed1",
+          "file": "platform.spec.ts",
+          "line": 265,
+          "column": 7
+        },
+        {
+          "title": "platform login accessibility 768",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 9,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1924,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T16:01:20.074Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "310f5d38cd89ad55ea3f-f06b998dda7313473797",
+          "file": "platform.spec.ts",
+          "line": 265,
+          "column": 7
+        },
+        {
+          "title": "platform login accessibility 1024",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 9,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1866,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T16:01:22.022Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "310f5d38cd89ad55ea3f-2f4f3d2033cd9d11de18",
+          "file": "platform.spec.ts",
+          "line": 265,
+          "column": 7
+        },
+        {
+          "title": "platform login accessibility 1440",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 9,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2008,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T16:01:23.915Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "310f5d38cd89ad55ea3f-4f59cfc37f996a33c453",
+          "file": "platform.spec.ts",
+          "line": 265,
+          "column": 7
+        },
+        {
+          "title": "Taste browser inspector reviews separate platform login",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "tenant-chromium",
+              "projectName": "tenant-chromium",
+              "results": [
+                {
+                  "workerIndex": 9,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2617,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-11-09T16:01:25.943Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "310f5d38cd89ad55ea3f-0ec47e08cfc6bb915c95",
+          "file": "platform.spec.ts",
+          "line": 297,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-11-09T15:58:46.805Z",
+    "duration": 162730.701,
+    "expected": 7,
+    "skipped": 0,
+    "unexpected": 9,
+    "flaky": 0
+  }
+}

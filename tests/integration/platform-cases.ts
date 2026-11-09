@@ -4,6 +4,8 @@ import type { PrismaClient } from "@prisma/client";
 import { randomUUID } from "node:crypto";
 import { totp } from "../../apps/api/src/platform.security";
 import { openToken } from "../../packages/server-crypto/src";
+import { WorkerHeartbeat } from "../../apps/api/src/worker-heartbeat";
+import { testRedisUrl } from "../../tooling/test-redis";
 type Result = {
   status: number;
   body: { data?: Record<string, unknown> };
@@ -92,11 +94,20 @@ export function platformCases(
       const pending = await getDb().outboxEvent.count({
         where: { processedAt: null },
       });
-      const health = await call("/system-health", { token });
+      const configuredRedis = process.env.REDIS_URL;
+      let health: Result;
+      try {
+        process.env.REDIS_URL = "";
+        health = await call("/system-health", { token });
+      } finally {
+        if (configuredRedis === undefined) delete process.env.REDIS_URL;
+        else process.env.REDIS_URL = configuredRedis;
+      }
       expect(health.status).toBe(200);
       expect(health.body.data).toMatchObject({
         pendingOutboxEvents: pending,
         workerHeartbeat: "NOT_CONFIGURED",
+        worker: { status: "NOT_CONFIGURED", queues: [], freshWorkers: null },
         apiProcessUptimeSeconds: expect.any(Number),
         databaseRoundTripMs: expect.any(Number),
       });
@@ -104,6 +115,59 @@ export function platformCases(
       expect(JSON.stringify(health.body)).not.toMatch(
         /password|payload|encryptedToken|recipient|database_url/i,
       );
+      const previousRedis = process.env.REDIS_URL;
+      const previousPrefix = process.env.QUEUE_PREFIX;
+      const prefix = "fluivix-platform-health-" + randomUUID();
+      const heartbeat = new WorkerHeartbeat(testRedisUrl(), prefix, () => ({
+        "identity-mail": "RUNNING",
+        "domain-notifications": "RUNNING",
+        "schedule-generation": "DISABLED",
+      }));
+      try {
+        process.env.REDIS_URL = testRedisUrl();
+        process.env.QUEUE_PREFIX = prefix;
+        heartbeat.beginDispatch();
+        heartbeat.endDispatch(true);
+        await heartbeat.start();
+        const actual = await call("/system-health", { token });
+        expect(actual.status).toBe(200);
+        expect(actual.body.data).toMatchObject({
+          workerHeartbeat: "HEALTHY",
+          worker: {
+            status: "HEALTHY",
+            freshWorkers: 1,
+            staleWorkers: 0,
+            queues: expect.arrayContaining([
+              expect.objectContaining({
+                name: "schedule-generation",
+                consumers: "DISABLED",
+              }),
+            ]),
+          },
+        });
+        expect(
+          (await call("/system-health", { token: start.challengeToken }))
+            .status,
+        ).toBe(401);
+        expect(JSON.stringify(actual.body)).not.toMatch(
+          /password|payload|recipient|redis:\/\//i,
+        );
+        expect(JSON.stringify(actual.body)).not.toContain(prefix);
+        process.env.REDIS_URL = "redis://127.0.0.1:1";
+        const unavailable = await call("/system-health", { token });
+        expect(unavailable.status).toBe(200);
+        expect(unavailable.body.data).toMatchObject({
+          databaseRoundTripMs: expect.any(Number),
+          workerHeartbeat: "UNREACHABLE",
+          worker: { queues: [], freshWorkers: null },
+        });
+      } finally {
+        await heartbeat.stop();
+        if (previousRedis === undefined) delete process.env.REDIS_URL;
+        else process.env.REDIS_URL = previousRedis;
+        if (previousPrefix === undefined) delete process.env.QUEUE_PREFIX;
+        else process.env.QUEUE_PREFIX = previousPrefix;
+      }
       expect(
         (
           await call("/support-access", {

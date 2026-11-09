@@ -1,0 +1,30 @@
+{
+  "date": "2026-11-09",
+  "status": "APPLIED_VERIFIED_LOCAL_FULL",
+  "direction": "Existing singleFluivixEdu framed-sheet/blue/Arial16, no reroll",
+  "screen": "Existingplatformsystem-health; realaggregate worker/3queues, no new screenID",
+  "question": "Are realworkers dispatching and which queues require operator attention?",
+  "dataTruth": "RedisTIME heartbeat freshness + actualreadyconsumerstate + dispatchlastsuccess + fixedqueuecounts. Unknown/unreachable unavailable values staymissing instead ofzero. CountsdoNOTproveprovider delivery.",
+  "uxSearch": {
+    "query": "live status stale data --domain ux",
+    "verifiedResult": "Contextual Live Badge Updates",
+    "application": "One contextualworkerstatus witharia-atomic; no countlive-regioncompetition orautomaticfocusmove. Existingexplicitrefreshbutton, abortonlogout, transporterrorhidescache."
+  },
+  "skills": [
+    {
+      "id": "design-taste-frontend",
+      "sourceSHA": "6010f91a9935f1c167dfc500fb1a475681892e6b"
+    },
+    {
+      "id": "ui-ux-pro-max",
+      "sourceSHA": "d14efff8ed1faa4187f004f79926f428c8074ec7"
+    },
+    {
+      "id": "accessible-animation/micro-interaction/60fps-animation",
+      "sourceSHA": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6"
+    }
+  ],
+  "motion": "Existingbutton/focusfeedback; no chart/animatedcounters, addedanimationdepsorautomaticrefresh. Bothmotionmodesmustbeverified.",
+  "precedence": "Mastersecurity/privacy/a11y over external aesthetic suggestions; fixedactualnumericcounts/explicitstate labels; no inventedhealthy/SLA/alertdelivery.",
+  "finalFullManualReview": "All8actualfinalimagesindividuallyviewedandhashchecked;4widths2motion;Axe0/Taste0."
+}

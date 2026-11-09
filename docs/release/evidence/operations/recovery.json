@@ -1,0 +1,105 @@
+{
+  "date": "2026-11-09",
+  "status": "LOCAL_FULL_GATE_PASS_WITH_RETAINED_PRIOR_FOCUSED_FAILURES",
+  "baseCommit": "5473b63507a879e69e9c42ed6ad17b4c97c2f9ac",
+  "priorExactCI": "../ci-5473b63-success-2026-11-09.json",
+  "initialBuildCorrections": [
+    "BullMQ6 QueueGetters base options omit Redisprefix; use documented Queue skipMetasUpdate:true; paused is not JobType, count actualpausedlist separately.",
+    "Strict ioredis6 zrange positional types use strings; worker consumer cleanup uses structuralclose signature rather than generic casts."
+  ],
+  "firstFocusedIntegration": {
+    "report": "../integration-2026-11-09-operations-first-focused.json",
+    "passed": 5,
+    "failed": 0,
+    "intentionallyFiltered": 227,
+    "scope": "ActualRedis/productionworkerstart/ownedtermination/expiredheartbeat, multipleinstances, pausebacklog/jobfailure/metainvariance, noPII/boundedunreachable."
+  },
+  "testLimitations": "Expires actualownedkey withPEXPIRE1ms toverify expiryhandling without20secondwait; no fake clock, manuallyfabricated production heartbeat or userprocesskill. Jobdelivery torealproviders unverified.",
+  "pending": "Newmodulecommit/push/exactCI; wholemasterpilot/restore/load/dependencies/externalgatesremain.",
+  "releaseReadiness": "BLOCKED",
+  "secondFocusedIntegration": {
+    "passed": 5,
+    "failed": 1,
+    "intentionallyFiltered": 226,
+    "report": "../integration-2026-11-09-operations-second-focused.json",
+    "failure": "Existing platformhealth test assumedNOT_CONFIGURED despiteactualinheritedRedisruntime; newlivehealthcorrectlyreflectsrealconfiguration. ExplicitfixturetemporarilyunsetsRedisvalue forunconfiguredcase, restoresit, thenrealheartbeatHEALTHYandRedisUNREACHABLEAPIcasesverifyrealvalues/currentMFA.",
+    "assertions": "ExistingPG/outbox/redactionchecksretained; addednullmetrics/noqueuefakezeros and MFAchallenge401."
+  },
+  "thirdFocusedIntegration": {
+    "passed": 6,
+    "failed": 0,
+    "intentionallyFiltered": 226,
+    "report": "../integration-2026-11-09-operations-third-focused.json",
+    "scope": "5actualRedis/productionworker cases pluscurrentMFA/APIhealthy/unreachable/explicitunconfigured; active/completed/delayed/failed/paused counts actual. ExpandedassertionsPASS."
+  },
+  "firstBrowserFocused": {
+    "passed": 7,
+    "failed": 9,
+    "report": "../e2e-2026-11-09-operations-first-focused.json",
+    "scope": "2newfunctionalPASS+5existingloginvisual/TastePASS;8newkeyboardrefreshcasesfailedfocus, oldplatformscenario429after10otherisolatedMFAlogins.",
+    "repairs": [
+      "Refresh usesaria-disabled/busy withguardedhandler instead ofnativedisabled, preservingkeyboardfocus; unchangedassertion. Existingdisabledstylesapplyaria-disabled too.",
+      "Before-scenario isolatedlocaltest fixture nowresets platform-login-ip and syntheticplatform-account counters exactlylikeexistingtenantlogin counters. No resetduringtest; productionlimitsunchanged. Newactualplatform11login401x10/429 assertion proveslimitstillactive."
+    ],
+    "privateTraces": ".cache/operations-first-focused-traces",
+    "finalImages": "Notcaptured: newvisualcasesfailedbeforeTaste/screenshots, no inventedPASS."
+  },
+  "secondBrowserFocused": {
+    "passed": 18,
+    "failed": 0,
+    "report": "../e2e-2026-11-09-operations-second-focused.json",
+    "rawTasteReports": 8,
+    "rawTasteFindings": 0,
+    "manualObserved": [
+      "360normal",
+      "768reduce",
+      "1440normal"
+    ],
+    "manualFinding": "Readabledatabutdesktopthreequeuesstackeddownpage; improvehierarchy with2summary/3queuecolumns."
+  },
+  "thirdBrowserFocused": {
+    "passed": 18,
+    "failed": 0,
+    "report": "../e2e-2026-11-09-operations-third-focused.json",
+    "rawTasteReports": 8,
+    "rawTasteFindings": 2,
+    "rawWarnings": "pre-density-taste-reports/",
+    "manualObserved": [
+      "360normal",
+      "768reduce",
+      "1440normal"
+    ],
+    "repair": "Scopedhealthstatsbottommargin0, queuedetailsmargin-top0, queuegridmargin-top24, retentionnote0 toremove71px blankband; mobilequeuecountddmargin0. Noinspector/assertionchanges."
+  },
+  "fourthBrowserFocused": {
+    "passed": 18,
+    "failed": 0,
+    "skipped": 0,
+    "flaky": 0,
+    "report": "../e2e-2026-11-09-operations-fourth-focused.json",
+    "rawTasteReports": 8,
+    "rawTasteFindings": 0,
+    "manualFinal": "PENDING completefull frozen gate; focusimagesnotfinalsubstitute"
+  },
+  "consumerConnectionReview": {
+    "probe": "Ownnewworker blockingconnectionclose event; looptrue/actualclientend, productionsharedRedisunaffected",
+    "repair": "New observeWorkerConsumer checksactualRedisQueueBackend publicregular/blockingclient.status andworkerisPaused/isRunning; returnsSTOPPEDwhenanyconnectionnotready. Noasany/privateconnectionhooks.",
+    "status": "ACTUAL_CLOSE_EVENT_REGRESSION_AND_PRODUCTION_WORKER_PASS",
+    "regression": "Actualownblockingdisconnect event observeslooptrueandSTOPPED, permitsBullMQautomaticreconnect afterwards."
+  },
+  "fourthFocusedIntegration": {
+    "passed": 7,
+    "failed": 0,
+    "intentionallyFiltered": 226,
+    "report": "../integration-2026-11-09-operations-fourth-focused.json",
+    "scope": "6realRedis/productionworker cases plus1platformMFAAPI; actualblockingconnectionclose observeslooptruebutSTOPPED."
+  },
+  "fullFrozenGate": "verification.json",
+  "postGateEvidenceWriteRecovery": {
+    "event": "Evidence-enrichment script reused its targetpathvariable while scanning sources and overwrote tooling/e2e-server.ts with verificationJSON after the complete passing gate. Precommit frozen-source check rejected commit before staging.",
+    "repair": "Recovered candidate from exactHEAD+reviewed isolatedRedisdelta and wrote only after candidate hash matched originalfrozenrawsnapshot. Allsource and privateenvironment bytes verified exactagain; actualtests remainboundtounchangedtestedbytes. EvidenceJSON written to explicit verificationPath.",
+    "commitBeforeRecovery": false,
+    "currentSourceMatchesFullGate": true,
+    "rawAccidentalJSON": "Retained privately"
+  }
+}
