@@ -1,5 +1,15 @@
 # Security report — current assessment
 
+## Current checkpoint — Teaching date fixture local PASS (2026-11-09)
+
+The date-sensitive TC-027 fixture repair passed a fresh complete frozen local gate: 66 unit tests, 30 mobile tests, 159 integration tests and 133 browser tests, with no skipped or flaky browser cases. Eight uncached builds/typechecks, tools TypeScript, actual mobile API smoke, Expo SDK alignment, stable187-operation OpenAPI/client generation, offline frozen installation, inventory/skill checks and the high/critical audit gate passed.
+
+CI42544392738 for d8577d9 exposed a hardcoded 09 November2026 replacement date that had become today. The existing future-only API guard correctly returned422; the same date also prevented the browser rule from changing. Both failures were reproduced locally and retained. Integration and browser fixtures now derive their dates from the actual centre IANA calendar day. Six integration and five browser lessons, all publication/history/scope/version/conflict/immutable/confirmation assertions, and original test timeouts/retries remain. Actual past/future preconditions and a today422/zero-revision check strengthen the scenarios. Only the two test files changed; production source, guards, clock, migrations001..031 and the private environment are unchanged.
+
+Eight final fixture screenshots were reviewed and preserved separately, with actual Taste findings retained. Historical module renders keep their original bytes. The first partial gate was stopped to repair both fixtures together and is explicitly not accepted as a full result. Evidence: `evidence/teaching-ci-date/verification.json`. Repair commit, push and exact-SHA CI are pending; next module waits for CI. Release remains BLOCKED; authentication documentation, calendar/shared-shell review, reminder proposal, operations/dependencies and external approval/device/staging gates remain.
+
+## Historical checkpoints
+
 ## Current checkpoint — Teaching resource selection local PASS (2026-11-08)
 
 Local verification passed on frozen source: 66 unit tests, 30 mobile tests, 159 integration tests and 133 browser tests, with no skipped or flaky browser cases. Eight uncached builds and typechecks, tools TypeScript, real mobile API smoke, Expo SDK alignment, stable regeneration of 187 OpenAPI operations and the client, and offline frozen installation passed. Audit found 0 high, 0 critical, 4 moderate and 1 low findings.

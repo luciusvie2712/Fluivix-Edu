@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-09",
+  "status": "STOPPED_FOR_ADDITIONAL_SAME_DATE_FIX",
+  "sourceBase": "d8577d954ddfaf574a5667ce63e9ca2a5f1e63c9",
+  "completed": [
+    "Prisma schema validation and Prisma client generation",
+    "lint",
+    "format",
+    "8 uncached builds",
+    "8 uncached typechecks"
+  ],
+  "wholeGate": "NOT_ACCEPTED",
+  "reason": "Read-only review found the same hardcoded 2026-11-09 in both independent browser journeys. Owned runner63969 was interrupted before further testing. A real browser baseline then reproduced unchanged rule selection because the existing future-only form correctly rejected the stale date. Both journeys now use centre-relative dates and verify a genuinely past first session; all original five-lesson/attendance/publication/history/visual assertions retained.",
+  "partialLogSha256": "001ec54c0c2b9c1f147bd5d3ef45d0d618816c4eaa003ca70357bed14325c4c3",
+  "focusedBrowserRecovery": {
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0
+  },
+  "next": "Fresh complete second gate159integration/133browser required; no partial result promoted to full acceptance"
+}

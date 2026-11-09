@@ -135,13 +135,16 @@ export function teachingCases(
         ).status,
       ).toBe(201);
     });
-    async function cls(code: string, capacity: number) {
+    async function cls(
+      code: string,
+      capacity: number,
+      range = { startDate: "2026-11-01", endDate: "2026-12-31" },
+    ) {
       const result = await api("/classes", "POST", {
         code,
         name: code,
         capacity,
-        startDate: "2026-11-01",
-        endDate: "2026-12-31",
+        ...range,
       });
       expect(result.status).toBe(201);
       return result.body.data.id as string;
@@ -733,24 +736,44 @@ export function teachingCases(
       expect(expired.every((job) => job.rowsJson === null)).toBe(true);
     });
     it("TC027: replaces only future untouched occurrences, preserves manual/snapshotted/completed lessons, and rolls back a conflicting edit", async () => {
-      const db = getDb(),
-        classId = await cls("RECURRING-REVISIONS", 5);
+      const db = getDb();
+      const { timezone } = await db.tenant.findUniqueOrThrow({
+        where: { id: tenantId },
+        select: { timezone: true },
+      });
+      const today = new Intl.DateTimeFormat("en-CA", {
+        timeZone: timezone,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }).format(new Date());
+      const midnight = new Date(today + "T00:00:00Z");
+      // The strictly previous Sunday preserves six Monday occurrences. The first
+      // lesson at centre midnight is already past, even when today is Monday;
+      // the second Monday remains strictly future on every day of the week.
+      const anchor =
+        midnight.getTime() - (midnight.getUTCDay() || 7) * 86400000;
+      const fixtureDay = (offset: number) =>
+        new Date(anchor + offset * 86400000).toISOString().slice(0, 10);
+      const range = { startDate: fixtureDay(0), endDate: fixtureDay(60) };
+      expect(Date.parse(fixtureDay(8))).toBeGreaterThan(Date.parse(today));
+      const classId = await cls("RECURRING-REVISIONS", 5, range);
       expect(
         (
           await api(`/classes/${classId}/teachers`, "POST", {
             teacherId,
-            effectiveFrom: "2026-11-01",
-            effectiveTo: "2026-12-31",
+            effectiveFrom: fixtureDay(0),
+            effectiveTo: fixtureDay(60),
           })
         ).status,
       ).toBe(201);
       const ruleInput = {
         teacherId,
         weekday: 1,
-        localStart: "08:00",
-        localEnd: "09:00",
-        validFrom: "2026-11-01",
-        validTo: "2026-12-07",
+        localStart: "00:00",
+        localEnd: "01:00",
+        validFrom: fixtureDay(0),
+        validTo: fixtureDay(36),
       };
       const oldRule = (
         await api(`/classes/${classId}/schedule-rules`, "POST", ruleInput)
@@ -759,8 +782,8 @@ export function teachingCases(
       expect(
         (
           await api(basePath + "/generate", "POST", {
-            from: "2026-11-01",
-            to: "2026-12-07",
+            from: fixtureDay(0),
+            to: fixtureDay(36),
           })
         ).status,
       ).toBe(201);
@@ -769,12 +792,13 @@ export function teachingCases(
         orderBy: { ruleOccurrenceDate: "asc" },
       });
       expect(rows).toHaveLength(6);
+      expect(rows[0]!.startsAt.getTime()).toBeLessThan(Date.now());
       const s = await student("REVISION-ROSTER");
       expect(
         (
           await api(`/classes/${classId}/enrollments`, "POST", {
             studentId: s.id,
-            joinedAt: "2026-11-01",
+            joinedAt: fixtureDay(0),
           })
         ).status,
       ).toBe(201);
@@ -783,18 +807,18 @@ export function teachingCases(
           await api(`/sessions/${rows[1]!.id}/reschedule`, "POST", {
             teacherId,
             sessionVersion: 1,
-            startsAt: "2026-11-10T01:00:00Z",
-            endsAt: "2026-11-10T02:00:00Z",
+            startsAt: `${fixtureDay(9)}T01:00:00Z`,
+            endsAt: `${fixtureDay(9)}T02:00:00Z`,
             reason: "Manual date move must retain original occurrence",
           })
         ).status,
       ).toBe(201);
-      // Retrying old generation must not resurrect Monday9 after the manual Tuesday move.
+      // Retrying generation must not resurrect the Monday occurrence after its manual Tuesday move.
       expect(
         (
           await api(basePath + "/generate", "POST", {
-            from: "2026-11-01",
-            to: "2026-11-30",
+            from: fixtureDay(0),
+            to: fixtureDay(29),
           })
         ).body.data.created,
       ).toBe(0);
@@ -835,7 +859,7 @@ export function teachingCases(
       const replacementInput = {
         ...ruleInput,
         version: 1,
-        validFrom: "2026-11-09",
+        validFrom: fixtureDay(8),
         localStart: "10:00",
         localEnd: "11:00",
         reason: "Change remaining recurring lessons from next week",
@@ -843,8 +867,21 @@ export function teachingCases(
       expect(
         (await api(basePath, "PATCH", replacementInput, teacherToken)).status,
       ).toBe(403);
+      expect(
+        (
+          await api(basePath, "PATCH", {
+            ...replacementInput,
+            validFrom: today,
+          })
+        ).status,
+      ).toBe(422);
+      expect(
+        await db.scheduleRuleRevision.count({
+          where: { tenantId, ruleId: oldRule.id },
+        }),
+      ).toBe(0);
       const changed = await api(basePath, "PATCH", replacementInput);
-      expect(changed.status).toBe(200);
+      expect(changed.status, JSON.stringify(changed.body)).toBe(200);
       expect(changed.body.data.lineageId).toBe(oldRule.id);
       expect(changed.body.data.id).not.toBe(oldRule.id);
       const history = await api(
@@ -853,7 +890,7 @@ export function teachingCases(
       expect(history.status).toBe(200);
       expect(history.body.data).toHaveLength(1);
       expect(history.body.data[0]).toMatchObject({
-        before: { classId, localStart: "08:00", active: true },
+        before: { classId, localStart: "00:00", active: true },
         after: { classId, localStart: "10:00", active: true },
         actorId: ownerId,
       });
@@ -890,13 +927,13 @@ export function teachingCases(
         where: { scheduleRuleId: changed.body.data.id },
       });
       expect(newSession.scheduledDate.toISOString().slice(0, 10)).toBe(
-        "2026-11-30",
+        fixtureDay(29),
       );
       expect(newSession.startsAt.toISOString()).toBe(
-        "2026-11-30T03:00:00.000Z",
+        `${fixtureDay(29)}T03:00:00.000Z`,
       );
       const preview = await api(
-        `/classes/${classId}/schedule-rules/${changed.body.data.id}/preview?from=2026-11-09&to=2026-12-07`,
+        `/classes/${classId}/schedule-rules/${changed.body.data.id}/preview?from=${fixtureDay(8)}&to=${fixtureDay(36)}`,
       );
       expect(
         preview.body.data.candidates.filter(
@@ -915,16 +952,16 @@ export function teachingCases(
       await expect(
         db.classSession.update({
           where: { id: rows[1]!.id },
-          data: { ruleOccurrenceDate: new Date("2026-11-10Z") },
+          data: { ruleOccurrenceDate: new Date(fixtureDay(9) + "T00:00:00Z") },
         }),
       ).rejects.toThrow();
-      const other = await cls("REVISION-COMMIT-CONFLICT", 2);
+      const other = await cls("REVISION-COMMIT-CONFLICT", 2, range);
       expect(
         (
           await api(`/classes/${other}/teachers`, "POST", {
             teacherId,
-            effectiveFrom: "2026-11-01",
-            effectiveTo: "2026-12-31",
+            effectiveFrom: fixtureDay(0),
+            effectiveTo: fixtureDay(60),
           })
         ).status,
       ).toBe(201);
@@ -932,8 +969,8 @@ export function teachingCases(
         (
           await api(`/classes/${other}/sessions/extra`, "POST", {
             teacherId,
-            startsAt: "2026-11-30T05:00:00Z",
-            endsAt: "2026-11-30T06:00:00Z",
+            startsAt: `${fixtureDay(29)}T05:00:00Z`,
+            endsAt: `${fixtureDay(29)}T06:00:00Z`,
           })
         ).status,
       ).toBe(201);
@@ -945,7 +982,7 @@ export function teachingCases(
             {
               ...replacementInput,
               version: 1,
-              validFrom: "2026-11-30",
+              validFrom: fixtureDay(29),
               localStart: "12:00",
               localEnd: "13:00",
             },

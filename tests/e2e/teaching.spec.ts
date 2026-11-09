@@ -249,7 +249,7 @@ async function teachingFixture(db: PrismaClient) {
       status: "ACTIVE",
     },
   });
-  return { owner, tenant };
+  return { owner, tenant, db };
 }
 // Both independently selectable cases run every original business assertion.
 // Each owns its centre, so teachers/students/sessions never depend on test order.
@@ -257,6 +257,17 @@ async function teachingJourney(
   page: Page,
   f: Awaited<ReturnType<typeof teachingFixture>>,
 ) {
+  const today = new Intl.DateTimeFormat("en-CA", {
+    timeZone: f.tenant.timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date());
+  const midnight = new Date(today + "T00:00:00Z");
+  const anchor = midnight.getTime() - (midnight.getUTCDay() || 7) * 86400000;
+  const fixtureDay = (offset: number) =>
+    new Date(anchor + offset * 86400000).toISOString().slice(0, 10);
+  expect(Date.parse(fixtureDay(8))).toBeGreaterThan(Date.parse(today));
   await page.goto(testOrigins.web + "/login");
   await page.getByLabel("Email", { exact: true }).fill(f.owner.email);
   await page
@@ -283,10 +294,12 @@ async function teachingJourney(
     .getByLabel("Tên lớp", { exact: true })
     .fill("Lớp vận hành Web kiểm thử");
   await page.getByLabel("Sức chứa lớp", { exact: true }).fill("20");
-  await page.getByLabel("Ngày bắt đầu lớp", { exact: true }).fill("2026-11-01");
+  await page
+    .getByLabel("Ngày bắt đầu lớp", { exact: true })
+    .fill(fixtureDay(0));
   await page
     .getByLabel("Ngày kết thúc lớp", { exact: true })
-    .fill("2026-12-31");
+    .fill(fixtureDay(60));
   await page.getByRole("button", { name: "Tạo lớp", exact: true }).click();
   await expect(
     page.getByRole("heading", {
@@ -300,7 +313,7 @@ async function teachingJourney(
   await page
     .getByLabel("Học viên đang hoạt động", { exact: true })
     .selectOption({ label: "TEST-001 · Học viên kiểm thử A" });
-  await page.getByLabel("Ngày ghi danh", { exact: true }).fill("2026-11-01");
+  await page.getByLabel("Ngày ghi danh", { exact: true }).fill(fixtureDay(0));
   await page
     .getByRole("button", { name: "Ghi danh học viên", exact: true })
     .click();
@@ -332,13 +345,13 @@ async function teachingJourney(
     .selectOption("1");
   await page
     .getByLabel("Giờ bắt đầu địa phương", { exact: true })
-    .fill("18:00");
+    .fill("00:00");
   await page
     .getByLabel("Giờ kết thúc địa phương", { exact: true })
-    .fill("19:30");
+    .fill("01:30");
   await page
     .getByLabel("Lịch có hiệu lực đến", { exact: true })
-    .fill("2026-11-30");
+    .fill(fixtureDay(29));
   await page
     .getByRole("button", { name: "Xem trước quy tắc chưa lưu", exact: true })
     .click();
@@ -357,7 +370,7 @@ async function teachingJourney(
   await expect(
     page.getByLabel("Quy tắc đã lưu", { exact: true }),
   ).not.toHaveValue("");
-  await page.getByLabel("Sinh đến ngày", { exact: true }).fill("2026-11-30");
+  await page.getByLabel("Sinh đến ngày", { exact: true }).fill(fixtureDay(29));
   await page
     .getByRole("button", { name: "Kiểm tra xung đột", exact: true })
     .click();
@@ -384,12 +397,17 @@ async function teachingJourney(
       .getByRole("status"),
   ).toBeVisible();
   await page.getByRole("link", { name: "Lịch buổi học", exact: true }).click();
-  await page.getByLabel("Lịch từ ngày", { exact: true }).fill("2026-11-01");
-  await page.getByLabel("Lịch đến ngày", { exact: true }).fill("2026-11-30");
+  await page.getByLabel("Lịch từ ngày", { exact: true }).fill(fixtureDay(0));
+  await page.getByLabel("Lịch đến ngày", { exact: true }).fill(fixtureDay(29));
   await page.getByRole("button", { name: "Xem lịch", exact: true }).click();
   await page
-    .getByRole("link", { name: "Mở buổi 2026-11-02", exact: true })
+    .getByRole("link", { name: `Mở buổi ${fixtureDay(1)}`, exact: true })
     .click();
+  await expect(page).toHaveURL(/\/app\/sessions\/[a-f0-9-]+$/);
+  const firstSession = await f.db.classSession.findUniqueOrThrow({
+    where: { id: page.url().split("/").at(-1)! },
+  });
+  expect(firstSession.startsAt.getTime()).toBeLessThan(Date.now());
   await page
     .getByLabel("Điểm danh Học viên kiểm thử A", { exact: true })
     .selectOption("PRESENT");
@@ -422,7 +440,7 @@ async function teachingJourney(
     .click();
   await page
     .getByLabel("Quy tắc đã lưu", { exact: true })
-    .selectOption({ label: "Thứ 2 · 18:00–19:30 · 2026-11-01" });
+    .selectOption({ label: `Thứ 2 · 00:00–01:30 · ${fixtureDay(0)}` });
   const previousRule = await page
     .getByLabel("Quy tắc đã lưu", { exact: true })
     .inputValue();
@@ -439,7 +457,7 @@ async function teachingJourney(
   });
   await replaceForm
     .getByLabel("Thay lịch từ ngày", { exact: true })
-    .fill("2026-11-09");
+    .fill(fixtureDay(8));
   await replaceForm
     .getByLabel("Giờ bắt đầu lịch mới", { exact: true })
     .fill("20:00");
@@ -461,7 +479,7 @@ async function teachingJourney(
       exact: true,
     })
     .click();
-  await expect(page.getByText(/18:00–19:30 → 20:00–21:30/)).toBeVisible();
+  await expect(page.getByText(/00:00–01:30 → 20:00–21:30/)).toBeVisible();
   return sessionUrl;
 }
 

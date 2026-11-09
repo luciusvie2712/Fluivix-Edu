@@ -1,0 +1,12 @@
+{
+  "sourceSha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+  "findings": [
+    {
+      "level": "WARN",
+      "id": "panel-void",
+      "message": "1 card(s) hold a blank band inside: 48px in \"Buổi học 2026-11-09\".",
+      "fix": "A card stretches to its neighbour only when it has content to fill. Keep a legend or a note directly under its chart (only an action or a total may sit at a stretched card's foot), let a short card keep its own height (align-items: start), and let a filtered block shrink to its rows.",
+      "width": 1440
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-09",
+  "headSha": "d8577d954ddfaf574a5667ce63e9ca2a5f1e63c9",
+  "runId": 42544392738,
+  "jobId": 128926126885,
+  "url": "https://github.com/luciusvie2712/Fluivix-Edu/actions/runs/42544392738",
+  "conclusion": "failure",
+  "failedStep": "Run pnpm test:integration",
+  "observed": {
+    "unit": 66,
+    "mobile": 30,
+    "integrationPassed": 158,
+    "integrationFailed": 1,
+    "browser": "NOT_RUN"
+  },
+  "failure": {
+    "test": "TC027 recurring rule replacement",
+    "path": "tests/integration/teaching-cases.ts:847",
+    "expected": 200,
+    "received": 422,
+    "excerpt": "2026-11-09T01:17:29.7995435Z  FAIL   integration  tests/integration/identity.test.ts > teaching, roster and attendance transactions against real PostgreSQL > TC027: replaces only future untouched occurrences, preserves manual/snapshotted/completed lessons, and rolls back a conflicting edit\n2026-11-09T01:17:29.7997230Z AssertionError: expected 422 to be 200 // Object.is equality\n2026-11-09T01:17:29.7997573Z \n2026-11-09T01:17:29.7997721Z - Expected\n2026-11-09T01:17:29.7998023Z + Received\n2026-11-09T01:17:29.7998159Z \n2026-11-09T01:17:29.7998290Z - 200\n2026-11-09T01:17:29.7998667Z + 422\n2026-11-09T01:17:29.7998818Z \n2026-11-09T01:17:29.7999263Z  ❯ tests/integration/teaching-cases.ts:847:30\n2026-11-09T01:17:29.8009288Z     845|       ).toBe(403);\n2026-11-09T01:17:29.8019465Z     846|       const changed = await api(basePath, \"PATCH\", replacementInput);\n2026-11-09T01:17:29.8019901Z \n2026-11-09T01:17:29.8020127Z     847|       expect(changed.status).toBe(200);\n2026-11-09T01:17:29.8020498Z        |                              ^\n2026-11-09T01:17:29.8021134Z     848|       expect(changed.body.data.lineageId).toBe(oldRule.id);\n2026-11-09T01:17:29.8021581Z     849|       expect(changed.body.data.id).not.toBe(oldRule.id);\n2026-11-09T01:17:29.8021793Z \n2026-11-09T01:17:29.8022011Z ⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯\n2026-11-09T01:17:29.8022192Z "
+  },
+  "releaseVerdict": "BLOCKED",
+  "next": "Reproduce on current date and repair fixture without changing future-only scheduling invariant or weakening assertions."
+}
