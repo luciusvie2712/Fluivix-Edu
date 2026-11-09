@@ -36,7 +36,7 @@ import type { ApiRequest } from "./http";
 import { PlatformService } from "./platform.service";
 import { ErrorResponse, InviteResponse } from "./response.dto";
 @ApiTags("platform-tenants")
-@ApiBearerAuth()
+@ApiBearerAuth("platformBearer")
 @ApiResponse({ status: 401, type: ErrorResponse })
 @ApiResponse({ status: 403, type: ErrorResponse })
 @ApiResponse({ status: 404, type: ErrorResponse })

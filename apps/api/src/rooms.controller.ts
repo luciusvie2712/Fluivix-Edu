@@ -1,3 +1,4 @@
+import { ErrorResponse } from "./response.dto";
 import {
   Body,
   Controller,
@@ -9,7 +10,12 @@ import {
   Req,
   UseGuards,
 } from "@nestjs/common";
-import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
+import {
+  ApiResponse,
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 import { AccessGuard, TenantPermission } from "./guards";
 import { requestClaims } from "./auth.controller";
 import type { ApiRequest } from "./http";
@@ -22,9 +28,11 @@ import {
 } from "./rooms.dto";
 
 // Existing TeachingController GET/POST /rooms remain to preserve operationIds.
+@ApiBearerAuth()
 @ApiTags("rooms")
 @Controller("rooms")
 @UseGuards(AccessGuard)
+@ApiResponse({ status: 401, type: ErrorResponse })
 export class RoomsController {
   constructor(private readonly service: RoomsService) {}
   @Get(":id")

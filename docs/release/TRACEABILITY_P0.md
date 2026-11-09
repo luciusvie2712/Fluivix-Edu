@@ -1,5 +1,21 @@
 # P0 traceability inventory
 
+## Current checkpoint — Authentication contract local PASS (2026-11-09)
+
+Authentication transport documentation now matches the existing runtime: protected tenant endpoints use bearer access, platform endpoints use their separate platformBearer scheme, credential exchanges remain public to bearer authentication, and browser/platform refresh operations require their distinct HttpOnly cookies. Read-only web-session verification requires access AND its matching refresh cookie. Existing native transport restrictions, browser Origin/CSRF rules and unauthorized error envelopes are documented. Guards, service authorization, token storage, DTO schemas, paths and all187 operation IDs remain unchanged.
+
+Fresh frozen local acceptance passed70unit,30mobile,161integration and133browser tests, with no skipped or flaky browser cases. Two real HTTP tests send206 unauthenticated/malformed requests across every103 protected GET endpoint and verify401, trace envelope, no-store and absence of data. Eight uncached builds/typechecks, tools TypeScript, actualmobileAPI smoke, Expo SDK alignment, stable OpenAPI/client regeneration, offline frozen installation, inventory/skills and audit0HIGH/CRITICAL passed (4MODERATE/1LOW remain). Prior fixture repair e9b1daa exactCI42549212297 passed all30steps. Module commit/exactCI pending; releaseBLOCKED. No new UI or physical-device certification is inferred; remaining calendar/shared-shell, reminders, operations/dependency and external release gates continue.
+
+Evidence: `evidence/auth-contract/verification.json`.
+
+## Historical checkpoints
+
+## Current checkpoint — Teaching fixture exact CI PASS (2026-11-09)
+
+Exact CI for e9b1daa59c74f126e5b2ce42e34a8cc69106f2bf passed all30steps in run42549212297/job128940790206. This resolves the preceding d8577d9 failure: the production future-only rule remained unchanged and both date-relative integration/browser fixtures passed remote integration/E2E. Counts66unit/30mobile/159integration/133browser are from the complete frozen local reports; public remote step status confirms full success, not individually fetched raw-log counts. Proof: evidence/ci-e9b1daa-success-2026-11-09.json. ReleaseBLOCKED; continue remaining P0/M4 work.
+
+## Historical checkpoints
+
 ## Current checkpoint — Teaching date fixture local PASS (2026-11-09)
 
 The date-sensitive TC-027 fixture repair passed a fresh complete frozen local gate: 66 unit tests, 30 mobile tests, 159 integration tests and 133 browser tests, with no skipped or flaky browser cases. Eight uncached builds/typechecks, tools TypeScript, actual mobile API smoke, Expo SDK alignment, stable187-operation OpenAPI/client generation, offline frozen installation, inventory/skill checks and the high/critical audit gate passed.

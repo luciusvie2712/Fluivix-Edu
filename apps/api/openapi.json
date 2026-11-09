@@ -74,6 +74,14 @@
               }
             }
           },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
           "403": {
             "description": "",
             "content": {
@@ -170,6 +178,14 @@
               }
             }
           },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
           "403": {
             "description": "",
             "content": {
@@ -246,6 +262,14 @@
                 "schema": {
                   "$ref": "#/components/schemas/OperationalDashboardResponse"
                 }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -328,6 +352,14 @@
               }
             }
           },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
           "403": {
             "description": "",
             "content": {
@@ -404,6 +436,14 @@
                 "schema": {
                   "$ref": "#/components/schemas/EnrollmentReportResponse"
                 }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -484,6 +524,14 @@
               }
             }
           },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
           "403": {
             "description": "",
             "content": {
@@ -558,6 +606,14 @@
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/ReportCsvResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -640,6 +696,14 @@
               }
             }
           },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
           "403": {
             "description": "",
             "content": {
@@ -714,6 +778,14 @@
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/ReportCsvResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           },
@@ -1402,6 +1474,14 @@
                 "schema": { "$ref": "#/components/schemas/ImportResponse" }
               }
             }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
         "security": [{ "bearer": [] }],
@@ -1427,6 +1507,14 @@
                 "schema": { "$ref": "#/components/schemas/ImportResponse" }
               }
             }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
         "security": [{ "bearer": [] }],
@@ -1450,6 +1538,14 @@
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/ImportResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -1512,12 +1608,12 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
         "tags": ["identity"]
       }
     },
     "/api/v1/auth/refresh": {
       "post": {
+        "description": "Browser refresh uses the HttpOnly Secure __Host-fluivix-refresh cookie. Send application/json and the approved web Origin; cookie-bearing mutations are subject to CSRF checks. This operation does not require an access bearer token and never returns refresh credentials in JSON.",
         "operationId": "AuthController_refresh",
         "parameters": [],
         "responses": {
@@ -1562,7 +1658,8 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "webRefresh": [] }],
+        "summary": "",
         "tags": ["identity"]
       }
     },
@@ -1778,7 +1875,6 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
         "tags": ["identity"]
       }
     },
@@ -1836,7 +1932,6 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
         "tags": ["identity"]
       }
     },
@@ -1894,12 +1989,12 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
         "tags": ["identity"]
       }
     },
     "/api/v1/auth/web-session": {
       "get": {
+        "description": "Read-only browser session verification requires both the access bearer token and the matching current HttpOnly refresh cookie from the same session family. It does not issue or rotate credentials.",
         "operationId": "AuthController_webSession",
         "parameters": [],
         "responses": {
@@ -1944,7 +2039,8 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "bearer": [], "webRefresh": [] }],
+        "summary": "",
         "tags": ["identity"]
       }
     },
@@ -2157,6 +2253,7 @@
     },
     "/api/v1/mobile/auth/login": {
       "post": {
+        "description": "Native-only credential login. Requests with an Origin header or Cookie header are rejected; no refresh cookie is issued. Store the returned refresh token only in OS secure storage.",
         "operationId": "MobileAuthController_login",
         "parameters": [],
         "requestBody": {
@@ -2209,11 +2306,13 @@
             }
           }
         },
+        "summary": "",
         "tags": ["native-identity"]
       }
     },
     "/api/v1/mobile/auth/refresh": {
       "post": {
+        "description": "Native-only refresh uses the refreshToken JSON body, with no Origin or Cookie header. It does not require an access bearer token. Rotated refresh credentials belong in OS secure storage.",
         "operationId": "MobileAuthController_refresh",
         "parameters": [],
         "requestBody": {
@@ -2266,6 +2365,7 @@
             }
           }
         },
+        "summary": "",
         "tags": ["native-identity"]
       }
     },
@@ -2305,6 +2405,14 @@
                 "schema": { "$ref": "#/components/schemas/StudentListResponse" }
               }
             }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
         "security": [{ "bearer": [] }],
@@ -2330,6 +2438,14 @@
                 "schema": {
                   "$ref": "#/components/schemas/StudentDetailResponse"
                 }
+              }
+            }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
               }
             }
           }
@@ -5986,8 +6102,17 @@
                 "schema": { "$ref": "#/components/schemas/RoomDetailResponse" }
               }
             }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
+        "security": [{ "bearer": [] }],
         "tags": ["rooms"]
       },
       "patch": {
@@ -6016,8 +6141,17 @@
                 "schema": { "$ref": "#/components/schemas/RoomDetailResponse" }
               }
             }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
+        "security": [{ "bearer": [] }],
         "tags": ["rooms"]
       }
     },
@@ -6057,8 +6191,17 @@
                 "schema": { "$ref": "#/components/schemas/RoomHistoryResponse" }
               }
             }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
+        "security": [{ "bearer": [] }],
         "tags": ["rooms"]
       }
     },
@@ -12030,8 +12173,17 @@
                 "schema": { "$ref": "#/components/schemas/StudentListResponse" }
               }
             }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
+        "security": [{ "bearer": [] }],
         "tags": ["students"]
       },
       "post": {
@@ -12053,8 +12205,17 @@
                 "schema": { "$ref": "#/components/schemas/StudentResponse" }
               }
             }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
+        "security": [{ "bearer": [] }],
         "tags": ["students"]
       }
     },
@@ -12079,8 +12240,17 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
+        "security": [{ "bearer": [] }],
         "tags": ["students"]
       },
       "patch": {
@@ -12111,8 +12281,17 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
+        "security": [{ "bearer": [] }],
         "tags": ["students"]
       }
     },
@@ -12145,8 +12324,17 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
+        "security": [{ "bearer": [] }],
         "tags": ["students"]
       }
     },
@@ -12380,7 +12568,6 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
         "tags": ["platform-identity"]
       }
     },
@@ -12440,7 +12627,6 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
         "tags": ["platform-identity"]
       }
     },
@@ -12498,12 +12684,12 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
         "tags": ["platform-identity"]
       }
     },
     "/api/v1/platform/auth/refresh": {
       "post": {
+        "description": "Platform refresh requires the separate HttpOnly Secure __Host-fluivix-platform cookie and approved platform Origin with application/json. It does not accept a tenant bearer token as a replacement and never returns refresh credentials in JSON.",
         "operationId": "PlatformController_refresh",
         "parameters": [],
         "responses": {
@@ -12548,7 +12734,8 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "platformRefresh": [] }],
+        "summary": "",
         "tags": ["platform-identity"]
       }
     },
@@ -12598,7 +12785,7 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "platformBearer": [] }],
         "tags": ["platform-identity"]
       }
     },
@@ -12648,7 +12835,7 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "platformBearer": [] }],
         "tags": ["platform-identity"]
       }
     },
@@ -12700,7 +12887,7 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "platformBearer": [] }],
         "tags": ["platform-identity"]
       }
     },
@@ -12758,7 +12945,7 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "platformBearer": [] }],
         "tags": ["platform-tenants"]
       },
       "post": {
@@ -12822,7 +13009,7 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "platformBearer": [] }],
         "tags": ["platform-tenants"]
       }
     },
@@ -12922,7 +13109,7 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "platformBearer": [] }],
         "tags": ["platform-tenants"]
       },
       "post": {
@@ -12988,7 +13175,7 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "platformBearer": [] }],
         "tags": ["platform-tenants"]
       }
     },
@@ -13055,7 +13242,7 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "platformBearer": [] }],
         "tags": ["platform-tenants"]
       },
       "patch": {
@@ -13128,7 +13315,7 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "platformBearer": [] }],
         "tags": ["platform-tenants"]
       }
     },
@@ -13193,7 +13380,7 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "platformBearer": [] }],
         "tags": ["platform-tenants"]
       }
     },
@@ -13268,7 +13455,7 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "platformBearer": [] }],
         "tags": ["platform-tenants"]
       }
     },
@@ -13343,7 +13530,7 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "platformBearer": [] }],
         "tags": ["platform-tenants"]
       }
     },
@@ -13410,7 +13597,7 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "platformBearer": [] }],
         "tags": ["platform-tenants"]
       },
       "post": {
@@ -13483,7 +13670,7 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "platformBearer": [] }],
         "tags": ["platform-tenants"]
       }
     },
@@ -13501,8 +13688,17 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
+        "security": [{ "bearer": [] }],
         "tags": ["tenant"]
       }
     },
@@ -13520,8 +13716,17 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
+        "security": [{ "bearer": [] }],
         "tags": ["tenant"]
       },
       "patch": {
@@ -13545,8 +13750,17 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
+        "security": [{ "bearer": [] }],
         "tags": ["tenant"]
       }
     },
@@ -13562,8 +13776,17 @@
                 "schema": { "$ref": "#/components/schemas/TenantUsageResponse" }
               }
             }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
+        "security": [{ "bearer": [] }],
         "tags": ["tenant"]
       }
     },
@@ -13653,7 +13876,7 @@
             }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "platformBearer": [] }],
         "tags": ["platform-audit"]
       }
     },
@@ -13669,9 +13892,17 @@
                 "schema": { "$ref": "#/components/schemas/HealthResponse" }
               }
             }
+          },
+          "401": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
           }
         },
-        "security": [{ "bearer": [] }],
+        "security": [{ "platformBearer": [] }],
         "tags": ["platform-operations"]
       }
     }
@@ -13686,7 +13917,30 @@
   "servers": [],
   "components": {
     "securitySchemes": {
-      "bearer": { "scheme": "bearer", "bearerFormat": "JWT", "type": "http" }
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "description": "Tenant/user access token. Platform identity has a separate audience and scheme."
+      },
+      "platformBearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "description": "Separate platform administrator access token, issued after platform MFA verification. Tenant tokens cannot authorize platform resources."
+      },
+      "webRefresh": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "__Host-fluivix-refresh",
+        "description": "HttpOnly Secure browser refresh credential; never available to client JavaScript."
+      },
+      "platformRefresh": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "__Host-fluivix-platform",
+        "description": "Separate HttpOnly Secure platform refresh credential."
+      }
     },
     "schemas": {
       "ErrorView": {

@@ -13,6 +13,9 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import {
+  ApiSecurity,
+  ApiOperation,
+  ApiCookieAuth,
   ApiBearerAuth,
   ApiTags,
   ApiOkResponse,
@@ -59,7 +62,6 @@ function cookie(res: Response, token: string) {
   });
 }
 @ApiTags("identity")
-@ApiBearerAuth()
 @UseGuards(AccessGuard)
 @Controller()
 @ApiResponse({ status: 401, type: ErrorResponse })
@@ -86,6 +88,11 @@ export class AuthController {
     return { accessToken: result.accessToken };
   }
   @Public()
+  @ApiCookieAuth("webRefresh")
+  @ApiOperation({
+    description:
+      "Browser refresh uses the HttpOnly Secure __Host-fluivix-refresh cookie. Send application/json and the approved web Origin; cookie-bearing mutations are subject to CSRF checks. This operation does not require an access bearer token and never returns refresh credentials in JSON.",
+  })
   @Post("auth/refresh")
   @HttpCode(200)
   @ApiOkResponse({ type: TokenResponse })
@@ -103,6 +110,7 @@ export class AuthController {
     cookie(res, result.refreshToken);
     return { accessToken: result.accessToken };
   }
+  @ApiBearerAuth()
   @Post("auth/logout")
   @HttpCode(200)
   @ApiOkResponse({ type: RevokeResponse })
@@ -119,12 +127,14 @@ export class AuthController {
     });
     return result;
   }
+  @ApiBearerAuth()
   @Post("auth/logout-all")
   @HttpCode(200)
   @ApiOkResponse({ type: RevokeResponse })
   logoutAll(@Req() req: ApiRequest) {
     return this.auth.logout(requestClaims(req), true);
   }
+  @ApiBearerAuth()
   @Post("auth/switch-context")
   @HttpCode(200)
   @ApiOkResponse({ type: TokenResponse })
@@ -152,6 +162,11 @@ export class AuthController {
   accept(@Body() dto: AcceptInvitationDto, @Req() req: ApiRequest) {
     return this.auth.acceptInvitation(dto, req.traceId);
   }
+  @ApiSecurity({ bearer: [], webRefresh: [] })
+  @ApiOperation({
+    description:
+      "Read-only browser session verification requires both the access bearer token and the matching current HttpOnly refresh cookie from the same session family. It does not issue or rotate credentials.",
+  })
   @Get("auth/web-session")
   @ApiOkResponse({ type: MeResponse })
   webSession(@Req() req: ApiRequest) {
@@ -162,26 +177,32 @@ export class AuthController {
         : undefined;
     return this.auth.webSession(requestClaims(req), token);
   }
-  @Get("me") @ApiOkResponse({ type: MeResponse }) me(@Req() req: ApiRequest) {
+  @ApiBearerAuth()
+  @Get("me")
+  @ApiOkResponse({ type: MeResponse })
+  me(@Req() req: ApiRequest) {
     return this.auth.me(requestClaims(req));
   }
-  @Get("tenants") @ApiOkResponse({ type: TenantsResponse }) async tenants(
-    @Req() req: ApiRequest,
-  ) {
+  @ApiBearerAuth()
+  @Get("tenants")
+  @ApiOkResponse({ type: TenantsResponse })
+  async tenants(@Req() req: ApiRequest) {
     return (await this.auth.me(requestClaims(req))).memberships;
   }
-  @Get("me/sessions") @ApiOkResponse({ type: SessionsResponse }) sessions(
-    @Req() req: ApiRequest,
-  ) {
+  @ApiBearerAuth()
+  @Get("me/sessions")
+  @ApiOkResponse({ type: SessionsResponse })
+  sessions(@Req() req: ApiRequest) {
     return this.auth.sessions(requestClaims(req));
   }
-  @Delete("me/sessions/:id") @ApiOkResponse({ type: RevokeResponse }) revoke(
-    @Param("id", ParseUUIDPipe) id: string,
-    @Req() req: ApiRequest,
-  ) {
+  @ApiBearerAuth()
+  @Delete("me/sessions/:id")
+  @ApiOkResponse({ type: RevokeResponse })
+  revoke(@Param("id", ParseUUIDPipe) id: string, @Req() req: ApiRequest) {
     return this.auth.revokeSession(requestClaims(req), id);
   }
   @TenantPermission("staff.invite")
+  @ApiBearerAuth()
   @Post("staff")
   @ApiCreatedResponse({ type: InviteResponse })
   invite(@Body() dto: InviteDto, @Req() req: ApiRequest) {

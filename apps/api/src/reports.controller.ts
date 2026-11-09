@@ -24,6 +24,7 @@ import { ReportsService } from "./reports.service";
 @ApiResponse({ status: 403, type: ErrorResponse })
 @ApiResponse({ status: 422, type: ErrorResponse })
 @Controller("reports")
+@ApiResponse({ status: 401, type: ErrorResponse })
 export class ReportsController {
   constructor(private service: ReportsService) {}
   @Get("dashboard")
@@ -63,6 +64,7 @@ export class ReportsController {
 @ApiResponse({ status: 403, type: ErrorResponse })
 @ApiResponse({ status: 422, type: ErrorResponse })
 @Controller("finance/reports")
+@ApiResponse({ status: 401, type: ErrorResponse })
 export class CollectionReportsController {
   constructor(private service: ReportsService) {}
   @Get("collections")

@@ -1,3 +1,4 @@
+import { ErrorResponse } from "./response.dto";
 import {
   Body,
   ConflictException,
@@ -13,6 +14,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import {
+  ApiResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
   ApiOkResponse,
@@ -249,6 +251,7 @@ export class StudentImportsService {
 @ApiBearerAuth()
 @UseGuards(AccessGuard)
 @Controller("students/imports")
+@ApiResponse({ status: 401, type: ErrorResponse })
 export class StudentImportsController {
   constructor(private service: StudentImportsService) {}
   @Post()

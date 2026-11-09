@@ -1,5 +1,6 @@
 import { Body, Controller, HttpCode, Post, Req } from "@nestjs/common";
 import {
+  ApiOperation,
   ApiOkResponse,
   ApiProperty,
   ApiResponse,
@@ -35,6 +36,10 @@ export class NativeTokenResponse {
 @Controller("mobile/auth")
 export class MobileAuthController {
   constructor(private readonly auth: AuthService) {}
+  @ApiOperation({
+    description:
+      "Native-only credential login. Requests with an Origin header or Cookie header are rejected; no refresh cookie is issued. Store the returned refresh token only in OS secure storage.",
+  })
   @Post("login")
   @HttpCode(200)
   @ApiOkResponse({ type: NativeTokenResponse })
@@ -46,6 +51,10 @@ export class MobileAuthController {
       "MOBILE",
     );
   }
+  @ApiOperation({
+    description:
+      "Native-only refresh uses the refreshToken JSON body, with no Origin or Cookie header. It does not require an access bearer token. Rotated refresh credentials belong in OS secure storage.",
+  })
   @Post("refresh")
   @HttpCode(200)
   @ApiOkResponse({ type: NativeTokenResponse })

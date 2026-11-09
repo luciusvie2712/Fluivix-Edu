@@ -333,6 +333,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
+    /** @description Browser refresh uses the HttpOnly Secure __Host-fluivix-refresh cookie. Send application/json and the approved web Origin; cookie-bearing mutations are subject to CSRF checks. This operation does not require an access bearer token and never returns refresh credentials in JSON. */
     post: operations["AuthController_refresh"];
     delete?: never;
     options?: never;
@@ -443,6 +444,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
+    /** @description Read-only browser session verification requires both the access bearer token and the matching current HttpOnly refresh cookie from the same session family. It does not issue or rotate credentials. */
     get: operations["AuthController_webSession"];
     put?: never;
     post?: never;
@@ -525,6 +527,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
+    /** @description Native-only credential login. Requests with an Origin header or Cookie header are rejected; no refresh cookie is issued. Store the returned refresh token only in OS secure storage. */
     post: operations["MobileAuthController_login"];
     delete?: never;
     options?: never;
@@ -541,6 +544,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
+    /** @description Native-only refresh uses the refreshToken JSON body, with no Origin or Cookie header. It does not require an access bearer token. Rotated refresh credentials belong in OS secure storage. */
     post: operations["MobileAuthController_refresh"];
     delete?: never;
     options?: never;
@@ -2285,6 +2289,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
+    /** @description Platform refresh requires the separate HttpOnly Secure __Host-fluivix-platform cookie and approved platform Origin with application/json. It does not accept a tenant bearer token as a replacement and never returns refresh credentials in JSON. */
     post: operations["PlatformController_refresh"];
     delete?: never;
     options?: never;
@@ -4735,6 +4740,14 @@ export interface operations {
           "application/json": components["schemas"]["TenantAuditResponse"];
         };
       };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
       403: {
         headers: {
           [name: string]: unknown;
@@ -4780,6 +4793,14 @@ export interface operations {
           "application/json": components["schemas"]["TenantAuditCsvResponse"];
         };
       };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
       403: {
         headers: {
           [name: string]: unknown;
@@ -4821,6 +4842,14 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["OperationalDashboardResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
       403: {
@@ -4866,6 +4895,14 @@ export interface operations {
           "application/json": components["schemas"]["AttendanceReportResponse"];
         };
       };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
       403: {
         headers: {
           [name: string]: unknown;
@@ -4907,6 +4944,14 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["EnrollmentReportResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
       403: {
@@ -4952,6 +4997,14 @@ export interface operations {
           "application/json": components["schemas"]["ReportCsvResponse"];
         };
       };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
       403: {
         headers: {
           [name: string]: unknown;
@@ -4993,6 +5046,14 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ReportCsvResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
       403: {
@@ -5038,6 +5099,14 @@ export interface operations {
           "application/json": components["schemas"]["CollectionReportResponse"];
         };
       };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
       403: {
         headers: {
           [name: string]: unknown;
@@ -5079,6 +5148,14 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ReportCsvResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
       403: {
@@ -5679,6 +5756,14 @@ export interface operations {
           "application/json": components["schemas"]["ImportResponse"];
         };
       };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
   StudentImportsController_detail: {
@@ -5700,6 +5785,14 @@ export interface operations {
           "application/json": components["schemas"]["ImportResponse"];
         };
       };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
   StudentImportsController_commit: {
@@ -5719,6 +5812,14 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ImportResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
     };
@@ -6539,6 +6640,14 @@ export interface operations {
           "application/json": components["schemas"]["StudentListResponse"];
         };
       };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
   MobilePeopleController_profile: {
@@ -6558,6 +6667,14 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["StudentDetailResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
     };
@@ -9435,6 +9552,14 @@ export interface operations {
           "application/json": components["schemas"]["RoomDetailResponse"];
         };
       };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
   RoomsController_update: {
@@ -9460,6 +9585,14 @@ export interface operations {
           "application/json": components["schemas"]["RoomDetailResponse"];
         };
       };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
   RoomsController_history: {
@@ -9482,6 +9615,14 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["RoomHistoryResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
     };
@@ -14318,6 +14459,14 @@ export interface operations {
           "application/json": components["schemas"]["StudentListResponse"];
         };
       };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
   StudentsController_create: {
@@ -14341,6 +14490,14 @@ export interface operations {
           "application/json": components["schemas"]["StudentResponse"];
         };
       };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
   StudentsController_detail: {
@@ -14360,6 +14517,14 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["StudentDetailResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
     };
@@ -14387,6 +14552,14 @@ export interface operations {
           "application/json": components["schemas"]["StudentDetailResponse"];
         };
       };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
   StudentsController_deactivate: {
@@ -14410,6 +14583,14 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["StudentDetailResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
     };
@@ -15614,6 +15795,14 @@ export interface operations {
           "application/json": components["schemas"]["TenantSubscriptionResponse"];
         };
       };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
   TenantSettingsController_read: {
@@ -15631,6 +15820,14 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["TenantSettingsResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
     };
@@ -15656,6 +15853,14 @@ export interface operations {
           "application/json": components["schemas"]["TenantSettingsResponse"];
         };
       };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
+        };
+      };
     };
   };
   TenantSettingsController_usage: {
@@ -15673,6 +15878,14 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["TenantUsageResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
     };
@@ -15736,6 +15949,14 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["HealthResponse"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponse"];
         };
       };
     };

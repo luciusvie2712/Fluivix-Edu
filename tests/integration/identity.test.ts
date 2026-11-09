@@ -28,6 +28,7 @@ import { tenantSettingsCases } from "./tenant-settings-cases";
 import { roomsCases } from "./rooms-cases";
 import { roomLifecycleCases } from "./room-lifecycle-cases";
 import { studentHistoryCases } from "./student-history-cases";
+import { authContractCases } from "./auth-contract-cases";
 import { requireTestRedis, testRedisUrl } from "../../tooling/test-redis";
 
 let database: EmbeddedPostgres | undefined;
@@ -46,6 +47,7 @@ const owner = randomUUID(),
 const studentA = randomUUID(),
   studentB = randomUUID();
 const password = randomBytes(24).toString("base64url");
+authContractCases(() => base);
 nativeCases(
   () => base,
   () => db,

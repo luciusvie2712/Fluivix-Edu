@@ -279,6 +279,7 @@ export class TenantAuditService {
 @UseGuards(AccessGuard)
 @ApiResponse({ status: 403, type: ErrorResponse })
 @ApiResponse({ status: 422, type: ErrorResponse })
+@ApiResponse({ status: 401, type: ErrorResponse })
 export class TenantAuditController {
   constructor(private service: TenantAuditService) {}
   @Get()

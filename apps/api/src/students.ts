@@ -1,3 +1,4 @@
+import { ErrorResponse } from "./response.dto";
 import {
   Body,
   ConflictException,
@@ -15,6 +16,8 @@ import {
   UnprocessableEntityException,
 } from "@nestjs/common";
 import {
+  ApiResponse,
+  ApiBearerAuth,
   ApiProperty,
   ApiTags,
   ApiOkResponse,
@@ -345,9 +348,11 @@ export class StudentsService {
     });
   }
 }
+@ApiBearerAuth()
 @ApiTags("students")
 @UseGuards(AccessGuard)
 @Controller("students")
+@ApiResponse({ status: 401, type: ErrorResponse })
 export class StudentsController {
   constructor(private readonly students: StudentsService) {}
   @TenantPermission("student.read", "student.read.limited")

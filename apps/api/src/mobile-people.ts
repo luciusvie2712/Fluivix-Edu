@@ -1,3 +1,4 @@
+import { ErrorResponse } from "./response.dto";
 import {
   Controller,
   Get,
@@ -7,7 +8,12 @@ import {
   Req,
   UseGuards,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
+import {
+  ApiResponse,
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 import { Db } from "./db";
 import { AccessGuard, TenantPermission } from "./guards";
 import { ListDto } from "./auth.dto";
@@ -21,6 +27,7 @@ import { StudentsService } from "./students";
 @ApiBearerAuth()
 @UseGuards(AccessGuard)
 @Controller("mobile/guardian/students")
+@ApiResponse({ status: 401, type: ErrorResponse })
 export class MobilePeopleController {
   constructor(
     private db: Db,

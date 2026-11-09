@@ -1,5 +1,12 @@
+import { ErrorResponse } from "./response.dto";
 import { Controller, Get, Req, UseGuards } from "@nestjs/common";
-import { ApiOkResponse, ApiProperty, ApiTags } from "@nestjs/swagger";
+import {
+  ApiResponse,
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiProperty,
+  ApiTags,
+} from "@nestjs/swagger";
 import { Db } from "./db";
 import { AccessGuard, TenantPermission } from "./guards";
 import type { ApiRequest } from "./http";
@@ -23,9 +30,11 @@ class TenantSubscriptionResponse {
   @ApiProperty({ type: TenantSubscriptionView }) data!: TenantSubscriptionView;
   @ApiProperty({ type: MetaDto }) meta!: MetaDto;
 }
+@ApiBearerAuth()
 @ApiTags("tenant")
 @Controller("tenant")
 @UseGuards(AccessGuard)
+@ApiResponse({ status: 401, type: ErrorResponse })
 export class TenantSubscriptionController {
   constructor(private readonly db: Db) {}
   @Get("subscription")

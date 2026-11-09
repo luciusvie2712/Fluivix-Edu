@@ -1,3 +1,4 @@
+import { ErrorResponse } from "./response.dto";
 import {
   Body,
   ConflictException,
@@ -9,7 +10,12 @@ import {
   UnprocessableEntityException,
   UseGuards,
 } from "@nestjs/common";
-import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
+import {
+  ApiResponse,
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 import type { Prisma } from "@prisma/client";
 import { isNamedIanaTimezone, planLimitsSchema } from "@fluivix/contracts";
 import { Db } from "./db";
@@ -147,9 +153,11 @@ export class TenantSettingsService {
     });
   }
 }
+@ApiBearerAuth()
 @ApiTags("tenant")
 @Controller("tenant")
 @UseGuards(AccessGuard)
+@ApiResponse({ status: 401, type: ErrorResponse })
 export class TenantSettingsController {
   constructor(private readonly service: TenantSettingsService) {}
   @Get("settings")

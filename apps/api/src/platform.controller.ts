@@ -8,6 +8,8 @@ import {
   Res,
 } from "@nestjs/common";
 import {
+  ApiOperation,
+  ApiCookieAuth,
   ApiBearerAuth,
   ApiOkResponse,
   ApiResponse,
@@ -37,7 +39,6 @@ function setCookie(res: Response, token: string) {
   });
 }
 @ApiTags("platform-identity")
-@ApiBearerAuth()
 @ApiResponse({ status: 401, type: ErrorResponse })
 @ApiResponse({ status: 403, type: ErrorResponse })
 @ApiResponse({ status: 422, type: ErrorResponse })
@@ -83,6 +84,11 @@ export class PlatformController {
       req.traceId,
     );
   }
+  @ApiCookieAuth("platformRefresh")
+  @ApiOperation({
+    description:
+      "Platform refresh requires the separate HttpOnly Secure __Host-fluivix-platform cookie and approved platform Origin with application/json. It does not accept a tenant bearer token as a replacement and never returns refresh credentials in JSON.",
+  })
   @Post("auth/refresh")
   @HttpCode(200)
   @ApiOkResponse({ type: TokenResponse })
@@ -102,6 +108,7 @@ export class PlatformController {
     setCookie(res, result.refreshToken);
     return { accessToken: result.accessToken };
   }
+  @ApiBearerAuth("platformBearer")
   @Post("auth/logout")
   @HttpCode(200)
   @ApiOkResponse({ type: RevokeResponse })
@@ -122,6 +129,7 @@ export class PlatformController {
     });
     return result;
   }
+  @ApiBearerAuth("platformBearer")
   @Get("me")
   @ApiOkResponse({ type: PlatformMeResponse })
   async me(@Req() req: ApiRequest) {
@@ -130,6 +138,7 @@ export class PlatformController {
     );
     return { id, displayName, role };
   }
+  @ApiBearerAuth("platformBearer")
   @Get("overview")
   @ApiOkResponse({ type: PlatformOverviewResponse })
   overview(@Req() req: ApiRequest) {

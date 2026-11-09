@@ -1,5 +1,7 @@
+import { ErrorResponse } from "./response.dto";
 import { Controller, Get, Req } from "@nestjs/common";
 import {
+  ApiResponse,
   ApiBearerAuth,
   ApiOkResponse,
   ApiProperty,
@@ -26,7 +28,8 @@ export class HealthResponse {
 }
 @Controller("platform/system-health")
 @ApiTags("platform-operations")
-@ApiBearerAuth()
+@ApiBearerAuth("platformBearer")
+@ApiResponse({ status: 401, type: ErrorResponse })
 export class PlatformHealthController {
   constructor(
     private readonly db: Db,

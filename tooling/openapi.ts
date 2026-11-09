@@ -24,7 +24,42 @@ async function run() {
     new DocumentBuilder()
       .setTitle("FluivixEdu API")
       .setVersion("1.0.0")
-      .addBearerAuth()
+      .addBearerAuth({
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+        description:
+          "Tenant/user access token. Platform identity has a separate audience and scheme.",
+      })
+      .addBearerAuth(
+        {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+          description:
+            "Separate platform administrator access token, issued after platform MFA verification. Tenant tokens cannot authorize platform resources.",
+        },
+        "platformBearer",
+      )
+      .addCookieAuth(
+        "__Host-fluivix-refresh",
+        {
+          type: "apiKey",
+          in: "cookie",
+          description:
+            "HttpOnly Secure browser refresh credential; never available to client JavaScript.",
+        },
+        "webRefresh",
+      )
+      .addCookieAuth(
+        "__Host-fluivix-platform",
+        {
+          type: "apiKey",
+          in: "cookie",
+          description: "Separate HttpOnly Secure platform refresh credential.",
+        },
+        "platformRefresh",
+      )
       .build(),
   );
   writeFileSync(

@@ -133,7 +133,7 @@ export class PlatformAuditService {
 }
 @Controller("platform/audit-logs")
 @ApiTags("platform-audit")
-@ApiBearerAuth()
+@ApiBearerAuth("platformBearer")
 @ApiResponse({ status: 401, type: ErrorResponse })
 @ApiResponse({ status: 422, type: ErrorResponse })
 export class PlatformAuditController {
