@@ -1,5 +1,8 @@
 # Deployment runbook
 
+Encrypted backup jobs and fresh-only restore: `../../infra/backup/README.md`. Configuration requires real TLS hostname/CA, separate protected key storage and an approved operator schedule. The disabled cron example was not installed. Verified local rehearsal: `evidence/encrypted-backup/verification.json`; staging/offsite recovery/key custody and production RPO/RTO remain BLOCKED.
+
+
 Runtime pins now use Node24.22.3/PostgreSQL17.12; see `../../infra/pilot/README.md` and `evidence/runtime-security/verification.json`. Only fresh isolated databases were tested. Before upgrading an existing17.x deployment, follow upstream REINDEX/restored-copy guidance and establish a new trusted full backup; no existing volume was silently upgraded. Actual staging/production remains BLOCKED.
 
 
@@ -48,3 +51,6 @@ Provide a dedicated server-only PRIVACY_EXPORT_KEY (64 hex characters) and PRIVA
 Profile ERASE is disabled by default. Enable only after actual legal/operator review with PRIVACY_ERASURE_POLICY_VERSION, opaque PRIVACY_ERASURE_APPROVAL_REF and exactly PRIVACY_ERASURE_FIELDS=fullName,dateOfBirth,contactEmail,contactPhone,notesPrivate. Synthetic integration configuration is not approval for customer data. Execution requires explicit retained-record confirmation, current requester relation, reviewed request version, current student version, an INACTIVE profile and no active/upcoming operational enrollment. It redacts those five profile fields, revokes child notification consents and purges that child temporary export content. It retains student code, global account/link identity, immutable finance, attendance, published grades and audit. No global account deletion or legal anonymization claim. Tenant owners cannot mutate global identity via an account-only request; those requests remain explicitly unfulfilled or rejected with a meaningful reason pending the approved account-custodian process.
 
 Native exports use app-private cache and an authenticated fetch, checksum verification, OS file sharing, finally cleanup and startup cleanup of only known feature files. OS share completion does not prove recipient delivery. Verify permissions, cache cleanup, cancellation and recipient save on signed physical iOS/Android builds before release; this external gate remains BLOCKED. Web uses transient Blob download with no public URL or browser storage.
+
+
+Restore admission note: database archives intentionally omit cluster roles and ACLs. After trusted migration deploy, provision the separately reviewed application identity and replay the reviewed least-privilege grants for that deployment (the isolated pilot uses `infra/pilot/grant-application.sql`). Do not run the application as the CREATEDB restore role. The local restore/API rehearsal used an isolated role-owned test database; actual staging application-role grants and traffic cutover remain unverified.

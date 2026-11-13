@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "connection": {
+    "host": "database.example.invalid",
+    "port": 5432,
+    "user": "fluivix_backup",
+    "database": "fluivixedu",
+    "passwordFile": "/run/fluivix-backup/keys/database-password",
+    "transport": "verify-full",
+    "rootCertificateFile": "/run/fluivix-backup/keys/database-ca.crt"
+  },
+  "archiveDirectory": "/var/lib/fluivix-backup/archives",
+  "workDirectory": "/run/fluivix-backup/work",
+  "activeKeyId": "backup-v1",
+  "keys": [
+    { "id": "backup-v1", "file": "/run/fluivix-backup/keys/backup-v1.key" }
+  ],
+  "maxArchiveBytes": 2147483648,
+  "timeoutMs": 900000,
+  "retention": { "keepCount": 14, "maxAgeDays": 30, "allowApply": false }
+}

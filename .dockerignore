@@ -14,6 +14,7 @@
 !infra/
 !infra/prisma/**
 !infra/pilot/**
+!infra/backup/**
 **/node_modules
 **/.next
 **/dist

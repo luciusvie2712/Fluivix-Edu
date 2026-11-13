@@ -1,0 +1,236 @@
+{
+  "date": "2026-11-13",
+  "status": "PASS_LOCAL_FULL_FROZEN_ENCRYPTED_BACKUP_GATE",
+  "baseCommit": "a7698482fab9a73075f55767e444f3db337a1508",
+  "sourcePaths": [
+    ".dockerignore",
+    ".github/workflows/verify-identity.yml",
+    "infra/backup/README.md",
+    "infra/backup/compose.yaml",
+    "infra/backup/config.example.json",
+    "infra/backup/cron.example",
+    "infra/backup/prepare-runtime.mjs",
+    "infra/pilot/Dockerfile",
+    "package.json",
+    "packages/backup-cli/package.json",
+    "packages/backup-cli/src/archive.ts",
+    "packages/backup-cli/src/cli.ts",
+    "packages/backup-cli/src/config.ts",
+    "packages/backup-cli/src/index.ts",
+    "packages/backup-cli/src/operations.ts",
+    "packages/backup-cli/src/postgres.ts",
+    "packages/backup-cli/src/retention.ts",
+    "packages/backup-cli/tsconfig.json",
+    "pnpm-lock.yaml",
+    "tests/unit/backup-archive.test.ts",
+    "tooling/backup-rehearsal.ts"
+  ],
+  "sourceFilesSha256": {
+    ".dockerignore": "52ca94e24f9b78122e2af094060338323f6237b62fd2adf989c950d3f996e94f",
+    ".github/workflows/verify-identity.yml": "2595afdf62a94289a6039eed0b17158656e68e47cf2dba2cd1e94ade0d38f0c9",
+    "infra/backup/README.md": "9d2237a9c9a42397a939cdfce2d1c4c6e090b907ce55b2605876d5f5fca7e386",
+    "infra/backup/compose.yaml": "f5424971501959aa6c015d8b69eb4aad52c702f101d5e0ccb5a658bd7456cece",
+    "infra/backup/config.example.json": "c4a9c6eba38e7102a23ddb641171818e4ef5860ba0b9ef19f4192c73093764fe",
+    "infra/backup/cron.example": "ee1dc6cdacac93cff4165422489fa52d1b8d8e6d5b4078a8b046262347318313",
+    "infra/backup/prepare-runtime.mjs": "39201953c93016965ba617a92a56c81aec66796aa9d600414adb48b3920129cb",
+    "infra/pilot/Dockerfile": "abc97b8ed14b659de19cfb460016cf3b8a015c955ff3187ba29f53074f0a67af",
+    "package.json": "57a3447aa7771dfe4df827047c3e18a5eeceb5d375ce98cf1cbb1ac3f452d090",
+    "packages/backup-cli/package.json": "6a9aaa7399c5bcdf2295b3de3a1769b4049160a7cdc778252e6e277264432f7b",
+    "packages/backup-cli/src/archive.ts": "07bac1d45e1758032a5f3a55258f6eab5ef603eb76cb03f91b62d1819d9fa38f",
+    "packages/backup-cli/src/cli.ts": "c4d86e5d5c18dc1d144268b50ff1afebd53f1f600eacc117384434ac51ebf7e7",
+    "packages/backup-cli/src/config.ts": "06fb51571831872092fa449031b60ae6a4cb4d813294ee488674489c04c87450",
+    "packages/backup-cli/src/index.ts": "9ccb03160b83987213ae29c144737379d6df03b519425cf628ee7c4ae44fccce",
+    "packages/backup-cli/src/operations.ts": "eb5400e07453abe155fc16fee8ff378fb138852e5877f11d031ad0301ae59118",
+    "packages/backup-cli/src/postgres.ts": "ab7813c1e65bdda8c9894a59ba98b088b2213bcf60147c3d64209bde2b120bd3",
+    "packages/backup-cli/src/retention.ts": "ffa0f10320dec063b8309d1b3bf3e5c501a87304b5b8d2625686baa0a6f35e69",
+    "packages/backup-cli/tsconfig.json": "6d6e7d63d5b83c7a95602aa59ac8a9ee67ee660b6d42cea9d19f6ecfeee45a5a",
+    "pnpm-lock.yaml": "d49d298249becd4483fac7790bd6f87e0230bbbfab257a9954bccfee5883af8f",
+    "tests/unit/backup-archive.test.ts": "c462229e0da6e4c4b42a6ad27d5a4de2b3a3fdd716229bef0524bda8b8e37c24",
+    "tooling/backup-rehearsal.ts": "d16134f50a4cbf23c4f74e62f55919b12564d88c8977e69dc3dd6d56f055c6ae"
+  },
+  "sourceFrozen": true,
+  "privateEnvironmentUnchanged": true,
+  "all33PublishedMigrationBytesUnchanged": true,
+  "schemaChanged": false,
+  "tests": {
+    "unit": 135,
+    "mobile": 32,
+    "integration": 233,
+    "browser": 202,
+    "skipped": 0,
+    "flaky": 0
+  },
+  "browserStats": {
+    "startTime": "2026-11-13T09:13:49.748Z",
+    "duration": 1209098.117,
+    "expected": 202,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "backup": "restore-rehearsal.json",
+  "backupScope": {
+    "publicTables": 64,
+    "canonicalMigrations": 33,
+    "encryption": "AES-256-GCM authenticated envelope, streaming pg_dump custom format",
+    "restoreAdmission": "Fresh database only; application admission still requires operator review",
+    "timingScope": "Local Docker CLI container and synthetic schema/data validation; no production RPO/RTO claim",
+    "retentionDeletionScope": "Unit tests delete expired real files; this real rehearsal authenticates2fresh archives and applies zero deletions",
+    "schemaComparison": "PostgreSQL reparses both CHECK/partial-index expressions. All columns/other constraints/index definitions/triggers/functions remain included. Transactional negative controls detect predicate changes.",
+    "offsiteStorageAndKeyCustody": "NOT_VERIFIED",
+    "roleScope": "Local source/restore role is NOSUPERUSER CREATEDB NOCREATEROLE NOREPLICATION. API validation uses this isolated role-owned test database; it does not establish production application-role admission.",
+    "databaseTransport": "Actual synthetic rehearsal uses explicit loopback local-test transport guarded by NODE_ENV=test and _test database names. Production verify-full configuration/code is provided; actual deployed PostgreSQL TLS endpoint and certificate provisioning remain unverified.",
+    "productionAdmission": "pg_dump/pg_restore intentionally exclude ACLs. Provision the separately reviewed application role and replay its reviewed grants after migrations; never use the CREATEDB restore role as the deployed application role. Validate those grants during staging cutover."
+  },
+  "buildVerification": {
+    "linux": {
+      "status": "PASS",
+      "uncachedBuildTasks": 9,
+      "sourceFrozen": true,
+      "mobileArtifact": "native-export.json",
+      "windowsHermesExport": "PRIOR_BLOCK_APPLICATION_CONTROL_4551_NOT_RETRIED",
+      "hostSecurityPolicyChanged": false
+    },
+    "windowsNonMobileTasks": 8,
+    "typecheckTasks": 9,
+    "nativeExport": "native-export.json",
+    "windowsNativeCompiler": "BLOCKED_APPLICATION_CONTROL_4551; policy unchanged",
+    "signedPhysicalMobile": "NOT_VERIFIED"
+  },
+  "contract": {
+    "clientSha256": "6BCAB817013C5E9612E6FF1E86604B72FC27C9364C9F4810719368EAC7A8F17A",
+    "openapiSha256": "98E5CC63137A3FACE2B0666D1C467BA98A4DF6537D71CCDFF0942EA44401EE46",
+    "stable": true,
+    "operations": 193
+  },
+  "pnpmAudit": {
+    "info": 0,
+    "low": 1,
+    "moderate": 4,
+    "high": 0,
+    "critical": 0
+  },
+  "pnpmAuditScope": "Not an OS/runtime CVE inventory.",
+  "commands": [
+    {
+      "command": "prisma validate/generate",
+      "status": "PASS"
+    },
+    {
+      "command": "lint and format",
+      "status": "PASS"
+    },
+    {
+      "command": "official Expo alignment before/after builds",
+      "status": "PASS"
+    },
+    {
+      "command": "fresh full TLS/MFA/tenant/worker/SMTP/recovery/privacy pilot and canonical33 migrations",
+      "status": "PASS"
+    },
+    {
+      "command": "real encrypted dump/authenticate/restore/all64tables/schema/finance/tenant/key rotation/retention rehearsal",
+      "status": "PASS"
+    },
+    {
+      "command": "real rollback negative controls for changed CHECK and partial-index predicates",
+      "status": "PASS"
+    },
+    {
+      "command": "Docker build context secret/path scan",
+      "status": "PASS"
+    },
+    {
+      "command": "nine uncached Linux builds and actual Android/iOS Hermes bytecode",
+      "status": "PASS"
+    },
+    {
+      "command": "eight Windows non-mobile builds/nine typechecks/tooling tsc",
+      "status": "PASS"
+    },
+    {
+      "command": "135unit/32mobile and actual mobile API smoke",
+      "status": "PASS"
+    },
+    {
+      "command": "233integration",
+      "status": "PASS"
+    },
+    {
+      "command": "193stable OpenAPI/client operations",
+      "status": "PASS"
+    },
+    {
+      "command": "offline frozen installation",
+      "status": "PASS"
+    },
+    {
+      "command": "audit high/critical gate",
+      "status": "PASS"
+    },
+    {
+      "command": "pack and3skill-source/5ID integrity",
+      "status": "PASS"
+    },
+    {
+      "command": "complete202browser suite with original assertions/timeouts/retries",
+      "status": "PASS"
+    },
+    {
+      "command": "before/after source/privateenv/all33publishedSQL byte guards",
+      "status": "PASS"
+    }
+  ],
+  "skills": [
+    {
+      "source": "taste-skill",
+      "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+      "installed": "design-taste-frontend",
+      "verifiedFiles": 38,
+      "status": "PASS"
+    },
+    {
+      "source": "ui-ux-pro-max-skill",
+      "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+      "installed": "ui-ux-pro-max",
+      "verifiedFiles": 73,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "accessible-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "micro-interaction",
+      "verifiedFiles": 4,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "60fps-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    }
+  ],
+  "historicalArtifacts": {
+    "newRegressionOutputArchivedPrivately": 296,
+    "originalCommittedBytesRestored": true
+  },
+  "priorCI": "../ci-a769848-success-2026-11-13.json",
+  "newModuleCommitAndExactCI": "PENDING",
+  "releaseReadiness": "BLOCKED",
+  "limitations": [
+    "No scheduler/cloud backup enabled; cron example is disabled and needs operator review.",
+    "Only one synthetic database was backed up; cluster roles/object storage/deployment configuration need separate recovery plans.",
+    "Linux private permissions verified in the actual job; Windows ACL and secure media erasure not verified.",
+    "No existing developer/customer database or secret configuration modified. Failed rehearsal targets/volumes retained.",
+    "Actual staging, offsite recovery, key custody, legal/privacy/consent/UAT, signed physical mobile and real push remain unverified."
+  ],
+  "sourceFileHashScope": "Raw frozen local working-copy bytes; Git checkout EOL normalization may differ across platforms. Canonical migration checksums are verified separately in the actual migrated databases."
+}

@@ -16,6 +16,7 @@ COPY packages/contracts/package.json packages/contracts/package.json
 COPY packages/server-crypto/package.json packages/server-crypto/package.json
 COPY packages/ui-tokens/package.json packages/ui-tokens/package.json
 COPY packages/migration-cli/package.json packages/migration-cli/package.json
+COPY packages/backup-cli/package.json packages/backup-cli/package.json
 RUN pnpm install --frozen-lockfile
 
 FROM dependencies AS build
@@ -68,6 +69,32 @@ COPY --from=build --chown=node:node /app/apps/platform/.next/static /app/apps/pl
 USER node
 ENV NODE_ENV=production HOSTNAME=0.0.0.0 PORT=3001 NEXT_TELEMETRY_DISABLED=1
 CMD ["node", "apps/platform/server.js"]
+
+FROM base AS backup-build
+RUN npm install --global pnpm@10.34.7
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.json ./
+COPY packages/backup-cli/package.json packages/backup-cli/package.json
+RUN pnpm install --filter @fluivix/backup-cli... --frozen-lockfile --ignore-scripts
+COPY packages/backup-cli/src packages/backup-cli/src
+COPY packages/backup-cli/tsconfig.json packages/backup-cli/tsconfig.json
+COPY infra/backup/prepare-runtime.mjs infra/backup/prepare-runtime.mjs
+RUN pnpm --filter @fluivix/backup-cli build \
+    && node infra/backup/prepare-runtime.mjs \
+    && pnpm --dir /runtime-backup install --filter @fluivix/backup-cli... --prod --offline --frozen-lockfile --ignore-scripts
+
+FROM postgres:17.12-bookworm@sha256:40865bc877a289da75963d97d72b59633f639fc5af7a4e856bfa3714cae5b536 AS backup
+COPY --from=base /usr/local/bin/node /usr/local/bin/node
+COPY --from=backup-build --chown=1000:1000 /runtime-backup /app
+RUN groupadd --gid 1000 fluivixbackup && useradd --uid 1000 --gid 1000 --no-create-home fluivixbackup \
+    && mkdir -p /var/lib/fluivix-backup/archives /run/fluivix-backup/keys /run/fluivix-backup/work /run/fluivix-backup/bootstrap \
+    && chown -R 1000:1000 /var/lib/fluivix-backup /run/fluivix-backup \
+    && chmod 0700 /var/lib/fluivix-backup/archives /run/fluivix-backup/keys /run/fluivix-backup/work /run/fluivix-backup/bootstrap \
+    && node --version && pg_dump --version && pg_restore --version
+WORKDIR /app
+USER 1000:1000
+ENV NODE_ENV=production
+ENTRYPOINT ["node", "/app/packages/backup-cli/dist/cli.js"]
+CMD ["help"]
 
 FROM scratch AS context-audit
 COPY . /context

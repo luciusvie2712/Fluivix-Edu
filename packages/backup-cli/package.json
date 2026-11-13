@@ -1,0 +1,25 @@
+{
+  "name": "@fluivix/backup-cli",
+  "private": true,
+  "engines": {
+    "node": ">=24.22.3 <25"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "fluivix-backup": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "pg": "8.16.3",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/pg": "8.15.6",
+    "@types/node": "24.10.1",
+    "typescript": "5.9.3"
+  }
+}

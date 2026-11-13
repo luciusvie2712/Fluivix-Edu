@@ -1,0 +1,7 @@
+# EXAMPLE ONLY. Not installed or enabled by the application.
+# Operator must approve database scope, TLS, key custody, retention, offsite copy,
+# failure alerting, restore rehearsal and the absolute working directory first.
+# CRON_TZ requires a supporting cron implementation. This example is UTC.
+CRON_TZ=UTC
+# 02:15 UTC = 09:15 Asia/Ho_Chi_Minh. Use a reviewed maintenance window.
+# 15 2 * * * cd /srv/fluivixedu && docker compose -f infra/backup/compose.yaml --profile manual run --rm --no-deps backup backup --config /run/fluivix-backup/keys/config.json

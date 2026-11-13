@@ -1,0 +1,32 @@
+name: fluivixedu-backup
+services:
+  backup:
+    profiles: [manual]
+    build:
+      context: ../..
+      dockerfile: infra/pilot/Dockerfile
+      target: backup
+    image: fluivixedu-backup:operator-reviewed
+    user: "1000:1000"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    environment:
+      NODE_ENV: production
+    volumes:
+      - type: bind
+        source: ${FLUIVIX_BACKUP_KEYS_DIR:?Set a reviewed private absolute keys directory}
+        target: /run/fluivix-backup/keys
+        read_only: true
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ${FLUIVIX_BACKUP_ARCHIVE_DIR:?Set a separate private absolute archive directory}
+        target: /var/lib/fluivix-backup/archives
+        bind:
+          create_host_path: false
+    tmpfs:
+      - /run/fluivix-backup/work:rw,noexec,nosuid,size=1g,uid=1000,gid=1000,mode=0700
+    pids_limit: 64
+    mem_limit: 768m
+    command: [help]

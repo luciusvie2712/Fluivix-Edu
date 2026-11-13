@@ -1,5 +1,16 @@
 # Baseline P0 gap analysis
 
+## Current checkpoint — encrypted backup local PASS (2026-11-13)
+
+Encrypted backup/restore is implemented with a pinned nonroot PostgreSQL17.12/Node24.22.3 image, TLS verify-full for real databases, authenticated AES256GCM streaming archives, separate protected key/work/archive paths, atomic no-overwrite publication, fresh-only restore, key rotation and confirmation-gated retention. The fresh full rehearsal matched64 public tables plus column definitions, constraints, indexes, triggers and functions, verified33 canonical migrations and exercised real restored API tenant isolation plus payment/idempotency/over-allocation behavior. Wrong keys created no database; existing targets remained unchanged. CHECK and partial-index drift negative controls passed under rollback. No actual scheduler, cloud storage or traffic cutover was enabled.
+
+The full frozen source gate passed135unit/32mobile/233integration/202browser with zero skipped/flaky cases,9uncached Linux builds including real Hermes artifacts,8Windows non-mobile builds,9typechecks/tooling,lint/format,actual mobile API,the complete TLS pilot,193stable contracts,offline installation and skill/source/private-env/published-SQL integrity. Audit:0HIGH/0CRITICAL,4MODERATE/1LOW. The real restore container command took4076ms on this machine; these local synthetic measurements do not establish production RPO/RTO. Prior runtime commit a769848 has independently verified all32 CI steps. This module's commit/push and exact new CI remain pending.
+
+Earlier focused failures and fixes are retained in evidence/encrypted-backup/recovery.json. No assertions/timeouts/retries/security checks were weakened. Release remains BLOCKED on the remaining technical work and actual staging/offsite storage/separate key custody/legal/privacy/consent/UAT/signed physical mobile/real push. Windows native Hermes is still blocked by Application Control4551; verified Linux bytecode is not a signed physical-device build.
+
+Evidence: `evidence/encrypted-backup/verification.json`.
+
+
 ## Current checkpoint — runtime security local PASS (2026-11-13)
 
 Node24.22.3 and PostgreSQL17.12 security patches are now selected by the root toolchain, CI and pinned pilot images. The official Windows Node archive matched publisher SHA256 and a valid OpenJS Authenticode identity before process-local selection; both node and pnpm use the verified runtime. Actual host and all five rehearsed application/migration image IDs report Node24.22.3. A new owned PostgreSQL17.12 database and pg_dump17.12 were verified; no existing developer/customer volume was upgraded. PostgreSQL's REINDEX/restored-copy and new-full-backup guidance remains mandatory for an existing deployment.

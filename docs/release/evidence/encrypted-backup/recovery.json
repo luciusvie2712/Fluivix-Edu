@@ -1,0 +1,34 @@
+{
+  "status": "LOCAL_FULL_FROZEN_BACKUP_GATE_PASS_WITH_RETAINED_FAILURES",
+  "focusedResult": ".cache/backup-focused-pass.json",
+  "initialBuild": "Stopped only owned Docker build after >15min with dependency progress stalled; preserved log. Dedicated backup build introduced.",
+  "focusA": "All table data matched; raw CHECK/partial-index deparse hash differed. Resources retained.",
+  "focusB": "Added column metadata required explicit internal-char casts; failed before dump. Resources retained.",
+  "schemaDiagnostic": "Actual source/restored normalized schema equal; CHECK and partial-index changed predicates detected and rolled back.",
+  "focusC": "Complete actual exit0;29 phases including owned stop;64 tables;33 canonical migrations.",
+  "unitRecovery": {
+    "status": "IMPLEMENTATION_IN_PROGRESS",
+    "observedAttempts": [
+      {
+        "command": "initial focused15archive tests",
+        "result": "13FAIL2PASS plus unhandled setup rejection",
+        "cause": "Windows os.tmpdir returned8.3 short alias; canonical path comparison refused fixture roots. Diagnostic confirmed isDirectory true/no symlink/canonical mismatch/tempHasTilde true.",
+        "fix": "Resolve freshly created fixture root with realpath; production canonical/junction checks retained. Lock setup awaits Promise.race to surface setup error instead of leaving unhandled rejection."
+      },
+      {
+        "command": "focused15archive tests after canonical fixture",
+        "result": "14PASS1FAIL",
+        "cause": "EBADF close after consuming numeric-fd ReadStream then closing its separately tracked FileHandle.",
+        "fix": "Use FileHandle.createReadStream so destroy/close has one tracked handle owner, no ignored EBADF."
+      },
+      {
+        "command": "focused15afterFileHandlefix",
+        "result": "15PASS0FAIL0SKIP"
+      }
+    ],
+    "current": "16th consumer cancellation regression added; focused build/test45660 pending observation. No complete module gate or restore rehearsal yet.",
+    "priorRuntimeExactCI": "a7698482fab9a73075f55767e444f3db337a1508 all32SUCCESS run43384816726/job131750701791 independently11932 2332026.4min/currentNode24.22.3/configuredPG17.12",
+    "releaseReadiness": "BLOCKED"
+  },
+  "finalEvidence": "verification.json"
+}

@@ -77,6 +77,13 @@ jobs:
         timeout-minutes: 25
       - name: Retain sanitized pilot evidence
         run: cp .cache/pilot-rehearsal-result.json docs/release/evidence/pilot-ci-result.json
+      - name: Rehearse encrypted backup and fresh restore
+        run: pnpm test:backup
+        timeout-minutes: 25
+        env:
+          TEST_REDIS_URL: redis://127.0.0.1:6379
+      - name: Retain sanitized backup evidence
+        run: cp .cache/backup-rehearsal-result.json docs/release/evidence/backup-ci-result.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
