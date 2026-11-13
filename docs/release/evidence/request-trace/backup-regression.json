@@ -1,0 +1,561 @@
+{
+  "status": "PASS",
+  "scope": "LOCAL_SYNTHETIC_ONLY",
+  "releaseReadiness": "BLOCKED",
+  "runId": "trace-gate-20261113-a",
+  "backupImage": "sha256:398d38cf0e2680cd6c5724b7f3e1e2e733b632d3edb96f2f3f5869a8fe76bfe2",
+  "migrationImage": "sha256:3a898237e1ae5a597592449a46f38bb3ebf0af04076ea8b4c4cb788cc02c964e",
+  "runtime": {
+    "node": "v24.22.3",
+    "dump": "pg_dump (PostgreSQL) 17.12 (Debian 17.12-1.pgdg12+1)",
+    "restore": "pg_restore (PostgreSQL) 17.12 (Debian 17.12-1.pgdg12+1)"
+  },
+  "snapshotAt": "2026-11-13T16:00:15.312Z",
+  "restoreDurationMs": 3690,
+  "localElapsedMs": 64870,
+  "canonicalMigrations": 33,
+  "dataManifest": [
+    {
+      "table": "_prisma_migrations",
+      "rows": "33",
+      "sha256": "c5ac89b2774a896f35648551fd081d3f06b54d17aa0eb8723e82f8e07532119d"
+    },
+    {
+      "table": "assessment_results",
+      "rows": "20",
+      "sha256": "6fb95061f486ee027fb3d404a81d03b68e62cb835575d37dd4fc436c3b350a33"
+    },
+    {
+      "table": "assessments",
+      "rows": "2",
+      "sha256": "729a2ef3c895ad6c4e314af5f678ee41993f2ab36e74cb9d98eae222d125eb4a"
+    },
+    {
+      "table": "attendance_records",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "audit_logs",
+      "rows": "7",
+      "sha256": "e3a7d341e076942248bad150d880ada32b723de3511c970b40904b8ff237a0c4"
+    },
+    {
+      "table": "auth_rate_limits",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "auth_sessions",
+      "rows": "2",
+      "sha256": "73d3a839e55b6b67527099d9e274d3a3ba49747c63cf9da0c55a7a3aa03e3daa"
+    },
+    {
+      "table": "class_sessions",
+      "rows": "4",
+      "sha256": "bc67b2ba5bf406082fa714e3e7e3a86d526966a08db8ea56886b53c33801ef45"
+    },
+    {
+      "table": "class_teachers",
+      "rows": "2",
+      "sha256": "59d8a1a221306fc917fbf3d8fc7412051902ae6ffac381a63bc3d2f141c016a6"
+    },
+    {
+      "table": "classes",
+      "rows": "2",
+      "sha256": "c6e50f89c71b0fa06e5618640725365a2692e6fe90ffa7532d831a6c1b6edf58"
+    },
+    {
+      "table": "data_subject_requests",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "device_push_tokens",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "enrollments",
+      "rows": "40",
+      "sha256": "5f966f9da2d01cf46c89b45b3ba3b2477dc045415f9ba85ce85d0089cd05a9b5"
+    },
+    {
+      "table": "fee_plan_terms",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "fee_plans",
+      "rows": "1",
+      "sha256": "9c1ba77dc24124967c3cdb1781c40ad4e1b5230981dba2810739fbc553118d2d"
+    },
+    {
+      "table": "fee_reminder_batches",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "fee_reminder_policies",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "fee_reminder_policy_events",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "fee_reminder_stages",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "finance_operation_limits",
+      "rows": "1",
+      "sha256": "a6aec62c26b8b242832d247eb11cee9e4d4245a24fc5570ae838b12b31741bb3"
+    },
+    {
+      "table": "grade_change_events",
+      "rows": "20",
+      "sha256": "b745adefea181c91a8b6292bc9f19e9a1a02c33eac90f05b5a4353282fbfbfec"
+    },
+    {
+      "table": "guardian_link_events",
+      "rows": "6",
+      "sha256": "b9a408b6e8ad7e0ed8cdeaf15b7f82e9086361dd182b1ed9c34886986e52cd6f"
+    },
+    {
+      "table": "guardian_profiles",
+      "rows": "4",
+      "sha256": "24177ef25cce26889d2668c69ef3f2e47e2dca4269aca1ee5de7a7c434b6cf51"
+    },
+    {
+      "table": "guardian_student_links",
+      "rows": "6",
+      "sha256": "801a40d4479a750bb03e3c515c1aa37682bf6fecbd529bd7a0cc07d697032e77"
+    },
+    {
+      "table": "idempotency_keys",
+      "rows": "2",
+      "sha256": "8bcb6b5eb214a22018d51d162f1a7c75f3e5c573895e90bd75b6cfba137f75d9"
+    },
+    {
+      "table": "invitation_tokens",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "invoice_items",
+      "rows": "20",
+      "sha256": "0de9b86a513c1e9fc616838202a56e7dd7d383f694e7c1fa657b4614053722db"
+    },
+    {
+      "table": "invoice_reminder_hold_events",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "invoice_reminder_holds",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "invoice_runs",
+      "rows": "1",
+      "sha256": "3eee7bbec3b60da684d313cbbc834b89ffe23e9ffbd6ce0b0cfab7c1d9a25ba0"
+    },
+    {
+      "table": "invoices",
+      "rows": "20",
+      "sha256": "71feab3b6eb62fb12b59416e2a8d52b254a6b60a4973deed4f817342360b0f01"
+    },
+    {
+      "table": "lesson_report_revisions",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "lesson_reports",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "mail_deliveries",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "membership_roles",
+      "rows": "13",
+      "sha256": "62e735a6655488353817217cf875db01c97b10344ec783c948310f0b9eb6465e"
+    },
+    {
+      "table": "notification_deliveries",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "notification_preferences",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "notifications",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "outbox_events",
+      "rows": "22",
+      "sha256": "ef37de251b86df52599e6ef418e87b76fdc94ca1fa40b9058050e0b42daa6a50"
+    },
+    {
+      "table": "password_reset_tokens",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "payment_allocations",
+      "rows": "1",
+      "sha256": "fb74bbeeb9ed724e39dbb87e190919652c9412fd653658df8cb513920821d6d9"
+    },
+    {
+      "table": "payment_reversals",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "payments",
+      "rows": "1",
+      "sha256": "548bfba8d8cd167730b4d9c932f963ff22d948fd2cb93dc23685a10ba4d10482"
+    },
+    {
+      "table": "plans",
+      "rows": "1",
+      "sha256": "dd461f2ddb586121ef8d436947126d0c7bdeb429fe5443a275af8fd65fcaa0d4"
+    },
+    {
+      "table": "platform_audit",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "platform_challenges",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "platform_sessions",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "platform_users",
+      "rows": "2",
+      "sha256": "7b13de5d2fb19e6c9340c86cb44e2a7088e4167e723dddd7647d4268c665f63c"
+    },
+    {
+      "table": "privacy_consents",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "privacy_export_artifacts",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "privacy_request_events",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "rooms",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "schedule_rule_revisions",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "schedule_rules",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "session_changes",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "session_roster_snapshots",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "student_imports",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "student_profiles",
+      "rows": "42",
+      "sha256": "f5ff9bf66d39c2bd03982e893b2aeb6b2a826d64824a426dc11bf9e3f85db7ac"
+    },
+    {
+      "table": "subscription_events",
+      "rows": "0",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "table": "subscriptions",
+      "rows": "2",
+      "sha256": "713ef5a03b6109094fdc01970329795597588d230bc9047933282cb0a0486b46"
+    },
+    {
+      "table": "teacher_profiles",
+      "rows": "2",
+      "sha256": "587223e52fa3d19a5753717bac5f1667333800a0e3784c64c44183f158a9a0d9"
+    },
+    {
+      "table": "tenant_memberships",
+      "rows": "11",
+      "sha256": "d737a2b1cdc9c29c7715cab8c4c5f58dcfb49c6f2041e13ef02913602b3e189e"
+    },
+    {
+      "table": "tenants",
+      "rows": "2",
+      "sha256": "2a0b84cde1e2426c397f8af025d92817f6f29ebce03ba1a857494164751a5fc3"
+    },
+    {
+      "table": "users",
+      "rows": "6",
+      "sha256": "456f6effe89c3a86fceb07e011f9f22f77fc31be6b835c2f9636b1769bfd7090"
+    }
+  ],
+  "schemaSha256": "b1395c7181fa75f52e4274e1a03e704b6f11d60eedfe1854c7eee1ca66d5d439",
+  "schemaDriftNegativeControls": [
+    "CHECK_EXPRESSION",
+    "PARTIAL_INDEX_PREDICATE"
+  ],
+  "sourceFinance": {
+    "beforeVnd": "700000",
+    "afterVnd": "690000",
+    "duplicateDidNotAllocateAgain": true,
+    "overAllocationRejected": true,
+    "tenantBDenied": true
+  },
+  "restoredFinance": {
+    "beforeVnd": "700000",
+    "afterVnd": "690000",
+    "duplicateDidNotAllocateAgain": true,
+    "overAllocationRejected": true,
+    "tenantBDenied": true
+  },
+  "wrongKeyCreatedNoDatabase": true,
+  "existingDatabaseUnchanged": true,
+  "keyRotationOldArchiveVerified": true,
+  "retention": {
+    "preview": {
+      "status": "BACKUP_RETENTION",
+      "mode": "PREVIEW",
+      "verifiedArchives": 2,
+      "candidateArchiveIds": []
+    },
+    "applied": {
+      "mode": "APPLIED",
+      "deletedArchiveIds": [],
+      "retainedArchives": 2
+    }
+  },
+  "preservedResources": {
+    "postgres": "fluivixedu-backup-trace-gate-20261113-a-postgres",
+    "volumes": {
+      "database": "fluivixedu-backup-trace-gate-20261113-a-database",
+      "keys": "fluivixedu-backup-trace-gate-20261113-a-keys",
+      "archives": "fluivixedu-backup-trace-gate-20261113-a-archives",
+      "bootstrap": "fluivixedu-backup-trace-gate-20261113-a-bootstrap"
+    }
+  },
+  "externalRpoRtoOffsiteKeyCustody": "NOT_VERIFIED",
+  "phases": [
+    {
+      "name": "check-container",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 239
+    },
+    {
+      "name": "check-database",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 255
+    },
+    {
+      "name": "check-keys",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 214
+    },
+    {
+      "name": "check-archives",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 208
+    },
+    {
+      "name": "check-bootstrap",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 216
+    },
+    {
+      "name": "build-backup",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 4312
+    },
+    {
+      "name": "backup-image-id",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 457
+    },
+    {
+      "name": "canonical-migration-image",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 1201
+    },
+    {
+      "name": "backup-runtime-versions",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 2213
+    },
+    {
+      "name": "create-database",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 255
+    },
+    {
+      "name": "create-keys",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 263
+    },
+    {
+      "name": "create-archives",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 246
+    },
+    {
+      "name": "create-bootstrap",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 211
+    },
+    {
+      "name": "initialize-private-files",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 1138
+    },
+    {
+      "name": "start-owned-postgres",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 1055
+    },
+    {
+      "name": "inspect-owned-postgres",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 275
+    },
+    {
+      "name": "migrate-source",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 5295
+    },
+    {
+      "name": "backup-v1",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 2132
+    },
+    {
+      "name": "verify-v1",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 1570
+    },
+    {
+      "name": "wrong-key-rejected",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "durationMs": 1767
+    },
+    {
+      "name": "restore-fresh",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 3688
+    },
+    {
+      "name": "migrate-target",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 3491
+    },
+    {
+      "name": "existing-target-rejected",
+      "exitCode": 1,
+      "expectedExitCode": 1,
+      "durationMs": 1513
+    },
+    {
+      "name": "backup-v2",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 1999
+    },
+    {
+      "name": "verify-old-after-rotation",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 1453
+    },
+    {
+      "name": "retention-preview",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 1620
+    },
+    {
+      "name": "retention-approved-no-expired",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 1600
+    },
+    {
+      "name": "verify-stop-ownership",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 251
+    },
+    {
+      "name": "stop-owned-preserve-data",
+      "exitCode": 0,
+      "expectedExitCode": 0,
+      "durationMs": 2013
+    }
+  ],
+  "checkedAt": "2026-11-13T16:00:52.884Z"
+}

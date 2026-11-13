@@ -1,0 +1,111 @@
+{
+  "before": [
+    {
+      "name": "preflight",
+      "status": 204,
+      "traceHeader": false,
+      "cache": null,
+      "reflectsSyntheticInput": false,
+      "bodyTrace": false
+    },
+    {
+      "name": "malformed",
+      "status": 400,
+      "traceHeader": false,
+      "cache": null,
+      "reflectsSyntheticInput": false,
+      "bodyTrace": false
+    },
+    {
+      "name": "oversized",
+      "status": 500,
+      "traceHeader": false,
+      "cache": null,
+      "reflectsSyntheticInput": false,
+      "bodyTrace": false
+    },
+    {
+      "name": "not-found",
+      "status": 404,
+      "traceHeader": true,
+      "cache": "no-store",
+      "reflectsSyntheticInput": false,
+      "bodyTrace": true
+    }
+  ],
+  "after": [
+    {
+      "name": "preflight",
+      "status": 204,
+      "traceHeader": true,
+      "cache": "no-store",
+      "reflectsSyntheticInput": false,
+      "bodyTrace": false
+    },
+    {
+      "name": "malformed",
+      "status": 400,
+      "traceHeader": true,
+      "cache": "no-store",
+      "reflectsSyntheticInput": false,
+      "bodyTrace": true
+    },
+    {
+      "name": "oversized",
+      "status": 413,
+      "traceHeader": true,
+      "cache": "no-store",
+      "reflectsSyntheticInput": false,
+      "bodyTrace": true
+    },
+    {
+      "name": "not-found",
+      "status": 404,
+      "traceHeader": true,
+      "cache": "no-store",
+      "reflectsSyntheticInput": false,
+      "bodyTrace": true
+    }
+  ],
+  "provenance": "Before values transcribed from actual successful exec output chunk bb823d before source changes. Reproduction script accidentally reused its before filename for the after run; original file is not claimed preserved. After values are actual machine-written second-run JSON. A separate machine-written reproduction in the retained original immutable image independently matches every original observation; its explicitly isolated database-free transport scope is recorded below.",
+  "scope": "Real TCP against owned synthetic test database; no real credentials or request bodies retained.",
+  "baselineImageTransport": {
+    "status": "PASS",
+    "imageId": "sha256:37f4b40bfed649ed0b21e86fb133c84362828f135fc8835fe45ed0b86b13de54",
+    "data": [
+      {
+        "name": "preflight",
+        "status": 204,
+        "traceHeader": false,
+        "cache": null,
+        "reflectsSyntheticInput": false,
+        "bodyTrace": false
+      },
+      {
+        "name": "malformed",
+        "status": 400,
+        "traceHeader": false,
+        "cache": null,
+        "reflectsSyntheticInput": false,
+        "bodyTrace": false
+      },
+      {
+        "name": "oversized",
+        "status": 500,
+        "traceHeader": false,
+        "cache": null,
+        "reflectsSyntheticInput": false,
+        "bodyTrace": false
+      },
+      {
+        "name": "not-found",
+        "status": 404,
+        "traceHeader": true,
+        "cache": "no-store",
+        "reflectsSyntheticInput": false,
+        "bodyTrace": true
+      }
+    ],
+    "scope": "Real TCP inside retained original proxy-module API image, network none/read-only/unprivileged/no mounts. Test-only in-memory Db.onModuleInit replacement skips connection; only preflight/parser/missing routes are called. No business data test or production lifecycle bypass is claimed."
+  }
+}

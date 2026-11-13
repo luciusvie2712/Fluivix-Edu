@@ -1,0 +1,61 @@
+{
+  "status": "HOST_AND_ALL_FIVE_REHEARSED_IMAGE_NODE_VERSIONS_PASS",
+  "host": {
+    "node": "v24.22.3",
+    "uv": "1.52.1",
+    "openssl": "3.5.9",
+    "platform": "win32"
+  },
+  "images": {
+    "api": {
+      "imageId": "sha256:cfc90bd667348f7079a47d563d8b25eba4b224c365313e3b5a394ff068599820",
+      "node": "v24.22.3",
+      "uv": "1.52.1",
+      "openssl": "3.5.9",
+      "platform": "linux"
+    },
+    "worker": {
+      "imageId": "sha256:33a4c33a7a95bc5a10024e1599626b87537e849c6fde66c98b7007c528ee9468",
+      "node": "v24.22.3",
+      "uv": "1.52.1",
+      "openssl": "3.5.9",
+      "platform": "linux"
+    },
+    "migrate": {
+      "imageId": "sha256:3a898237e1ae5a597592449a46f38bb3ebf0af04076ea8b4c4cb788cc02c964e",
+      "node": "v24.22.3",
+      "uv": "1.52.1",
+      "openssl": "3.5.9",
+      "platform": "linux"
+    },
+    "web": {
+      "imageId": "sha256:99779e5088f9fbb8abf95d76cb8b5bdb938a6327532bedcea25ba1ad47e90bd9",
+      "node": "v24.22.3",
+      "uv": "1.52.1",
+      "openssl": "3.5.9",
+      "platform": "linux"
+    },
+    "platform": {
+      "imageId": "sha256:2bafe958ae09a40aa10ff22937ba0f01363fc7bc4584daa6e69fca070e02e10a",
+      "node": "v24.22.3",
+      "uv": "1.52.1",
+      "openssl": "3.5.9",
+      "platform": "linux"
+    }
+  },
+  "probeScope": "Read-only network-none Node metadata command against the exact images already exercised by the real pilot. No backup secrets mounted.",
+  "freshDatabase": {
+    "date": "2026-11-13",
+    "status": "OWNED_PATCHED_INFRA_READINESS_AND_VERSIONS_PASS",
+    "container": "fluivixedu-verification-pg1712-20261113",
+    "image": "postgres:17.12-alpine@sha256:34261f594522cf41dfcb76aefd42b9d201098b0e6b23c9c68733f169e4218b6f",
+    "volume": "fluivixedu-runtime-pg1712-20261113-data",
+    "postgresPort": 63517,
+    "redisPort": 63519,
+    "priorVolumesUpgraded": false,
+    "customerOrDeveloperDatabaseTouched": false,
+    "serverVersion": "17.12",
+    "pgDumpVersion": "pg_dump (PostgreSQL) 17.12",
+    "redisVersion": "7.4.12"
+  }
+}

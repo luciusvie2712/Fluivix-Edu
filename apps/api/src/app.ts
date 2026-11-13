@@ -125,18 +125,52 @@ export async function createApp() {
   const settings = config();
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: ["error", "warn"],
+    bodyParser: false,
   });
   app.set(
     "trust proxy",
     settings.TRUSTED_PROXY_CIDRS.length ? settings.TRUSTED_PROXY_CIDRS : false,
   );
+  // Register before parsers and CORS: rejected bodies and preflight responses
+  // must carry the same server-generated correlation boundary as routed calls.
+  app.use((req: ApiRequest, res: Response, next: NextFunction) => {
+    req.traceId = randomUUID();
+    res.setHeader("X-Trace-Id", req.traceId);
+    res.setHeader("Cache-Control", "no-store");
+    next();
+  });
   app.useBodyParser("json", { limit: "1mb" });
+  app.use(
+    (error: unknown, req: ApiRequest, res: Response, next: NextFunction) => {
+      // Parser messages can contain request fragments. Never reflect or log
+      // them, and never classify an oversized client body as a server fault.
+      const type =
+        error && typeof error === "object" && "type" in error
+          ? error.type
+          : undefined;
+      if (type === "entity.parse.failed" || type === "entity.too.large") {
+        const oversized = type === "entity.too.large";
+        res.status(oversized ? 413 : 400).json({
+          error: {
+            code: oversized ? "PAYLOAD_TOO_LARGE" : "BAD_REQUEST",
+            message: oversized
+              ? "Nội dung yêu cầu vượt giới hạn cho phép."
+              : "Nội dung JSON không hợp lệ.",
+          },
+          meta: { traceId: req.traceId },
+        });
+        return;
+      }
+      next(error);
+    },
+  );
   app.setGlobalPrefix("api/v1");
   app.use(helmet());
   app.use(cookieParser());
   app.enableCors({
     origin: [settings.WEB_ORIGIN, settings.PLATFORM_ORIGIN],
     credentials: true,
+    exposedHeaders: ["X-Trace-Id"],
     allowedHeaders: [
       "Content-Type",
       "Authorization",
@@ -145,9 +179,6 @@ export async function createApp() {
     ],
   });
   app.use((req: ApiRequest, res: Response, next: NextFunction) => {
-    req.traceId = randomUUID();
-    res.setHeader("X-Trace-Id", req.traceId);
-    res.setHeader("Cache-Control", "no-store");
     if (!["GET", "HEAD", "OPTIONS"].includes(req.method)) {
       const origin = req.headers.origin;
       // Native refresh credentials never enter a browser response or cookie jar.

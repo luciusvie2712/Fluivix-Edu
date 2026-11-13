@@ -1,0 +1,249 @@
+{
+  "date": "2026-11-13",
+  "headSha": "e3c363129d1b35919fa5a39a7f43065ef23c8654",
+  "branch": "main",
+  "runId": 43452118140,
+  "url": "https://github.com/luciusvie2712/Fluivix-Edu/actions/runs/43452118140",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "id": 131976674460,
+      "name": "identity",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "number": 1,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "number": 2,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "number": 3,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "number": 4,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run mkdir -p .agents/skills && cp -R .ci-taste/skills/taste-skill .agents/skills/design-taste-frontend",
+          "number": 5,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm/action-setup@v4",
+          "number": 6,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "number": 7,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm install --frozen-lockfile",
+          "number": 8,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm db:generate",
+          "number": 9,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm --filter @fluivix/server-crypto build",
+          "number": 10,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm lint",
+          "number": 11,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm format:check",
+          "number": 12,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm typecheck",
+          "number": 13,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm test",
+          "number": 14,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm --filter @fluivix/mobile test",
+          "number": 15,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm build",
+          "number": 16,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm openapi:generate && pnpm client:generate",
+          "number": 17,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run git diff --exit-code -- apps/api/openapi.json packages/api-client/src/schema.d.ts",
+          "number": 18,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm test:integration",
+          "number": 19,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm test:mobile:api",
+          "number": 20,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm exec playwright install --with-deps chromium",
+          "number": 21,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm test:e2e",
+          "number": 22,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run pnpm audit --audit-level=high",
+          "number": 23,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Rehearse isolated synthetic pilot",
+          "number": 24,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Retain sanitized pilot evidence",
+          "number": 25,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Rehearse encrypted backup and fresh restore",
+          "number": 26,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Retain sanitized backup evidence",
+          "number": 27,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "number": 28,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "number": 52,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run pnpm/action-setup@v4",
+          "number": 53,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "number": 54,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "number": 55,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "number": 56,
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "number": 57,
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "independentlyDecodedLogs": {
+    "unit": 149,
+    "mobile": 32,
+    "integration": 236,
+    "browser": 202,
+    "browserDuration": "9.5m",
+    "actualMobileAPISmoke": true,
+    "actualIsolatedPilotRehearsal": true,
+    "actualEncryptedBackupFreshRestoreAndFinancialAssertions": true,
+    "actualKeyRotationAndRejectedRestoreBoundaries": true,
+    "canonical33MigrationChecksums": true,
+    "actualProxyErrorURLPrivacy": true,
+    "actualExplicitPeerAndNginxHeaderTransport": true,
+    "actualClientBucketAndStableRecoveryPeer": true
+  },
+  "logsVerified": true,
+  "runtimeLogEvidence": {
+    "hostNode": "v24.22.3",
+    "configuredPostgresImage": "postgres:17.12-alpine",
+    "localActualImageAndDatabaseVersions": "trusted-proxy/actual-runtime-versions.json",
+    "localBackupRehearsal": "trusted-proxy/backup-regression.json",
+    "scope": "CI Node setup and PG image configuration independently decoded; local runtime proof records host/five image binaries and actual PG server/client versions."
+  },
+  "localEvidence": "trusted-proxy/verification.json",
+  "releaseReadiness": "BLOCKED",
+  "externalGates": "Actual staging/legal/privacy/consent/UAT, signed physical mobile/real push/off-host backup and key custody remain unverified."
+}

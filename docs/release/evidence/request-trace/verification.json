@@ -1,0 +1,183 @@
+{
+  "date": "2026-11-13",
+  "status": "PASS_LOCAL_FULL_FROZEN_REQUEST_TRACE_GATE",
+  "baseCommit": "e3c363129d1b35919fa5a39a7f43065ef23c8654",
+  "sourcePaths": [
+    "apps/api/src/app.ts",
+    "tests/integration/identity.test.ts",
+    "tests/integration/request-trace-cases.ts"
+  ],
+  "sourceFilesSha256": {
+    "apps/api/src/app.ts": "bc8d59e173800d4dde416c6ae6b78edb9bc253a1cb9e80f70d38194aafb476cb",
+    "tests/integration/identity.test.ts": "40890109aae0d0c561620277654ef1b03bd49e72d4a401bc1e587d942e9f785d",
+    "tests/integration/request-trace-cases.ts": "82385ef08771f8f573850ffc6c4da8c0e83c12af5dcd10f15a2542612adea52f"
+  },
+  "sourceFileHashScope": "Raw local frozen bytes; checkout EOL normalization can differ. Canonical SQL checksums independently verified.",
+  "sourceFrozen": true,
+  "privateEnvironmentUnchanged": true,
+  "all33PublishedMigrationBytesUnchanged": true,
+  "schemaChanged": false,
+  "tests": {
+    "unit": 149,
+    "mobile": 32,
+    "integration": 242,
+    "browser": 202,
+    "skipped": 0,
+    "flaky": 0
+  },
+  "focused": {
+    "passed": 6,
+    "intentionallyFiltered": 236,
+    "fullSuiteIsSeparate": true
+  },
+  "browserStats": {
+    "startTime": "2026-11-13T16:13:25.383Z",
+    "duration": 1120621.815,
+    "expected": 202,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "requestTrace": {
+    "before": "Preflight/malformed/oversized responses lacked trace headers; oversized JSON returned500.",
+    "after": "Server-generated UUID trace/no-store before JSON parser and CORS; malformed400 and oversized413 have fixed safe error envelopes and matching trace headers.",
+    "clientTraceNeverTrusted": true,
+    "approvedCorsExposesRoutedTrace": true,
+    "rawParserMessagesNeverReflected": true,
+    "realTcpCases": [
+      "CORS preflight and unapproved origin",
+      "malformed JSON",
+      "JSON primitive",
+      "oversized JSON",
+      "CSRF403/validation422/404/auth401 boundaries",
+      "test-only success200 and safe500"
+    ],
+    "scope": "Local real TCP HTTP/API tests. Aborted connections with no delivered response, external gateways, actual staging, and every possible transport error are not proven by this evidence.",
+    "noProductionDebugRoute": true,
+    "nfr11": "PARTIAL; metrics and actual alert delivery remain outstanding"
+  },
+  "buildVerification": {
+    "linux": {
+      "status": "PASS",
+      "uncachedBuildTasks": 9,
+      "sourceFrozen": true,
+      "mobileArtifact": "native-export.json",
+      "windowsHermesExport": "PRIOR_BLOCK_APPLICATION_CONTROL_4551_NOT_RETRIED",
+      "hostSecurityPolicyChanged": false
+    },
+    "windowsNonMobileTasks": 8,
+    "typecheckTasks": 9,
+    "nativeExport": "native-export.json",
+    "signedPhysicalMobile": "NOT_VERIFIED"
+  },
+  "contract": {
+    "clientSha256": "6BCAB817013C5E9612E6FF1E86604B72FC27C9364C9F4810719368EAC7A8F17A",
+    "openapiSha256": "98E5CC63137A3FACE2B0666D1C467BA98A4DF6537D71CCDFF0942EA44401EE46",
+    "stable": true,
+    "operations": 193
+  },
+  "pnpmAudit": {
+    "info": 0,
+    "low": 1,
+    "moderate": 4,
+    "high": 0,
+    "critical": 0
+  },
+  "pnpmAuditScope": "Dependency audit only; not an OS/runtime CVE inventory.",
+  "verifiedStages": [
+    "infra",
+    "fresh-integration-db",
+    "schema-validate",
+    "generate",
+    "lint",
+    "format",
+    "expo-early",
+    "freeze",
+    "fresh-pilot",
+    "verify-pilot-trace-versions",
+    "source-after-pilot",
+    "real-backup",
+    "verify-backup",
+    "context-export",
+    "context-private-scan",
+    "linux-all-builds",
+    "source-after-linux",
+    "verify-linux-hermes",
+    "windows-nonmobile-builds",
+    "source-after-windows",
+    "typechecks",
+    "tooling-types",
+    "all-unit",
+    "all-mobile",
+    "mobile-real-api",
+    "expo-after",
+    "all-integration",
+    "verify-integration",
+    "openapi",
+    "client",
+    "frozen-offline-install",
+    "audit-high-critical",
+    "pack",
+    "skills",
+    "source-before-browser",
+    "all-browser",
+    "source-after-browser"
+  ],
+  "skills": [
+    {
+      "source": "taste-skill",
+      "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+      "installed": "design-taste-frontend",
+      "verifiedFiles": 38,
+      "status": "PASS"
+    },
+    {
+      "source": "ui-ux-pro-max-skill",
+      "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+      "installed": "ui-ux-pro-max",
+      "verifiedFiles": 73,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "accessible-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "micro-interaction",
+      "verifiedFiles": 4,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "60fps-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    }
+  ],
+  "historicalArtifacts": {
+    "newRegressionOutputArchivedPrivately": 296,
+    "originalCommittedBytesRestored": true
+  },
+  "priorCI": "../ci-e3c3631-success-2026-11-13.json",
+  "newModuleCommitAndExactCI": "PENDING",
+  "releaseReadiness": "BLOCKED",
+  "additionalConfirmedP0Gap": {
+    "id": "TC-025",
+    "status": "REPRODUCED_MISSING_SECURITY_AUDIT",
+    "evidence": "tc025-denial-audit-gap.json",
+    "scope": "Separate real TCP diagnostic; not added to the242integration count. Current request trace slice does not implement this fix."
+  },
+  "limitations": [
+    "TC025 teacher assignment denial returns404 correctly but does not persist the required suspicious-access audit; follow-up implementation is required.",
+    "NFR11 metrics/5xx/queue backlog/failed-job alerting not implemented by this slice.",
+    "Representative100VU/20tenant300student12month-session load, compatible dependency work and native/device/real-push checks remain outstanding.",
+    "Actual staging/legal/privacy/consent/UAT/signed mobile/off-host backup and key custody remain external gates.",
+    "Native bytecode exports are not APK/IPA builds or physical acceptance. Chromium results do not prove the full browser/version compatibility matrix."
+  ]
+}

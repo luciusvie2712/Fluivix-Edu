@@ -1,5 +1,16 @@
 # Baseline P0 gap analysis
 
+## Current checkpoint — HTTP request trace local PASS (2026-11-13)
+
+The request trace now starts before JSON parsing and CORS. Real TCP reproduction found missing trace headers for preflight, malformed and oversized bodies; oversized JSON previously returned500. Responses now carry a fresh server-generated UUID and no-store header, malformed JSON returns a fixed safe400 envelope and oversized JSON a fixed413 envelope. Approved origins can read the trace header on routed responses. Six new real TCP tests include forged client trace rejection, preflight/CORS, safe parser messages, unchanged CSRF/auth/validation boundaries, test-only success200 and safe500. No production debug endpoint, schema, financial threshold, auth permission or user.env changed.
+
+Full frozen verification passed149unit/32mobile/242integration/202Chromium E2E with zero skipped/flaky cases;9uncached Linux builds and actual Android/iOS Hermes bytecode exports,8Windows non-mobile builds,9typechecks/tooling,lint/format,actual mobile API,the TLS pilot and encrypted backup/fresh-restore/key-rotation/finance negative controls,193stable contracts,offline install,build-context secret scan,3skill sources/5IDs and all33published SQL checksums. Audit findings remain4MODERATE/1LOW and0HIGH/0CRITICAL; this is not an OS inventory. Prior exact e3c3631 CI is independently verified all34 steps149/32/236/2029.5min plus real pilot/backup. This new slice still requires commit/push and exact CI.
+
+Release remains BLOCKED. An additional independent real TCP diagnostic confirmed TC025: an authenticated ACTIVE unassigned teacher is correctly denied404 without grade changes, but no audit is persisted for that denied request. This is a confirmed remaining P0 implementation gap, recorded separately in tc025-denial-audit-gap.json; it is not included in the242integration count or marked fixed by this slice. NFR11 is PARTIAL because metrics and5xx/backlog/failed-job alerting are a subsequent slice. Representative load, compatible dependency and available native/browser checks plus actual staging/legal/privacy/consent/UAT/signed physical mobile/real push/off-host recovery/key custody remain outstanding. Local tests do not prove aborted connections delivered a trace header or external gateways preserve it.
+
+Evidence: `evidence/request-trace/verification.json`.
+
+
 ## Current checkpoint — trusted proxy local PASS (2026-11-13)
 
 Proxy trust now defaults to no forwarded-header trust and accepts only explicitly named single-host peer CIDRs. nginx overwrites forwarded IP/host/protocol. The actual pilot configures its labelled edge peer, verifies the API does not aggregate login attempts under that proxy IP, and preserves the peer across API startup-fault recovery using a graceful nginx reload.14configuration cases plus3real TCP cases cover default/untrusted spoof denial, independent legitimate client buckets and rejection at attempt11. Existing IP/account limits remain10per15minutes. An isolated real nginx TLS probe verifies spoofed header fields/chains are overwritten without a business debug endpoint or public port.

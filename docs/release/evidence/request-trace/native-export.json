@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "platform": "linux",
+  "nodeVersion": "v24.22.3",
+  "hermesCompilerVersion": "260318099.0.5",
+  "platforms": {
+    "android": [
+      {
+        "path": "_expo/static/js/android/entry-47707b45893a933187c74ec5e1cebec8.hbc",
+        "bytes": 3652957,
+        "bytecodeVersion": 99,
+        "sha256": "e7310fcd6e4ee9171af4cfaaee54980ba8a42a91dd2a220acea0fc8c188d0b13"
+      }
+    ],
+    "ios": [
+      {
+        "path": "_expo/static/js/ios/entry-81d0fab0151c1f9ba184e1f4e76233ee.hbc",
+        "bytes": 3661293,
+        "bytecodeVersion": 99,
+        "sha256": "ee1d19834d4ed98d840691871d780de6d137e42903eb497b083987222fdd1d0f"
+      }
+    ]
+  },
+  "scope": "Actual Android/iOS Hermes bytecode export; signed installable native builds and physical devices NOT_VERIFIED"
+}

@@ -1,0 +1,21 @@
+{
+  "status": "REPRODUCED_TC025_MISSING_DENIAL_AUDIT",
+  "scope": "LOCAL_SYNTHETIC_ONLY_REAL_AUTHENTICATED_TCP_API",
+  "baseCommit": "e3c363129d1b35919fa5a39a7f43065ef23c8654",
+  "workingSource": "Frozen request-trace candidate; no grade/security policy changes",
+  "teacherActiveMembershipAndProfile": true,
+  "assignedClasses": 0,
+  "ownTenantExistingAssessment": true,
+  "loginAndContextSwitchActual200": true,
+  "gradeWriteStatus": 404,
+  "serverTraceMatched": true,
+  "exactAssignmentDenialMessageMatched": true,
+  "resultAndHistoryVerification": "Full rows deterministically ordered and hashed in memory before/after; hashes and rows are not published",
+  "auditsForDeniedActorBefore": 0,
+  "auditsForDeniedActorAfter": 0,
+  "auditsForDeniedRequestTrace": 0,
+  "assessmentResultsAndGradeHistoryUnchanged": true,
+  "credentialsOrRawIdentifiersPublished": false,
+  "releaseReadiness": "BLOCKED",
+  "conclusion": "Object scope denial works; canonical TC025 suspicious access audit is missing and requires a subsequent implementation slice."
+}
