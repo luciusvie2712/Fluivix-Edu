@@ -1,5 +1,8 @@
 # Deployment runbook
 
+Proxy deployment: `../../infra/pilot/README.md`. Keep `TRUSTED_PROXY_CIDRS=[]` until exact immediate proxy peers are reviewed; configure explicit /32 or /128 hosts and update after address changes. Ensure all forwarded IP/host/protocol fields are overwritten at that gateway. The local rehearsal retains a stable edge peer while reloading backend resolution. Actual gateway configuration and cutover remain operator/staging gates. Evidence: `evidence/trusted-proxy/verification.json`.
+
+
 Encrypted backup jobs and fresh-only restore: `../../infra/backup/README.md`. Configuration requires real TLS hostname/CA, separate protected key storage and an approved operator schedule. The disabled cron example was not installed. Verified local rehearsal: `evidence/encrypted-backup/verification.json`; staging/offsite recovery/key custody and production RPO/RTO remain BLOCKED.
 
 

@@ -1,0 +1,67 @@
+{
+  "status": "PASS",
+  "project": "fluivixedu-pilot-proxy-20261113-a",
+  "scope": "ISOLATED_REAL_NGINX_TRANSPORT_CAPTURE",
+  "nginxImage": "nginx:1.30.6-alpine@sha256:583b7f2fce1cdb8da5ad5c39ebd3c33b98b87d493190e548bdee1fa8c619c311",
+  "nodeImage": "sha256:37f4b40bfed649ed0b21e86fb133c84362828f135fc8835fe45ed0b86b13de54",
+  "configurationAdaptations": [
+    "unpublished test ports",
+    "loopback test capture upstreams"
+  ],
+  "originalHeaderAndTlsDirectivesPreserved": true,
+  "noBusinessApiDebugEndpoint": true,
+  "noPublicPorts": true,
+  "forwardedForOverwritten": true,
+  "forwardedHostOverwritten": true,
+  "forwardedProtoOverwritten": true,
+  "injectedForwardedChainIgnored": true,
+  "tlsCertificateVerified": true,
+  "phases": [
+    {
+      "name": "refuse-existing-probe",
+      "exitCode": 0
+    },
+    {
+      "name": "start-isolated-namespace",
+      "exitCode": 0
+    },
+    {
+      "name": "start-real-nginx",
+      "exitCode": 0
+    },
+    {
+      "name": "real-tls-forwarding-probe",
+      "exitCode": 0
+    },
+    {
+      "name": "find-owned-client",
+      "exitCode": 0
+    },
+    {
+      "name": "find-owned-nginx",
+      "exitCode": 0
+    },
+    {
+      "name": "inspect-owned-nginx",
+      "exitCode": 0
+    },
+    {
+      "name": "stop-owned-nginx",
+      "exitCode": 0
+    },
+    {
+      "name": "find-owned-namespace",
+      "exitCode": 0
+    },
+    {
+      "name": "inspect-owned-namespace",
+      "exitCode": 0
+    },
+    {
+      "name": "stop-owned-namespace",
+      "exitCode": 0
+    }
+  ],
+  "ownedProbesStopped": true,
+  "checkedAt": "2026-11-13T14:44:07.683Z"
+}

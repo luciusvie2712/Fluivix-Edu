@@ -126,6 +126,10 @@ export async function createApp() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: ["error", "warn"],
   });
+  app.set(
+    "trust proxy",
+    settings.TRUSTED_PROXY_CIDRS.length ? settings.TRUSTED_PROXY_CIDRS : false,
+  );
   app.useBodyParser("json", { limit: "1mb" });
   app.setGlobalPrefix("api/v1");
   app.use(helmet());

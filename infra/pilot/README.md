@@ -1,5 +1,33 @@
 # Isolated synthetic pilot
 
+## Explicit proxy peers
+
+`TRUSTED_PROXY_CIDRS` is a JSON array of exact IPv4 `/32` or native IPv6 `/128`
+peer addresses, with at most32 distinct entries. It defaults to `[]`, which
+keeps forwarding headers untrusted. Configure only the immediate reviewed proxy
+peer; update the setting when that peer's address changes. The API rejects broad
+subnets, implicit proxy groups and malformed settings at startup. This setting
+does not change account/IP throttles, cookies or tenant/object authorization.
+
+The compose template accepts `PILOT_TRUSTED_PROXY_CIDRS`, defaulting to `[]`.
+The automated rehearsal discovers the labelled edge's data-network address,
+recreates the same API image with that explicit peer and reloads nginx while
+preserving the edge identity/address. Configuration recovery also reloads the
+edge. No existing runtime secret or `.env` file is rewritten.
+
+nginx overwrites `X-Forwarded-For`, `X-Forwarded-Host` and `X-Forwarded-Proto`.
+The real API smoke verifies login attempts are not combined under the proxy's
+IP bucket. `tooling/proxy-header-smoke.mjs` separately runs the reviewed nginx
+header/TLS configuration in a fresh network-none namespace, adapting only
+unpublished test ports and loopback capture upstreams. It verifies injected
+forwarding fields/chains are overwritten over certificate-verified HTTPS,
+then removes only its labelled ephemeral containers. It adds no business API
+debug endpoint. Request bodies, credentials and client addresses are not logged.
+
+See the [Express proxy trust model](https://expressjs.com/en/guide/behind-proxies/).
+
+## Rehearsal and deployment boundaries
+
 This is a local deployment rehearsal, using only generated fixtures. It does not
 deploy staging or authorize real learner data. Production/staging, approved mail
 and push, legal/UAT approval, physical mobile devices, off-host backups and key

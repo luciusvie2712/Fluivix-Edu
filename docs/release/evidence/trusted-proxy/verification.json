@@ -1,0 +1,183 @@
+{
+  "date": "2026-11-13",
+  "status": "PASS_LOCAL_FULL_FROZEN_TRUSTED_PROXY_GATE",
+  "baseCommit": "32f94b50e43e4872057907a1c4c6a356b63e7337",
+  "sourcePaths": [
+    ".env.example",
+    "apps/api/src/app.ts",
+    "apps/api/src/config.ts",
+    "apps/api/src/trusted-proxy.ts",
+    "infra/pilot/README.md",
+    "infra/pilot/compose.yaml",
+    "infra/pilot/entrypoint.mjs",
+    "infra/pilot/nginx.conf",
+    "tests/integration/identity.test.ts",
+    "tests/integration/trusted-proxy-cases.ts",
+    "tests/unit/trusted-proxy.test.ts",
+    "tooling/pilot-rehearsal.mjs",
+    "tooling/proxy-header-smoke.mjs"
+  ],
+  "sourceFilesSha256": {
+    ".env.example": "9ca0ecc81f57386616c4b7907025370cc2b9e4dfca291cc5e45440a32b9e16d0",
+    "apps/api/src/app.ts": "eb1bbd672bf062e1c2c95ccf85199c01ea02d26189b9a029ebdd7800c2477317",
+    "apps/api/src/config.ts": "ca8471ca49c38384bd122ef04f74668a810e82f40b16d080f9e981c7a04f80a1",
+    "apps/api/src/trusted-proxy.ts": "8ddb3fc429c39deb877bb9fa920e233bb402240d6e6f08aeb206aac170f13085",
+    "infra/pilot/README.md": "771044e04123bc191d015ddc7a0efdf543c7f0ecf740556bbcdf17e9d080906e",
+    "infra/pilot/compose.yaml": "1bea53c1de6dfec38a6324e9b7129409ca90cf46fbb907bc69615cc92f37d9ed",
+    "infra/pilot/entrypoint.mjs": "0001cd22f49e2e8da48c9240f40bce3a09a1840f811622ec88282a48f17d3c07",
+    "infra/pilot/nginx.conf": "91fec4fdf24b9488aec91738fa860c5d8690c9ea214df772faf0b2c8cebcaf20",
+    "tests/integration/identity.test.ts": "6c5c4962d82ea8d08313cf690e71a8dc12d9ad78cbae982886e8e6a5c9928eae",
+    "tests/integration/trusted-proxy-cases.ts": "d6a763f1bd7696c6e955a2c048f3e370158bf466951899e609759541b66aa924",
+    "tests/unit/trusted-proxy.test.ts": "897fe2ab83530e2a79e849224c68b8ac3b054a550300643d65e376b58be8fd25",
+    "tooling/pilot-rehearsal.mjs": "84d3c22e95f7de9a94a444949960303a4e61c455910a358c95d0116df97df1e8",
+    "tooling/proxy-header-smoke.mjs": "08b6ca97b844155fce29c2770c2b579c91d25b44deb885fad4188932a048e19c"
+  },
+  "sourceFileHashScope": "Raw frozen local working-copy bytes; checkout EOL normalization can differ. Canonical migration checksums verified separately.",
+  "sourceFrozen": true,
+  "privateEnvironmentUnchanged": true,
+  "all33PublishedMigrationBytesUnchanged": true,
+  "schemaChanged": false,
+  "tests": {
+    "unit": 149,
+    "mobile": 32,
+    "integration": 236,
+    "browser": 202,
+    "skipped": 0,
+    "flaky": 0
+  },
+  "browserStats": {
+    "startTime": "2026-11-13T14:59:06.934Z",
+    "duration": 1266678.205,
+    "expected": 202,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "proxy": {
+    "default": "Forwarded headers untrusted",
+    "configuredTrust": "At most32explicit single-host IPv4/32 or nativeIPv6/128 peers; no implicit or broad trust",
+    "actualTransportScope": "Real local IPv4 TCP/API throttle tests and isolated real nginx HTTPS header capture. IPv6 CIDR parsing is unit-tested; deployed IPv6 traffic is not verified.",
+    "limits": "Original10attempts/15minutes for both login-IP and login-account; not changed",
+    "deploymentPeer": "Fresh labelled edge peer configured, actual API proxy bucket absent, peer ID/IP stable across startup fault recovery",
+    "headerEvidence": "forwarded-header-transport.json",
+    "headerProbeScope": "Same reviewed nginx header/TLS directives; only unpublished test ports and private capture upstreams adapted. No business debug endpoint or public ports."
+  },
+  "buildVerification": {
+    "linux": {
+      "status": "PASS",
+      "uncachedBuildTasks": 9,
+      "sourceFrozen": true,
+      "mobileArtifact": "native-export.json",
+      "windowsHermesExport": "PRIOR_BLOCK_APPLICATION_CONTROL_4551_NOT_RETRIED",
+      "hostSecurityPolicyChanged": false
+    },
+    "windowsNonMobileTasks": 8,
+    "typecheckTasks": 9,
+    "nativeExport": "native-export.json",
+    "windowsNativeCompiler": "Prior Application Control4551 block not bypassed",
+    "signedPhysicalMobile": "NOT_VERIFIED"
+  },
+  "contract": {
+    "clientSha256": "6BCAB817013C5E9612E6FF1E86604B72FC27C9364C9F4810719368EAC7A8F17A",
+    "openapiSha256": "98E5CC63137A3FACE2B0666D1C467BA98A4DF6537D71CCDFF0942EA44401EE46",
+    "stable": true,
+    "operations": 193
+  },
+  "pnpmAudit": {
+    "info": 0,
+    "low": 1,
+    "moderate": 4,
+    "high": 0,
+    "critical": 0
+  },
+  "pnpmAuditScope": "Not an OS/runtime CVE inventory.",
+  "verifiedStages": [
+    "infra",
+    "fresh-integration-db",
+    "schema-validate",
+    "generate",
+    "lint",
+    "format",
+    "expo-early",
+    "freeze",
+    "fresh-pilot",
+    "verify-pilot-proxy-versions",
+    "source-after-pilot",
+    "real-backup",
+    "verify-backup",
+    "context-export",
+    "context-private-scan",
+    "linux-all-builds",
+    "source-after-linux",
+    "verify-linux-hermes",
+    "windows-nonmobile-builds",
+    "source-after-windows",
+    "typechecks",
+    "tooling-types",
+    "all-unit",
+    "all-mobile",
+    "mobile-real-api",
+    "expo-after",
+    "all-integration",
+    "verify-integration",
+    "openapi",
+    "client",
+    "frozen-offline-install",
+    "audit-high-critical",
+    "pack",
+    "skills",
+    "source-before-browser",
+    "all-browser",
+    "source-after-browser"
+  ],
+  "skills": [
+    {
+      "source": "taste-skill",
+      "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+      "installed": "design-taste-frontend",
+      "verifiedFiles": 38,
+      "status": "PASS"
+    },
+    {
+      "source": "ui-ux-pro-max-skill",
+      "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+      "installed": "ui-ux-pro-max",
+      "verifiedFiles": 73,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "accessible-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "micro-interaction",
+      "verifiedFiles": 4,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "60fps-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    }
+  ],
+  "historicalArtifacts": {
+    "newRegressionOutputArchivedPrivately": 296,
+    "originalCommittedBytesRestored": true
+  },
+  "priorCI": "../ci-32f94b5-success-2026-11-13.json",
+  "newModuleCommitAndExactCI": "PENDING",
+  "releaseReadiness": "BLOCKED",
+  "limitations": [
+    "Actual external gateway peer addresses/configuration require operator review; the local template is loopback-bound.",
+    "The reused backup regression is synthetic/local; production TLS endpoint, application-role grants/cutover, offsite storage/key custody and RPO/RTO remain unverified.",
+    "Native bytecode exports are not APK/IPA or physical device acceptance. Actual Android SDK/device prerequisites were found but native tests are a later module.",
+    "Actual staging/legal/privacy/consent/business UAT/signed physical mobile/real push and remaining metrics/load/dependency hardening gates remain outstanding."
+  ]
+}

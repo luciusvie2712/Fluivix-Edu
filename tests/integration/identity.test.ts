@@ -1,4 +1,5 @@
 import { feeReminderCases } from "./fee-reminder-cases";
+import { trustedProxyCases } from "./trusted-proxy-cases";
 import { workerHealthCases } from "./worker-health-cases";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import EmbeddedPostgres from "../../tooling/test-postgres";
@@ -52,6 +53,7 @@ const studentA = randomUUID(),
   studentB = randomUUID();
 const password = randomBytes(24).toString("base64url");
 authContractCases(() => base);
+trustedProxyCases(() => db, password);
 workerHealthCases();
 feeReminderCases(
   () => base,

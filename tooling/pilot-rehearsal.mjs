@@ -10,6 +10,7 @@ import {
 import { createHash } from "node:crypto";
 import { resolve } from "node:path";
 import { request } from "node:https";
+import { isIP } from "node:net";
 
 // Bounded, synthetic, local-only rehearsal. No cloud deployment, global cleanup,
 // existing database reset, automatic migration rollback or external mail/push.
@@ -39,6 +40,7 @@ const sourceRoots = [
   "turbo.json",
   "docker-compose.yml",
   ".dockerignore",
+  ".env.example",
   ".gitattributes",
   "playwright.config.ts",
   "DEVELOPMENT.md",
@@ -57,6 +59,8 @@ const env = {
   ...process.env,
   PILOT_SECRETS_DIR: privateDirectory,
   PILOT_IMAGE_TAG: baseSha.slice(0, 7) + "-candidate",
+  PILOT_PROJECT: project,
+  PILOT_TRUSTED_PROXY_CIDRS: "[]",
   COMPOSE_PARALLEL_LIMIT: "1",
 };
 const compose = [
@@ -277,6 +281,39 @@ try {
     "platform",
     "edge",
   ]);
+  const edgeId = dc("proxy-edge-id", ["ps", "-q", "edge"]).trim();
+  const edgeInfo = JSON.parse(
+    run("proxy-edge-identity", "docker", ["inspect", edgeId]),
+  )[0];
+  assert.equal(edgeInfo.Config.Labels["com.docker.compose.project"], project);
+  const proxyPeer =
+    edgeInfo.NetworkSettings.Networks[project + "_data"].IPAddress;
+  assert.equal(isIP(proxyPeer), 4);
+  env.PILOT_TRUSTED_PROXY_CIDRS = JSON.stringify([proxyPeer + "/32"]);
+  dc("apply-explicit-trusted-proxy-peer", [
+    "up",
+    "-d",
+    "--no-build",
+    "--no-deps",
+    "--wait",
+    "--force-recreate",
+    "api",
+  ]);
+  // Keep the named proxy peer stable while resolving the replacement API.
+  dc("reload-edge-with-stable-peer", [
+    "exec",
+    "-T",
+    "edge",
+    "nginx",
+    "-s",
+    "reload",
+  ]);
+  run("nginx-forwarded-header-proof", process.execPath, [
+    "tooling/proxy-header-smoke.mjs",
+    project,
+    ids.api,
+    privateDirectory,
+  ]);
   for (const service of ["api", "worker", "web", "platform", "edge"]) {
     assert.notEqual(
       dc("nonroot-" + service, ["exec", "-T", service, "id", "-u"]).trim(),
@@ -341,6 +378,17 @@ try {
     { input: readFileSync("tooling/pilot-seed.mjs", "utf8") },
   );
   run("https-auth-worker-smoke", process.execPath, ["tooling/pilot-smoke.mjs"]);
+  const proxyBucket = createHash("sha256")
+    .update("login-ip:" + proxyPeer)
+    .digest("hex");
+  assert.equal(
+    sql(
+      "real-api-uses-forwarded-client-not-proxy-bucket",
+      "fluivix_app",
+      `SELECT count(*) FROM auth_rate_limits WHERE key='${proxyBucket}'`,
+    ).trim(),
+    "0",
+  );
   dc("actual-mailpit-receipt", [
     "exec",
     "-T",
@@ -408,15 +456,18 @@ try {
     "api",
   ]);
   // Refresh nginx DNS resolution after the API container receives a new address.
-  dc("refresh-edge", [
-    "up",
-    "-d",
-    "--no-build",
-    "--no-deps",
-    "--wait",
-    "--force-recreate",
-    "edge",
-  ]);
+  dc("refresh-edge", ["exec", "-T", "edge", "nginx", "-s", "reload"]);
+  assert.equal(
+    dc("proxy-peer-stable-after-recovery", ["ps", "-q", "edge"]).trim(),
+    edgeId,
+  );
+  const recoveredEdge = JSON.parse(
+    run("proxy-peer-ip-stable-after-recovery", "docker", ["inspect", edgeId]),
+  )[0];
+  assert.equal(
+    recoveredEdge.NetworkSettings.Networks[project + "_data"].IPAddress,
+    proxyPeer,
+  );
   assert.equal(await httpsStatus("/api/v1/platform/system-health"), 401);
   assert.equal(
     sql("after-configuration-recovery", "fluivix_app", snapshotQuery).trim(),
@@ -432,6 +483,11 @@ try {
     readFileSync(".cache/pilot-https-smoke.json", "utf8"),
   );
   assert.equal(smoke.status, "PASS");
+  const forwardedHeaders = JSON.parse(
+    readFileSync(".cache/proxy-header-smoke.json", "utf8"),
+  );
+  assert.equal(forwardedHeaders.status, "PASS");
+  assert.equal(forwardedHeaders.project, project);
   completedResult = {
     status: "PASS",
     project,
@@ -441,6 +497,13 @@ try {
     imageIds: ids,
     phases,
     httpsSmoke: smoke,
+    trustedProxy: {
+      namedPeerCount: 1,
+      singleHostCidr: true,
+      peerStableAcrossRecovery: true,
+      actualApiProxyBucketAbsent: true,
+      forwardedHeaders,
+    },
     canonicalMigrationChecksumsVerified: 33,
     rowCountsBeforeAndAfterConfigurationRecovery: before.split("|").map(Number),
     configurationRecovery:

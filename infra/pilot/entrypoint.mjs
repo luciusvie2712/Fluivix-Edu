@@ -25,6 +25,7 @@ const allowed = new Set([
   "MAIL_FROM",
   "OUTBOX_TOKEN_KEY",
   "EXPO_ACCESS_TOKEN",
+  "TRUSTED_PROXY_CIDRS",
 ]);
 let child;
 try {

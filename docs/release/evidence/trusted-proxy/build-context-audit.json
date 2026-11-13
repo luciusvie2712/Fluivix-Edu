@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "filesChecked": 370,
+  "bytesChecked": 3160690,
+  "forbiddenPathsAbsent": true,
+  "privateEnvironmentValuesAbsent": true,
+  "noPrivateDigestPublished": true
+}

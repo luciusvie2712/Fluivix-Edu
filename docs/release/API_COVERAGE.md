@@ -1,5 +1,16 @@
 # API contract coverage
 
+## Current checkpoint — trusted proxy local PASS (2026-11-13)
+
+Proxy trust now defaults to no forwarded-header trust and accepts only explicitly named single-host peer CIDRs. nginx overwrites forwarded IP/host/protocol. The actual pilot configures its labelled edge peer, verifies the API does not aggregate login attempts under that proxy IP, and preserves the peer across API startup-fault recovery using a graceful nginx reload.14configuration cases plus3real TCP cases cover default/untrusted spoof denial, independent legitimate client buckets and rejection at attempt11. Existing IP/account limits remain10per15minutes. An isolated real nginx TLS probe verifies spoofed header fields/chains are overwritten without a business debug endpoint or public port.
+
+The complete frozen gate passed149unit/32mobile/236integration/202browser with zero skipped/flaky cases,9uncached Linux builds with actual Android/iOS Hermes artifacts,8Windows non-mobile builds,9typechecks/tooling,lint/format,actual mobile API,the complete TLS pilot and fresh encrypted-backup regression,193stable contracts,offline installation,source/private-env/published33SQL integrity and3skill-source/5ID verification. Audit:0HIGH/0CRITICAL,4MODERATE/1LOW. Only synthetic data and exact owned resources were used; no user .env, existing key, published migration or customer database was rewritten.
+
+Prior backup commit32f94b5 has independently verified all34 CI steps including135/32/233/202 and actual backup/restore. This proxy module's commit/push and exact new CI remain pending. Release remains BLOCKED for the remaining metrics/alerts, representative load, compatible dependency and native work plus actual staging/offsite recovery/key custody/legal/privacy/consent/UAT/signed mobile/real push. No IPv6 deployment, production cutover or signed-native readiness is inferred from these local tests.
+
+Evidence: `evidence/trusted-proxy/verification.json`.
+
+
 ## Current checkpoint — encrypted backup local PASS (2026-11-13)
 
 Encrypted backup/restore is implemented with a pinned nonroot PostgreSQL17.12/Node24.22.3 image, TLS verify-full for real databases, authenticated AES256GCM streaming archives, separate protected key/work/archive paths, atomic no-overwrite publication, fresh-only restore, key rotation and confirmation-gated retention. The fresh full rehearsal matched64 public tables plus column definitions, constraints, indexes, triggers and functions, verified33 canonical migrations and exercised real restored API tenant isolation plus payment/idempotency/over-allocation behavior. Wrong keys created no database; existing targets remained unchanged. CHECK and partial-index drift negative controls passed under rollback. No actual scheduler, cloud storage or traffic cutover was enabled.
