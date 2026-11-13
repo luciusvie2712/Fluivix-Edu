@@ -1,5 +1,8 @@
 # Deployment runbook
 
+Runtime pins now use Node24.22.3/PostgreSQL17.12; see `../../infra/pilot/README.md` and `evidence/runtime-security/verification.json`. Only fresh isolated databases were tested. Before upgrading an existing17.x deployment, follow upstream REINDEX/restored-copy guidance and establish a new trusted full backup; no existing volume was silently upgraded. Actual staging/production remains BLOCKED.
+
+
 A reproducible local synthetic pilot is implemented in `../../infra/pilot/README.md` and verified in `evidence/pilot/verification.json`. It exercises isolated roles, file-mounted synthetic secrets, HTTPS, actual API/worker/SMTP and configuration recovery. This does not change the staging/production BLOCKED status below.
 
 

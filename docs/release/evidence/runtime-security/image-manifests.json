@@ -1,0 +1,16 @@
+{
+  "source": "Official docker.io library images; manifest digests selected before source edit",
+  "manifests": [
+    {
+      "image": "node:24.22.3-bookworm-slim",
+      "manifestDigest": "sha256:dc26ae92c9fb15cf6b1d63e20f0944b2efe0f115b20e00be48fb23fceb061c54",
+      "status": "REGISTRY_MANIFEST_FOUND_NOT_TESTED"
+    },
+    {
+      "image": "postgres:17.12-alpine",
+      "manifestDigest": "sha256:34261f594522cf41dfcb76aefd42b9d201098b0e6b23c9c68733f169e4218b6f",
+      "status": "REGISTRY_MANIFEST_FOUND_NOT_TESTED"
+    }
+  ],
+  "actualVerification": "actual-runtime-versions.json and rehearsal.json; host and5exact images Node24.22.3 plus fresh PG17.12 server/client. No container OS vulnerability scan claim."
+}

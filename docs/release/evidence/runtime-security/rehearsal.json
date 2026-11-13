@@ -1,0 +1,429 @@
+{
+  "status": "PASS",
+  "project": "fluivixedu-pilot-runtime-20261113-b",
+  "baseSha": "e180f18e50b5ada1b20f35c3340679bb2bbcf7c3",
+  "sourceWorktreeDirty": true,
+  "changedSourcePaths": [
+    ".github/workflows/verify-identity.yml",
+    ".node-version",
+    "DEVELOPMENT.md",
+    "apps/mobile/package.json",
+    "docker-compose.yml",
+    "infra/pilot/Dockerfile",
+    "infra/pilot/README.md",
+    "infra/pilot/compose.yaml",
+    "package.json",
+    "pnpm-lock.yaml",
+    "tooling/pilot-rehearsal.mjs"
+  ],
+  "imageIds": {
+    "api": "sha256:2dd0a363eddfc98447eb545c900d95524aeb588fdba73eba1721e15be40b23ec",
+    "worker": "sha256:9dbbc8ec3c82306834b2b270cf6cdf5cafb2020fbe9dd2317e033cfc6b11850d",
+    "migrate": "sha256:59dc6f14361371191bdfcccd6f6b8dee554a9abaf0077abdcb850c38b8d1551e",
+    "web": "sha256:9d802cb0a3126513409f739e75da8388baeb631107a04a285187a5883b732479",
+    "platform": "sha256:1195fa9522ae331e7ad638ef62a3cdcbc9fb13c13ff87420146913e28419ae59"
+  },
+  "phases": [
+    {
+      "name": "check-containers",
+      "exitCode": 0,
+      "durationMs": 203,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "check-volumes",
+      "exitCode": 0,
+      "durationMs": 206,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "prepare",
+      "exitCode": 0,
+      "durationMs": 1840,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "compose-config",
+      "exitCode": 0,
+      "durationMs": 1019,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "build-images",
+      "exitCode": 0,
+      "durationMs": 435796,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "image-id-api",
+      "exitCode": 0,
+      "durationMs": 413,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "image-id-worker",
+      "exitCode": 0,
+      "durationMs": 509,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "image-id-migrate",
+      "exitCode": 0,
+      "durationMs": 521,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "image-id-web",
+      "exitCode": 0,
+      "durationMs": 254,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "image-id-platform",
+      "exitCode": 0,
+      "durationMs": 301,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "start-data",
+      "exitCode": 0,
+      "durationMs": 10196,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "migration",
+      "exitCode": 0,
+      "durationMs": 8576,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "grant-app",
+      "exitCode": 0,
+      "durationMs": 787,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "role-bounds",
+      "exitCode": 0,
+      "durationMs": 689,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "deny-app-ddl",
+      "exitCode": 1,
+      "durationMs": 534,
+      "expectedExitCode": 1
+    },
+    {
+      "name": "deny-migration-history",
+      "exitCode": 1,
+      "durationMs": 523,
+      "expectedExitCode": 1
+    },
+    {
+      "name": "33-applied-migrations",
+      "exitCode": 0,
+      "durationMs": 632,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "canonical-migration-checksums",
+      "exitCode": 0,
+      "durationMs": 620,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "start-apps",
+      "exitCode": 0,
+      "durationMs": 9911,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "nonroot-api",
+      "exitCode": 0,
+      "durationMs": 696,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "container-id-api",
+      "exitCode": 0,
+      "durationMs": 507,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "inspect-hardening-api",
+      "exitCode": 0,
+      "durationMs": 210,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "nonroot-worker",
+      "exitCode": 0,
+      "durationMs": 622,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "container-id-worker",
+      "exitCode": 0,
+      "durationMs": 543,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "inspect-hardening-worker",
+      "exitCode": 0,
+      "durationMs": 226,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "nonroot-web",
+      "exitCode": 0,
+      "durationMs": 602,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "container-id-web",
+      "exitCode": 0,
+      "durationMs": 548,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "inspect-hardening-web",
+      "exitCode": 0,
+      "durationMs": 240,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "nonroot-platform",
+      "exitCode": 0,
+      "durationMs": 879,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "container-id-platform",
+      "exitCode": 0,
+      "durationMs": 675,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "inspect-hardening-platform",
+      "exitCode": 0,
+      "durationMs": 221,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "nonroot-edge",
+      "exitCode": 0,
+      "durationMs": 608,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "container-id-edge",
+      "exitCode": 0,
+      "durationMs": 605,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "inspect-hardening-edge",
+      "exitCode": 0,
+      "durationMs": 214,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "internal-data-network",
+      "exitCode": 0,
+      "durationMs": 203,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "data-container-id-postgres",
+      "exitCode": 0,
+      "durationMs": 574,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "no-published-data-ports-postgres",
+      "exitCode": 0,
+      "durationMs": 215,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "data-container-id-redis",
+      "exitCode": 0,
+      "durationMs": 545,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "no-published-data-ports-redis",
+      "exitCode": 0,
+      "durationMs": 222,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "data-container-id-mailpit",
+      "exitCode": 0,
+      "durationMs": 529,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "no-published-data-ports-mailpit",
+      "exitCode": 0,
+      "durationMs": 206,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "api-rootfs-readonly",
+      "exitCode": 0,
+      "durationMs": 711,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "seed-empty-synthetic",
+      "exitCode": 0,
+      "durationMs": 2376,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "https-auth-worker-smoke",
+      "exitCode": 0,
+      "durationMs": 2986,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "actual-mailpit-receipt",
+      "exitCode": 0,
+      "durationMs": 768,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "before-configuration-fault",
+      "exitCode": 0,
+      "durationMs": 684,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "inject-owned-startup-fault",
+      "exitCode": 0,
+      "durationMs": 2309,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "fault-container-state-0",
+      "exitCode": 0,
+      "durationMs": 698,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "proxy-error-url-redaction",
+      "exitCode": 0,
+      "durationMs": 564,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "restore-reviewed-api-image",
+      "exitCode": 0,
+      "durationMs": 7414,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "refresh-edge",
+      "exitCode": 0,
+      "durationMs": 4392,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "after-configuration-recovery",
+      "exitCode": 0,
+      "durationMs": 931,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "restored-image-id",
+      "exitCode": 0,
+      "durationMs": 684,
+      "expectedExitCode": 0
+    },
+    {
+      "name": "stop-owned-pilot-preserve-data",
+      "exitCode": 0,
+      "durationMs": 3159,
+      "expectedExitCode": 0
+    }
+  ],
+  "httpsSmoke": {
+    "status": "PASS",
+    "checkedAt": "2026-11-13T04:55:00.943Z",
+    "checks": [
+      "Web/platform HTML and static JavaScript over verified HTTPS; security headers",
+      "Platform health rejects unauthenticated HTTPS requests",
+      "Real login; Secure HttpOnly Strict cookie; refresh CSRF rejection and valid rotation",
+      "Real selected-role API; tenant A/B negative; tenant token cannot access platform",
+      "Actual platform MFA; live worker heartbeat; actual mail job consumed and outbox processed; scheduler explicitly disabled"
+    ],
+    "worker": {
+      "status": "HEALTHY",
+      "freshWorkers": 1,
+      "staleWorkers": 0,
+      "invalidWorkers": 0,
+      "lastHeartbeatAt": "2026-11-13T04:54:56.605Z",
+      "queues": [
+        {
+          "name": "identity-mail",
+          "consumers": "RUNNING",
+          "runningWorkers": 1,
+          "disabledWorkers": 0,
+          "paused": false,
+          "waiting": 0,
+          "active": 0,
+          "delayed": 0,
+          "failed": 0,
+          "prioritized": 0,
+          "waitingChildren": 0,
+          "completed": 1
+        },
+        {
+          "name": "domain-notifications",
+          "consumers": "RUNNING",
+          "runningWorkers": 1,
+          "disabledWorkers": 0,
+          "paused": false,
+          "waiting": 0,
+          "active": 0,
+          "delayed": 0,
+          "failed": 0,
+          "prioritized": 0,
+          "waitingChildren": 0,
+          "completed": 0
+        },
+        {
+          "name": "schedule-generation",
+          "consumers": "DISABLED",
+          "runningWorkers": 0,
+          "disabledWorkers": 1,
+          "paused": false,
+          "waiting": 0,
+          "active": 0,
+          "delayed": 0,
+          "failed": 0,
+          "prioritized": 0,
+          "waitingChildren": 0,
+          "completed": 0
+        }
+      ]
+    },
+    "externalProviderDelivery": "NOT_VERIFIED; isolated Mailpit only"
+  },
+  "canonicalMigrationChecksumsVerified": 33,
+  "rowCountsBeforeAndAfterConfigurationRecovery": [
+    2,
+    2,
+    2,
+    1,
+    2,
+    1,
+    0,
+    0
+  ],
+  "configurationRecovery": "Same immutable candidate restored after invalid startup command; row counts unchanged. Earlier binary rollback NOT_VERIFIED.",
+  "externalReleaseReadiness": "BLOCKED",
+  "checkedAt": "2026-11-13T04:55:24.854Z"
+}

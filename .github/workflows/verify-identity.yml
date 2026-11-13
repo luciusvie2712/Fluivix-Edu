@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:17.11-alpine
+        image: postgres:17.12-alpine
         env:
           POSTGRES_USER: fluivix_ci
           POSTGRES_PASSWORD: isolated-ci-only
@@ -17,7 +17,7 @@ jobs:
           --health-cmd "pg_isready -U fluivix_ci -d fluivixedu_test"
           --health-interval 5s --health-timeout 5s --health-retries 10
       postgres_e2e:
-        image: postgres:17.11-alpine
+        image: postgres:17.12-alpine
         env:
           POSTGRES_USER: fluivix_ci
           POSTGRES_PASSWORD: isolated-ci-only

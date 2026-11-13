@@ -34,6 +34,7 @@ const sourceRoots = [
   "tests",
   ".github",
   "package.json",
+  ".node-version",
   "pnpm-lock.yaml",
   "turbo.json",
   "docker-compose.yml",

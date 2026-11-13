@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-13",
+  "status": "LOCAL_FULL_FROZEN_RUNTIME_GATE_PASS_WITH_RETAINED_FAILURES",
+  "attempts": [
+    {
+      "attempt": "runtime-full-a-42285",
+      "result": "FAIL_EXPO_COMPATIBILITY_PREFLIGHT",
+      "passed": [
+        "new owned PG17.12/server+pg_dump version and Redis readiness",
+        "Prisma validate/generate",
+        "lint",
+        "format"
+      ],
+      "finding": "Official Expo check requires expo58.0.25 instead of58.0.24. Gate stopped before pilot/build/source freeze; A named integration DB remains retained.",
+      "repair": "Official pnpm --filter @fluivix/mobile exec expo install --fix --pnpm completed exit0 and final compatibility check reported Dependencies are up to date. Actual versions expo58.0.25, React19.3.0, RN0.88.1. Exact Expo pin retained; native app.json unchanged. Full gate restarts fresh B namespace on11 reviewed source paths."
+    }
+  ],
+  "noAssertionsTimeoutsRetriesOrSecurityPoliciesWeakened": true,
+  "releaseReadiness": "BLOCKED",
+  "finalEvidence": "verification.json"
+}

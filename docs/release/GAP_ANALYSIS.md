@@ -1,5 +1,16 @@
 # Baseline P0 gap analysis
 
+## Current checkpoint — runtime security local PASS (2026-11-13)
+
+Node24.22.3 and PostgreSQL17.12 security patches are now selected by the root toolchain, CI and pinned pilot images. The official Windows Node archive matched publisher SHA256 and a valid OpenJS Authenticode identity before process-local selection; both node and pnpm use the verified runtime. Actual host and all five rehearsed application/migration image IDs report Node24.22.3. A new owned PostgreSQL17.12 database and pg_dump17.12 were verified; no existing developer/customer volume was upgraded. PostgreSQL's REINDEX/restored-copy and new-full-backup guidance remains mandatory for an existing deployment.
+
+The complete frozen-source gate passed119unit,32mobile,233integration and202browser with zero skipped/flaky cases, eight uncached Linux builds with actual Android/iOS Hermes artifacts, seven Windows non-mobile builds, all types/tooling/lint/format, real mobile API, the complete TLS/MFA/tenant/worker/SMTP/recovery/privacy pilot,193 stable OpenAPI/client operations and offline frozen installation. Source bytes, private environment and all33 published SQL migrations remained unchanged. Official Expo alignment required compatible58.0.25; React19.3.0, RN0.88.1 and native configuration remain unchanged. The earlier preflight failure is retained in evidence/runtime-security/recovery.json. Audit:0HIGH/0CRITICAL,4MODERATE/1LOW; this is dependency audit evidence, not an OS/runtime inventory or proof of every CVE exploit.
+
+The prior pilot commit e180f18 has independently verified all32 CI steps including119/32/233/202 and the actual pilot. This runtime module's commit/push and exact new CI remain pending. Release readiness remains BLOCKED for the outstanding technical and external gates; local synthetic verification does not establish a production deployment, existing-volume repair, signed physical mobile or off-host recovery/key custody.
+
+Evidence: `evidence/runtime-security/verification.json`.
+
+
 ## Current checkpoint — isolated pilot local PASS (2026-11-13)
 
 The isolated synthetic pilot now builds API, worker, migration CLI, Web and Platform images from the reviewed lockfile. Application containers run as nonroot with read-only filesystems, dropped capabilities and no-new-privileges. Runtime secrets are mounted JSON data; migration and application database roles are separate. Fresh PostgreSQL17.11/Redis7.4.12/Mailpit1.33.1 candidates and CI templates replace the older versions after upstream security review; no existing development/customer volume was upgraded. The fresh database applied all33 immutable migrations with canonical source checksums, and the application role was denied DDL and migration-history access.

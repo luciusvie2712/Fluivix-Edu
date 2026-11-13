@@ -1,0 +1,22 @@
+{
+  "version": "24.22.3",
+  "source": "https://nodejs.org/dist/v24.22.3/node-v24.22.3-win-x64.zip",
+  "officialSHA256": "e612af99f626ab415ea225af6bce5c971feb448cb5cae250bb1c3fa50c5f7d9f",
+  "actualSHA256": "e612af99f626ab415ea225af6bce5c971feb448cb5cae250bb1c3fa50c5f7d9f",
+  "status": "VERIFIED_AND_SELECTED_FOR_RUNTIME_SECURITY_TESTS",
+  "authenticode": {
+    "status": "Valid",
+    "subject": "CN=OpenJS Foundation, O=OpenJS Foundation, L=San Francisco, S=California, C=US",
+    "thumbprint": "387DC5A15A4B785E506DF9870ED4590FD794F267",
+    "samePublisherAsVerified24_22_2": true
+  },
+  "currentRuntimeHelperChanged": true,
+  "versionProbe": {
+    "node": "v24.22.3",
+    "uv": "1.52.1",
+    "openssl": "3.5.9",
+    "arch": "x64",
+    "platform": "win32"
+  },
+  "appliedAfterExactGreenCI": "e180f18e50b5ada1b20f35c3340679bb2bbcf7c3"
+}

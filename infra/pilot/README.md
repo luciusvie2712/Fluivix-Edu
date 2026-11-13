@@ -5,12 +5,18 @@ deploy staging or authorize real learner data. Production/staging, approved mail
 and push, legal/UAT approval, physical mobile devices, off-host backups and key
 custody remain release gates.
 
-Requirements: Docker Engine/Compose v2, Node 24.22.2, pnpm 10.34.7 and OpenSSL.
-The database template uses PostgreSQL17.11 for the upstream security fixes after
-17.6. The rehearsal creates a fresh isolated database; it never upgrades an
+Requirements: Docker Engine/Compose v2, Node 24.22.3, pnpm 10.34.7 and OpenSSL.
+Node24.22.3 includes the upstream HTTP/TLS security fixes described in its
+[security release notes](https://nodejs.org/en/blog/release/v24.22.3).
+The database template uses PostgreSQL17.12 for the upstream security fixes.
+The rehearsal creates a fresh isolated database; it never upgrades an
 existing developer or customer volume. For an existing17.x deployment, review
-the [17.11 migration notes](https://www.postgresql.org/docs/17/release-17-11.html),
-including the `btree_gist` index/reindex requirements, on a restored copy first.
+the [17.12 migration notes](https://www.postgresql.org/docs/17/release-17-12.html)
+and the linked17.11 notes, including the index/reindex requirements, on a
+restored copy first. Existing incremental backups are not a trusted recovery
+baseline for this update; take a new full backup after updating as directed by
+the upstream notes. A local fresh-schema rehearsal does not establish that an
+existing deployment's indexes or backup chain have been repaired.
 Do not restart the developer PostgreSQL service just to run this rehearsal.
 Redis7.4.12 and Mailpit1.33.1 are selected from their upstream patched releases;
 the pilot pins exact image digests. Existing Redis/mailbox volumes are not
