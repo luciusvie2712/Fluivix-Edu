@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "turbo run dev",
-    "lint": "eslint apps packages tooling tests --max-warnings=0",
+    "lint": "eslint apps packages tooling tests infra/pilot --max-warnings=0",
     "typecheck": "turbo run build --filter=@fluivix/api --filter=@fluivix/worker && turbo run typecheck && tsc -p tsconfig.tools.json",
     "build": "turbo run build",
     "test": "vitest run --project unit",
@@ -21,7 +21,7 @@
     "dev:mobile:api": "tsx tooling/mobile-smoke.ts --serve",
     "openapi:generate": "tsx tooling/openapi.ts",
     "client:generate": "openapi-typescript apps/api/openapi.json -o packages/api-client/src/schema.d.ts && prettier --write packages/api-client/src/schema.d.ts",
-    "format:check": "prettier --check apps packages tooling tests *.json *.yaml *.yml"
+    "format:check": "prettier --check apps packages tooling tests infra/pilot *.json *.yaml *.yml"
   },
   "dependencies": {
     "@prisma/client": "6.19.3"

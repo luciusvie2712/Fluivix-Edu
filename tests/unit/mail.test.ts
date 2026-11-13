@@ -5,6 +5,21 @@ import {
   sendMail,
 } from "../../apps/worker/src/mail";
 describe("local email failure safety", () => {
+  it("allows only loopback or the isolated mailpit service in test mode", () => {
+    const original = process.env.MAILPIT_HOST;
+    try {
+      process.env.MAILPIT_HOST = "mailpit";
+      const transport = localMailTransport();
+      transport.close();
+      process.env.MAILPIT_HOST = "smtp.example.com";
+      expect(() => localMailTransport()).toThrow();
+      process.env.MAILPIT_HOST = "127.0.0.1";
+      localMailTransport().close();
+    } finally {
+      if (original === undefined) delete process.env.MAILPIT_HOST;
+      else process.env.MAILPIT_HOST = original;
+    }
+  });
   it("refuses production transport without an approved provider", () => {
     const mode = process.env.NODE_ENV;
     process.env.NODE_ENV = "production";

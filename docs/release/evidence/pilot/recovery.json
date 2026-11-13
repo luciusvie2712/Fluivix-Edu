@@ -1,0 +1,196 @@
+{
+  "status": "LOCAL_FULL_FROZEN_GATE_PASS_WITH_RETAINED_PRIOR_FAILURES",
+  "baseCommit": "e31100b53bf889314b1188f8801dbb261d97aa42",
+  "attempts": [
+    {
+      "attempt": "initial-api-packaging",
+      "result": "ABORTED_BEFORE_RELEASE",
+      "finding": "pnpm deploy --legacy re-resolved the dependency graph. The owned build was interrupted and its output was not accepted.",
+      "repair": "Build a minimal production workspace from explicit dist/manifests and install offline with the original frozen lockfile. Generated Prisma client and native migration engines are packaged explicitly."
+    },
+    {
+      "attempt": "rehearsal-a",
+      "result": "FAIL_BEFORE_MIGRATION",
+      "finding": "An unquoted YAML flow sequence split tmpfs options into separate mount paths; Docker rejected size=64m as a non-absolute mount path.",
+      "repair": "Quote the complete /tmp mount option string; preserve read-only root filesystem and bounded noexec/nosuid tmpfs."
+    },
+    {
+      "attempt": "rehearsal-b",
+      "result": "FAIL_BUILD_STRICT_TYPESCRIPT",
+      "finding": "Explicit output:undefined violated exactOptionalPropertyTypes in NextConfig.",
+      "repair": "Conditionally include the narrow standalone output property; keep strict TypeScript unchanged. Web/platform focused typechecks passed after the repair."
+    },
+    {
+      "attempt": "rehearsal-c",
+      "result": "FAIL_MIGRATION_ENGINE_PACKAGING",
+      "finding": "The production offline install omitted the downloaded Prisma schema engine. The read-only migration runtime correctly refused a runtime download/write.",
+      "repair": "Copy and verify the build's native engine binaries into the migration image. Do not enable root writes or allow runtime binary download."
+    },
+    {
+      "attempt": "rehearsal-d",
+      "result": "FAIL_EDGE_STARTUP_AFTER_MIGRATION_AND_ROLE_CHECKS_PASS",
+      "passed": [
+        "33 applied migrations",
+        "separate schema-owner/app roles",
+        "app DDL denied",
+        "app migration history access denied",
+        "API and worker startup"
+      ],
+      "finding": "nginx initialized its default fastcgi temporary directory under the read-only root filesystem.",
+      "repair": "Place fastcgi/uwsgi/scgi temporary paths under the existing bounded /tmp tmpfs. Retain nonroot/read-only restrictions."
+    },
+    {
+      "attempt": "rehearsal-e",
+      "result": "INTERRUPTED_BEFORE_OBSERVABLE_COMPLETION",
+      "finding": "Session interrupted during image build; no PASS inferred."
+    },
+    {
+      "attempt": "rehearsal-20261112-a",
+      "result": "FAIL_RECOVERY_SNAPSHOT_QUERY_AFTER_REAL_TRANSPORT_SMOKE_PASS",
+      "passed": [
+        "all33 canonical migration checksums",
+        "nonroot/read-only/cap-drop/no-new-privileges containers",
+        "internal-only data network/no published data ports",
+        "real verified HTTPS/MFA/tenant-negative/worker/Mailpit smoke"
+      ],
+      "finding": "Recovery snapshot incorrectly referred to students; actual mapped table is student_profiles.",
+      "repair": "Use the actual schema table without removing the before/after row-count assertion."
+    },
+    {
+      "attempt": "full-frozen-first-20261112",
+      "result": "FAIL_FAULT_RESPONSE_DEADLINE",
+      "passed": [
+        "canonical33migrations",
+        "restrictedDBroles",
+        "actualcontainer/networkhardening",
+        "verifiedHTTPS/MFA/tenantnegative/realSMTP",
+        "before-faultrowcounts",
+        "actualinvalidAPIprocessExited1"
+      ],
+      "finding": "Proxy upstream connect timeout5s equaled the existing HTTPS client5s deadline; the client timed out before receiving the gateway error.",
+      "repair": "Fail upstream connection within2s in the producer configuration. Client5s deadline and all response assertions remain unchanged."
+    },
+    {
+      "attempt": "full-frozen-second-20261112",
+      "result": "BLOCKED_WINDOWS_HERMES_APPLICATION_CONTROL",
+      "passed": [
+        "completepilotincludingconfigurationrecoveryandproxylogprivacy",
+        "356filebuildcontextprivatesecretscan",
+        "WebPlatformbuilds"
+      ],
+      "finding": "Native Windows Hermes spawn failed with Win32 code4551: Application Control blocked the executable.",
+      "integrity": "Official registry tarball matches lockfile integrity; installed Windows binary matches that verified tarball.",
+      "resolution": "Keep policy unchanged and use the same locked SDK Linux compiler in a separate all-eight-task Docker verification target. Actual native bytecode headers must pass. Windows native export remains BLOCKED, not PASS.",
+      "linuxVerification": "PENDING"
+    },
+    {
+      "attempt": "full-frozen-third-20261112",
+      "result": "STOPPED_FOR_VERIFIED_POSTGRESQL_SECURITY_PATCH",
+      "passed": [
+        "completefreshpilotandrecoveryon26sources",
+        "355filecontextscanincluding73mobilefiles39approutes"
+      ],
+      "finding": "Upstream PostgreSQL17 security advisories identify fixes after17.6, including pg_dump code execution fixed17.11.",
+      "action": "Keep baseline evidence, update only templates/CI and a NEW owned verification database to17.11. No existing customer/development volume is upgraded or reindexed. Rerun full frozen gate."
+    },
+    {
+      "attempt": "full-frozen-patched-infrastructure-d",
+      "result": "FAIL_LOG_CAPTURE_HARNESS_NOT_APPLICATION_BUILD",
+      "passed": [
+        "completepatchedpilotandrecovery",
+        "355filecontextprivatescan",
+        "Dockerallbuild-evidencestagecompleted3m55s"
+      ],
+      "finding": "Windows PowerShell5 with ErrorActionPreferenceStop treated normal Docker stderr progress as NativeCommandError during *> log capture.",
+      "repair": "Capture complete stdout/stderr with subprocess and check the actual exit code. Restart the full gate on unchanged frozen source with a fresh namespace."
+    },
+    {
+      "attempt": "full-frozen-patched-infrastructure-e",
+      "result": "FAIL_EXPO_SDK_COMPATIBILITY_CHECK",
+      "passed": [
+        "complete fresh pilot/recovery/privacy/context",
+        "eight uncached Linux builds with real Hermes bytecode",
+        "seven Windows non-mobile builds",
+        "eight typechecks/tools",
+        "119 unit and32 mobile tests",
+        "real mobile API smoke"
+      ],
+      "finding": "Expo SDK58 install --check now requires eight compatible published patch versions.",
+      "repair": "Run official Expo install --fix --pnpm, keep all compatibility assertions, refresh frozen lockfile and rerun the entire gate in a fresh namespace. Auto-added expo-sharing config plugin is a no-op with both inbound platforms disabled and was removed to avoid gratuitous native config changes."
+    },
+    {
+      "attempt": "full-frozen-aligned-expo-f",
+      "result": "FAIL_BROWSER_199_OF_202",
+      "passed": [
+        "complete fresh pilot/recovery/355-file private context scan",
+        "eight Linux builds with real Android/iOS Hermes exports",
+        "seven Windows builds/eight types/tools",
+        "119unit/32mobile/real mobileAPI/Expo",
+        "233integration/193stablecontracts/offlinefrozeninstall/audit0HIGH0CRITICAL/skills/inventory"
+      ],
+      "browser": {
+        "passed": 199,
+        "failed": 3,
+        "skipped": 0,
+        "flaky": 0,
+        "durationMs": 5697077.24
+      },
+      "finding": "Original Edge trace records net::ERR_NETWORK_IO_SUSPENDED on the calendar request after12.8ms, a second case remains loading after a15.5s navigation, and a screenshot action stalls3078285ms. Cause is not yet asserted as application or OS policy.",
+      "next": "Keep all assertions/timeouts/retries and the exact frozen source. Install the matching official Playwright Chromium in project cache, verify launch, reproduce three failed cases and then rerun the full gate in fresh namespaces. No host security policy changes.",
+      "tracePreservedPrivately": true,
+      "focusedRecovery": {
+        "browser": "Playwright bundled Chromium156.0.8078.4",
+        "actualCasePasses": 3,
+        "actualCaseDurationsSeconds": [
+          4.6,
+          10.4,
+          8.4
+        ],
+        "unchangedSourceDuringFocus": true,
+        "outerHarnessExit": 1,
+        "outerHarnessFailure": "Post-test report lookup relative to nested cache config; actual3-case JSON independently decoded. Earlier pre-test config probe also exited before cases because defineConfig concatenated webServer entries. Both harness mistakes were isolated to cache and not counted as full gate success.",
+        "resolution": "Remove system Edge override in root Playwright config; use the matched bundled Chromium on Windows/Linux. Update DEVELOPMENT.md, source provenance roots, and rerun complete fresh G gate. No timeout/retry/assertion/security-policy change."
+      }
+    },
+    {
+      "attempt": "full-frozen-chromium-g",
+      "result": "FAIL_DOCKER_ADDRESS_POOL_EXHAUSTED",
+      "passed": [
+        "Prisma validate/generate/lint/format/Expo/private environment proof",
+        "five reviewed pilot image builds"
+      ],
+      "finding": "Docker start-data failed: all predefined address pools have been fully subnetted. No G business data was seeded.",
+      "repair": "Inspect exactly the two networks of completed owned pilot F: all8 containers exited, both networks had zero connected endpoints. Remove only those2 disconnected networks; preserve every container/volume and all unrelated networks. No global prune or data deletion. Restart unchanged source in fresh H namespace."
+    },
+    {
+      "attempt": "full-frozen-h-interruption-recovery-20261113",
+      "result": "INTERRUPTED_ORIGINAL_OUTER_EXIT_NOT_OBSERVED",
+      "finding": "Original process/session disappeared after an intentional interruption; no active gate process remained. Actual H JSON independently confirms233integration PASS after119unit/32mobile and previously observed8Linux/7Windows/eight typechecks. Stable contract/audit reports also have H timestamps. No new E2E completion report exists.",
+      "action": "Reverify unchanged frozen source and private environment, retain verified prefix, explicitly recheck contract/install/audit/inventory/skills and run all202 browser cases on a fresh named database. Only a newly observed recovery exit0 plus completion marker can finalize the module.",
+      "oldFailedBrowserReport": "Archived exact failedF199/202 report privately; public recovery retains failure counts/trace findings. No failed case is relabeled PASS."
+    },
+    {
+      "attempt": "resumed-full-browser-43362-20261113",
+      "result": "FAIL201_OF202_ARTIFACT_FILE_OPEN",
+      "browser": {
+        "startTime": "2026-11-13T03:31:12.168Z",
+        "duration": 1262534.652,
+        "expected": 201,
+        "skipped": 0,
+        "unexpected": 1,
+        "flaky": 0
+      },
+      "finding": "rooms directory no-preference reached screenshot output after keyboard/width/axe/Taste assertions at1024px; Node write failed with UNKNOWN open on the existing PNG. All other201 cases passed, including the three prior Edge failures.",
+      "diagnostic": "D drive104GB free; targetArchive/no reparse link; subsequent r+ open/close succeeded without changing bytes. Underlying transient I/O cause NOT_ESTABLISHED. Complete trace/error/screenshot/report retained privately.",
+      "next": "Reproduce exact target write while preserving its original bytes; if successful run a complete fresh202-case browser gate. No assertion/timeout/retry change or individual-case result substitution."
+    }
+  ],
+  "additionalFindings": [
+    "Eight Windows SQL working copies used CRLF while all 33 published Git blobs use LF. The Linux build canonicalizes checkout transport only in its disposable build workspace. Published SQL source is unchanged; a fresh rehearsal checks all 33 applied checksums against canonical source. Existing staging checksum comparison remains required.",
+    "The locked production graph retains TypeScript as a Prisma peer. The absence of a root dev TypeScript import is not evidence that every transitive TypeScript package was removed."
+  ],
+  "noAssertionsOrSecurityChecksWeakened": true,
+  "externalReleaseReadiness": "BLOCKED",
+  "finalEvidence": "verification.json",
+  "pending": "Module main commit/push and exact32-step CI; remaining whole-master technical/external gates."
+}

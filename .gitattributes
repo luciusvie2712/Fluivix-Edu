@@ -1,0 +1,3 @@
+# Entrypoints must remain executable shell text in Linux containers on Windows hosts.
+infra/pilot/*.sh text eol=lf
+infra/prisma/migrations/**/*.sql text eol=lf

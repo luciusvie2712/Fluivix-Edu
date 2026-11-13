@@ -1,0 +1,380 @@
+{
+  "date": "2026-11-13",
+  "status": "PASS_LOCAL_FULL_FROZEN_GATE",
+  "baseCommit": "e31100b53bf889314b1188f8801dbb261d97aa42",
+  "sourcePaths": [
+    ".dockerignore",
+    ".gitattributes",
+    ".github/workflows/verify-identity.yml",
+    "DEVELOPMENT.md",
+    "apps/mobile/package.json",
+    "apps/platform/next.config.ts",
+    "apps/web/next.config.ts",
+    "apps/worker/src/mail.ts",
+    "docker-compose.yml",
+    "infra/pilot/Dockerfile",
+    "infra/pilot/README.md",
+    "infra/pilot/compose.yaml",
+    "infra/pilot/copy-prisma-client.mjs",
+    "infra/pilot/entrypoint.mjs",
+    "infra/pilot/grant-application.sql",
+    "infra/pilot/init-database.sh",
+    "infra/pilot/nginx.conf",
+    "infra/pilot/prepare-migrations.mjs",
+    "infra/pilot/prepare-runtime.mjs",
+    "infra/pilot/prepare.mjs",
+    "infra/pilot/verify-mobile-export.mjs",
+    "package.json",
+    "packages/migration-cli/package.json",
+    "playwright.config.ts",
+    "pnpm-lock.yaml",
+    "tests/unit/mail.test.ts",
+    "tooling/pilot-rehearsal.mjs",
+    "tooling/pilot-seed.mjs",
+    "tooling/pilot-smoke.mjs",
+    "turbo.json"
+  ],
+  "sourceFrozen": true,
+  "privateEnvironmentUnchanged": true,
+  "all33PublishedMigrationsExactBytesUnchanged": true,
+  "schemaChanged": false,
+  "tests": {
+    "unit": 119,
+    "mobile": 32,
+    "integration": 233,
+    "browser": 202,
+    "skipped": 0,
+    "flaky": 0,
+    "protectedGETRoutes": 107,
+    "actualUnauthorizedGETRequests": 214
+  },
+  "browserStats": {
+    "startTime": "2026-11-13T03:53:55.640Z",
+    "duration": 1199788.622,
+    "expected": 202,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  },
+  "buildVerification": {
+    "linuxAllEightUncachedTasks": {
+      "status": "PASS",
+      "uncachedBuildTasks": 8,
+      "sourceFrozen": true,
+      "mobileArtifact": "pilot-linux-mobile-export.json",
+      "windowsHermesExport": "BLOCKED_APPLICATION_CONTROL_4551",
+      "hostSecurityPolicyChanged": false
+    },
+    "actualAndroidIOSHermesArtifacts": "native-export.json",
+    "windowsNonMobileBuilds": 7,
+    "windowsNativeHermes": "BLOCKED_APPLICATION_CONTROL_4551",
+    "hostSecurityPolicyChanged": false
+  },
+  "commands": [
+    {
+      "command": "prisma validate",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm db:generate",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm lint",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm format:check",
+      "status": "PASS"
+    },
+    {
+      "command": "node tooling/pilot-rehearsal.mjs",
+      "status": "PASS"
+    },
+    {
+      "command": "docker build --target context-audit and private-value scan",
+      "status": "PASS"
+    },
+    {
+      "command": "Linux Docker all-builds: pnpm build --force --concurrency=1 and real Hermes headers",
+      "status": "PASS"
+    },
+    {
+      "command": "Windows pnpm exec turbo run build --force --filter=!@fluivix/mobile",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm exec turbo run typecheck --force",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm exec tsc -p tsconfig.tools.json",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm test",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm --filter @fluivix/mobile test",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm test:mobile:api",
+      "status": "PASS"
+    },
+    {
+      "command": "expo install --check",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm test:integration",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm openapi:generate and pnpm client:generate (byte stable)",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm install --frozen-lockfile --offline",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm audit --json (high/critical gate)",
+      "status": "PASS"
+    },
+    {
+      "command": "validate_ai_pack.py and three-source/five-ID skill verification",
+      "status": "PASS"
+    },
+    {
+      "command": "pnpm test:e2e",
+      "status": "PASS"
+    },
+    {
+      "command": "full source and private environment before/after byte checks",
+      "status": "PASS"
+    }
+  ],
+  "contract": {
+    "clientSha256": "6BCAB817013C5E9612E6FF1E86604B72FC27C9364C9F4810719368EAC7A8F17A",
+    "openapiSha256": "98E5CC63137A3FACE2B0666D1C467BA98A4DF6537D71CCDFF0942EA44401EE46",
+    "stable": true,
+    "operations": 193
+  },
+  "audit": {
+    "info": 0,
+    "low": 1,
+    "moderate": 4,
+    "high": 0,
+    "critical": 0
+  },
+  "upstreamInfrastructure": "upstream-infrastructure.json",
+  "pilot": {
+    "evidence": "rehearsal.json",
+    "canonicalMigrationChecksumsVerified": 33,
+    "allRecordedPhaseExitsMatchExpected": true,
+    "actualHTTPSMFAWorkerSMTP": true,
+    "nonrootReadOnlyCapabilityDropNoNewPrivileges": true,
+    "dataNetworkInternalNoPublishedDataPorts": true,
+    "onlyEdgeLoopbackPorts": [
+      58443,
+      58444,
+      58445
+    ],
+    "configurationRecovery": "Same immutable candidate after invalid startup command; actual gateway failure, restored protected401 and unchanged row counts. No older-binary compatibility claim.",
+    "proxyURLLogging": "Access/error request logging disabled; actual failed-upstream URL sentinel absent from both stdout and stderr.",
+    "connectDeadlineMs": 2000,
+    "clientTestDeadlineMs": 5000,
+    "productionDependencyGraph": "Frozen/offline production graph; Prisma optional TypeScript peer retained. Native Prisma client/schema engines packaged before read-only runtime.",
+    "secretCustody": "Synthetic private-directory Compose file mounts; not a production secret manager or verified Windows ACL.",
+    "scope": "Synthetic local deployment only. External push disabled, scheduler disabled, local Mailpit sink."
+  },
+  "buildContext": {
+    "status": "PASS",
+    "filesChecked": 355,
+    "bytesChecked": 3104000,
+    "forbiddenPathsAbsent": true,
+    "privateEnvironmentValuesAbsent": true,
+    "noPrivateDigestPublished": true
+  },
+  "ui": {
+    "changedComponentsOrStyles": false,
+    "scope": "Next standalone packaging and Expo SDK58 compatible patch alignment; normal local next start behavior preserved. Existing202-case real-browser regression covers current components, visual/a11y/motion assertions. No new manual screenshot review claimed.",
+    "physicalMobileAndSignedBuilds": "NOT_VERIFIED"
+  },
+  "skills": [
+    {
+      "source": "taste-skill",
+      "sha": "6010f91a9935f1c167dfc500fb1a475681892e6b",
+      "installed": "design-taste-frontend",
+      "verifiedFiles": 38,
+      "status": "PASS"
+    },
+    {
+      "source": "ui-ux-pro-max-skill",
+      "sha": "d14efff8ed1faa4187f004f79926f428c8074ec7",
+      "installed": "ui-ux-pro-max",
+      "verifiedFiles": 73,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "accessible-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "micro-interaction",
+      "verifiedFiles": 4,
+      "status": "PASS"
+    },
+    {
+      "source": "web-animation-skills",
+      "sha": "b6dba3eb759726845a44163ff0bad70dd9e7fbb6",
+      "installed": "60fps-animation",
+      "verifiedFiles": 3,
+      "status": "PASS"
+    }
+  ],
+  "historicalArtifacts": {
+    "newRegressionRendersArchivedPrivately": 296,
+    "restoredExactCommittedBytes": true
+  },
+  "priorCI": "../ci-e31100b-success-2026-11-10.json",
+  "newModuleCommitAndExactCI": "PENDING",
+  "releaseReadiness": "BLOCKED",
+  "limitations": [
+    "Actual staging and legal/privacy/consent/UAT approvals remain unverified.",
+    "Signed physical Android/iOS and real push remain unverified.",
+    "Off-host encrypted backup/restore and key custody require separate evidence.",
+    "Local configuration recovery does not prove earlier-binary rollback compatibility.",
+    "The multi-user edge still needs narrowly trusted proxy configuration and load rehearsal.",
+    "Container OS vulnerability scan and external alert delivery are not established by pnpm audit or HTTP readiness.",
+    "An earlier201/202 local browser run failed opening an existing screenshot PNG. Exact-file write/read preflight subsequently passed unchanged bytes; underlying transient host I/O cause remains NOT_ESTABLISHED. Complete prior failure evidence is retained; final202-case verification is a new full run with no assertion/timeout/retry changes."
+  ],
+  "mobileSDKAlignment": {
+    "officialExpoCompatibilityCheck": "PASS before and after builds in full frozen gate",
+    "versions": {
+      "expo": "58.0.24",
+      "expo-constants": "~58.0.16",
+      "expo-linking": "~58.0.17",
+      "expo-notifications": "~58.1.9",
+      "expo-router": "~58.0.31",
+      "expo-secure-store": "~58.0.3",
+      "expo-sharing": "~58.0.23",
+      "expo-status-bar": "~58.0.5",
+      "react": "19.3.0",
+      "react-native": "0.88.1"
+    },
+    "nativeConfigUnchanged": true,
+    "scope": "Compatible SDK58 patch updates from official Expo install --fix. No inbound sharing extension enabled."
+  },
+  "browserVerification": {
+    "engine": "Playwright bundled Chromium",
+    "platform": "win32",
+    "version": "156.0.8078.4",
+    "fullCases": 202,
+    "configuration": "playwright.config.ts",
+    "systemEdgeOverrideRemoved": true,
+    "originalFailedEdgeRun": {
+      "passed": 199,
+      "failed": 3,
+      "networkError": "net::ERR_NETWORK_IO_SUSPENDED",
+      "screenshotStallMs": 3078285
+    },
+    "focusedRecovery": {
+      "status": "THREE_BROWSER_CASES_PASS",
+      "browser": "Playwright bundled Chromium156.0.8078.4",
+      "stats": {
+        "startTime": "2026-11-12T16:05:55.712Z",
+        "duration": 61968.066,
+        "expected": 3,
+        "skipped": 0,
+        "unexpected": 0,
+        "flaky": 0
+      },
+      "sourceUnchangedDuringFocusedRun": true,
+      "originalAssertionsTimeoutRetriesUnchanged": true,
+      "outerHarnessExit": 1,
+      "outerHarnessFailure": "Post-test report lookup relative to nested config directory; actual Playwright completed3PASS. Report independently decoded and retained.",
+      "noSystemSecurityPolicyChanges": true
+    },
+    "hostSecurityPolicyChanged": false,
+    "originalTimeoutsRetriesAssertionsUnchanged": true
+  },
+  "executionRecovery": {
+    "date": "2026-11-13",
+    "originalSession": 35200,
+    "originalOuterExit": "NOT_OBSERVED_INTERRUPTED",
+    "originalProcessAbsent": true,
+    "sourceAndPrivateEnvironmentBytesReverified": true,
+    "verifiedPrefix": {
+      "freshPilotProject": "fluivixedu-pilot-full-20261112-h",
+      "canonicalMigrations": 33,
+      "linuxBuildTasks": 8,
+      "windowsBuildTasks": 7,
+      "typecheckTasks": 8,
+      "unit": 119,
+      "mobile": 32,
+      "integration": 233,
+      "integrationStartedUTC": "2026-11-12T16:21:07.404000+00:00"
+    },
+    "remainingStages": "NONE_LOCAL_FULL_GATE",
+    "recoveryOuterExit": 0,
+    "releaseReadiness": "BLOCKED",
+    "contractInstallAuditInventorySkillsRechecked": "PASS in recovery session30959",
+    "firstRecoveryOuterExit": 1,
+    "firstRecoveryFailure": "Owned PostgreSQL container was stopped after interruption; fresh browser DB creation did not execute.",
+    "ownedInfraRestart": {
+      "containers": 3,
+      "preservedData": true,
+      "newLoopbackPorts": {
+        "postgres": 57329,
+        "redis": 57330
+      },
+      "scope": "Only previously created verification PG17.11, Redis7.4.12 and Mailpit1.33.1 restarted. No user-owned service changed."
+    },
+    "firstBrowserOuterExit": 1,
+    "firstBrowserStats": {
+      "startTime": "2026-11-13T03:31:12.168Z",
+      "duration": 1262534.652,
+      "expected": 201,
+      "skipped": 0,
+      "unexpected": 1,
+      "flaky": 0
+    },
+    "firstBrowserFailure": {
+      "status": "OBSERVED_ARTIFACT_WRITE_FAILURE",
+      "file": "docs/release/evidence/rooms/directory-no-preference-1024.png",
+      "error": "UNKNOWN open during Playwright screenshot write",
+      "precedingAssertions": "scroll keyboard/width/axe/Taste passed before failing write",
+      "diskFreeBytes": 104259489792,
+      "fileAttributes": "Archive; no reparse link",
+      "readWriteOpenProbe": "PASS; opened r+ and closed without changing bytes",
+      "rootCause": "Transient host file-open failure; underlying cause NOT_ESTABLISHED. No application or security-policy cause asserted.",
+      "traceArchivedPrivately": true,
+      "sourceChanges": false
+    },
+    "artifactWritePreflight": {
+      "status": "EXACT_SCREENSHOT_TARGET_WRITE_AND_READ_PASS",
+      "unchangedBytes": true,
+      "bytes": 47984,
+      "sha256": "e66c95a9304d1f525ad2a1147308d8689b37aa9317039abcea3f2f85d51366be",
+      "underlyingFailureCause": "NOT_ESTABLISHED"
+    },
+    "recoverySession": 71345,
+    "finalBrowserStats": {
+      "startTime": "2026-11-13T03:53:55.640Z",
+      "duration": 1199788.622,
+      "expected": 202,
+      "skipped": 0,
+      "unexpected": 0,
+      "flaky": 0
+    },
+    "completedUTC": "2026-11-13T04:14:31.413717+00:00"
+  }
+}

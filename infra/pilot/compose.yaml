@@ -1,0 +1,168 @@
+# Synthetic local pilot ONLY. No customer data or public network binding.
+name: fluivixedu-pilot
+x-runtime: &runtime
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  tmpfs: ["/tmp:rw,noexec,nosuid,size=64m"]
+  networks: [data]
+  restart: "no"
+  stop_grace_period: 30s
+x-build: &build
+  context: ../..
+  dockerfile: infra/pilot/Dockerfile
+  args:
+    PUBLIC_API_URL: https://localhost:58445/api/v1
+x-server-env: &server-env
+  NODE_ENV: production
+  WEB_ORIGIN: https://localhost:58443
+  PLATFORM_ORIGIN: https://localhost:58444
+  REDIS_URL: redis://redis:6379
+  QUEUE_PREFIX: fluivix-pilot-synthetic
+services:
+  postgres:
+    image: postgres:17.11-alpine@sha256:e5d2edd28b1f8d40a0a6c0c9cdc545b19b56a0d5d88f94bc11a97d970d4700d0
+    networks: [data]
+    environment:
+      POSTGRES_USER: pilot_bootstrap
+      POSTGRES_DB: fluivixedu_pilot
+      POSTGRES_PASSWORD_FILE: /run/secrets/bootstrap_password
+    secrets: [bootstrap_password, migrator_password, app_password]
+    volumes:
+      - pilot-database:/var/lib/postgresql/data
+      - ./init-database.sh:/docker-entrypoint-initdb.d/10-roles.sh:ro
+      - ./grant-application.sql:/pilot/grant-application.sql:ro
+    healthcheck:
+      test:
+        [
+          CMD-SHELL,
+          "pg_isready -h 127.0.0.1 -U pilot_bootstrap -d fluivixedu_pilot",
+        ]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  redis:
+    image: redis:7.4.12-alpine@sha256:7f7d30b7fdd09467bac58198a1f166dd69789d348d4fe859cccb20e0cf287fbe
+    networks: [data]
+    command: [redis-server, --appendonly, "yes"]
+    volumes: [pilot-redis:/data]
+    healthcheck:
+      test: [CMD, redis-cli, ping]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  mailpit:
+    image: axllent/mailpit:v1.33.1@sha256:aef2aacc11f075ec0fb6874275ee4a421e688e11a96ebb296134d1735c7761ce
+    networks: [data]
+  migrate:
+    <<: *runtime
+    profiles: [migration]
+    build:
+      <<: *build
+      target: migrate
+    image: fluivixedu-pilot-migrate:${PILOT_IMAGE_TAG:?set immutable candidate image tag}
+    secrets:
+      - source: migration_runtime
+        target: runtime
+    depends_on:
+      postgres: { condition: service_healthy }
+  api:
+    <<: *runtime
+    build:
+      <<: *build
+      target: api
+    image: fluivixedu-pilot-api:${PILOT_IMAGE_TAG:?set immutable candidate image tag}
+    environment:
+      <<: *server-env
+      API_HOST: 0.0.0.0
+      PORT: "4000"
+    secrets:
+      - source: api_runtime
+        target: runtime
+      - smoke_password
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+    healthcheck:
+      # Liveness + protected auth boundary; worker readiness is a separate check.
+      test:
+        [
+          CMD,
+          node,
+          -e,
+          "fetch('http://127.0.0.1:4000/api/v1/platform/system-health').then(r=>process.exit(r.status===401?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  worker:
+    <<: *runtime
+    build:
+      <<: *build
+      target: worker
+    image: fluivixedu-pilot-worker:${PILOT_IMAGE_TAG:?set immutable candidate image tag}
+    environment:
+      <<: *server-env
+      NODE_ENV: test
+      MAIL_PROVIDER: mailpit
+      MAILPIT_HOST: mailpit
+      SCHEDULE_GENERATION_ENABLED: "false"
+      PUSH_PROVIDER: disabled
+    secrets:
+      - source: worker_runtime
+        target: runtime
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+  web:
+    <<: *runtime
+    build:
+      <<: *build
+      target: web
+    image: fluivixedu-pilot-web:${PILOT_IMAGE_TAG:?set immutable candidate image tag}
+  platform:
+    <<: *runtime
+    build:
+      <<: *build
+      target: platform
+    image: fluivixedu-pilot-platform:${PILOT_IMAGE_TAG:?set immutable candidate image tag}
+  edge:
+    <<: *runtime
+    image: nginx:1.30.6-alpine@sha256:583b7f2fce1cdb8da5ad5c39ebd3c33b98b87d493190e548bdee1fa8c619c311
+    user: "1000:1000"
+    entrypoint: [nginx, -g, "daemon off;"]
+    networks: [edge, data]
+    ports:
+      ["127.0.0.1:58443:8443", "127.0.0.1:58444:8444", "127.0.0.1:58445:8445"]
+    volumes: ["./nginx.conf:/etc/nginx/nginx.conf:ro"]
+    secrets: [tls_certificate, tls_key]
+    depends_on:
+      api: { condition: service_healthy }
+      web: { condition: service_started }
+      platform: { condition: service_started }
+networks:
+  data: { internal: true }
+  edge: {}
+volumes:
+  pilot-database: {}
+  pilot-redis: {}
+secrets:
+  smoke_password:
+    { file: "${PILOT_SECRETS_DIR:?set private directory}/smoke-password" }
+  bootstrap_password:
+    { file: "${PILOT_SECRETS_DIR:?set private directory}/bootstrap-password" }
+  migrator_password:
+    { file: "${PILOT_SECRETS_DIR:?set private directory}/migrator-password" }
+  app_password:
+    { file: "${PILOT_SECRETS_DIR:?set private directory}/app-password" }
+  migration_runtime:
+    {
+      file: "${PILOT_SECRETS_DIR:?set private directory}/migration-runtime.json",
+    }
+  api_runtime:
+    { file: "${PILOT_SECRETS_DIR:?set private directory}/api-runtime.json" }
+  worker_runtime:
+    { file: "${PILOT_SECRETS_DIR:?set private directory}/worker-runtime.json" }
+  tls_certificate:
+    { file: "${PILOT_SECRETS_DIR:?set private directory}/tls.crt" }
+  tls_key: { file: "${PILOT_SECRETS_DIR:?set private directory}/tls.key" }

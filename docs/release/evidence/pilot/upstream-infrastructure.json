@@ -1,0 +1,29 @@
+{
+  "status": "VERIFIED_LOCAL_FRESH_SCHEMA_AND_SMOKE",
+  "checkedDate": "2026-11-12",
+  "postgresql": {
+    "version": "17.11",
+    "release": "https://www.postgresql.org/docs/17/release-17-11.html",
+    "security": "https://www.postgresql.org/support/security/17/",
+    "existingDataUpgrade": "NOT_PERFORMED; fresh isolated DB only; btree_gist reindex review required on an existing restored copy"
+  },
+  "redis": {
+    "version": "7.4.12",
+    "release": "https://github.com/redis/redis/releases/tag/7.4.12"
+  },
+  "mailpit": {
+    "version": "1.33.1",
+    "release": "https://github.com/axllent/mailpit/releases/tag/v1.33.1"
+  },
+  "nginx": {
+    "version": "1.30.6",
+    "security": "https://nginx.org/en/security_advisories.html"
+  },
+  "pnpmPreflightAudit": {
+    "high": 0,
+    "critical": 0,
+    "moderate": 4,
+    "low": 1
+  },
+  "scope": "Pinned pilot digests and compatible templates/CI updates. No production deployment, preexisting data upgrade, global Redis flush or mailbox data deletion."
+}

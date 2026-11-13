@@ -1,0 +1,10 @@
+{
+  "package": "hermes-compiler",
+  "version": "260318099.0.5",
+  "registryTarballIntegrityMatchesLockfile": true,
+  "windowsBinaryMatchesVerifiedTarball": true,
+  "windowsErrorCode": 4551,
+  "windowsBuildStatus": "BLOCKED_APPLICATION_CONTROL",
+  "securityPolicyChanged": false,
+  "linuxCompilerAvailableInSameVerifiedPackage": true
+}

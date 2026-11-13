@@ -21,7 +21,6 @@ export default defineConfig({
       name: "tenant-chromium",
       use: {
         browserName: "chromium",
-        ...(process.platform === "win32" ? { channel: "msedge" } : {}),
       },
     },
   ],

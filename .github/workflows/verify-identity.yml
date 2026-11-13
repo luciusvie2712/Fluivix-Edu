@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:17.6-alpine
+        image: postgres:17.11-alpine
         env:
           POSTGRES_USER: fluivix_ci
           POSTGRES_PASSWORD: isolated-ci-only
@@ -17,7 +17,7 @@ jobs:
           --health-cmd "pg_isready -U fluivix_ci -d fluivixedu_test"
           --health-interval 5s --health-timeout 5s --health-retries 10
       postgres_e2e:
-        image: postgres:17.6-alpine
+        image: postgres:17.11-alpine
         env:
           POSTGRES_USER: fluivix_ci
           POSTGRES_PASSWORD: isolated-ci-only
@@ -27,13 +27,13 @@ jobs:
           --health-cmd "pg_isready -U fluivix_ci -d fluivixedu_e2e_test"
           --health-interval 5s --health-timeout 5s --health-retries 10
       redis:
-        image: redis:7.4.6-alpine
+        image: redis:7.4.12-alpine
         ports: ["6379:6379"]
         options: >-
           --health-cmd "redis-cli ping"
           --health-interval 5s --health-timeout 3s --health-retries 20
       mailpit:
-        image: axllent/mailpit:v1.27.10
+        image: axllent/mailpit:v1.33.1
         ports: ["1025:1025", "8025:8025"]
     steps:
       - uses: actions/checkout@v4
@@ -72,6 +72,11 @@ jobs:
           E2E_DATABASE_URL: postgresql://fluivix_ci:isolated-ci-only@127.0.0.1:55433/fluivixedu_e2e_test
           TEST_REDIS_URL: redis://127.0.0.1:6379
       - run: pnpm audit --audit-level=high
+      - name: Rehearse isolated synthetic pilot
+        run: node tooling/pilot-rehearsal.mjs
+        timeout-minutes: 25
+      - name: Retain sanitized pilot evidence
+        run: cp .cache/pilot-rehearsal-result.json docs/release/evidence/pilot-ci-result.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:

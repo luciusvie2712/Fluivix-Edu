@@ -1,5 +1,10 @@
 import type { NextConfig } from "next";
+import path from "node:path";
 const config: NextConfig = {
+  ...(process.env.FLUIVIX_CONTAINER_BUILD === "true"
+    ? { output: "standalone" as const }
+    : {}),
+  outputFileTracingRoot: path.resolve(__dirname, "../.."),
   transpilePackages: ["@fluivix/api-client"],
   poweredByHeader: false,
   async headers() {

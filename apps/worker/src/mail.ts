@@ -11,7 +11,10 @@ export function localMailTransport() {
     throw new Error("BLOCKED_MAIL_PROVIDER_APPROVAL");
   // Local Mailpit only. A remote production provider requires explicit approval and a separate driver.
   return nodemailer.createTransport({
-    host: "127.0.0.1",
+    host: z
+      .enum(["127.0.0.1", "localhost", "mailpit"])
+      .default("127.0.0.1")
+      .parse(process.env.MAILPIT_HOST),
     port: 1025,
     secure: false,
     connectionTimeout: 5000,

@@ -1,5 +1,8 @@
 # Deployment runbook
 
+A reproducible local synthetic pilot is implemented in `../../infra/pilot/README.md` and verified in `evidence/pilot/verification.json`. It exercises isolated roles, file-mounted synthetic secrets, HTTPS, actual API/worker/SMTP and configuration recovery. This does not change the staging/production BLOCKED status below.
+
+
 Status: **BLOCKED** for staging/production execution. No target infrastructure,
 approved credentials, operator identities or deployment authorization was supplied.
 `docker-compose.yml` provides local dependencies; it is not a complete production

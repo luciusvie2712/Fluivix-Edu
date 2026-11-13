@@ -236,7 +236,12 @@ functional tests through tooling/taste-review.ts, with scroll/frame checks and
 five viewport screenshots. This avoids a separate native CDP launch, never exports
 credentials to another browser and retains every applicable audited app-mode rule.
 Negative browser probes verify general, app and occlusion failures are enforced.
-Windows uses the configured Edge channel.
+Windows and Linux use the Chromium revision bundled with the locked Playwright
+version. Run `pnpm exec playwright install chromium` on Windows, or
+`pnpm exec playwright install --with-deps chromium` on Linux, before E2E. Do not
+substitute a system-managed Edge channel: a retained local trace recorded
+`net::ERR_NETWORK_IO_SUSPENDED` and a stalled screenshot. The three affected
+cases passed with the bundled browser and unchanged assertions and timeouts.
 
 The pinned @embedded-postgres/linux-x6417.6.0-beta.15 postinstall is explicitly
 allowed after integrity/script review: it creates required module-local libpq/ICU

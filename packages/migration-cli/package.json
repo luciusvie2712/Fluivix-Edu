@@ -1,0 +1,7 @@
+{
+  "name": "@fluivix/migration-cli",
+  "private": true,
+  "dependencies": {
+    "prisma": "6.19.3"
+  }
+}
